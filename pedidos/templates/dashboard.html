@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Viesano</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<body style="background-color:#f4f6f9;">
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-warning m-3">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div style="
+    background: linear-gradient(90deg, #0D3B66, #2EC4B6);
+    padding: 25px;
+    text-align: center;
+">
+    <img src="{% static 'img/logo.png' %}"
+         alt="Viesano"
+         style="max-width:300px;">
+</div>
+
+<div class="container mt-5">
+
+    <div class="text-center mb-5">
+
+        <h2 class="fw-bold">
+            Portal Interno Viesano
+        </h2>
+
+        <p class="text-muted">
+            Selecione o módulo desejado
+        </p>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-3 mb-4">
+
+            <a href="/op/" class="text-decoration-none">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body text-center">
+
+                        <div style="font-size:60px;">
+                            📋
+                        </div>
+
+                        <h5 class="mt-3">
+                            Ordens de Produção
+                        </h5>
+
+                        <p class="text-muted small">
+                            Consulta e conferência de OPs
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-4">
+
+        <a href="/qualidade/" class="text-decoration-none">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <div style="font-size:60px;">
+                        🧪
+                    </div>
+
+                    <h5 class="mt-3 text-dark">
+                        Qualidade
+                    </h5>
+
+                    <p class="text-muted small">
+                        Controle de Qualidade
+                    </p>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <div style="font-size:60px;">
+                        📦
+                    </div>
+
+                    <h5 class="mt-3">
+                        Estoque
+                    </h5>
+
+                    <p class="text-muted small">
+                        Em desenvolvimento
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <div style="font-size:60px;">
+                        📊
+                    </div>
+
+                    <h5 class="mt-3">
+                        Indicadores
+                    </h5>
+
+                    <p class="text-muted small">
+                        Em desenvolvimento
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="text-center mt-4">
+
+        <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+            Sair
+        </a>
+
+    </div>
+
+</div>
+```
+
+</body>
+</html>
