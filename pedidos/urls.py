@@ -19,7 +19,7 @@ from .views import (
     exportar_mrp_excel,
     salvar_inspecao,
     teste_socket,
-    password_reset_fake
+    password_reset_view
 
 )
 
@@ -31,13 +31,8 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path(
-    "esqueci-senha/",
-        auth_views.PasswordResetView.as_view(
-            template_name="password_reset.html",
-            email_template_name="emails/password_reset_email.html",
-            subject_template_name="emails/password_reset_subject.txt",
-            success_url=reverse_lazy("password_reset_done"),
-        ),
+        "esqueci-senha/",
+        password_reset_view,
         name="password_reset",
     ),
 
@@ -47,23 +42,6 @@ urlpatterns = [
             template_name="password_reset_done.html",
         ),
         name="password_reset_done",
-    ),
-
-    path(
-        "redefinir/<uidb64>/<token>/",
-        auth_views.PasswordResetConfirmView.as_view(
-            template_name="password_reset_confirm.html",
-            success_url=reverse_lazy("password_reset_complete"),
-        ),
-        name="password_reset_confirm",
-    ),
-
-    path(
-        "redefinir/concluido/",
-        auth_views.PasswordResetCompleteView.as_view(
-            template_name="password_reset_complete.html",
-        ),
-        name="password_reset_complete",
     ),
 
     path(
@@ -140,8 +118,5 @@ urlpatterns = [
     
     path("teste-socket/", teste_socket, name="teste_socket"),
     
-    path(
-    "esqueci-senha/",
-    password_reset_fake, name="password_reset",
-),
+    
 ]

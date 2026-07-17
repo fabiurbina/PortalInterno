@@ -1376,7 +1376,8 @@ def teste_socket(request):
         return HttpResponse(f"{type(e).__name__}: {e}")
 
 
-def password_reset_fake(request):
+def password_reset_view(request):
+
     if request.method == "POST":
         return redirect("password_reset_done")
 
