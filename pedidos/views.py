@@ -1369,8 +1369,8 @@ def exportar_mrp_excel(request):
 
 def teste_socket(request):
     try:
-        ip = socket.gethostbyname("smtp.hostinger.com")
-        return HttpResponse(f"Resolveu: {ip}")
+        with socket.create_connection(("smtp.hostinger.com", 465), timeout=10):
+            return HttpResponse("Conexão TCP na porta 465: OK")
     except Exception as e:
-        return HttpResponse(f"Erro: {e}")
+        return HttpResponse(f"{type(e).__name__}: {e}")
 
