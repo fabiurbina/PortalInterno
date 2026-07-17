@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>{% block titulo %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+    {% include 'menu.html' %}
+
+    <div class="container">
+
+        {% block conteudo %}
+
+        {% endblock %}
+
+    </div>
+
+</body>
+
+</html>

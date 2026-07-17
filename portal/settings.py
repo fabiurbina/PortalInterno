@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://portalviesano.com.br",
     "https://portalinterno-production.up.railway.app",
 ]
 
