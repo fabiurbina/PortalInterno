@@ -17,8 +17,7 @@ from .views import (
     pedidos,
     relatorio_mrp_view,
     exportar_mrp_excel,
-    salvar_inspecao,
-    teste_email
+    salvar_inspecao
 )
 
 urlpatterns = [
