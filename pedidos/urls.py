@@ -132,9 +132,9 @@ urlpatterns = [
     path(
     "qualidade/salvar/",
     salvar_inspecao,
-    name="salvar_inspecao"
+    name="salvar_inspecao",
+    
 ),
     
-    path("teste-email/", teste_email),
-
+path("teste-email/", teste_email, name="teste_email"),
 ]

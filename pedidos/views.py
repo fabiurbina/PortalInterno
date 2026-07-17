@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from .omie_service import (listar_ops, consultar_produto,consultar_op,listar_locais_estoque,
-consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor)
+consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings)
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
@@ -1363,14 +1363,18 @@ def exportar_mrp_excel(request):
 
     return response
 
-
 def teste_email(request):
-    send_mail(
-        subject="Teste Portal Viesano",
-        message="Se você recebeu este e-mail, o SMTP está funcionando.",
-        from_email=None,
-        recipient_list=["SEU_EMAIL_PESSOAL@gmail.com"],  # coloque um e-mail seu
-        fail_silently=False,
-    )
+    try:
+        send_mail(
+            subject="Teste Portal Viesano",
+            message="Se você recebeu este e-mail, o SMTP está funcionando.",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=["fabio.soares@viesano.com.br"],  # coloque seu e-mail
+            fail_silently=False,
+        )
 
-    return HttpResponse("E-mail enviado!")
+        return HttpResponse("E-mail enviado com sucesso!")
+
+    except Exception as e:
+        return HttpResponse(f"Erro: {type(e).__name__}: {e}")
+
