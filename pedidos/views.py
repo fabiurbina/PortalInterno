@@ -1366,23 +1366,11 @@ def exportar_mrp_excel(request):
     return response
 
 
+from django.http import HttpResponse
+
 def teste_socket(request):
     try:
-        infos = socket.getaddrinfo(
-            "smtp.hostinger.com",
-            465,
-            family=socket.AF_INET,
-            type=socket.SOCK_STREAM,
-        )
-
-        endereco = infos[0][4]
-
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(10)
-        s.connect(endereco)
-        s.close()
-
-        return HttpResponse("Conexão IPv4 OK!")
-
+        with socket.create_connection(("smtp.gmail.com", 465), timeout=10):
+            return HttpResponse("Gmail OK")
     except Exception as e:
         return HttpResponse(f"{type(e).__name__}: {e}")
