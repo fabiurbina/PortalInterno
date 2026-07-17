@@ -1371,15 +1371,18 @@ def teste_socket(request):
         infos = socket.getaddrinfo(
             "smtp.hostinger.com",
             465,
-            proto=socket.IPPROTO_TCP
+            family=socket.AF_INET,
+            type=socket.SOCK_STREAM,
         )
 
-        linhas = []
-        for info in infos:
-            familia = "IPv6" if info[0] == socket.AF_INET6 else "IPv4"
-            linhas.append(f"{familia} - {info[4][0]}")
+        endereco = infos[0][4]
 
-        return HttpResponse("<br>".join(linhas))
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(10)
+        s.connect(endereco)
+        s.close()
+
+        return HttpResponse("Conexão IPv4 OK!")
 
     except Exception as e:
-        return HttpResponse(str(e))
+        return HttpResponse(f"{type(e).__name__}: {e}")
