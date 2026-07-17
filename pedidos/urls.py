@@ -18,8 +18,7 @@ from .views import (
     relatorio_mrp_view,
     exportar_mrp_excel,
     salvar_inspecao,
-    teste_socket,
-    home_view
+    teste_socket
 
 )
 
