@@ -17,7 +17,10 @@ from .views import (
     pedidos,
     relatorio_mrp_view,
     exportar_mrp_excel,
-    salvar_inspecao
+    salvar_inspecao,
+    teste_socket,
+    home_view
+
 )
 
 urlpatterns = [
@@ -135,7 +138,7 @@ urlpatterns = [
     
 ),
     
-    path("", auth_views.login_view, name="login"),
-    path("home/", auth_views.home_view, name="home"),
-    path("teste-socket/", auth_views.teste_socket, name="teste_socket"),
+    path("", login_view, name="login"),
+    path("home/", home_view, name="home"),
+    path("teste-socket/", teste_socket, name="teste_socket"),
 ]
