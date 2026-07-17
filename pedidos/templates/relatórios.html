@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Inspeção de Matéria Prima</title>
+
+    <style>
+
+body{
+
+    margin:0;
+
+    background:#f4f6f9;
+
+    font-family:Segoe UI,Arial,sans-serif;
+
+}
+
+.container{
+
+    width:95%;
+
+    max-width:1700px;
+
+    margin:20px auto;
+
+    background:#fff;
+
+    border-radius:10px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.10);
+
+    overflow:hidden;
+
+}
+
+.cabecalho{
+
+    background:linear-gradient(90deg,#0d3b66,#17bebb);
+
+    color:white;
+
+    padding:25px;
+
+}
+
+.cabecalho h1{
+
+    margin:0;
+
+    font-size:28px;
+
+}
+
+.cabecalho p{
+
+    margin-top:8px;
+
+    opacity:.9;
+
+}
+
+.documento{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:20px;
+
+    background:#f8f9fa;
+
+    border-bottom:1px solid #ddd;
+
+}
+
+.documento div{
+
+    text-align:center;
+
+}
+
+.documento strong{
+
+    display:block;
+
+    color:#0d3b66;
+
+    margin-bottom:5px;
+
+}
+
+.titulo{
+
+    background:#0d3b66;
+
+    color:white;
+
+    padding:15px 25px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+/* ===========================
+   GRID DOS DADOS DA MP
+=========================== */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+    padding:25px;
+
+}
+
+.campo{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.campo label{
+
+    font-weight:bold;
+
+    color:#555;
+
+    margin-bottom:8px;
+
+}
+
+.valor{
+
+    background:#f1f3f5;
+
+    border:1px solid #dcdcdc;
+
+    border-radius:6px;
+
+    padding:12px;
+
+    font-size:15px;
+
+    min-height:20px;
+
+}
+
+/* ===========================
+   TABELAS
+=========================== */
+
+.tabela-inspecao{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:15px;
+
+}
+
+.tabela-inspecao th{
+
+    background:#0d3b66;
+
+    color:white;
+
+    padding:10px;
+
+}
+
+.tabela-inspecao td{
+
+    border:1px solid #ddd;
+
+    padding:10px;
+
+}
+
+.tabela-inspecao input[type=text]{
+
+    width:95%;
+
+    padding:8px;
+
+    border:1px solid #ccc;
+
+    border-radius:5px;
+
+}
+
+/* ===========================
+   CAMPOS LADO A LADO
+=========================== */
+
+.linha-campos{
+
+    display:flex;
+
+    gap:20px;
+
+    margin-top:20px;
+
+    margin-bottom:20px;
+
+}
+
+.linha-campos .campo{
+
+    flex:1;
+
+}
+
+.linha-campos input{
+
+    width:100%;
+
+    padding:8px;
+
+    border:1px solid #ccc;
+
+    border-radius:5px;
+
+    box-sizing:border-box;
+
+}
+
+/* ===========================
+   TEXTAREA
+=========================== */
+
+textarea{
+
+    width:100%;
+
+    padding:10px;
+
+    border:1px solid #ccc;
+
+    border-radius:5px;
+
+    box-sizing:border-box;
+
+}
+
+/* ===========================
+   INFORMAÇÕES
+=========================== */
+
+.info{
+
+    background:#eef7ff;
+
+    border-left:5px solid #0d6efd;
+
+    padding:15px;
+
+    margin-top:10px;
+
+    font-style:italic;
+
+}
+
+/* ===========================
+   RODAPÉ
+=========================== */
+
+.rodape{
+
+    padding:20px;
+
+    text-align:right;
+
+    color:#777;
+
+    font-size:13px;
+
+}
+
+/* ===========================
+   BOTÕES
+=========================== */
+
+.acoes{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+    padding:25px;
+
+    border-top:1px solid #ddd;
+
+    margin-top:30px;
+
+}
+
+.btn{
+
+    text-decoration:none;
+
+    padding:12px 28px;
+
+    border-radius:6px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    transition:.2s;
+
+    cursor:pointer;
+
+    border:none;
+
+}
+
+.btn-voltar{
+
+    background:#6c757d;
+
+    color:white;
+
+}
+
+.btn-voltar:hover{
+
+    background:#5a6268;
+
+}
+
+.btn-salvar{
+
+    background:#198754;
+
+    color:white;
+
+}
+
+.btn-salvar:hover{
+
+    background:#157347;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="cabecalho">
+
+        <h1>FORMULÁRIO DE INSPEÇÃO DE MATÉRIA PRIMA</h1>
+
+        <p>Controle de Qualidade • Viesano Suplementos</p>
+
+    </div>
+
+    <div class="documento">
+
+        <div>
+
+            <strong>Código</strong>
+
+            FOR-020-000
+
+        </div>
+
+        <div>
+
+            <strong>Revisão</strong>
+
+            00
+
+        </div>
+
+        <div>
+
+            <strong>Data Vigente</strong>
+
+            27/05/2026
+
+        </div>
+
+    </div>
+
+    <div class="titulo">
+
+        1. IDENTIFICAÇÃO DA MATÉRIA PRIMA
+
+    </div>
+
+    <div class="grid">
+
+        <div class="campo">
+
+            <label>Matéria Prima</label>
+
+            <div class="valor">
+
+                {{ item.descricao }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Código</label>
+
+            <div class="valor">
+
+                {{ item.codigo }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Fornecedor</label>
+
+            <div class="valor">
+
+                {{ item.fornecedor }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Quantidade</label>
+
+            <div class="valor">
+
+                {{ item.quantidade }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Data do Recebimento</label>
+
+            <div class="valor">
+
+                {{ item.data }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Status</label>
+
+            <div class="valor">
+
+                🟡 Aguardando Inspeção
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Lote</label>
+
+            <div class="valor">
+
+                {{ item.lote }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Data de Fabricação</label>
+
+            <div class="valor">
+
+                {{ item.fabricacao }}
+
+            </div>
+
+        </div>
+
+        <div class="campo">
+
+            <label>Data de Validade</label>
+
+            <div class="valor">
+
+                {{ item.validade }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================== -->
+    <!-- 2. INSPEÇÃO DA EMBALAGEM -->
+    <!-- =========================================== -->
+
+    <div class="titulo">
+        2. INSPEÇÃO DA EMBALAGEM
+    </div>
+
+    <table class="tabela-inspecao">
+
+        <tr>
+            <th>Item Avaliado</th>
+            <th>Conforme</th>
+            <th>Não Conforme</th>
+        </tr>
+
+        <tr>
+            <td>Embalagem íntegra</td>
+
+            <td align="center">
+                <input type="radio" name="embalagem_integra" value="S">
+            </td>
+
+            <td align="center">
+                <input type="radio" name="embalagem_integra" value="N">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Ausência de umidade</td>
+
+            <td align="center">
+                <input type="radio" name="umidade" value="S">
+            </td>
+
+            <td align="center">
+                <input type="radio" name="umidade" value="N">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Ausência de avarias</td>
+
+            <td align="center">
+                <input type="radio" name="avarias" value="S">
+            </td>
+
+            <td align="center">
+                <input type="radio" name="avarias" value="N">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Identificação legível</td>
+
+            <td align="center">
+                <input type="radio" name="identificacao" value="S">
+            </td>
+
+            <td align="center">
+                <input type="radio" name="identificacao" value="N">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Lacre íntegro</td>
+
+            <td align="center">
+                <input type="radio" name="lacre" value="S">
+            </td>
+
+            <td align="center">
+                <input type="radio" name="lacre" value="N">
+            </td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <!-- =========================================== -->
+    <!-- 3. ANÁLISE SENSORIAL -->
+    <!-- =========================================== -->
+
+    <div class="titulo">
+        3. ANÁLISE SENSORIAL INTERNA
+    </div>
+
+    <table class="tabela-inspecao">
+
+    <tr>
+
+        <th>Parâmetro</th>
+
+        <th>Resultado Obtido</th>
+
+        <th>Conforme</th>
+
+        <th>Não Conforme</th>
+
+    </tr>
+
+    <tr>
+
+        <td>Aspecto</td>
+
+        <td>
+            <input type="text" name="aspecto">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="aspecto_conf" value="S">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="aspecto_conf" value="N">
+        </td>
+
+    </tr>
+
+    <tr>
+
+        <td>Cor</td>
+
+        <td>
+            <input type="text" name="cor">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="cor_conf" value="S">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="cor_conf" value="N">
+        </td>
+
+    </tr>
+
+    <tr>
+
+        <td>Odor</td>
+
+        <td>
+            <input type="text" name="odor">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="odor_conf" value="S">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="odor_conf" value="N">
+        </td>
+
+    </tr>
+
+    <tr>
+
+        <td>Materiais Estranhos</td>
+
+        <td>
+            <input type="text" name="materiais_estranhos">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="materiais_conf" value="S">
+        </td>
+
+        <td align="center">
+            <input type="radio" name="materiais_conf" value="N">
+        </td>
+
+    </tr>
+
+    </table>
+
+    <div class="info">
+
+    Método de análise interno:
+    POP-020-001 • POP-020-002 • POP-020-003
+
+    </div>
+
+    <br>
+
+    <!-- =========================================== -->
+    <!-- 4. FÍSICO QUÍMICA -->
+    <!-- =========================================== -->
+
+    <div class="titulo">
+        4. ANÁLISE FÍSICO-QUÍMICA
+    </div>
+
+    <table class="tabela-inspecao">
+
+    <tr>
+
+        <th>Parâmetro</th>
+
+        <th>Resultado Obtido</th>
+
+        <th>Conforme</th>
+
+        <th>Não Conforme</th>
+
+    </tr>
+
+    <tr>
+
+    <td>Densidade</td>
+
+    <td><input type="text" name="densidade"></td>
+
+    <td align="center">
+    <input type="radio" name="densidade_conf" value="S">
+    </td>
+
+    <td align="center">
+    <input type="radio" name="densidade_conf" value="N">
+    </td>
+
+    </tr>
+
+    <tr>
+
+    <td>Umidade</td>
+
+    <td><input type="text" name="umidade_lab"></td>
+
+    <td align="center">
+    <input type="radio" name="umidade_lab_conf" value="S">
+    </td>
+
+    <td align="center">
+    <input type="radio" name="umidade_lab_conf" value="N">
+    </td>
+
+    </tr>
+
+    <tr>
+
+    <td>Solubilidade</td>
+
+    <td><input type="text" name="solubilidade"></td>
+
+    <td align="center">
+    <input type="radio" name="solubilidade_conf" value="S">
+    </td>
+
+    <td align="center">
+    <input type="radio" name="solubilidade_conf" value="N">
+    </td>
+
+    </tr>
+
+    <tr>
+
+    <td>pH</td>
+
+    <td><input type="text" name="ph"></td>
+
+    <td align="center">
+    <input type="radio" name="ph_conf" value="S">
+    </td>
+
+    <td align="center">
+    <input type="radio" name="ph_conf" value="N">
+    </td>
+
+    </tr>
+
+    </table>
+
+    <br>
+
+    <!-- =========================================== -->
+    <!-- OBSERVAÇÕES -->
+    <!-- =========================================== -->
+
+    <div class="titulo">
+
+    4. OBSERVAÇÕES
+
+    </div>
+
+    <textarea
+    name="observacoes"
+    rows="6"
+    style="width:100%;"></textarea>
+
+    <br><br>
+
+    <!-- =========================================== -->
+    <!-- PARECER -->
+    <!-- =========================================== -->
+
+    <div class="titulo">
+
+    5. PARECER FINAL
+
+    </div>
+
+    <label>
+
+    <input type="radio" name="parecer" value="APROVADO">
+
+    Aprovado
+
+    </label>
+
+    &nbsp;&nbsp;&nbsp;
+
+    <label>
+
+    <input type="radio" name="parecer" value="REPROVADO">
+
+    Reprovado
+
+    </label>
+
+    &nbsp;&nbsp;&nbsp;
+
+    <label>
+
+    <input type="radio" name="parecer" value="RESTRICAO">
+
+    Aprovado com Restrição
+
+    </label>
+
+    <br><br>
+
+    <label>
+
+    Motivo / Justificativa
+
+    </label>
+
+    <textarea
+    name="justificativa"
+    rows="5"
+    style="width:100%;"></textarea>
+
+    <br><br>
+
+    <label>
+
+    Responsável pela Análise
+
+    </label>
+
+    <input
+    type="text"
+    name="responsavel"
+    style="width:100%;">
+
+    <br><br>
+
+    <div class="linha-campos">
+
+        <div class="campo">
+
+            <label>Data</label>
+
+            <input
+                type="date"
+                name="data_analise">
+
+        </div>
+
+        <div class="campo">
+
+            <label>Hora Início</label>
+
+            <input
+                type="time"
+                name="hora_inicio_analise">
+
+        </div>
+
+        <div class="campo">
+
+            <label>Hora Fim</label>
+
+            <input
+                type="time"
+                name="hora_fim_analise">
+
+        </div>
+
+    </div>
+
+<div class="acoes">
+
+    <a href="/qualidade/" class="btn btn-voltar">
+
+        ← Voltar
+
+    </a>
+
+    <button type="submit" class="btn btn-salvar">
+
+        💾 Salvar Inspeção
+
+    </button>
+
+</div>
+
+</div>
+
+    <div class="rodape">
+
+        Sistema de Gestão da Qualidade • Viesano Suplementos
+
+    </div>
+
+</form>
+
+</div>
+
+</body>
+
+</html>

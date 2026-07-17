@@ -186,7 +186,7 @@
                             </h6>
 
                             <h1 class="text-warning mb-0">
-                                {{ entradas|length }}
+                                {{ pendentes }}
                             </h1>
 
                         </div>
@@ -206,7 +206,7 @@
                             </h6>
 
                             <h1 class="text-success mb-0">
-                                0
+                                {{ aprovados }}
                             </h1>
 
                         </div>
@@ -226,7 +226,7 @@
                             </h6>
 
                             <h1 class="text-danger mb-0">
-                                0
+                                {{ reprovados }}
                             </h1>
 
                         </div>
@@ -280,6 +280,10 @@
                             Produto
                         </th>
 
+                        <th>
+                            Fornecedor
+                        </th>
+
                         <th width="120">
                             Quantidade
                         </th>
@@ -326,32 +330,68 @@
 
                         <td>
 
+                            <strong>
+                                {{ item.fornecedor }}
+                            </strong>
+
+                        </td>
+
+                        <td>
+
                             {{ item.quantidade }}
 
                         </td>
 
                         <td>
 
-                            <span
-                                class="badge rounded-pill bg-warning text-dark"
-                            >
+                        {% if item.status == "Aguardando" %}
+
+                            <span class="badge rounded-pill bg-warning text-dark">
                                 AGUARDANDO ANÁLISE
                             </span>
 
-                        </td>
+                        {% elif item.status == "Aprovado" %}
+
+                            <span class="badge rounded-pill bg-success">
+                                APROVADO
+                            </span>
+
+                        {% elif item.status == "Reprovado" %}
+
+                            <span class="badge rounded-pill bg-danger">
+                                REPROVADO
+                            </span>
+
+                        {% elif item.status == "Aprovado com Restrição" %}
+
+                            <span class="badge rounded-pill bg-info text-dark">
+                                APROVADO COM RESTRIÇÃO
+                            </span>
+
+                        {% endif %}
+
+                    </td>
 
                         <td>
 
-                            <a
-                                href="/qualidade/{{ item.codigo_produto }}/"
-                                class="btn btn-primary btn-sm"
-                                style="
-                                    background:#0D3B66;
-                                    border:none;
-                                "
-                            >
-                                Realizar Inspeção
-                            </a>
+                            {% if item.status == "Aguardando" %}
+
+                                <a href="{% url 'qualidade_inspecao' item.cod_prod %}?data_inicial={{ request.GET.data_inicial }}&data_final={{ request.GET.data_final }}"
+                                class="btn btn-primary btn-sm">
+
+                                    Realizar Inspeção
+
+                                </a>
+
+                            {% else %}
+
+                                <button class="btn btn-success btn-sm" disabled>
+
+                                    ✓ Inspecionado
+
+                                </button>
+
+                            {% endif %}
 
                         </td>
 

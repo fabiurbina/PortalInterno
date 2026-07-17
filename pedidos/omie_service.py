@@ -1,6 +1,9 @@
+from multiprocessing.util import info
+
 import requests
 from django.conf import settings
 from django.core.cache import cache
+from .mysql_service import consultar_status_qualidade
 
 def listar_ops():
 
@@ -369,5 +372,182 @@ def listar_movimentos_entrada(data_inicial, data_final):
                     "cod_prod": produto["nCodProd"]
 
                 })
+
+    return entradas
+
+
+def listar_pedidos_compra(data_inicial, data_final):
+
+    payload = {
+        "call": "PesquisarPedCompra",
+        "app_key": settings.OMIE_APP_KEY,
+        "app_secret": settings.OMIE_APP_SECRET,
+        "param": [{
+            "nPagina": 1,
+            "nRegsPorPagina": 50,
+
+            "lApenasImportadoApi": "T",
+            "lExibirPedidosPendentes": "T",
+            "lExibirPedidosFaturados": "T",
+            "lExibirPedidosRecebidos": "T",
+            "lExibirPedidosCancelados": "T",
+            "lExibirPedidosEncerrados": "T",
+            "lExibirPedidosRecParciais": "T",
+            "lExibirPedidosFatParciais": "T",
+
+            "dDataInicial": data_inicial,
+            "dDataFinal": data_final,
+
+            "lApenasAlterados": "T",
+        }]
+    }
+
+    response = requests.post(
+        "https://app.omie.com.br/api/v1/produtos/pedidocompra/",
+        json=payload
+    )
+
+    return response.json()
+
+def criar_indice_pedidos(data):
+
+    indice = {}
+
+    for pedido in data.get("pedidos_pesquisa", []):
+
+        cab = pedido["cabecalho_consulta"]
+
+        for item in pedido.get("produtos_consulta", []):
+
+            indice[item["nCodProd"]] = {
+
+                "pedido": cab["cNumero"],
+                "cod_pedido": cab["nCodPed"],
+                "cod_fornecedor": cab["nCodFor"],
+                "data_pedido": cab["dIncData"],
+                "quantidade": item["nQtde"]
+            }
+    #print("===== INDICE =====")
+    #pprint(indice)
+
+    return indice
+
+
+def consultar_fornecedor(cod_fornecedor):
+
+    payload = {
+        "call": "ConsultarCliente",
+        "app_key": settings.OMIE_APP_KEY,
+        "app_secret": settings.OMIE_APP_SECRET,
+        "param": [{
+            "codigo_cliente_omie": cod_fornecedor,
+            "codigo_cliente_integracao": ""
+        }]
+    }
+
+    response = requests.post(
+        "https://app.omie.com.br/api/v1/geral/clientes/",
+        json=payload
+    )
+
+    return response.json()
+
+def criar_indice_lotes(data):
+
+    indice = {}
+
+    for produto in data.get("listaLotes", []):
+
+        cod_prod = produto["ident"]["nCodProd"]
+
+        if produto.get("lotes"):
+
+            lote = produto["lotes"][0]
+
+            indice[cod_prod] = {
+
+                "lote": lote["cNumLote"],
+                "fabricacao": lote["dDataFabricacao"],
+                "validade": lote["dDataValidade"]
+
+            }
+
+    return indice
+
+
+def listar_entradas_com_fornecedor(data_inicial, data_final):
+
+    entradas = listar_movimentos_entrada(data_inicial, data_final)
+
+    pedidos = listar_pedidos_compra(data_inicial, data_final)
+
+    lotes = listar_lotes()
+
+    indice = criar_indice_pedidos(pedidos)
+
+    indice_lotes = criar_indice_lotes(lotes)
+
+    from pprint import pprint
+
+    print("===== INDICE LOTES =====")
+    pprint(indice_lotes)
+
+    cache_fornecedor = {}
+
+    for entrada in entradas:
+
+        # ==========================
+        # Pedido + Fornecedor
+        # ==========================
+
+        info = indice.get(entrada["cod_prod"])
+
+        if info:
+
+            cod_for = info["cod_fornecedor"]
+
+            if cod_for == 0:
+
+                entrada["fornecedor"] = "Não cadastrado"
+
+            else:
+
+                if cod_for not in cache_fornecedor:
+
+                    print("cod_for =", cod_for)
+
+                    fornecedor = consultar_fornecedor(cod_for)
+
+                    pprint(fornecedor)
+
+                    cache_fornecedor[cod_for] = fornecedor["razao_social"]
+
+                entrada["fornecedor"] = cache_fornecedor[cod_for]
+
+            entrada.update(info)
+
+        # ==========================
+        # Lote
+        # ==========================
+
+        lote = indice_lotes.get(entrada["cod_prod"])
+
+        if lote:
+
+            entrada.update(lote)
+
+        else:
+
+            entrada["lote"] = "Não cadastrado"
+            entrada["fabricacao"] = "Não cadastrado"
+            entrada["validade"] = "Não cadastrado"
+
+        print(entrada)
+        
+        entrada["status"] = consultar_status_qualidade(
+            entrada["cod_prod"],
+            entrada["lote"]
+    )
+        print(entrada["status"])
 
     return entradas

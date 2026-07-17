@@ -1,0 +1,366 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Relatório MRP</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            margin: 0;
+            background-color: #f4f6f9;
+        }
+
+        /* FAIXA SUPERIOR VIESANO */
+        .topo-viesano {
+            width: 100%;
+            height: 82px;
+
+            background: linear-gradient(
+                90deg,
+                #123F69 0%,
+                #1C7D8C 50%,
+                #28B9AD 100%
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topo-viesano img {
+            height: 48px;
+            width: auto;
+        }
+
+
+        /* CARDS DOS PEDIDOS */
+        .pedido-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .pedido-header {
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .pedido-header:hover {
+            background-color: #f8f9fa;
+        }
+
+        .numero-pedido {
+            color: #0D3B66;
+            font-weight: 700;
+        }
+
+        .tabela-mrp {
+            font-size: 13px;
+        }
+
+        .tabela-mrp th {
+            white-space: nowrap;
+            background-color: #578618;
+            color: white;
+        }
+
+        .saldo-negativo {
+            background-color: #f8d7da !important;
+            color: #842029;
+            font-weight: bold;
+        }
+
+        .saldo-positivo {
+            color: #198754;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- FAIXA SUPERIOR VIESANO -->
+    <div class="topo-viesano">
+        <img src="{% static 'img/logo.png' %}" 
+         alt="Viesano"
+         style="max-width:300px;">
+</div>
+
+    
+    <!-- CONTEÚDO DO MRP -->
+    <div class="container-fluid py-4">
+
+
+        <!-- CABEÇALHO DO RELATÓRIO -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="fw-bold mb-1">
+                    Relatório MRP
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Necessidade de materiais para produção
+                </p>
+
+            </div>
+
+
+            <div class="d-flex gap-2">
+
+                <a
+                    href="{% url 'exportar_mrp_excel' %}"
+                    class="btn btn-success"
+                >
+                    📊 Exportar Excel completo
+                </a>
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Voltar
+                </a>
+
+            </div>
+
+        </div>
+
+
+    <!-- PEDIDOS -->
+
+    {% for pedido in pedidos %}
+
+        <div class="card pedido-card shadow-sm mb-3">
+
+
+            <!-- CABEÇALHO DO PEDIDO -->
+
+            <div
+                class="card-body pedido-header"
+                data-bs-toggle="collapse"
+                data-bs-target="#pedido-{{ forloop.counter }}"
+                aria-expanded="false"
+            >
+
+                <div class="row align-items-center">
+
+
+                    <div class="col-md-3">
+
+                        <small class="text-muted">
+                            Pedido
+                        </small>
+
+                        <div class="numero-pedido fs-5">
+                            #{{ pedido.numero_pedido }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <small class="text-muted">
+                            Previsão
+                        </small>
+
+                        <div class="fw-semibold">
+
+                            {% if pedido.data_previsao %}
+
+                                {{ pedido.data_previsao|date:"d/m/Y" }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <small class="text-muted">
+                            OPs
+                        </small>
+
+                        <div class="fw-semibold">
+                            {{ pedido.quantidade_ops }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <small class="text-muted">
+                            Componentes
+                        </small>
+
+                        <div class="fw-semibold">
+                            {{ pedido.quantidade_componentes }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2 text-end">
+
+                        <button
+                            class="btn btn-outline-primary btn-sm"
+                            type="button"
+                        >
+                            Ver detalhes ▼
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- DETALHES DO PEDIDO -->
+
+            <div
+                class="collapse"
+                id="pedido-{{ forloop.counter }}"
+            >
+
+                <div class="card-body border-top p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover table-bordered mb-0 tabela-mrp">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Descrição</th>
+
+                                    <th>Código</th>
+
+                                    <th>Descrição do componente</th>
+
+                                    <th>Necessidade</th>
+
+                                    <th>Estoque atual</th>
+
+                                    <th>Saldo provisionado</th>
+
+                                    <th>OP</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for item in pedido.itens %}
+
+                                    <tr>
+                                        <td>
+                                            {{ item.descricao }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.codigo_produto_malha }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.descricao_produto_malha }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.necessidade_componente|floatformat:4 }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.estoque_atual|floatformat:4 }}
+                                        </td>
+
+                                        <td
+                                            {% if item.saldo_provisionado < 0 %}
+                                                class="saldo-negativo"
+                                            {% else %}
+                                                class="saldo-positivo"
+                                            {% endif %}
+                                        >
+
+                                            {{ item.saldo_provisionado|floatformat:4 }}
+
+                                        </td>
+
+                                        <td>
+                                            {{ item.numero_op }}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    {% empty %}
+
+        <div class="alert alert-warning">
+
+            Nenhum registro encontrado no MRP.
+
+        </div>
+
+    {% endfor %}
+
+
+</div>
+
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+</body>
+
+</html>
