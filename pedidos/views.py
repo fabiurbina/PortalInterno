@@ -1366,10 +1366,9 @@ def exportar_mrp_excel(request):
     return response
 
 
-
 def teste_socket(request):
     try:
-        with socket.create_connection(("smtp.hostinger.com", 587), timeout=10):
-            return HttpResponse("Conexão TCP na porta 587: OK")
+        with socket.create_connection(("google.com", 80), timeout=10):
+            return HttpResponse("Consegui conectar no Google!")
     except Exception as e:
         return HttpResponse(f"{type(e).__name__}: {e}")
