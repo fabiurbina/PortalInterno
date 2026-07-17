@@ -165,3 +165,14 @@ CACHES = {
     }
 }
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Sessão expira ao fechar o navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Sessão dura no máximo 8 horas
+SESSION_COOKIE_AGE = 60 * 60 * 8
+
+# Cookies protegidos em produção
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = not DEBUG
