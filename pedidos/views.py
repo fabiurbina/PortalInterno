@@ -1368,7 +1368,18 @@ def exportar_mrp_excel(request):
 
 def teste_socket(request):
     try:
-        with socket.create_connection(("google.com", 80), timeout=10):
-            return HttpResponse("Consegui conectar no Google!")
+        infos = socket.getaddrinfo(
+            "smtp.hostinger.com",
+            465,
+            proto=socket.IPPROTO_TCP
+        )
+
+        linhas = []
+        for info in infos:
+            familia = "IPv6" if info[0] == socket.AF_INET6 else "IPv4"
+            linhas.append(f"{familia} - {info[4][0]}")
+
+        return HttpResponse("<br>".join(linhas))
+
     except Exception as e:
-        return HttpResponse(f"{type(e).__name__}: {e}")
+        return HttpResponse(str(e))
