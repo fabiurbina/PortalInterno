@@ -18,7 +18,8 @@ from .views import (
     relatorio_mrp_view,
     exportar_mrp_excel,
     salvar_inspecao,
-    teste_socket
+    teste_socket,
+    password_reset_fake
 
 )
 
@@ -31,13 +32,13 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path(
     "esqueci-senha/",
-    auth_views.PasswordResetView.as_view(
-        template_name="password_reset.html",
-        email_template_name="emails/password_reset_email.html",
-        subject_template_name="emails/password_reset_subject.txt",
-        success_url=reverse_lazy("password_reset_done"),
-    ),
-    name="password_reset",
+        auth_views.PasswordResetView.as_view(
+            template_name="password_reset.html",
+            email_template_name="emails/password_reset_email.html",
+            subject_template_name="emails/password_reset_subject.txt",
+            success_url=reverse_lazy("password_reset_done"),
+        ),
+        name="password_reset",
     ),
 
     path(
@@ -138,4 +139,9 @@ urlpatterns = [
 ),
     
     path("teste-socket/", teste_socket, name="teste_socket"),
+    
+    path(
+    "esqueci-senha/",
+    password_reset_fake, name="password_reset",
+),
 ]

@@ -1374,3 +1374,10 @@ def teste_socket(request):
             return HttpResponse("Gmail OK")
     except Exception as e:
         return HttpResponse(f"{type(e).__name__}: {e}")
+
+
+def password_reset_fake(request):
+    if request.method == "POST":
+        return redirect("password_reset_done")
+
+    return render(request, "password_reset.html")
