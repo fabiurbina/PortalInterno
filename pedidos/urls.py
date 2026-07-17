@@ -138,7 +138,5 @@ urlpatterns = [
     
 ),
     
-    path("", login_view, name="login"),
-    path("home/", home_view, name="home"),
     path("teste-socket/", teste_socket, name="teste_socket"),
 ]

@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse  
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
+import socket
+from django.http import HttpResponse
 import json
 from .mysql_service import (
     datetime,
@@ -1363,8 +1365,7 @@ def exportar_mrp_excel(request):
 
     return response
 
-import socket
-from django.http import HttpResponse
+
 
 def teste_socket(request):
     try:
