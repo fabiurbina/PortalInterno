@@ -1363,18 +1363,13 @@ def exportar_mrp_excel(request):
 
     return response
 
-def teste_email(request):
+import socket
+from django.http import HttpResponse
+
+def teste_socket(request):
     try:
-        send_mail(
-            subject="Teste Portal Viesano",
-            message="Se você recebeu este e-mail, o SMTP está funcionando.",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["fabio.soares@viesano.com.br"],  # coloque seu e-mail
-            fail_silently=False,
-        )
-
-        return HttpResponse("E-mail enviado com sucesso!")
-
+        ip = socket.gethostbyname("smtp.hostinger.com")
+        return HttpResponse(f"Resolveu: {ip}")
     except Exception as e:
-        return HttpResponse(f"Erro: {type(e).__name__}: {e}")
+        return HttpResponse(f"Erro: {e}")
 

@@ -136,5 +136,7 @@ urlpatterns = [
     
 ),
     
-path("teste-email/", teste_email, name="teste_email"),
+    path("", auth_views.login_view, name="login"),
+    path("home/", auth_views.home_view, name="home"),
+    path("teste-socket/", auth_views.teste_socket, name="teste_socket"),
 ]
