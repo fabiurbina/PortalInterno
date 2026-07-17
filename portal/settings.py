@@ -26,10 +26,13 @@ SECRET_KEY = 'django-insecure-@m5cwo+345q66%zgay+ns3o-%z^1a)ixuaandreyx(n6oxm=yb
 DEBUG = True
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "interno.viesano.com.br",
+    "portalinterno-production.up.railway.app",
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://portalviesano.com.br",
+    "https://interno.viesano.com.br",
     "https://portalinterno-production.up.railway.app",
 ]
 
