@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse  
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 import json
 from .mysql_service import (
     datetime,
@@ -1361,3 +1362,15 @@ def exportar_mrp_excel(request):
     )
 
     return response
+
+
+def teste_email(request):
+    send_mail(
+        subject="Teste Portal Viesano",
+        message="Se você recebeu este e-mail, o SMTP está funcionando.",
+        from_email=None,
+        recipient_list=["SEU_EMAIL_PESSOAL@gmail.com"],  # coloque um e-mail seu
+        fail_silently=False,
+    )
+
+    return HttpResponse("E-mail enviado!")
