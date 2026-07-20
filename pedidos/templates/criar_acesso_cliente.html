@@ -44,7 +44,10 @@
 
                 </div>
 
-                <button class="btn btn-primary">
+                <button
+                    type="submit"
+                    name="buscar"
+                    class="btn btn-primary">
 
                     Buscar Cliente
 
@@ -52,6 +55,38 @@
 
             </form>
             {% if cliente %}
+
+            <form method="post">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="cnpj"
+                value="{{ cliente.cnpj_cpf }}">
+
+            <div class="mb-3">
+
+                <label>E-mail</label>
+
+                <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    value="{{ cliente.email }}">
+
+            </div>
+
+            <button
+                type="submit"
+                name="criar"
+                class="btn btn-success">
+
+                Criar Acesso
+
+            </button>
+
+        </form>
 
             <hr>
 

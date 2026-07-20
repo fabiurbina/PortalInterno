@@ -30,6 +30,9 @@ from .status_service import interpretar_status
 from collections import defaultdict
 import pandas as pd
 from io import BytesIO
+from django.contrib.auth.models import User
+import secrets
+import string
 
 
 
@@ -1384,6 +1387,20 @@ def password_reset_view(request):
     return render(request, "password_reset.html")
 
 
+def gerar_senha(tamanho=10):
+
+    caracteres = (
+        string.ascii_letters +
+        string.digits +
+        "!@#$%&*"
+    )
+
+    return "".join(
+        secrets.choice(caracteres)
+        for _ in range(tamanho)
+    )
+
+
 @login_required
 def criar_acesso_cliente(request):
 
@@ -1391,9 +1408,40 @@ def criar_acesso_cliente(request):
 
     if request.method == "POST":
 
-        cnpj = request.POST.get("cnpj")
+        if "buscar" in request.POST:
 
-        cliente = buscar_cliente_cnpj(cnpj)
+            cnpj = request.POST.get("cnpj")
+
+            cliente = buscar_cliente_cnpj(cnpj)
+
+        elif "criar" in request.POST:
+
+            cnpj = request.POST.get("cnpj")
+            email = request.POST.get("email")
+
+            cliente = buscar_cliente_cnpj(cnpj)
+
+            if User.objects.filter(username=cnpj).exists():
+
+                messages.error(
+                    request,
+                    "Este cliente já possui acesso."
+                )
+
+            else:
+
+                senha = gerar_senha()
+
+                User.objects.create_user(
+                    username=cnpj,
+                    email=email,
+                    password=senha
+                )
+
+                messages.success(
+                    request,
+                    f"Usuário criado com sucesso! Senha: {senha}"
+                )
 
     return render(
         request,
@@ -1402,3 +1450,5 @@ def criar_acesso_cliente(request):
             "cliente": cliente
         }
     )
+    
+    
