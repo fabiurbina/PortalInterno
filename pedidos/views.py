@@ -1423,7 +1423,7 @@ def criar_acesso_cliente(request):
 
         elif "criar" in request.POST:
 
-            cnpj = request.POST.get("cnpj")
+            cnpj = limpar_documento(request.POST.get("cnpj"))
             email = request.POST.get("email")
 
             cliente = buscar_cliente_cnpj(cnpj)
