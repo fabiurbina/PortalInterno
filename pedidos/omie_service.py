@@ -555,36 +555,40 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
 
 def buscar_cliente_cnpj(cnpj):
 
-    payload = {
-        "call": "ListarClientes",
-        "app_key": settings.OMIE_APP_KEY,
-        "app_secret": settings.OMIE_APP_SECRET,
-        "param": [{
-            "pagina": 1,
-            "registros_por_pagina": 50,
-            "apenas_importado_api": "N",
-            "filtrar_apenas_omiepdv": "N",
-            "clientes_cadastro_resumido": [
-                {
-                    "cnpj_cpf": cnpj
-                }
-            ]
-        }]
-    }
+    pagina = 1
 
-    response = requests.post(
-        "https://app.omie.com.br/api/v1/geral/clientes/",
-        json=payload
-    )
+    while True:
 
-    dados = response.json()
+        payload = {
+            "call": "ListarClientes",
+            "app_key": settings.OMIE_APP_KEY,
+            "app_secret": settings.OMIE_APP_SECRET,
+            "param": [{
+                "pagina": pagina,
+                "registros_por_pagina": 50,
+                "apenas_importado_api": "N"
+            }]
+        }
 
-    print(dados)
+        response = requests.post(
+            "https://app.omie.com.br/api/v1/geral/clientes/",
+            json=payload
+        )
 
-    if "clientes_cadastro_resumido" not in dados:
-        return None
+        dados = response.json()
 
-    if len(dados["clientes_cadastro_resumido"]) == 0:
-        return None
+        clientes = dados.get("clientes_cadastro", [])
 
-    return dados["clientes_cadastro_resumido"][0]
+        for cliente in clientes:
+
+            if cliente.get("cnpj_cpf", "").replace(".", "").replace("/", "").replace("-", "") == \
+               cnpj.replace(".", "").replace("/", "").replace("-", ""):
+
+                return cliente
+
+        if pagina >= dados.get("total_de_paginas", 1):
+            break
+
+        pagina += 1
+
+    return None
