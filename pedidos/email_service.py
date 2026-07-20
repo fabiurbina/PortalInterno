@@ -34,4 +34,4 @@ def enviar_email_boas_vindas(cliente, email, senha):
     
     
 
-    mensagem.send()
+    mensagem.send(fail_silently=False)
