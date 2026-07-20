@@ -1382,3 +1382,12 @@ def password_reset_view(request):
         return redirect("password_reset_done")
 
     return render(request, "password_reset.html")
+
+
+@login_required
+def criar_acesso_cliente(request):
+
+    return render(
+        request,
+        "criar_acesso_cliente.html"
+    )

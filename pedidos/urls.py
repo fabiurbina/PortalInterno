@@ -19,8 +19,8 @@ from .views import (
     exportar_mrp_excel,
     salvar_inspecao,
     teste_socket,
-    password_reset_view
-
+    password_reset_view,
+    criar_acesso_cliente
 )
 
 urlpatterns = [
@@ -117,6 +117,13 @@ urlpatterns = [
 ),
     
     path("teste-socket/", teste_socket, name="teste_socket"),
+    
+    
+    path(
+    "portal/clientes/",
+    criar_acesso_cliente,
+    name="criar_acesso_cliente"
+),
     
     
 ]
