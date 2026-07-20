@@ -1450,16 +1450,24 @@ def criar_acesso_cliente(request):
 
                 cliente["cnpj_cpf"] = cnpj
 
-                enviar_email_boas_vindas(
-                    cliente,
-                    email,
-                    senha
-                )
+                try:
+                    enviar_email_boas_vindas(
+                        cliente,
+                        email,
+                        senha
+                    )
 
-                messages.success(
-                    request,
-                    f"Usuário criado com sucesso! Senha: {senha}"
-                )
+                    messages.success(
+                        request,
+                        "Usuário criado com sucesso! As credenciais foram enviadas por e-mail."
+                    )
+
+                except Exception as e:
+
+                    messages.warning(
+                        request,
+                        f"Usuário criado, porém ocorreu um erro ao enviar o e-mail: {e}"
+                    )
 
     return render(
         request,
