@@ -1386,6 +1386,13 @@ def password_reset_view(request):
 
     return render(request, "password_reset.html")
 
+import re   
+
+def limpar_documento(documento):
+    if not documento:
+        return ""
+    return re.sub(r"\D", "", documento)
+
 
 def gerar_senha(tamanho=10):
 
@@ -1410,7 +1417,7 @@ def criar_acesso_cliente(request):
 
         if "buscar" in request.POST:
 
-            cnpj = request.POST.get("cnpj")
+            cnpj = limpar_documento(request.POST.get("cnpj"))
 
             cliente = buscar_cliente_cnpj(cnpj)
 
