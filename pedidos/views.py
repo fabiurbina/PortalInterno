@@ -33,6 +33,7 @@ from io import BytesIO
 from django.contrib.auth.models import User
 import secrets
 import string
+from .email_service import enviar_email_boas_vindas
 
 
 
@@ -1443,6 +1444,16 @@ def criar_acesso_cliente(request):
                     username=cnpj,
                     email=email,
                     password=senha
+                )
+                
+                
+
+                cliente["cnpj_cpf"] = cnpj
+
+                enviar_email_boas_vindas(
+                    cliente,
+                    email,
+                    senha
                 )
 
                 messages.success(
