@@ -1,9 +1,15 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.conf import settings
 
 
 def enviar_email_boas_vindas(cliente, email, senha):
+    
+    print("HOST:", settings.EMAIL_HOST)
+    print("PORTA:", settings.EMAIL_PORT)
+    print("USUARIO:", settings.EMAIL_HOST_USER)
+    
 
     contexto = {
         "razao_social": cliente["razao_social"],
@@ -25,5 +31,7 @@ def enviar_email_boas_vindas(cliente, email, senha):
     )
 
     mensagem.attach_alternative(html, "text/html")
+    
+    
 
     mensagem.send()
