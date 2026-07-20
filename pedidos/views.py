@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from .omie_service import (listar_ops, consultar_produto,consultar_op,listar_locais_estoque,
-consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings)
+consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings, buscar_cliente_cnpj)
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
@@ -1387,7 +1387,18 @@ def password_reset_view(request):
 @login_required
 def criar_acesso_cliente(request):
 
+    cliente = None
+
+    if request.method == "POST":
+
+        cnpj = request.POST.get("cnpj")
+
+        cliente = buscar_cliente_cnpj(cnpj)
+
     return render(
         request,
-        "criar_acesso_cliente.html"
+        "criar_acesso_cliente.html",
+        {
+            "cliente": cliente
+        }
     )

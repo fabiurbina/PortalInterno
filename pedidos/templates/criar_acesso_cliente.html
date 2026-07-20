@@ -28,7 +28,9 @@
 
         <div class="card-body">
 
-            <form>
+            <form method="post">
+
+                {% csrf_token %}
 
                 <div class="mb-3">
 
@@ -36,20 +38,32 @@
 
                     <input
                         type="text"
+                        name="cnpj"
                         class="form-control"
                         placeholder="00.000.000/0000-00">
 
                 </div>
 
-                <button
-                    class="btn btn-primary">
+                <button class="btn btn-primary">
 
                     Buscar Cliente
 
                 </button>
 
             </form>
+            {% if cliente %}
 
+            <hr>
+
+            <h4>Cliente encontrado</h4>
+
+            <p><strong>Razão Social:</strong> {{ cliente.razao_social }}</p>
+
+            <p><strong>CNPJ:</strong> {{ cliente.cnpj_cpf }}</p>
+
+            <p><strong>Código Omie:</strong> {{ cliente.codigo_cliente }}</p>
+
+            {% endif %}
         </div>
 
     </div>

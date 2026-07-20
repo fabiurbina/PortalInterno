@@ -551,3 +551,40 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
         print(entrada["status"])
 
     return entradas
+
+
+def buscar_cliente_cnpj(cnpj):
+
+    payload = {
+        "call": "ListarClientes",
+        "app_key": settings.OMIE_APP_KEY,
+        "app_secret": settings.OMIE_APP_SECRET,
+        "param": [{
+            "pagina": 1,
+            "registros_por_pagina": 50,
+            "apenas_importado_api": "N",
+            "filtrar_apenas_omiepdv": "N",
+            "clientes_cadastro_resumido": [
+                {
+                    "cnpj_cpf": cnpj
+                }
+            ]
+        }]
+    }
+
+    response = requests.post(
+        "https://app.omie.com.br/api/v1/geral/clientes/",
+        json=payload
+    )
+
+    dados = response.json()
+
+    print(dados)
+
+    if "clientes_cadastro_resumido" not in dados:
+        return None
+
+    if len(dados["clientes_cadastro_resumido"]) == 0:
+        return None
+
+    return dados["clientes_cadastro_resumido"][0]
