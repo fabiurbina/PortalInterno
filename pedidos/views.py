@@ -1295,6 +1295,28 @@ def pedidos(request):
         }
     )
     
+def formatar_quantidade(valor, unidade=None):
+    if valor is None:
+        return ""
+
+    valor = float(valor)
+
+    # Unidades inteiras
+    if unidade in ("UN", "UNIDADE", "UNIDADES"):
+        return (
+            f"{valor:,.0f}"
+            .replace(",", "X")
+            .replace(".", ",")
+            .replace("X", ".")
+        )
+
+    # Peso (3 casas decimais)
+    return (
+        f"{valor:,.3f}"
+        .replace(",", "X")
+        .replace(".", ",")
+        .replace("X", ".")
+    )
     
 def relatorio_mrp_view(request):
 
@@ -1304,8 +1326,24 @@ def relatorio_mrp_view(request):
 
     for registro in dados_mrp:
 
-        numero_pedido = registro.get("numero_pedido")
+        unidade = registro.get("unidade")
 
+        registro["necessidade_componente"] = formatar_quantidade(
+            registro.get("necessidade_componente"),
+            unidade
+        )
+
+        registro["estoque_atual"] = formatar_quantidade(
+            registro.get("estoque_atual"),
+            unidade
+        )
+
+        registro["saldo_provisionado"] = formatar_quantidade(
+            registro.get("saldo_provisionado"),
+            unidade
+        )
+
+        numero_pedido = registro.get("numero_pedido")
         pedidos_agrupados[numero_pedido].append(registro)
 
     pedidos = []
@@ -1353,13 +1391,35 @@ def exportar_mrp_excel(request):
             sheet_name="MRP"
         )
 
+        # Pega a planilha criada
+        worksheet = writer.sheets["MRP"]
+
+        # Descobre quais colunas devem ser formatadas
+        colunas_formatar = [
+            "necessidade_componente",
+            "estoque_atual",
+            "saldo_provisionado",
+        ]
+
+        # Percorre o cabeçalho
+        for col in worksheet.iter_cols():
+
+            nome_coluna = col[0].value
+
+            if nome_coluna in colunas_formatar:
+
+                # Pula o cabeçalho
+                for cell in col[1:]:
+
+                    if isinstance(cell.value, (int, float)):
+                        cell.number_format = '#,##0.000'
+
     output.seek(0)
 
     response = HttpResponse(
         output.getvalue(),
         content_type=(
-            "application/vnd.openxmlformats-officedocument."
-            "spreadsheetml.sheet"
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
     )
 
@@ -1368,6 +1428,8 @@ def exportar_mrp_excel(request):
     )
 
     return response
+
+
 
 
 from django.http import HttpResponse
