@@ -1,5 +1,5 @@
 {% load static %}
-{% load humanize %}
+{% load formatacao %}
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -301,11 +301,11 @@
                                         </td>
 
                                         <td>
-                                            {{ item.necessidade_componente|floatformat:4|intcomma }}
+                                            {{ item.necessidade_componente|numero_br:4 }}
                                         </td>
 
                                         <td>
-                                            {{ item.estoque_atual|floatformat:4|intcomma }}
+                                            {{ item.estoque_atual|numero_br:4 }}
                                         </td>
 
                                         <td
@@ -316,7 +316,7 @@
                                             {% endif %}
                                         >
 
-                                            {{ item.saldo_provisionado|floatformat:4|intcomma }}
+                                            {{ item.saldo_provisionado|numero_br:4 }}
 
                                         </td>
 

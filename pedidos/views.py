@@ -1352,6 +1352,28 @@ def exportar_mrp_excel(request):
             index=False,
             sheet_name="MRP"
         )
+        
+        worksheet = writer.sheets["MRP"]
+
+        # Colunas que receberão formatação numérica
+        colunas_formatar = [
+            "necessidade_componente",
+            "estoque_atual",
+            "saldo_provisionado",
+        ]
+
+        # Procura as colunas pelo nome do cabeçalho
+        for coluna in worksheet.iter_cols():
+
+            nome_coluna = coluna[0].value
+
+            if nome_coluna in colunas_formatar:
+
+                for cell in coluna[1:]:
+
+                    if isinstance(cell.value, (int, float)):
+                        cell.number_format = '#,##0.0000'
+
 
     output.seek(0)
 
