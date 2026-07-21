@@ -122,8 +122,27 @@ urlpatterns = [
     path(
     "portal/clientes/",
     criar_acesso_cliente,
-    name="criar_acesso_cliente"
+    name="criar_acesso_cliente",
+    
+    
 ),
+    
+    path(
+        "alterar-senha/",
+        auth_views.PasswordChangeView.as_view(
+            template_name="alterar_senha.html",
+            success_url="/alterar-senha/sucesso/"
+        ),
+        name="password_change",
+    ),
+
+    path(
+        "alterar-senha/sucesso/",
+        auth_views.PasswordChangeDoneView.as_view(
+            template_name="alterar_senha_sucesso.html"
+        ),
+        name="password_change_done",
+    ),
     
     
 ]
