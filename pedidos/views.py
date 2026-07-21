@@ -1375,6 +1375,9 @@ def relatorio_mrp_view(request):
 def exportar_mrp_excel(request):
 
     dados_mrp = buscar_relatorio_mrp()
+    
+    if dados_mrp:
+        print(dados_mrp[0])
 
     df = pd.DataFrame(dados_mrp)
 
