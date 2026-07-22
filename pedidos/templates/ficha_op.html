@@ -1549,14 +1549,21 @@
 
 {% for item in materias_primas %}
 
-    <div class="col-4 mb-3">
+    <div class="col-auto mb-3">
 
         <div
             style="
+                width:40mm;
+                height:60mm;
                 border:1px solid #000;
-                height:180px;
+                margin-right:5mm;
+                margin-bottom:5mm;
+                display:flex;
+                align-items:center;
+                justify-content:center;
             "
         >
+            {{ item.descricao_produto }}
         </div>
 
     </div>
@@ -1565,14 +1572,21 @@
 
 {% for item in embalagens %}
 
-    <div class="col-4 mb-3">
+    <div class="col-auto mb-3">
 
         <div
             style="
+                width:40mm;
+                height:60mm;
                 border:1px solid #000;
-                height:180px;
+                margin-right:5mm;
+                margin-bottom:5mm;
+                display:flex;
+                align-items:center;
+                justify-content:center;
             "
         >
+            {{ item.descricao_produto }}
         </div>
 
     </div>
