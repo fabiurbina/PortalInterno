@@ -348,7 +348,7 @@ def ficha_op(request, codigo_op):
     print("========== PRODUTO ==========")
     print(produto)
 
-    id_produto = produto.get("idProduto")
+    id_produto = produto.get("codigo_produto")
 
     print("ID PRODUTO:", id_produto)
 
