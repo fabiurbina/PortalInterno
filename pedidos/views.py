@@ -345,8 +345,11 @@ def ficha_op(request, codigo_op):
     op['identificacao']['nCodProduto']
     )
     
+    print("========== PRODUTO ==========")
+    print(produto)
+
     id_produto = produto.get("idProduto")
-    
+
     print("ID PRODUTO:", id_produto)
 
     modo_preparo = ""

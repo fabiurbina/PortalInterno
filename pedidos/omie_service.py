@@ -596,7 +596,8 @@ def buscar_cliente_cnpj(cnpj):
 
 
 def consultar_estrutura(id_produto):
-
+    print("======== CONSULTAR ESTRUTURA ========")
+    print("ID PRODUTO:", id_produto)
     payload = {
         "call": "ConsultarEstrutura",
         "app_key": settings.OMIE_APP_KEY,
