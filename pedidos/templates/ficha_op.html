@@ -1519,6 +1519,21 @@
 </div>
 -->
 
+{% if modo_preparo %}
+<div class="card mt-4 shadow-sm border-warning">
+    <div class="card-header bg-warning">
+        <strong>
+            <i class="fas fa-list-ol"></i>
+            Modo de Preparo
+        </strong>
+    </div>
+
+    <div class="card-body">
+        <pre style="white-space: pre-wrap; font-family: inherit; margin:0;">{{ modo_preparo }}</pre>
+    </div>
+</div>
+{% endif %}
+
 <div style="page-break-before: always;"></div>
 
 <h2 style="text-align:center;">

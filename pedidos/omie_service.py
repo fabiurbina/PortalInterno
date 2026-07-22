@@ -592,3 +592,29 @@ def buscar_cliente_cnpj(cnpj):
         pagina += 1
 
     return None
+
+
+
+def consultar_estrutura(id_produto):
+
+    payload = {
+        "call": "ConsultarEstrutura",
+        "app_key": settings.OMIE_APP_KEY,
+        "app_secret": settings.OMIE_APP_SECRET,
+        "param": [
+            {
+                "idProduto": id_produto,
+                "intProduto": "",
+                "codProduto": ""
+            }
+        ]
+    }
+
+    response = requests.post(
+        "https://app.omie.com.br/api/v1/geral/malha/",
+        json=payload
+    )
+
+    response.raise_for_status()
+
+    return response.json()

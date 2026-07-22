@@ -23,7 +23,8 @@ from .mysql_service import (
     salvar_apontamento,
     consultar_apontamentos,
     consultar_todos_pedidos,
-    buscar_relatorio_mrp
+    buscar_relatorio_mrp,
+    consultar_estrutura
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -344,6 +345,19 @@ def ficha_op(request, codigo_op):
     produto = consultar_produto(
     op['identificacao']['nCodProduto']
     )
+    
+    id_produto = produto.get("idProduto")
+
+    modo_preparo = ""
+
+    if id_produto:
+
+        estrutura = consultar_estrutura(id_produto)
+
+        modo_preparo = (
+            estrutura.get("observacoes", {})
+                    .get("obsRelevantes", "")
+        )
 
     codigo_pa = op['identificacao']['nCodProduto']
     
@@ -454,6 +468,7 @@ def ficha_op(request, codigo_op):
             'peso_batida_kg': peso_batida_kg,
             'quantidade_capsulas': quantidade_capsulas,
             'peso_por_capsula_mg': peso_por_capsula_mg,
+            'modo_preparo': modo_preparo,
         }
     )
         
