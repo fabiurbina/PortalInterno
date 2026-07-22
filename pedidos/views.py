@@ -346,6 +346,8 @@ def ficha_op(request, codigo_op):
     )
     
     id_produto = produto.get("idProduto")
+    
+    print("ID PRODUTO:", id_produto)
 
     modo_preparo = ""
 
