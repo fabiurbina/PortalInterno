@@ -249,7 +249,7 @@ def ficha_op(request, codigo_op):
 
         else:
 
-            dados_sql = buscar_lotes_sql(numero_op, codigo_produto)
+            dados_sql = buscar_lotes_sql(numero_op)
 
             if dados_sql:
                 mapa_lotes[codigo_produto] = {
