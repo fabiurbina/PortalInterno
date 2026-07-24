@@ -236,7 +236,7 @@ def ficha_op(request, codigo_op):
     for produto_lote in lotes.get('listaLotes', []):
 
         codigo_produto = produto_lote['ident']['nCodProd']
-        numero_op = produto_lote['ident']['cNumOP']
+        numero_op = op['identificacao']['cNumOP']
 
         if produto_lote.get('lotes'):
 
