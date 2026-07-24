@@ -25,7 +25,7 @@ from .mysql_service import (
     consultar_apontamentos,
     consultar_todos_pedidos,
     buscar_relatorio_mrp,
-    buscar_lote_sql)
+    buscar_lotes_sql)
 from django.core.cache import cache
 from .status_service import interpretar_status
 from collections import defaultdict
@@ -249,7 +249,7 @@ def ficha_op(request, codigo_op):
 
         else:
 
-            dados_sql = buscar_lote_sql(numero_op, codigo_produto)
+            dados_sql = buscar_lotes_sql(numero_op, codigo_produto)
 
             if dados_sql:
                 mapa_lotes[codigo_produto] = {
