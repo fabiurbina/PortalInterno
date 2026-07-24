@@ -253,8 +253,8 @@ def ficha_op(request, codigo_op):
 
             if dados_sql:
                 mapa_lotes[codigo_produto] = {
-                    'lote': dados_sql['lote'],
-                    'validade': dados_sql['validade']
+                    'lote': dados_sql['cNumLote'],
+                    'validade': dados_sql['dDataValidade']
                 }
             else:
                 mapa_lotes[codigo_produto] = {
