@@ -592,7 +592,7 @@ def buscar_lotes_sql(numero_op):
             dados = cursor.fetchall()
 
             return {
-                str(item["codigo"]): {
+                str(item["codigo_produto"]): {
                     "lote": item["cNumLote"],
                     "validade": item["dDataValidade"]
                 }
