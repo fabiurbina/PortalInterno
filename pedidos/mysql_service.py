@@ -561,3 +561,48 @@ def consultar_status_qualidade(codigo_produto, lote):
         return "Aprovado com Restrição"
 
     return "Aguardando"
+
+
+def buscar_lotes_sql(numero_op):
+
+    conn = pymysql.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database=os.getenv("DATABASE"),
+        charset="utf8mb4",
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+    try:
+        with conn.cursor() as cursor:
+
+            query = """
+                SELECT
+                    codigo,
+                    cNumLote,
+                    dDataValidade
+                FROM ViesanoDW.ConsumoLotes
+                WHERE numero_op = %s
+                  AND quantidade_consumida > 0
+            """
+
+            cursor.execute(query, (numero_op,))
+
+            dados = cursor.fetchall()
+
+            return {
+                str(item["codigo"]): {
+                    "lote": item["cNumLote"],
+                    "validade": item["dDataValidade"]
+                }
+                for item in dados
+            }
+
+    except Exception as e:
+
+        print(f"Erro ao buscar lotes: {e}")
+        return {}
+
+    finally:
+        conn.close()

@@ -24,7 +24,8 @@ from .mysql_service import (
     salvar_apontamento,
     consultar_apontamentos,
     consultar_todos_pedidos,
-    buscar_relatorio_mrp)
+    buscar_relatorio_mrp,
+    buscar_lote_sql)
 from django.core.cache import cache
 from .status_service import interpretar_status
 from collections import defaultdict
@@ -235,6 +236,7 @@ def ficha_op(request, codigo_op):
     for produto_lote in lotes.get('listaLotes', []):
 
         codigo_produto = produto_lote['ident']['nCodProd']
+        numero_op = produto_lote['ident']['cNumOP']
 
         if produto_lote.get('lotes'):
 
@@ -247,10 +249,18 @@ def ficha_op(request, codigo_op):
 
         else:
 
-            mapa_lotes[codigo_produto] = {
-                'lote': '',
-                'validade': ''
-            }
+            dados_sql = buscar_lote_sql(numero_op, codigo_produto)
+
+            if dados_sql:
+                mapa_lotes[codigo_produto] = {
+                    'lote': dados_sql['lote'],
+                    'validade': dados_sql['validade']
+                }
+            else:
+                mapa_lotes[codigo_produto] = {
+                    'lote': '',
+                    'validade': ''
+                }
             
     #print(mapa_lotes)
     # Adiciona descrição do local + lote + validade
