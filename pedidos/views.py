@@ -249,6 +249,9 @@ def ficha_op(request, codigo_op):
             }
 
         else:
+            
+            print("Código da API:", codigo_produto)
+            print("Lotes SQL:", lotes_sql)
 
             dados_sql = lotes_sql.get(str(codigo_produto))
 
