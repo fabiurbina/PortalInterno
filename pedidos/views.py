@@ -697,6 +697,8 @@ def salvar_apontamento_view(request):
 
                     medida_prevista=request.POST.get("quantidade_produzida_encapsulamento"),
                     
+                    medida_real= request.POST.get("quantidade_expedida_encapsulamento"),
+                    
                     medida_perdas=0,
 
                     unidade="UN",
@@ -729,7 +731,7 @@ def salvar_apontamento_view(request):
 
                     medida_prevista=request.POST.get("quantidade_produzida_envase"),
 
-                    medida_real=request.POST.get("quantidade_obtida_envase"),
+                    medida_real=request.POST.get("quantidade_expedida_envase"),
 
                     medida_perdas=0,
 
