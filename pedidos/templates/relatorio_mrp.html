@@ -158,105 +158,69 @@
 
             <!-- CABEÇALHO DO PEDIDO -->
 
-            <div
-                class="card-body pedido-header"
-                data-bs-toggle="collapse"
-                data-bs-target="#pedido-{{ forloop.counter }}"
-                aria-expanded="false"
-            >
+            <div class="card-body pedido-header"
+            data-bs-toggle="collapse"
+            data-bs-target="#pedido-{{ forloop.counter }}"
+            aria-expanded="false">
 
-                <div class="row align-items-center">
+            <div class="row align-items-center">
 
-                    <div class="col-md-3">
-
-                        <small class="text-muted">
-                            Cliente
-                        </small>
-
-                        <div class="numero-pedido fs-5">
-                            #{{ pedido.razao_social }}
-                        </div>
-
+                <!-- Cliente -->
+                <div class="col-md-4">
+                    <small class="text-muted">Cliente</small>
+                    <div class="numero-pedido fs-5">
+                        {{ pedido.razao_social }}
                     </div>
+                </div>
 
-
-                    <div class="col-md-3">
-
-                        <small class="text-muted">
-                            Pedido
-                        </small>
-
-                        <div class="numero-pedido fs-5">
-                            #{{ pedido.numero_pedido }}
-                        </div>
-
+                <!-- Pedido -->
+                <div class="col-md-2">
+                    <small class="text-muted">Pedido</small>
+                    <div class="numero-pedido fs-5">
+                        #{{ pedido.numero_pedido }}
                     </div>
+                </div>
 
-
-                    <div class="col-md-3">
-
-                        <small class="text-muted">
-                            Previsão
-                        </small>
-
-                        <div class="fw-semibold">
-
-                            {% if pedido.data_previsao %}
-
-                                {{ pedido.data_previsao|date:"d/m/Y" }}
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </div>
-
+                <!-- Previsão -->
+                <div class="col-md-2">
+                    <small class="text-muted">Previsão</small>
+                    <div class="fw-semibold">
+                        {% if pedido.data_previsao %}
+                            {{ pedido.data_previsao|date:"d/m/Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
                     </div>
+                </div>
 
-
-                    <div class="col-md-2">
-
-                        <small class="text-muted">
-                            OPs
-                        </small>
-
-                        <div class="fw-semibold">
-                            {{ pedido.quantidade_ops }}
-                        </div>
-
+                <!-- OPs -->
+                <div class="col-md-1 text-center">
+                    <small class="text-muted">OPs</small>
+                    <div class="fw-semibold">
+                        {{ pedido.quantidade_ops }}
                     </div>
+                </div>
 
-
-                    <div class="col-md-2">
-
-                        <small class="text-muted">
-                            Componentes
-                        </small>
-
-                        <div class="fw-semibold">
-                            {{ pedido.quantidade_componentes }}
-                        </div>
-
+                <!-- Componentes -->
+                <div class="col-md-1 text-center">
+                    <small class="text-muted">Comp.</small>
+                    <div class="fw-semibold">
+                        {{ pedido.quantidade_componentes }}
                     </div>
+                </div>
 
-
-                    <div class="col-md-2 text-end">
-
-                        <button
-                            class="btn btn-outline-primary btn-sm"
-                            type="button"
-                        >
-                            Ver detalhes ▼
-                        </button>
-
-                    </div>
-
-
+                <!-- Botão -->
+                <div class="col-md-2 text-end">
+                    <button
+                        class="btn btn-outline-primary btn-sm"
+                        type="button">
+                        Ver detalhes ▼
+                    </button>
                 </div>
 
             </div>
+
+        </div>
 
 
             <!-- DETALHES DO PEDIDO -->
