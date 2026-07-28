@@ -167,6 +167,18 @@
 
                 <div class="row align-items-center">
 
+                    <div class="col-md-3">
+
+                        <small class="text-muted">
+                            Cliente
+                        </small>
+
+                        <div class="numero-pedido fs-5">
+                            #{{ pedido.razao_social }}
+                        </div>
+
+                    </div>
+
 
                     <div class="col-md-3">
 
@@ -264,6 +276,8 @@
 
                                 <tr>
 
+                                    <th>Código Produto</th>
+
                                     <th>Descrição</th>
 
                                     <th>Código</th>
@@ -288,6 +302,11 @@
                                 {% for item in pedido.itens %}
 
                                     <tr>
+
+                                        <td>
+                                            {{ item.codigo }}
+                                        </td>
+
                                         <td>
                                             {{ item.descricao }}
                                         </td>
