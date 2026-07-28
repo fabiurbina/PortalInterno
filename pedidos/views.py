@@ -1335,39 +1335,66 @@ def relatorio_mrp_view(request):
 
     dados_mrp = buscar_relatorio_mrp()
 
-    pedidos_agrupados = defaultdict(list)
+    pedidos_agrupados = defaultdict(
+        lambda: {
+            "razao_social": "",
+            "data_previsao": "",
+            "produtos": defaultdict(list)
+        }
+    )
 
     for registro in dados_mrp:
 
         numero_pedido = registro.get("numero_pedido")
+        codigo_produto = registro.get("codigo_produto")
 
-        pedidos_agrupados[numero_pedido].append(registro)
+        pedido = pedidos_agrupados[numero_pedido]
+
+        pedido["razao_social"] = registro.get("razao_social")
+        pedido["data_previsao"] = registro.get("data_previsao")
+
+        pedido["produtos"][codigo_produto].append(registro)
 
     pedidos = []
 
-    for numero_pedido, itens in pedidos_agrupados.items():
+    for numero_pedido, dados in pedidos_agrupados.items():
+
+        produtos = []
+
+        quantidade_componentes = 0
+        quantidade_ops = set()
+
+        for itens_produto in dados["produtos"].values():
+
+            quantidade_componentes += len(itens_produto)
+
+            quantidade_ops.update(
+                item.get("numero_op")
+                for item in itens_produto
+                if item.get("numero_op")
+            )
+
+            produtos.append({
+                "codigo_produto": itens_produto[0]["codigo_produto"],
+                "descricao": itens_produto[0]["descricao"],
+                "itens": itens_produto
+            })
 
         pedidos.append({
-            "razao_social": itens[0].get("razao_social"),
+            "razao_social": dados["razao_social"],
             "numero_pedido": numero_pedido,
-            "data_previsao": itens[0].get("data_previsao"),
-            "quantidade_componentes": len(itens),
-            "quantidade_ops": len(set(
-                item.get("numero_op")
-                for item in itens
-                if item.get("numero_op")
-            )),
-            "itens": itens,
+            "data_previsao": dados["data_previsao"],
+            "quantidade_componentes": quantidade_componentes,
+            "quantidade_ops": len(quantidade_ops),
+            "produtos": produtos,
         })
-
-    context = {
-        "pedidos": pedidos,
-    }
 
     return render(
         request,
         "relatorio_mrp.html",
-        context
+        {
+            "pedidos": pedidos
+        }
     )
     
 def exportar_mrp_excel(request):

@@ -263,88 +263,57 @@
 
                             <tbody>
 
-                                {% for item in pedido.itens %}
+                {% for produto in pedido.produtos %}
 
-                                    <tr>
+                    <!-- Cabeçalho do Produto -->
 
-                                        <td>
-                                            {{ item.codigo }}
-                                        </td>
+                    <tr class="table-primary">
 
-                                        <td>
-                                            {{ item.descricao }}
-                                        </td>
+                        <td colspan="8">
 
-                                        <td>
-                                            {{ item.codigo_produto_malha }}
-                                        </td>
+                            <strong>
 
-                                        <td>
-                                            {{ item.descricao_produto_malha }}
-                                        </td>
+                                {{ produto.codigo_produto }} -
+                                {{ produto.descricao }}
 
-                                        <td>
-                                            {{ item.necessidade_componente|numero_br:4 }}
-                                        </td>
+                            </strong>
 
-                                        <td>
-                                            {{ item.estoque_atual|numero_br:4 }}
-                                        </td>
+                        </td>
 
-                                        <td
-                                            {% if item.saldo_provisionado < 0 %}
-                                                class="saldo-negativo"
-                                            {% else %}
-                                                class="saldo-positivo"
-                                            {% endif %}
-                                        >
+                    </tr>
 
-                                            {{ item.saldo_provisionado|numero_br:4 }}
+                    {% for item in produto.itens %}
 
-                                        </td>
+                        <tr>
 
-                                        <td>
-                                            {{ item.numero_op }}
-                                        </td>
+                            <td>{{ item.codigo }}</td>
 
-                                    </tr>
+                            <td>{{ item.descricao }}</td>
 
-                                {% endfor %}
+                            <td>{{ item.codigo_produto_malha }}</td>
 
-                            </tbody>
+                            <td>{{ item.descricao_produto_malha }}</td>
 
-                        </table>
+                            <td>{{ item.necessidade_componente|numero_br:4 }}</td>
 
-                    </div>
+                            <td>{{ item.estoque_atual|numero_br:4 }}</td>
 
-                </div>
+                            <td
+                                {% if item.saldo_provisionado < 0 %}
+                                    class="saldo-negativo"
+                                {% else %}
+                                    class="saldo-positivo"
+                                {% endif %}
+                            >
+                                {{ item.saldo_provisionado|numero_br:4 }}
+                            </td>
 
-            </div>
+                            <td>{{ item.numero_op }}</td>
 
+                        </tr>
 
-        </div>
+                    {% endfor %}
 
-    {% empty %}
+                {% endfor %}
 
-        <div class="alert alert-warning">
-
-            Nenhum registro encontrado no MRP.
-
-        </div>
-
-    {% endfor %}
-
-
-</div>
-
-
-
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
-
-
-</body>
-
-</html>
+                </tbody>
