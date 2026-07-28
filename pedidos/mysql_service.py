@@ -286,24 +286,22 @@ def consultar_todos_pedidos():
     SELECT
     
             cl.razao_social,
-			p.numero_pedido,
-			p.etapa,
-			e.descricao_etapa,
-			p.codigo_cliente,
-			case when op.numero_op is null then 
-            rc.dtSugestao else data_previsao end as data_previsao,
-			REGEXP_REPLACE(c.cnpj_cpf, '[^0-9]', '') as cnpj_cpf,
-			op.numero_op,
+            p.numero_pedido,
+            p.etapa,
+            e.descricao_etapa,
+            p.codigo_cliente,
+            data_previsao,
+            REGEXP_REPLACE(c.cnpj_cpf, '[^0-9]', '') as cnpj_cpf,
+            op.numero_op,
             case  when pro.descricao is null then it.descricao else pro.descricao
             end
             as descricao_produto,
             op.numero_CodProduto,	
-            op.quantidade,
-			op.etapaid,
-             rc.codIntReqCompra,
-            
-			case when eop.descricao_etapa is null and rc.dtSugestao is not null then 
-			'Requisição de compra' else eop.descricao_etapa end as 'status_producao'
+            case when op.quantidade is null then it.quantidade else op.quantidade
+            end as quantidade,
+            op.etapaid,
+            case when eop.descricao_etapa is null and rc.dtSugestao is not null then 
+            'Requisição de compra' else eop.descricao_etapa end as 'status_producao'
 			
 		FROM pedidos p
 		LEFT JOIN (SELECT * FROM etapas WHERE descricao_operacao = 'Venda de Produto') e ON e.codigo_etapa = p.etapa
