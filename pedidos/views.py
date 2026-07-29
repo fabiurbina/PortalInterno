@@ -227,8 +227,8 @@ def ficha_op(request, codigo_op):
             local['codigo_local_estoque']
         ] = local['descricao']
 
-    numero_op = op['identificacao']['cNumOP']
-    lotes_sql = buscar_lotes_sql(numero_op)
+    #numero_op = op['identificacao']['cNumOP']
+    #lotes_sql = buscar_lotes_sql(numero_op)
     # Mapa de lotes
     mapa_lotes = {}
     
@@ -248,18 +248,6 @@ def ficha_op(request, codigo_op):
                 'validade': lote.get('dDataValidade', '')
             }
 
-        else:
-            
-            print("Código da API:", codigo_produto)
-            print("Lotes SQL:", lotes_sql)
-
-            dados_sql = lotes_sql.get(str(codigo_produto))
-
-        if dados_sql:
-            mapa_lotes[codigo_produto] = {
-                'lote': dados_sql['lote'],
-                'validade': dados_sql['validade']
-            }
         else:
             mapa_lotes[codigo_produto] = {
                 'lote': '',

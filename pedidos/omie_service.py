@@ -4,6 +4,7 @@ import requests
 from django.conf import settings
 from django.core.cache import cache
 from .mysql_service import consultar_status_qualidade
+import pandas as pd 
 
 def listar_ops():
 
