@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from .omie_service import (listar_ops, consultar_produto,consultar_op,listar_locais_estoque,
-consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, 
-listar_entradas_com_fornecedor, settings, buscar_cliente_cnpj,consultar_estrutura)
+consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings, buscar_cliente_cnpj)
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
@@ -24,8 +23,8 @@ from .mysql_service import (
     salvar_apontamento,
     consultar_apontamentos,
     consultar_todos_pedidos,
-    buscar_relatorio_mrp,
-    buscar_lotes_sql)
+    buscar_relatorio_mrp
+)
 from django.core.cache import cache
 from .status_service import interpretar_status
 from collections import defaultdict
@@ -227,8 +226,7 @@ def ficha_op(request, codigo_op):
             local['codigo_local_estoque']
         ] = local['descricao']
 
-    #numero_op = op['identificacao']['cNumOP']
-    #lotes_sql = buscar_lotes_sql(numero_op)
+
     # Mapa de lotes
     mapa_lotes = {}
     
@@ -237,7 +235,6 @@ def ficha_op(request, codigo_op):
     for produto_lote in lotes.get('listaLotes', []):
 
         codigo_produto = produto_lote['ident']['nCodProd']
-       
 
         if produto_lote.get('lotes'):
 
@@ -249,6 +246,7 @@ def ficha_op(request, codigo_op):
             }
 
         else:
+
             mapa_lotes[codigo_produto] = {
                 'lote': '',
                 'validade': ''
@@ -346,39 +344,6 @@ def ficha_op(request, codigo_op):
     produto = consultar_produto(
     op['identificacao']['nCodProduto']
     )
-    
-    print("========== PRODUTO ==========")
-    print(produto)
-
-    id_produto = produto.get("codigo_produto")
-
-    print("ID PRODUTO:", id_produto)
-
-    modo_preparo = ""
-
-    if id_produto:
-
-        estrutura = consultar_estrutura(id_produto)
-
-        materias_primas = []
-        embalagens = []
-
-        for item in estrutura.get("itens", []):
-
-            print("=" * 80)
-            print(item)
-
-            mp = consultar_produto(item["idProdMalha"])
-
-            print("PRODUTO:")
-            print(mp)
-
-            break
-
-        modo_preparo = (
-            estrutura.get("observacoes", {})
-                    .get("obsRelevantes", "")
-        )
 
     codigo_pa = op['identificacao']['nCodProduto']
     
@@ -489,7 +454,6 @@ def ficha_op(request, codigo_op):
             'peso_batida_kg': peso_batida_kg,
             'quantidade_capsulas': quantidade_capsulas,
             'peso_por_capsula_mg': peso_por_capsula_mg,
-            'modo_preparo': modo_preparo,
         }
     )
         
@@ -700,8 +664,6 @@ def salvar_apontamento_view(request):
 
                     medida_prevista=request.POST.get("quantidade_produzida_encapsulamento"),
                     
-                    medida_real= request.POST.get("quantidade_expedida_encapsulamento"),
-                    
                     medida_perdas=0,
 
                     unidade="UN",
@@ -734,7 +696,7 @@ def salvar_apontamento_view(request):
 
                     medida_prevista=request.POST.get("quantidade_produzida_envase"),
 
-                    medida_real=request.POST.get("quantidade_expedida_envase"),
+                    medida_real=request.POST.get("quantidade_obtida_envase"),
 
                     medida_perdas=0,
 
@@ -1338,66 +1300,38 @@ def relatorio_mrp_view(request):
 
     dados_mrp = buscar_relatorio_mrp()
 
-    pedidos_agrupados = defaultdict(
-        lambda: {
-            "razao_social": "",
-            "data_previsao": "",
-            "produtos": defaultdict(list)
-        }
-    )
+    pedidos_agrupados = defaultdict(list)
 
     for registro in dados_mrp:
 
         numero_pedido = registro.get("numero_pedido")
-        codigo_produto = registro.get("codigo_produto")
 
-        pedido = pedidos_agrupados[numero_pedido]
-
-        pedido["razao_social"] = registro.get("razao_social")
-        pedido["data_previsao"] = registro.get("data_previsao")
-
-        pedido["produtos"][codigo_produto].append(registro)
+        pedidos_agrupados[numero_pedido].append(registro)
 
     pedidos = []
 
-    for numero_pedido, dados in pedidos_agrupados.items():
-
-        produtos = []
-
-        quantidade_componentes = 0
-        quantidade_ops = set()
-
-        for itens_produto in dados["produtos"].values():
-
-            quantidade_componentes += len(itens_produto)
-
-            quantidade_ops.update(
-                item.get("numero_op")
-                for item in itens_produto
-                if item.get("numero_op")
-            )
-
-            produtos.append({
-                "codigo_produto": itens_produto[0]["codigo_produto"],
-                "descricao": itens_produto[0]["descricao"],
-                "itens": itens_produto
-            })
+    for numero_pedido, itens in pedidos_agrupados.items():
 
         pedidos.append({
-            "razao_social": dados["razao_social"],
             "numero_pedido": numero_pedido,
-            "data_previsao": dados["data_previsao"],
-            "quantidade_componentes": quantidade_componentes,
-            "quantidade_ops": len(quantidade_ops),
-            "produtos": produtos,
+            "data_previsao": itens[0].get("data_previsao"),
+            "quantidade_componentes": len(itens),
+            "quantidade_ops": len(set(
+                item.get("numero_op")
+                for item in itens
+                if item.get("numero_op")
+            )),
+            "itens": itens,
         })
+
+    context = {
+        "pedidos": pedidos,
+    }
 
     return render(
         request,
         "relatorio_mrp.html",
-        {
-            "pedidos": pedidos
-        }
+        context
     )
     
 def exportar_mrp_excel(request):
