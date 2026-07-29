@@ -359,20 +359,21 @@ def ficha_op(request, codigo_op):
     if id_produto:
 
         estrutura = consultar_estrutura(id_produto)
-        
-        componentes = []
+
+        materias_primas = []
+        embalagens = []
 
         for item in estrutura.get("itens", []):
 
+            print("=" * 80)
+            print(item)
+
             mp = consultar_produto(item["idProdMalha"])
 
-            componentes.append({
-                "codigo": mp["codigo"],
-                "descricao": mp["descricao"],
-                "quantidade": item["quantProdMalha"],
-                "unidade": item["unidProdMalha"],
-                "produto": mp,
-            })
+            print("PRODUTO:")
+            print(mp)
+
+            break
 
         modo_preparo = (
             estrutura.get("observacoes", {})
