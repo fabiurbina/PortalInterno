@@ -1313,6 +1313,7 @@ def relatorio_mrp_view(request):
     for numero_pedido, itens in pedidos_agrupados.items():
 
         pedidos.append({
+            "razao_social": itens[0].get("razao_social"),
             "numero_pedido": numero_pedido,
             "data_previsao": itens[0].get("data_previsao"),
             "quantidade_componentes": len(itens),
@@ -1328,11 +1329,7 @@ def relatorio_mrp_view(request):
         "pedidos": pedidos,
     }
 
-    return render(
-        request,
-        "relatorio_mrp.html",
-        context
-    )
+    return render(request, "mrp.html", context)
     
 def exportar_mrp_excel(request):
 
