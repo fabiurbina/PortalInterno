@@ -263,80 +263,70 @@
 
                         <tbody>
 
-                        {% for produto in pedido.produtos %}
+                            {% for item in pedido.itens %}
 
-                            <!-- Cabeçalho do produto -->
+                            <tr>
 
-                            <tr
-                                class="table-primary"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#produto-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
-                                style="cursor:pointer;"
-                            >
-                                <td colspan="8">
-                                    <strong>
-                                        ▶ {{ produto.codigo_produto }} - {{ produto.descricao }}
-                                    </strong>
+                                <td>{{ item.codigo }}</td>
+                                <td>{{ item.descricao }}</td>
+                                <td>{{ item.codigo_produto_malha }}</td>
+                                <td>{{ item.descricao_produto_malha }}</td>
+                                <td>{{ item.necessidade_componente|numero_br:4 }}</td>
+                                <td>{{ item.estoque_atual|numero_br:4 }}</td>
+
+                                <td
+                                    {% if item.saldo_provisionado < 0 %}
+                                        class="saldo-negativo"
+                                    {% else %}
+                                        class="saldo-positivo"
+                                    {% endif %}
+                                >
+                                    {{ item.saldo_provisionado|numero_br:4 }}
                                 </td>
+
+                                <td>{{ item.numero_op }}</td>
+
                             </tr>
 
-                            <tbody
-                                class="collapse"
-                                id="produto-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
-                            >
-
-                                {% for item in produto.itens %}
-
-                                <tr>
-
-                                    <td>{{ item.codigo }}</td>
-                                    <td>{{ item.descricao }}</td>
-                                    <td>{{ item.codigo_produto_malha }}</td>
-                                    <td>{{ item.descricao_produto_malha }}</td>
-                                    <td>{{ item.necessidade_componente|numero_br:4 }}</td>
-                                    <td>{{ item.estoque_atual|numero_br:4 }}</td>
-
-                                    <td
-                                        {% if item.saldo_provisionado < 0 %}
-                                            class="saldo-negativo"
-                                        {% else %}
-                                            class="saldo-positivo"
-                                        {% endif %}
-                                    >
-                                        {{ item.saldo_provisionado|numero_br:4 }}
-                                    </td>
-
-                                    <td>{{ item.numero_op }}</td>
-
-                                </tr>
-
-                                {% endfor %}
+                            {% endfor %}
 
                             </tbody>
 
-                        {% endfor %}
+                            </table>
 
-                        </tbody>
+                            </div>
 
-                        </table>
+                            </div>
 
-                    </div>
+                            </div>
+
+                            </div>
+
+                            {% empty %}
+
+                            <div class="alert alert-warning">
+                                Nenhum registro encontrado no MRP.
+                            </div>
+
+                            {% endfor %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="alert alert-warning">
+                            Nenhum registro encontrado no MRP.
+                        </div>
+
+                    {% endfor %}
 
                 </div>
-
-            </div>
-
-        </div>
-
-    {% empty %}
-
-        <div class="alert alert-warning">
-            Nenhum registro encontrado no MRP.
-        </div>
-
-    {% endfor %}
-
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
