@@ -1329,7 +1329,8 @@ def relatorio_mrp_view(request):
         "pedidos": pedidos,
     }
 
-    return render(request, "mrp.html", context)
+    return render(request, "relatorio_mrp.html", context)
+
     
 def exportar_mrp_excel(request):
 
