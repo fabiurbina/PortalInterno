@@ -347,7 +347,7 @@ def ficha_op(request, codigo_op):
     )
 
     codigo_pa = op['identificacao']['nCodProduto']
-    
+    print("Código PA:", codigo_pa)
     estrutura = consultar_estrutura(codigo_pa)
 
     observacao_estrutura = (
@@ -1549,3 +1549,4 @@ def criar_acesso_cliente(request):
     )
     
     
+ 
