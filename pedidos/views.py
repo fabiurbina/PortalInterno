@@ -1303,34 +1303,73 @@ def relatorio_mrp_view(request):
     pedidos_agrupados = defaultdict(list)
 
     for registro in dados_mrp:
-
-        numero_pedido = registro.get("numero_pedido")
-
-        pedidos_agrupados[numero_pedido].append(registro)
+        pedidos_agrupados[registro["numero_pedido"]].append(registro)
 
     pedidos = []
 
-    for numero_pedido, itens in pedidos_agrupados.items():
+    for numero_pedido, registros_pedido in pedidos_agrupados.items():
+
+        produtos_agrupados = defaultdict(list)
+
+        for registro in registros_pedido:
+
+            chave_produto = (
+                registro.get("codigo"),
+                registro.get("descricao")
+            )
+
+            produtos_agrupados[chave_produto].append(registro)
+
+        produtos = []
+
+        for (codigo_produto, descricao_produto), itens_produto in produtos_agrupados.items():
+
+            produtos.append({
+
+                "codigo": codigo_produto,
+                "descricao": descricao_produto,
+
+                "numero_op": ", ".join(sorted(set(
+                    str(item["numero_op"])
+                    for item in itens_produto
+                    if item.get("numero_op")
+                ))),
+
+                "quantidade_componentes": len(itens_produto),
+
+                "itens": itens_produto
+
+            })
 
         pedidos.append({
-            "razao_social": itens[0].get("razao_social"),
+
+            "razao_social": registros_pedido[0].get("razao_social"),
+
             "numero_pedido": numero_pedido,
-            "data_previsao": itens[0].get("data_previsao"),
-            "quantidade_componentes": len(itens),
+
+            "data_previsao": registros_pedido[0].get("data_previsao"),
+
             "quantidade_ops": len(set(
                 item.get("numero_op")
-                for item in itens
+                for item in registros_pedido
                 if item.get("numero_op")
             )),
-            "itens": itens,
+
+            "quantidade_componentes": len(registros_pedido),
+
+            "produtos": produtos
+
         })
 
     context = {
-        "pedidos": pedidos,
+        "pedidos": pedidos
     }
 
-    return render(request, "relatorio_mrp.html", context)
-
+    return render(
+        request,
+        "relatorio_mrp.html",
+        context
+    )
     
 def exportar_mrp_excel(request):
 
