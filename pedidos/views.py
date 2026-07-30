@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from .omie_service import (listar_ops, consultar_produto,consultar_op,listar_locais_estoque,
-consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings, buscar_cliente_cnpj)
+consultar_pedido, extrair_numero_pedido, listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings, buscar_cliente_cnpj,consultar_estrutura)
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
