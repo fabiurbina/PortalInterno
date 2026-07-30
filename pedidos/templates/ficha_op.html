@@ -1562,7 +1562,20 @@
 
 </div>
 -->
+{% if observacao_estrutura %}
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-info text-white">
+        <i class="fas fa-clipboard-list"></i>
+        Modo de Preparo / Observações da Estrutura
+    </div>
 
+    <div class="card-body">
+        <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">
+{{ observacao_estrutura }}
+        </pre>
+    </div>
+</div>
+{% endif %}
 
 <div style="page-break-before: always;"></div>
 

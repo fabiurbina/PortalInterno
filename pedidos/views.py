@@ -252,6 +252,7 @@ def ficha_op(request, codigo_op):
                 'validade': ''
             }
             
+            
     #print(mapa_lotes)
     # Adiciona descrição do local + lote + validade
     for item in op.get('itensDetalhes', []):
@@ -346,6 +347,13 @@ def ficha_op(request, codigo_op):
     )
 
     codigo_pa = op['identificacao']['nCodProduto']
+    
+    estrutura = consultar_estrutura(codigo_pa)
+
+    observacao_estrutura = (
+        estrutura.get("observacoes", {})
+                .get("obsRelevantes", "")
+    )
     
     codigo_op = op['identificacao']['cNumOP']
 
@@ -449,6 +457,9 @@ def ficha_op(request, codigo_op):
             'validade_pa': validade_pa,
             'etapas_producao': ETAPAS_PRODUCAO,
             'apontamentos': mapa_apontamentos,
+            
+             # Observações da estrutura
+            'observacao_estrutura': observacao_estrutura,
         
             # Dados calculados da produção
             'peso_batida_kg': peso_batida_kg,
@@ -948,6 +959,7 @@ def ficha_logistica(request, codigo_op):
                 'lote': '',
                 'validade': ''
             }
+            
 
     materias_primas = []
     embalagens = []
