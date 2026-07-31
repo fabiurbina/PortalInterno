@@ -20,7 +20,8 @@ from .views import (
     salvar_inspecao,
     teste_socket,
     password_reset_view,
-    criar_acesso_cliente
+    criar_acesso_cliente,
+    indicadores_view
 )
 
 urlpatterns = [
@@ -136,4 +137,12 @@ urlpatterns = [
         name="password_change",
     ),
     
+    path(
+    "indicadores/",
+    indicadores_view,
+    name="indicadores"
+),
+    
 ]
+
+

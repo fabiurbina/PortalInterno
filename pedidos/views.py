@@ -1550,3 +1550,7 @@ def criar_acesso_cliente(request):
     )
     
     
+def indicadores_view(request):
+    return render(request, "indicadores.html")
+    
+    
