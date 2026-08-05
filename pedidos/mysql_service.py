@@ -568,3 +568,66 @@ def buscar_lotes_sql(numero_op):
 
     finally:
         conn.close()
+        
+        
+def conectar():
+
+    return pymysql.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database=os.getenv("DATABASE"),
+        charset="utf8mb4",
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+
+def buscar_producao():
+
+    sql = """
+        SELECT *
+        FROM vw_ia_producao
+        ORDER BY ultima_atualizacao DESC
+        LIMIT 20;
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()
+        
+        
+def buscar_CRM():
+
+    sql = """
+        SELECT *
+        FROM vw_ia_comercial
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()
+        
+if __name__ == "__main__":
+    dados = buscar_CRM()
+    print(dados)
+        

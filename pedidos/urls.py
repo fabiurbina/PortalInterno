@@ -21,7 +21,8 @@ from .views import (
     teste_socket,
     password_reset_view,
     criar_acesso_cliente,
-    indicadores_view
+    indicadores_view,
+    analise_ia
 )
 
 urlpatterns = [
@@ -142,7 +143,11 @@ urlpatterns = [
     indicadores_view,
     name="indicadores"
 ),
-    
+    path(
+    "analise-ia/",
+    analise_ia,
+    name="analise_ia"
+),
 ]
 
 

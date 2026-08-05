@@ -23,7 +23,8 @@ from .mysql_service import (
     salvar_apontamento,
     consultar_apontamentos,
     consultar_todos_pedidos,
-    buscar_relatorio_mrp
+    buscar_relatorio_mrp, 
+    buscar_CRM
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -34,6 +35,8 @@ from django.contrib.auth.models import User
 import secrets
 import string
 from .email_service import enviar_email_boas_vindas
+from .groq_service import gerar_relatorio_comercial
+from .preparar_dados import preparar_dados_comercial
 
 
 
@@ -1554,3 +1557,18 @@ def indicadores_view(request):
     return render(request, "indicadores.html")
     
     
+def analise_comercial(request):
+
+    registros = buscar_CRM()
+
+    dados = preparar_dados_comercial(registros)
+
+    analise = gerar_relatorio_comercial(dados)
+
+    return render(
+        request,
+        "inteligencia_comercial.html",
+        {
+            "analise": analise
+        }
+    )
