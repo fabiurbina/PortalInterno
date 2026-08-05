@@ -22,7 +22,7 @@ from .views import (
     password_reset_view,
     criar_acesso_cliente,
     indicadores_view,
-    analise_ia
+    analise_comercial
 )
 
 urlpatterns = [
@@ -144,9 +144,9 @@ urlpatterns = [
     name="indicadores"
 ),
     path(
-    "analise-ia/",
-    analise_ia,
-    name="analise_ia"
+    "analise-comercial/",
+    analise_comercial,
+    name="analise_comercial"
 ),
 ]
 
