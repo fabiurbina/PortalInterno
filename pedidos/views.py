@@ -1565,10 +1565,4 @@ def analise_comercial(request):
 
     analise = gerar_relatorio_comercial(dados)
 
-    return render(
-        request,
-        "inteligencia_comercial.html",
-        {
-            "analise": analise
-        }
-    )
+    return HttpResponse(analise)
