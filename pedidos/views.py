@@ -37,7 +37,7 @@ import string
 from .email_service import enviar_email_boas_vindas
 from .groq_service import gerar_relatorio_comercial
 from .preparar_dados import preparar_dados_comercial
-
+import markdown
 
 
 
@@ -1565,4 +1565,9 @@ def analise_comercial(request):
 
     analise = gerar_relatorio_comercial(dados)
 
-    return HttpResponse(analise)
+    html = markdown.markdown(
+        analise,
+        extensions=["tables", "fenced_code"]
+    )
+
+    return HttpResponse(html)
