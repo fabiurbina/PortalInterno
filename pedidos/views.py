@@ -24,7 +24,7 @@ from .mysql_service import (
     consultar_apontamentos,
     consultar_todos_pedidos,
     buscar_relatorio_mrp, 
-    buscar_CRM
+    buscar_CRM, buscar_producao
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -35,8 +35,8 @@ from django.contrib.auth.models import User
 import secrets
 import string
 from .email_service import enviar_email_boas_vindas
-from .groq_service import gerar_relatorio_comercial
-from .preparar_dados import preparar_dados_comercial
+from .groq_service import gerar_relatorio_comercial, gerar_relatorio_producao
+from .preparar_dados import preparar_dados_comercial, preparar_dados_producao
 import markdown
 
 
@@ -1564,6 +1564,22 @@ def analise_comercial(request):
     dados = preparar_dados_comercial(registros)
 
     analise = gerar_relatorio_comercial(dados)
+
+    html = markdown.markdown(
+        analise,
+        extensions=["tables", "fenced_code"]
+    )
+
+    return HttpResponse(html)
+
+
+def analise_producao(request):
+
+    registros = buscar_producao()
+
+    dados = preparar_dados_producao(registros)
+
+    analise = gerar_relatorio_producao(dados)
 
     html = markdown.markdown(
         analise,

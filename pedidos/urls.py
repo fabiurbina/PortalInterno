@@ -22,7 +22,8 @@ from .views import (
     password_reset_view,
     criar_acesso_cliente,
     indicadores_view,
-    analise_comercial
+    analise_comercial,
+    analise_producao
 )
 
 urlpatterns = [
@@ -148,6 +149,12 @@ urlpatterns = [
     analise_comercial,
     name="analise_comercial"
 ),
+    
+    path(
+        "analise-producao/",
+        analise_producao,
+        name="analise_producao"
+    ),
 ]
 
 

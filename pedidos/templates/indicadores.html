@@ -67,21 +67,39 @@
     </div>
 
     <!-- Conteúdo -->
-    <div class="container-fluid mt-4">
+    <div class="d-flex gap-2 mb-3">
 
-        <button
-            class="btn btn-lg shadow mb-3"
-            style="
-                background:linear-gradient(90deg,#0D6EFD,#2EC4B6);
-                color:white;
-                border:none;
-                border-radius:12px;"
-            data-bs-toggle="modal"
-            data-bs-target="#modalIA">
+    <button
+        class="btn btn-lg shadow"
+        style="
+            background:linear-gradient(90deg,#0D6EFD,#2EC4B6);
+            color:white;
+            border:none;
+            border-radius:12px;"
+        data-bs-toggle="modal"
+        data-bs-target="#modalIA"
+        onclick="buscarAnalise('comercial')">
 
-            🤖 Interpretação do CRM com IA
+        🤖 Interpretação do CRM
 
-        </button>
+    </button>
+
+    <button
+        class="btn btn-lg shadow"
+        style="
+            background:linear-gradient(90deg,#198754,#20c997);
+            color:white;
+            border:none;
+            border-radius:12px;"
+        data-bs-toggle="modal"
+        data-bs-target="#modalIA"
+        onclick="buscarAnalise('producao')">
+
+        🏭 Interpretação da Produção
+
+    </button>
+
+</div>
 
         <iframe
             src="https://app.powerbi.com/view?r=eyJrIjoiZmNhNjE2OTUtNjRkMy00ODQ4LWJmM2UtMTdiODQ1NTU5YWQwIiwidCI6IjZkZWRkNGE3LThiOTAtNDk0Ny1hM2UzLWRmNjg2MjFmYWQ5YiJ9"
@@ -110,7 +128,7 @@
 
                 <div class="modal-header">
 
-                    <h4>🤖 Interpretação do CRM com IA</h4>
+                    <h4 id="tituloModal">🤖 Interpretação com IA</h4>
 
                     <button class="btn-close"
                             data-bs-dismiss="modal">
@@ -126,18 +144,10 @@
 
                     </div>
 
-                </div>
-
                 <div class="modal-footer">
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="buscarAnalise()">
-
-                        Gerar análise
-
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        Fechar
                     </button>
-
                 </div>
 
             </div>
@@ -149,28 +159,54 @@
     <!-- Scripts -->
     <script>
 
-        function buscarAnalise(){
+        function buscarAnalise(tipo){
+
+    let url = "";
+    let titulo = "";
+    let loading = "";
+
+    if(tipo === "comercial"){
+
+        url = "{% url 'analise_comercial' %}";
+        titulo = "🤖 Interpretação do CRM com IA";
+        loading = "Analisando o CRM...";
+
+    }else{
+
+        url = "{% url 'analise_producao' %}";
+        titulo = "🏭 Interpretação da Produção com IA";
+        loading = "Analisando a Produção...";
+
+    }
+
+    document.getElementById("tituloModal").innerHTML = titulo;
+
+    document.getElementById("resultadoIA").innerHTML = `
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary mb-3"></div>
+            <h5>${loading}</h5>
+        </div>
+    `;
+
+    fetch(url)
+        .then(response => response.text())
+        .then(html => {
 
             document.getElementById("resultadoIA").innerHTML =
-                `
-                <div class="text-center p-5">
-                    <div class="spinner-border text-primary mb-3"></div>
-                    <h5>Analisando o CRM...</h5>
+                `<div class="ai-response">${html}</div>`;
+
+        })
+        .catch(() => {
+
+            document.getElementById("resultadoIA").innerHTML = `
+                <div class="alert alert-danger">
+                    Erro ao gerar a análise.
                 </div>
-                `;
+            `;
 
-            fetch("{% url 'analise_comercial' %}")
+        });
 
-            .then(response => response.text())
-
-            .then(html => {
-
-                document.getElementById("resultadoIA").innerHTML =
-    `           <div class="ai-response">${html}</div>`;
-
-            });
-
-        }
+}
 
     </script>
 

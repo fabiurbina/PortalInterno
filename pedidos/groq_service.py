@@ -10,7 +10,7 @@ client = Groq(
 )
 
 
-def gerar_relatorio(dados):
+def gerar_relatorio_producao(dados):
 
     prompt = f"""
 Você é o Diretor Industrial da Viesano Suplementos.
