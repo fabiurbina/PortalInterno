@@ -1411,7 +1411,6 @@ def exportar_mrp_excel(request):
     # Ordenação
     df = df.sort_values(
         by=[
-            "codigo_produto_malha",
             "data_previsao",
             "numero_pedido"
         ],
