@@ -1414,7 +1414,7 @@ def exportar_mrp_excel(request):
             "data_previsao",
             "numero_pedido"
         ],
-        ascending=[True, True, True]
+        ascending=[True, True]
     )
 
     # Ordem das colunas
