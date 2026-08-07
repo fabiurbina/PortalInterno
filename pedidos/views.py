@@ -570,7 +570,7 @@ def salvar_apontamento_view(request):
                 
                 salvar_apontamento(
                     
-                    idMaquina = request.POST.get("id_maquina"),
+                   idMaquina = 1 if request.POST.get("id_maquina") == "Linha de Pós 01" else 2,
 
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -606,7 +606,7 @@ def salvar_apontamento_view(request):
 
                 salvar_apontamento(
                     
-                    idMaquina = request.POST.get("id_maquina"),
+                   idMaquina = 1 if request.POST.get("id_maquina") == "Linha de Pós 01" else 2,
                     
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -643,7 +643,7 @@ def salvar_apontamento_view(request):
             
                 salvar_apontamento(
                     
-                    idMaquina = request.POST.get("id_maquina"),
+                   idMaquina = 1 if request.POST.get("id_maquina") == "Linha de Pós 01" else 2,
 
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -673,7 +673,7 @@ def salvar_apontamento_view(request):
             if hora_inicio:
                 salvar_apontamento(
                     
-                    idMaquina = request.POST.get("id_maquina"),
+                   idMaquina = 1 if request.POST.get("id_maquina") == "Linha de Pós 01" else 2,
 
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -707,7 +707,7 @@ def salvar_apontamento_view(request):
                 
                 salvar_apontamento(
                     
-                    idMaquina = request.POST.get("id_maquina"),
+                   idMaquina = 1 if request.POST.get("id_maquina") == "Linha de Pós 01" else 2,
 
                     codigo_op=request.POST.get("codigo_op"),
 
