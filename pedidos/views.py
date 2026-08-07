@@ -1408,54 +1408,103 @@ def exportar_mrp_excel(request):
 
     df = pd.DataFrame(dados_mrp)
 
+    # Ordenação
+    df = df.sort_values(
+        by=[
+            "codigo_produto_malha",
+            "data_previsao",
+            "numero_pedido"
+        ],
+        ascending=[True, True, True]
+    )
+
+    # Ordem das colunas
+    df = df[
+        [
+            "codigo_produto_malha",
+            "descricao_produto_malha",
+            "data_previsao",
+            "numero_pedido",
+            "razao_social",
+            "codigo",
+            "descricao",
+            "quantidade",
+            "numero_op",
+            "necessidade_componente",
+            "estoque_atual",
+            "saldo_provisionado"
+        ]
+    ]
+
+    # Renomeia cabeçalhos
+    df.rename(columns={
+        "codigo_produto_malha": "Código Componente",
+        "descricao_produto_malha": "Componente",
+        "data_previsao": "Data Prevista",
+        "numero_pedido": "Pedido",
+        "razao_social": "Cliente",
+        "codigo": "Código Produto",
+        "descricao": "Produto",
+        "quantidade": "Quantidade",
+        "numero_op": "OP",
+        "necessidade_componente": "Necessidade",
+        "estoque_atual": "Estoque Atual",
+        "saldo_provisionado": "Saldo Projetado"
+    }, inplace=True)
+
     output = BytesIO()
 
-    with pd.ExcelWriter(
-        output,
-        engine="openpyxl"
-    ) as writer:
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
 
         df.to_excel(
             writer,
             index=False,
             sheet_name="MRP"
         )
-        
+
         worksheet = writer.sheets["MRP"]
 
-        # Colunas que receberão formatação numérica
-        colunas_formatar = [
-            "necessidade_componente",
-            "estoque_atual",
-            "saldo_provisionado",
+        # Formatação numérica
+        colunas_decimais = [
+            "Necessidade",
+            "Estoque Atual",
+            "Saldo Projetado"
         ]
 
-        # Procura as colunas pelo nome do cabeçalho
         for coluna in worksheet.iter_cols():
 
             nome_coluna = coluna[0].value
 
-            if nome_coluna in colunas_formatar:
+            if nome_coluna in colunas_decimais:
 
                 for cell in coluna[1:]:
 
                     if isinstance(cell.value, (int, float)):
-                        cell.number_format = '#,##0.0000'
+                        cell.number_format = "#,##0.##"
 
+        # Ajusta automaticamente a largura das colunas
+        for coluna in worksheet.columns:
+
+            maior = 0
+
+            for cell in coluna:
+                if cell.value:
+                    maior = max(maior, len(str(cell.value)))
+
+            letra = coluna[0].column_letter
+            worksheet.column_dimensions[letra].width = maior + 3
+
+        # Congela a primeira linha
+        worksheet.freeze_panes = "A2"
 
     output.seek(0)
 
     response = HttpResponse(
         output.getvalue(),
-        content_type=(
-            "application/vnd.openxmlformats-officedocument."
-            "spreadsheetml.sheet"
-        )
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-    response["Content-Disposition"] = (
-        'attachment; filename="relatorio_mrp.xlsx"'
-    )
+    response["Content-Disposition"] = 'attachment; filename="relatorio_mrp.xlsx"'
 
     return response
 
