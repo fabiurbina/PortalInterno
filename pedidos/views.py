@@ -1412,9 +1412,10 @@ def exportar_mrp_excel(request):
     df = df.sort_values(
         by=[
             "data_previsao",
-            "numero_pedido"
+            "numero_pedido",
+            "codigo"
         ],
-        ascending=[True, True]
+        ascending=[True, True, True]
     )
 
     # Ordem das colunas
