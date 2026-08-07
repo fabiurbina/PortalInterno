@@ -96,7 +96,7 @@ style="cursor:pointer">
 <div class="row">
 <div class="col-md-2"><strong>{{ produto.codigo }}</strong></div>
 <div class="col-md-5">{{ produto.descricao }}</div>
-<div class="col-md-5">{{ produto.quantidade }}</div>
+ <div class="col-md-1 text-center">{{ produto.itens.0.quantidade }}</div>
 <div class="col-md-3">OP: {{ produto.numero_op }}</div>
 <div class="col-md-2 text-end">{{ produto.quantidade_componentes }} componentes ▼</div>
 </div>

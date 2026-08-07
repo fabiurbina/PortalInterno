@@ -1358,6 +1358,7 @@ def relatorio_mrp_view(request):
 
                 "codigo": codigo_produto,
                 "descricao": descricao_produto,
+                "quantidade": itens_produto[0]["quantidade"],
 
                 "numero_op": ", ".join(sorted(set(
                     str(item["numero_op"])
