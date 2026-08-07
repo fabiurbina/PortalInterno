@@ -445,6 +445,10 @@ def ficha_op(request, codigo_op):
         "ENVASE",
         "EXPEDICAO"
     ]
+    
+    MAQUINAS = [
+        "Linha de Pós 01",
+        "Linha de Cápsulas 01",]
 
     return render(
         request,
@@ -461,7 +465,7 @@ def ficha_op(request, codigo_op):
             'validade_pa': validade_pa,
             'etapas_producao': ETAPAS_PRODUCAO,
             'apontamentos': mapa_apontamentos,
-            
+            'maquinas': MAQUINAS,
              # Observações da estrutura
             'observacao_estrutura': observacao_estrutura,
         
@@ -565,6 +569,8 @@ def salvar_apontamento_view(request):
             if hora_inicio:
                 
                 salvar_apontamento(
+                    
+                    idMaquina = request.POST.get("id_maquina"),
 
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -599,7 +605,9 @@ def salvar_apontamento_view(request):
             if hora_inicio:
 
                 salvar_apontamento(
-
+                    
+                    idMaquina = request.POST.get("id_maquina"),
+                    
                     codigo_op=request.POST.get("codigo_op"),
 
                     etapa="Mistura",
@@ -634,6 +642,8 @@ def salvar_apontamento_view(request):
                 
             
                 salvar_apontamento(
+                    
+                    idMaquina = request.POST.get("id_maquina"),
 
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -662,6 +672,8 @@ def salvar_apontamento_view(request):
             hora_inicio = request.POST.get("hora_inicio_encapsulamento")
             if hora_inicio:
                 salvar_apontamento(
+                    
+                    idMaquina = request.POST.get("id_maquina"),
 
                     codigo_op=request.POST.get("codigo_op"),
 
@@ -694,6 +706,8 @@ def salvar_apontamento_view(request):
             if hora_inicio:
                 
                 salvar_apontamento(
+                    
+                    idMaquina = request.POST.get("id_maquina"),
 
                     codigo_op=request.POST.get("codigo_op"),
 

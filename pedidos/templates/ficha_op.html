@@ -456,6 +456,24 @@
     "
 ></div>
 
+
+<div class="mb-3">
+    <label for="id_maquina" class="form-label">
+        Máquina
+    </label>
+
+    <select class="form-select" id="id_maquina" name="id_maquina" required>
+        <option value="">Selecione...</option>
+
+        {% for maquina in maquinas %}
+            <option value="{{ forloop.counter }}">
+                {{ maquina }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+
 <br>
 
 <h4>Fracionamento</h4>

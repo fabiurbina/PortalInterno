@@ -151,6 +151,7 @@ def salvar_observacao_op(
     
     
 def salvar_apontamento(
+    idMaquina,
     codigo_op,
     etapa,
     equipamento_limpo,
@@ -179,6 +180,7 @@ def salvar_apontamento(
     sql = """
     INSERT INTO op_apontamentos
     (
+        idMaquina,
         codigo_op,
         etapa,
         equipamento_limpo,
@@ -207,6 +209,7 @@ def salvar_apontamento(
         %s,
         %s,
         %s,
+        %s,
         %s
     )
     """
@@ -214,6 +217,7 @@ def salvar_apontamento(
     cursor.execute(
         sql,
         (
+            idMaquina,
             codigo_op,
             etapa,
             equipamento_limpo,
