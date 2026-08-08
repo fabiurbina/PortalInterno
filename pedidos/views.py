@@ -1408,6 +1408,21 @@ def exportar_mrp_excel(request):
 
     df = pd.DataFrame(dados_mrp)
 
+    # Converte colunas numéricas para número
+    colunas_numericas = [
+        "quantidade",
+        "necessidade_componente",
+        "estoque_atual",
+        "saldo_provisionado"
+    ]
+
+    for coluna in colunas_numericas:
+        if coluna in df.columns:
+            df[coluna] = pd.to_numeric(
+                df[coluna],
+                errors="coerce"
+            )
+
     # Ordenação
     df = df.sort_values(
         by=[
@@ -1454,7 +1469,10 @@ def exportar_mrp_excel(request):
 
     output = BytesIO()
 
-    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+    with pd.ExcelWriter(
+        output,
+        engine="openpyxl"
+    ) as writer:
 
         df.to_excel(
             writer,
@@ -1466,6 +1484,7 @@ def exportar_mrp_excel(request):
 
         # Formatação numérica
         colunas_decimais = [
+            "Quantidade",
             "Necessidade",
             "Estoque Atual",
             "Saldo Projetado"
@@ -1480,6 +1499,9 @@ def exportar_mrp_excel(request):
                 for cell in coluna[1:]:
 
                     if isinstance(cell.value, (int, float)):
+
+                        # Até 2 casas decimais
+                        # sem zeros desnecessários
                         cell.number_format = "#,##0.##"
 
         # Ajusta automaticamente a largura das colunas
@@ -1488,11 +1510,18 @@ def exportar_mrp_excel(request):
             maior = 0
 
             for cell in coluna:
-                if cell.value:
-                    maior = max(maior, len(str(cell.value)))
+
+                if cell.value is not None:
+                    maior = max(
+                        maior,
+                        len(str(cell.value))
+                    )
 
             letra = coluna[0].column_letter
-            worksheet.column_dimensions[letra].width = maior + 3
+
+            worksheet.column_dimensions[
+                letra
+            ].width = maior + 3
 
         # Congela a primeira linha
         worksheet.freeze_panes = "A2"
@@ -1501,10 +1530,15 @@ def exportar_mrp_excel(request):
 
     response = HttpResponse(
         output.getvalue(),
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
     )
 
-    response["Content-Disposition"] = 'attachment; filename="relatorio_mrp.xlsx"'
+    response["Content-Disposition"] = (
+        'attachment; filename="relatorio_mrp.xlsx"'
+    )
 
     return response
 
