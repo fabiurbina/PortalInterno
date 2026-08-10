@@ -1357,9 +1357,11 @@ def relatorio_mrp_view(request):
             produtos.append({
 
                 "codigo": codigo_produto,
+
                 "descricao": descricao_produto,
+
                 "quantidade": itens_produto[0]["quantidade"],
-                
+
                 "unidade": itens_produto[0].get("unidade"),
 
                 "numero_op": ", ".join(sorted(set(

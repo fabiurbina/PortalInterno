@@ -112,51 +112,115 @@ style="cursor:pointer">
 
 <tbody>
 
-{% for item in produto.itens %}
+{% for pedido in pedidos %}
 
-<tr>
-    <td>{{ item.codigo_produto_malha }}</td>
+    <!-- informações do pedido -->
 
-    <td>{{ item.descricao_produto_malha }}</td>
+    <div class="collapse" id="pedido{{ forloop.counter }}">
+        <div class="card-body">
 
-    <td>
-        {{ item.necessidade_componente|numero_br:4 }}
-        {{ item.unidade }}
-    </td>
+            {% for produto in pedido.produtos %}
 
-    <td>
-        {{ item.estoque_atual|numero_br:4 }}
-        {{ item.unidade }}
-    </td>
+                <div class="card produto-card mb-3">
 
-    <td class="{% if item.saldo_provisionado < 0 %}saldo-negativo{% else %}saldo-positivo{% endif %}">
-        {{ item.saldo_provisionado|numero_br:4 }}
-        {{ item.unidade }}
-    </td>
-</tr>
+                    <div class="card-header"
+                         data-bs-toggle="collapse"
+                         data-bs-target="#produto{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                         style="cursor:pointer">
 
-{% endfor %}
+                        <div class="row align-items-center">
 
-</tbody>
+                            <div class="col-md-2">
+                                <strong>{{ produto.codigo }}</strong>
+                            </div>
 
-</table>
-</div>
+                            <div class="col-md-4">
+                                {{ produto.descricao }}
+                            </div>
 
-</div>
+                            <div class="col-md-2 text-center">
+                                <small class="text-muted">Quantidade</small><br>
+                                <strong>
+                                    {{ produto.quantidade }}
+                                    {{ produto.unidade }}
+                                </strong>
+                            </div>
 
-</div>
+                            <div class="col-md-4">
+                                OP: {{ produto.numero_op }}
+                            </div>
 
-{% endfor %}
+                        </div>
 
-</div>
-</div>
+                    </div>
 
-</div>
+                    <div class="collapse"
+                         id="produto{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-hover tabela-mrp mb-0">
+
+                                <thead>
+                                    <tr>
+                                        <th>Cód. Comp.</th>
+                                        <th>Descrição</th>
+                                        <th>Necessidade</th>
+                                        <th>Estoque</th>
+                                        <th>Saldo</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for item in produto.itens %}
+
+                                    <tr>
+                                        <td>{{ item.codigo_produto_malha }}</td>
+
+                                        <td>
+                                            {{ item.descricao_produto_malha }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.necessidade_componente|numero_br:4 }}
+                                            {{ item.unidade }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.estoque_atual|numero_br:4 }}
+                                            {{ item.unidade }}
+                                        </td>
+
+                                        <td class="{% if item.saldo_provisionado < 0 %}saldo-negativo{% else %}saldo-positivo{% endif %}">
+                                            {{ item.saldo_provisionado|numero_br:4 }}
+                                            {{ item.unidade }}
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
 
 {% empty %}
-<div class="alert alert-warning">
-Nenhum registro encontrado.
-</div>
+
+    <div class="alert alert-warning">
+        Nenhum registro encontrado.
+    </div>
+
 {% endfor %}
 
 </div>
