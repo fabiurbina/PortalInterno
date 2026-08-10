@@ -24,7 +24,8 @@ from .mysql_service import (
     consultar_apontamentos,
     consultar_todos_pedidos,
     buscar_relatorio_mrp, 
-    buscar_CRM, buscar_producao
+    buscar_CRM, buscar_producao,
+    buscar_posicao_estoque
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -1691,3 +1692,73 @@ def analise_producao(request):
     )
 
     return HttpResponse(html)
+
+
+def posicao_estoque_view(request):
+    """
+    Exibe o relatório de posição de estoque.
+    Permite filtrar pelo nome do estoque.
+    """
+
+    # Filtro recebido pela URL
+    nome_estoque = request.GET.get("estoque", "").strip()
+
+    # Busca os dados no banco
+    dados = buscar_posicao_estoque(nome_estoque)
+
+    # Envia os dados para o template
+    contexto = {
+        "dados": dados,
+        "estoque_selecionado": nome_estoque,
+    }
+
+    return render(
+        request,
+        "relatorios/posicao_estoque.html",
+        contexto
+    )
+
+
+def exportar_posicao_estoque_excel(request):
+    """
+    Exporta a posição de estoque para Excel.
+    Respeita o filtro de estoque aplicado.
+    """
+
+    # Recupera o mesmo filtro utilizado na tela
+    nome_estoque = request.GET.get("estoque", "").strip()
+
+    # Busca os dados
+    dados = buscar_posicao_estoque(nome_estoque)
+
+    # Converte para DataFrame
+    df = pd.DataFrame(dados)
+
+    # Cria resposta Excel
+    response = HttpResponse(
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="posicao_estoque.xlsx"'
+    )
+
+    # Exporta
+    df.to_excel(
+        response,
+        index=False,
+        sheet_name="Posição Estoque"
+    )
+
+    return response
+
+
+def relatorios_diversos(request):
+
+    return render(
+        request,
+        "relatorios/relatorios_diversos.html"
+    )

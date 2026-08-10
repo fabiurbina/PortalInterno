@@ -634,4 +634,28 @@ def buscar_CRM():
 if __name__ == "__main__":
     dados = buscar_CRM()
     print(dados)
+    
+    
+def buscar_posicao_estoque(nome_estoque=None):
+
+    sql = """
+        SELECT *
+        FROM ResumoEstoque
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()
+        
+
         

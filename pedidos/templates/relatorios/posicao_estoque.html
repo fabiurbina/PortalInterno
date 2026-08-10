@@ -1,0 +1,296 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Posição de Estoque</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .cabecalho h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .cabecalho p {
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .filtros {
+            display: flex;
+            align-items: end;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .campo label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .campo input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button,
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-filtrar {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .btn-limpar {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-excel {
+            background-color: #198754;
+            color: white;
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #212529;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sem-registros {
+            text-align: center;
+            color: #777;
+            padding: 30px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- CABEÇALHO -->
+
+    <div class="cabecalho">
+
+        <div>
+
+            <h1>📦 Posição de Estoque</h1>
+
+            <p>
+                Consulta de saldos e posição dos estoques.
+            </p>
+
+        </div>
+
+
+        <!-- BOTÃO EXCEL -->
+
+        <a
+            href="{% url 'exportar_posicao_estoque_excel' %}?estoque={{ estoque_selecionado|urlencode }}"
+            class="btn btn-excel"
+        >
+            📥 Exportar Excel
+        </a>
+
+    </div>
+
+
+
+    <!-- FILTROS -->
+
+    <div class="card">
+
+        <form method="GET">
+
+            <div class="filtros">
+
+
+                <div class="campo">
+
+                    <label for="estoque">
+                        Estoque
+                    </label>
+
+                    <input
+                        type="text"
+                        name="estoque"
+                        id="estoque"
+                        placeholder="Digite o nome do estoque"
+                        value="{{ estoque_selecionado }}"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-filtrar"
+                >
+                    🔍 Filtrar
+                </button>
+
+
+                <a
+                    href="{% url 'posicao_estoque' %}"
+                    class="btn btn-limpar"
+                >
+                    🔄 Limpar
+                </a>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- RESULTADO -->
+
+    <div class="card">
+
+        <div class="tabela-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        {% if dados %}
+
+                            {% for campo in dados.0.keys %}
+
+                                <th>
+                                    {{ campo }}
+                                </th>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in dados %}
+
+                        <tr>
+
+                            {% for valor in item.values %}
+
+                                <td>
+                                    {{ valor }}
+                                </td>
+
+                            {% endfor %}
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="100%"
+                                class="sem-registros"
+                            >
+                                Nenhum registro encontrado.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
+```

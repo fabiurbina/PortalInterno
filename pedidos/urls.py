@@ -23,7 +23,10 @@ from .views import (
     criar_acesso_cliente,
     indicadores_view,
     analise_comercial,
-    analise_producao
+    analise_producao,
+    posicao_estoque_view,
+    exportar_posicao_estoque_excel,
+    relatorios_diversos
 )
 
 urlpatterns = [
@@ -155,6 +158,27 @@ urlpatterns = [
         analise_producao,
         name="analise_producao"
     ),
+    
+    path(
+    
+    "relatorios/",
+        relatorios_diversos,
+    name="relatorios_diversos"),
+
+    
+    path(
+    "relatorios/posicao-estoque/",
+        posicao_estoque_view,
+    name="posicao_estoque"
+),
+
+path(
+    "relatorios/posicao-estoque/excel/",
+        exportar_posicao_estoque_excel,
+    name="exportar_posicao_estoque_excel"
+),
+
+
 ]
 
 
