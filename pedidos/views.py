@@ -1359,6 +1359,8 @@ def relatorio_mrp_view(request):
                 "codigo": codigo_produto,
                 "descricao": descricao_produto,
                 "quantidade": itens_produto[0]["quantidade"],
+                
+                "unidade": itens_produto[0].get("unidade"),
 
                 "numero_op": ", ".join(sorted(set(
                     str(item["numero_op"])
@@ -1444,6 +1446,7 @@ def exportar_mrp_excel(request):
             "codigo",
             "descricao",
             "quantidade",
+            "unidade",
             "numero_op",
             "necessidade_componente",
             "estoque_atual",
@@ -1461,6 +1464,7 @@ def exportar_mrp_excel(request):
         "codigo": "Código Produto",
         "descricao": "Produto",
         "quantidade": "Quantidade",
+        "unidade": "Unidade",
         "numero_op": "OP",
         "necessidade_componente": "Necessidade",
         "estoque_atual": "Estoque Atual",

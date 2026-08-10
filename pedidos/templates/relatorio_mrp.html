@@ -52,33 +52,23 @@ style="cursor:pointer">
 
 <div class="row align-items-center">
 
-<div class="col-md-4">
-<small class="text-muted">Cliente</small>
-<div class="numero-pedido">{{ pedido.razao_social }}</div>
-</div>
+    <div class="col-md-2">
+        <strong>{{ produto.codigo }}</strong>
+    </div>
 
-<div class="col-md-2">
-<small class="text-muted">Pedido</small>
-<div class="numero-pedido">#{{ pedido.numero_pedido }}</div>
-</div>
+    <div class="col-md-4">
+        {{ produto.descricao }}
+    </div>
 
-<div class="col-md-2">
-<small class="text-muted">Previsão</small><br>
-{% if pedido.data_previsao %}
-{{ pedido.data_previsao|date:"d/m/Y" }}
-{% else %}-{% endif %}
-</div>
+    <div class="col-md-2 text-center">
+        <strong>{{ produto.itens.0.quantidade }}</strong>
+        {{ produto.itens.0.unidade }}
+    </div>
 
-<div class="col-md-2 text-center">
-<small class="text-muted">OPs</small><br>
-{{ pedido.quantidade_ops }}
-</div>
+    <div class="col-md-4">
+        OP: {{ produto.numero_op }}
+    </div>
 
-<div class="col-md-2 text-end">
-<button class="btn btn-outline-primary btn-sm">Ver produtos ▼</button>
-</div>
-
-</div>
 </div>
 
 <div class="collapse" id="pedido{{ forloop.counter }}">
@@ -96,7 +86,10 @@ style="cursor:pointer">
 <div class="row">
 <div class="col-md-2"><strong>{{ produto.codigo }}</strong></div>
 <div class="col-md-5">{{ produto.descricao }}</div>
- <div class="col-md-1 text-center">{{ produto.itens.0.quantidade }}</div>
+ <div class="col-md-2 text-center">
+    <strong>{{ produto.itens.0.quantidade }}</strong>
+    {{ produto.itens.0.unidade }}
+</div>
 <div class="col-md-3">OP: {{ produto.numero_op }}</div>
 </div>
 
@@ -122,13 +115,24 @@ style="cursor:pointer">
 {% for item in produto.itens %}
 
 <tr>
-<td>{{ item.codigo_produto_malha }}</td>
-<td>{{ item.descricao_produto_malha }}</td>
-<td>{{ item.necessidade_componente|numero_br:4 }}</td>
-<td>{{ item.estoque_atual|numero_br:4 }}</td>
-<td class="{% if item.saldo_provisionado < 0 %}saldo-negativo{% else %}saldo-positivo{% endif %}">
-{{ item.saldo_provisionado|numero_br:4 }}
-</td>
+    <td>{{ item.codigo_produto_malha }}</td>
+
+    <td>{{ item.descricao_produto_malha }}</td>
+
+    <td>
+        {{ item.necessidade_componente|numero_br:4 }}
+        {{ item.unidade }}
+    </td>
+
+    <td>
+        {{ item.estoque_atual|numero_br:4 }}
+        {{ item.unidade }}
+    </td>
+
+    <td class="{% if item.saldo_provisionado < 0 %}saldo-negativo{% else %}saldo-positivo{% endif %}">
+        {{ item.saldo_provisionado|numero_br:4 }}
+        {{ item.unidade }}
+    </td>
 </tr>
 
 {% endfor %}
