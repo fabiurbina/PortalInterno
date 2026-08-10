@@ -130,6 +130,10 @@
             color: #777;
             padding: 30px;
         }
+        .btn-voltar {
+        background: #0D3B66;
+        color: white;
+    }
 
     </style>
 
@@ -228,21 +232,12 @@
                 </a>
 
 
-        <div class="col-md-2 d-flex align-items-end">
-                
                 <a
-
-            
-
-                href="{% url 'relatorios_diversos' %}"
-                class="btn w-100"
-                style="
-                    background:#0D3B66;
-                    color:white;
-                "
-            >
-                Voltar
-            </a>
+                    href="{% url 'relatorios_diversos' %}"
+                    class="btn btn-voltar"
+                >
+                    ← Voltar
+                </a>
 
 
             </div>
@@ -327,4 +322,4 @@
 </body>
 
 </html>
-```
+
