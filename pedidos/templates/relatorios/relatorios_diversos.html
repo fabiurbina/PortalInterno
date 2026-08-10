@@ -1,0 +1,272 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Relatórios Diversos</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* CABEÇALHO */
+
+        .cabecalho {
+            margin-bottom: 30px;
+        }
+
+        .cabecalho h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #212529;
+        }
+
+        .cabecalho p {
+            margin-top: 8px;
+            color: #6c757d;
+        }
+
+
+        /* GRID DOS RELATÓRIOS */
+
+        .grid-relatorios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+
+        /* CARD */
+
+        .card-relatorio {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-decoration: none;
+            color: inherit;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+
+        .card-relatorio:hover {
+            transform: translateY(-4px);
+
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+
+        /* ÍCONE */
+
+        .icone {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+
+        /* TÍTULO */
+
+        .titulo-relatorio {
+            font-size: 20px;
+            font-weight: bold;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+
+        /* DESCRIÇÃO */
+
+        .descricao-relatorio {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+
+        /* BOTÃO */
+
+        .botao {
+            display: inline-block;
+
+            background-color: #0d6efd;
+            color: white;
+
+            padding: 9px 15px;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- CABEÇALHO -->
+
+    <div class="cabecalho">
+
+        <h1>
+            📊 Relatórios Diversos
+        </h1>
+
+        <p>
+            Acesse os relatórios e consultas disponíveis no sistema.
+        </p>
+
+    </div>
+
+
+    <!-- GRID -->
+
+    <div class="grid-relatorios">
+
+
+        <!-- POSIÇÃO DE ESTOQUE -->
+
+        <a
+            href="{% url 'posicao_estoque' %}"
+            class="card-relatorio"
+        >
+
+            <div class="icone">
+                📦
+            </div>
+
+            <div class="titulo-relatorio">
+                Posição de Estoque
+            </div>
+
+            <div class="descricao-relatorio">
+                Consulte os saldos e a posição atual
+                dos produtos nos estoques.
+            </div>
+
+            <span class="botao">
+                Acessar relatório →
+            </span>
+
+        </a>
+
+
+
+        <!-- PRODUÇÃO -->
+
+        <a
+            href="#"
+            class="card-relatorio"
+        >
+
+            <div class="icone">
+                🏭
+            </div>
+
+            <div class="titulo-relatorio">
+                Produção
+            </div>
+
+            <div class="descricao-relatorio">
+                Consulte informações e resultados
+                dos processos produtivos.
+            </div>
+
+            <span class="botao">
+                Em breve
+            </span>
+
+        </a>
+
+
+
+        <!-- MRP -->
+
+        <a
+            href="#"
+            class="card-relatorio"
+        >
+
+            <div class="icone">
+                📋
+            </div>
+
+            <div class="titulo-relatorio">
+                MRP
+            </div>
+
+            <div class="descricao-relatorio">
+                Consulte necessidades de materiais
+                e planejamento de produção.
+            </div>
+
+            <span class="botao">
+                Em breve
+            </span>
+
+        </a>
+
+
+
+        <!-- ORDENS DE PRODUÇÃO -->
+
+        <a
+            href="#"
+            class="card-relatorio"
+        >
+
+            <div class="icone">
+                🧾
+            </div>
+
+            <div class="titulo-relatorio">
+                Ordens de Produção
+            </div>
+
+            <div class="descricao-relatorio">
+                Consulte as ordens de produção
+                e seus respectivos dados.
+            </div>
+
+            <span class="botao">
+                Em breve
+            </span>
+
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
+```
