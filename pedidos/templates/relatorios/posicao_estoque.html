@@ -184,13 +184,30 @@
                         Estoque
                     </label>
 
-                    <input
-                        type="text"
+                    <select
                         name="estoque"
                         id="estoque"
-                        placeholder="Digite o nome do estoque"
-                        value="{{ estoque_selecionado }}"
+                        class="form-select"
                     >
+
+                        <option value="">
+                            Todos os estoques
+                        </option>
+
+                        {% for estoque in estoques %}
+
+                            <option
+                                value="{{ estoque }}"
+                                {% if estoque == estoque_selecionado %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ estoque }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
 
                 </div>
 

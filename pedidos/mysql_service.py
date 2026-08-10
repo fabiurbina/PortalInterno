@@ -643,19 +643,30 @@ def buscar_posicao_estoque(nome_estoque=None):
         FROM ResumoEstoque
     """
 
+    parametros = []
+
+    if nome_estoque:
+        sql += """
+            WHERE nome_estoque = %s
+        """
+
+        parametros.append(nome_estoque)
+
     conexao = conectar()
 
     try:
 
         with conexao.cursor() as cursor:
 
-            cursor.execute(sql)
+            cursor.execute(sql, parametros)
 
             return cursor.fetchall()
 
     finally:
 
         conexao.close()
+        
+        
         
 
         

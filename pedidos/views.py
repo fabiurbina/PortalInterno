@@ -1695,20 +1695,22 @@ def analise_producao(request):
 
 
 def posicao_estoque_view(request):
-    """
-    Exibe o relatório de posição de estoque.
-    Permite filtrar pelo nome do estoque.
-    """
 
-    # Filtro recebido pela URL
     nome_estoque = request.GET.get("estoque", "").strip()
 
-    # Busca os dados no banco
     dados = buscar_posicao_estoque(nome_estoque)
 
-    # Envia os dados para o template
+    estoques = sorted(
+        set(
+            item["nome_estoque"]
+            for item in dados
+            if item.get("nome_estoque")
+        )
+    )
+
     contexto = {
         "dados": dados,
+        "estoques": estoques,
         "estoque_selecionado": nome_estoque,
     }
 
