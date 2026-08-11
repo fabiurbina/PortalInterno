@@ -456,31 +456,14 @@
     "
 ></div>
 
-
-<div class="mb-3">
-    <label for="id_maquina" class="form-label">
-        Máquina
-    </label>
-
-    <select class="form-select" id="id_maquina" name="id_maquina" required>
-        <option value="">Selecione...</option>
-
-        {% for maquina in maquinas %}
-            <option value="{{ forloop.counter }}">
-                {{ maquina }}
-            </option>
-        {% endfor %}
-    </select>
-</div>
-
-<h4>Setup da Máquina</h4>
+<h4>Setup da Linha</h4>
 
 <table class="table table-bordered">
 
     <tr>
 
         <td width="35%">
-            <strong>Máquina</strong>
+            <strong>Linha</strong>
         </td>
 
         <td colspan="2">
