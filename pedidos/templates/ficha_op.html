@@ -545,6 +545,30 @@
 
 <br>
 
+<h4>Paradas da Produção</h4>
+
+<table class="table table-bordered" id="tabela-paradas">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Motivo</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Observação</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody id="paradas-body">
+    </tbody>
+</table>
+
+<button type="button"
+        class="btn btn-warning"
+        onclick="adicionarParada()">
+    + Adicionar Parada
+</button>
+
 
 <br>
 
@@ -1369,30 +1393,82 @@
 
 <script>
 
+function adicionarParada() {
+
+    const tbody = document.getElementById("paradas-body");
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>
+            <select class="form-control" name="tipo_parada[]">
+                <option value="PLANEJADA">Planejada</option>
+                <option value="NAO_PLANEJADA">Não Planejada</option>
+            </select>
+        </td>
+
+        <td>
+            <input type="text"
+                   class="form-control"
+                   name="motivo_parada[]"
+                   placeholder="Motivo">
+        </td>
+
+        <td>
+            <input type="time"
+                   class="form-control"
+                   name="inicio_parada[]">
+        </td>
+
+        <td>
+            <input type="time"
+                   class="form-control"
+                   name="fim_parada[]">
+        </td>
+
+        <td>
+            <input type="text"
+                   class="form-control"
+                   name="observacao_parada[]">
+        </td>
+
+        <td>
+            <button type="button"
+                    class="btn btn-danger"
+                    onclick="this.closest('tr').remove()">
+                X
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(tr);
+}
+
+
 const form = document.querySelector("form");
 
-form.addEventListener("submit", function(e){
+form.addEventListener("submit", function(e) {
 
     e.preventDefault();
 
     const dados = new FormData(form);
 
-    fetch(form.action,{
-        method:"POST",
-        body:dados
+    fetch(form.action, {
+        method: "POST",
+        body: dados
     })
 
     .then(r => r.json())
 
-    .then(retorno=>{
+    .then(retorno => {
 
-        if(retorno.sucesso){
+        if (retorno.sucesso) {
 
             alert("✅ Apontamento registrado com sucesso!");
 
             location.reload();
 
-        }else{
+        } else {
 
             alert("❌ " + retorno.erro);
 
