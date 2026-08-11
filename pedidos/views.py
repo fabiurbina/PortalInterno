@@ -25,7 +25,8 @@ from .mysql_service import (
     consultar_todos_pedidos,
     buscar_relatorio_mrp, 
     buscar_CRM, buscar_producao,
-    buscar_posicao_estoque
+    buscar_posicao_estoque,
+    salvar_setup
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -565,6 +566,30 @@ def salvar_apontamento_view(request):
 
             print("=" * 50)
             
+            # ==========================================================
+            # SETUP
+            # ==========================================================
+
+            hora_inicio_setup = request.POST.get("hora_inicio_setup")
+
+            if hora_inicio_setup:
+
+                salvar_setup(
+
+                    codigo_op=request.POST.get("codigo_op"),
+
+                    idMaquina=int(request.POST.get("id_maquina")),
+
+                    hora_inicio=hora_inicio_setup,
+
+                    hora_fim=request.POST.get("hora_fim_setup"),
+
+                    usuario=request.user.username,
+
+                    observacao=request.POST.get("observacao_setup")
+
+                )
+            
             #Fracionamento    
             hora_inicio = request.POST.get("hora_inicio_fracionamento")
             if hora_inicio:
@@ -751,6 +776,8 @@ def salvar_apontamento_view(request):
             "sucesso": False,
             "erro": "Ocorreu um erro ao registrar o apontamento."
         })
+        
+        
         
 
     

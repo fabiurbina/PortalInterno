@@ -151,7 +151,6 @@ def salvar_observacao_op(
     
     
 def salvar_apontamento(
-    idMaquina,
     codigo_op,
     etapa,
     equipamento_limpo,
@@ -180,7 +179,7 @@ def salvar_apontamento(
     sql = """
     INSERT INTO op_apontamentos
     (
-        idMaquina,
+      
         codigo_op,
         etapa,
         equipamento_limpo,
@@ -209,7 +208,6 @@ def salvar_apontamento(
         %s,
         %s,
         %s,
-        %s,
         %s
     )
     """
@@ -217,7 +215,7 @@ def salvar_apontamento(
     cursor.execute(
         sql,
         (
-            idMaquina,
+            
             codigo_op,
             etapa,
             equipamento_limpo,
@@ -229,6 +227,66 @@ def salvar_apontamento(
             medida_real,
             medida_perdas,
             unidade,
+            usuario,
+            observacao
+        )
+    )
+
+    conn.commit()
+
+    cursor.close()
+
+    conn.close()
+    
+    
+    
+def salvar_setup(
+    codigo_op,
+    idMaquina,
+    hora_inicio,
+    hora_fim=None,
+    usuario=None,
+    observacao=None
+):
+
+    conn = pymysql.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database=os.getenv("DATABASE"),
+        charset="utf8mb4"
+    )
+
+    cursor = conn.cursor()
+
+    sql = """
+    INSERT INTO op_setup
+    (
+        codigo_op,
+        idMaquina,
+        hora_inicio,
+        hora_fim,
+        usuario,
+        observacao
+    )
+    VALUES
+    (
+        %s,
+        %s,
+        %s,
+        %s,
+        %s,
+        %s
+    )
+    """
+
+    cursor.execute(
+        sql,
+        (
+            codigo_op,
+            idMaquina,
+            hora_inicio,
+            hora_fim,
             usuario,
             observacao
         )
