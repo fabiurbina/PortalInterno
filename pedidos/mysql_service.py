@@ -299,6 +299,81 @@ def salvar_setup(
     conn.close()
     
     
+def salvar_parada_sql(
+    codigo_op,
+    tipo_parada,
+    motivo,
+    data_inicio,
+    data_fim,
+    observacao,
+    usuario
+):
+
+    conn = pymysql.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database=os.getenv("DATABASE"),
+        charset="utf8mb4"
+    )
+
+    cursor = conn.cursor()
+
+    sql = """
+        INSERT INTO paradas_producao (
+            codigo_op,
+            tipo_parada,
+            motivo,
+            data_inicio,
+            data_fim,
+            duracao_min,
+            observacao,
+            usuario
+        )
+        VALUES (
+            %s, %s, %s, %s, %s,
+            TIMESTAMPDIFF(
+                MINUTE,
+                %s,
+                %s
+            ),
+            %s,
+            %s
+        )
+    """
+
+    try:
+
+        cursor.execute(sql, (
+            codigo_op,
+            tipo_parada,
+            motivo,
+            data_inicio,
+            data_fim,
+            data_inicio,
+            data_fim,
+            observacao,
+            usuario
+        ))
+
+        conn.commit()
+
+        print("✅ Parada registrada com sucesso!")
+
+    except Exception as e:
+
+        conn.rollback()
+
+        print(f"❌ Erro ao registrar parada: {e}")
+
+        raise
+
+    finally:
+
+        cursor.close()
+        conn.close()
+    
+    
 def consultar_apontamentos(codigo_op):
 
     conn = pymysql.connect(

@@ -26,7 +26,8 @@ from .mysql_service import (
     buscar_relatorio_mrp, 
     buscar_CRM, buscar_producao,
     buscar_posicao_estoque,
-    salvar_setup
+    salvar_setup,
+    salvar_parada
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -589,6 +590,39 @@ def salvar_apontamento_view(request):
                     observacao=request.POST.get("observacao_setup")
 
                 )
+                
+                
+            # ==============================
+            # PARADAS DA OP
+            # ==============================
+
+            tipos_parada = request.POST.getlist("tipo_parada[]")
+            motivos_parada = request.POST.getlist("motivo_parada[]")
+            inicios_parada = request.POST.getlist("inicio_parada[]")
+            fins_parada = request.POST.getlist("fim_parada[]")
+            observacoes_parada = request.POST.getlist("observacao_parada[]")
+
+
+            for tipo, motivo, inicio, fim, observacao in zip(
+                tipos_parada,
+                motivos_parada,
+                inicios_parada,
+                fins_parada,
+                observacoes_parada
+            ):
+
+                if inicio:
+
+                    salvar_parada(
+                        codigo_op=request.POST.get("codigo_op"),
+                        idMaquina=int(request.POST.get("id_maquina")),
+                        tipo_parada=tipo,
+                        motivo=motivo,
+                        hora_inicio=inicio,
+                        hora_fim=fim,
+                        usuario=request.user.username,
+                        observacao=observacao
+                    )
             
             #Fracionamento    
             hora_inicio = request.POST.get("hora_inicio_fracionamento")
