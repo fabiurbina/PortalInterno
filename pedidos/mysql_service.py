@@ -298,7 +298,7 @@ def salvar_setup(
 
     conn.close()
     
-    
+from datetime import datetime, date   
 def salvar_parada_sql(
     codigo_op,
     tipo_parada,
@@ -318,6 +318,22 @@ def salvar_parada_sql(
     )
 
     cursor = conn.cursor()
+
+    # ==============================
+    # CONVERTE HORÁRIO PARA DATETIME
+    # ==============================
+
+    if data_inicio:
+        hora_inicio = datetime.strptime(data_inicio, "%H:%M").time()
+        data_inicio = datetime.combine(date.today(), hora_inicio)
+
+    if data_fim:
+        hora_fim = datetime.strptime(data_fim, "%H:%M").time()
+        data_fim = datetime.combine(date.today(), hora_fim)
+
+    # ==============================
+    # INSERT
+    # ==============================
 
     sql = """
         INSERT INTO paradas_producao (
