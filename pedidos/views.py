@@ -27,7 +27,7 @@ from .mysql_service import (
     buscar_CRM, buscar_producao,
     buscar_posicao_estoque,
     salvar_setup,
-    salvar_parada
+    salvar_parada_sql
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -613,7 +613,7 @@ def salvar_apontamento_view(request):
 
                 if inicio:
 
-                    salvar_parada(
+                    salvar_parada_sql(
                         codigo_op=request.POST.get("codigo_op"),
                         idMaquina=int(request.POST.get("id_maquina")),
                         tipo_parada=tipo,
