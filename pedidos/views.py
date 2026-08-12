@@ -591,8 +591,7 @@ def salvar_apontamento_view(request):
 
                 )
                 
-                
-            # ==============================
+            # ==============================  
             # PARADAS DA OP
             # ==============================
 
@@ -615,11 +614,10 @@ def salvar_apontamento_view(request):
 
                     salvar_parada_sql(
                         codigo_op=request.POST.get("codigo_op"),
-                        idMaquina=int(request.POST.get("id_maquina")),
                         tipo_parada=tipo,
                         motivo=motivo,
-                        hora_inicio=inicio,
-                        hora_fim=fim,
+                        data_inicio=inicio,
+                        data_fim=fim,
                         usuario=request.user.username,
                         observacao=observacao
                     )
