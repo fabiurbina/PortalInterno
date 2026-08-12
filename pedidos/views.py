@@ -59,11 +59,9 @@ def home(request):
 
     ETAPAS = {
         "10": "Planejamento",
-        "20": "Pesagem",
-        "30": "Mistura",
-        "40": "Encapsulamento",
-        "50": "Envase",
-        "60": "Concluído"
+        "20": "Produzindo",
+        "50": "Concluído",
+        "60": "Armazenar/Expedir"
     }
 
     if request.method == 'POST':
@@ -429,13 +427,11 @@ def ficha_op(request, codigo_op):
     )
 
     ETAPAS = {
-        "10": "Planejamento",
-        "20": "Pesagem",
-        "30": "Mistura",
-        "40": "Encapsulamento",
-        "50": "Envase",
-        "60": "Concluído"
-    }
+            "10": "Planejamento",
+            "20": "Produzindo",
+            "50": "Concluído",
+            "60": "Armazenar/Expedir"
+        }
 
     nome_etapa = ETAPAS.get(
         op['infAdicionais']['cEtapa'],
@@ -903,13 +899,11 @@ def estoque_home(request):
     ops = []
 
     ETAPAS = {
-        "10": "Planejamento",
-        "20": "Pesagem",
-        "30": "Mistura",
-        "40": "Encapsulamento",
-        "50": "Envase",
-        "60": "Concluído"
-    }
+            "10": "Planejamento",
+            "20": "Produzindo",
+            "50": "Concluído",
+            "60": "Armazenar/Expedir"
+        }
 
     if request.method == 'POST':
 
