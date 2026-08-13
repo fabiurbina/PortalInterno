@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Previsão de Demanda</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .cabecalho {
+            margin-bottom: 30px;
+        }
+
+        .cabecalho h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #212529;
+        }
+
+        .cabecalho p {
+            margin-top: 8px;
+            color: #6c757d;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #0D3B66;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #0D3B66;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'relatorios_diversos' %}" class="btn-voltar">
+        ← Voltar para Relatórios
+    </a>
+
+
+    <div class="cabecalho">
+
+        <h1>
+            📈 Previsão de Demanda
+        </h1>
+
+        <p>
+            Previsão de demanda baseada nas oportunidades de prospecção.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="tabela-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        {% if dados %}
+
+                            {% for coluna in dados.0.keys %}
+
+                                <th>
+                                    {{ coluna }}
+                                </th>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for linha in dados %}
+
+                        <tr>
+
+                            {% for valor in linha.values %}
+
+                                <td>
+                                    {{ valor }}
+                                </td>
+
+                            {% endfor %}
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="100%" style="text-align: center;">
+                                Nenhum registro encontrado.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

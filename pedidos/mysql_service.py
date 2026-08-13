@@ -816,6 +816,54 @@ def buscar_posicao_estoque(nome_estoque=None):
         conexao.close()
         
         
+def buscar_previsao_demanda(
+    nome_estoque=None,
+    status=None,
+    cDescrUsuario=None,
+    Temperatura=None,
+    identificacao_cNome=None
+):
+    sql = """
+        SELECT *
+        FROM ViesanoDW.vw_previsao_demandas
+    """
+
+    filtros = []
+    parametros = []
+
+    if nome_estoque:
+        filtros.append("nome_estoque = %s")
+        parametros.append(nome_estoque)
+
+    if status:
+        filtros.append("status = %s")
+        parametros.append(status)
+
+    if cDescrUsuario:
+        filtros.append("cDescrUsuario = %s")
+        parametros.append(cDescrUsuario)
+
+    if Temperatura:
+        filtros.append("Temperatura = %s")
+        parametros.append(Temperatura)
+
+    if identificacao_cNome:
+        filtros.append("identificacao_cNome = %s")
+        parametros.append(identificacao_cNome)
+
+    if filtros:
+        sql += " WHERE " + " AND ".join(filtros)
+
+    conexao = conectar()
+
+    try:
+        with conexao.cursor() as cursor:
+            cursor.execute(sql, parametros)
+            return cursor.fetchall()
+    finally:
+        conexao.close()
+        
+        
         
 
         

@@ -27,7 +27,8 @@ from .mysql_service import (
     buscar_CRM, buscar_producao,
     buscar_posicao_estoque,
     salvar_setup,
-    salvar_parada_sql
+    salvar_parada_sql,
+    buscar_previsao_demanda
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -1816,4 +1817,17 @@ def relatorios_diversos(request):
     return render(
         request,
         "relatorios/relatorios_diversos.html"
+    )
+    
+    
+def previsao_demanda(request):
+
+    dados = buscar_previsao_demanda()
+
+    return render(
+        request,
+        "relatorios/previsao_demanda.html",
+        {
+            "dados": dados
+        }
     )

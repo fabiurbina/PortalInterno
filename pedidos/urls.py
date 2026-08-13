@@ -26,7 +26,8 @@ from .views import (
     analise_producao,
     posicao_estoque_view,
     exportar_posicao_estoque_excel,
-    relatorios_diversos
+    relatorios_diversos,
+    previsao_demanda
 )
 
 urlpatterns = [
@@ -159,24 +160,31 @@ urlpatterns = [
         name="analise_producao"
     ),
     
-    path(
-    
-    "relatorios/",
-        relatorios_diversos,
-    name="relatorios_diversos"),
+        path(
+        
+        "relatorios/",
+            relatorios_diversos,
+        name="relatorios_diversos"),
 
-    
-    path(
-    "relatorios/posicao-estoque/",
-        posicao_estoque_view,
-    name="posicao_estoque"
-),
+        
+        path(
+        "relatorios/posicao-estoque/",
+            posicao_estoque_view,
+        name="posicao_estoque"
+    ),
 
-path(
-    "relatorios/posicao-estoque/excel/",
-        exportar_posicao_estoque_excel,
-    name="exportar_posicao_estoque_excel"
-),
+    path(
+        "relatorios/posicao-estoque/excel/",
+            exportar_posicao_estoque_excel,
+        name="exportar_posicao_estoque_excel"
+    ),
+
+
+    path(
+        "relatorios/previsao-demanda/",
+        previsao_demanda,
+        name="previsao_demanda"
+    ),
 
 
 ]
