@@ -288,7 +288,7 @@
 
                             <option
                                 value="{{ item }}"
-                                {% if request.GET.previsao == item|date:'Y-m-d' %}
+                                {% if request.GET.previsao == item %}
                                     selected
                                 {% endif %}
                             >

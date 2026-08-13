@@ -1852,8 +1852,8 @@ def previsao_demanda(request):
     )
 
     previsao_lista = sorted(
-        set(
-            item["previsao"]
+    set(
+            item["previsao"].strftime("%Y-%m-%d")
             for item in todos_dados
             if item.get("previsao")
         )
