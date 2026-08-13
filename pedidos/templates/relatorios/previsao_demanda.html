@@ -263,17 +263,15 @@
     </div>
 
 
-    <!-- FILTROS -->
+        <!-- FILTROS -->
 
-    <div class="card">
+        <div class="card">
 
         <form method="GET">
 
-            < class="filtros">
-
+            <div class="filtros">
 
                 <!-- PREVISÃO -->
-
                 <div class="filtro">
 
                     <label for="previsao">
@@ -305,7 +303,6 @@
 
 
                 <!-- STATUS -->
-
                 <div class="filtro">
 
                     <label for="status">
@@ -337,7 +334,6 @@
 
 
                 <!-- TEMPERATURA -->
-
                 <div class="filtro">
 
                     <label for="Temperatura">
@@ -367,8 +363,27 @@
 
                 </div>
 
+            </div>
+
+
+            <div class="botoes">
+
+                <button type="submit" class="btn-filtrar">
+                    Filtrar
+                </button>
+
+                <a
+                    href="{% url 'previsao_demanda' %}"
+                    class="btn-limpar"
+                >
+                    Limpar
+                </a>
 
             </div>
+
+        </form>
+
+    </div>
 
 
             <!-- BOTÕES -->

@@ -819,7 +819,6 @@ def buscar_posicao_estoque(nome_estoque=None):
 def buscar_previsao_demanda(
     status=None,
     Temperatura=None,
-    identificacao_cDesOp=None,
     previsao=None
 ):
 
@@ -838,7 +837,6 @@ def buscar_previsao_demanda(
     if Temperatura:
         filtros.append("Temperatura = %s")
         parametros.append(Temperatura)
-
 
     if previsao:
         filtros.append("previsao = %s")
