@@ -1822,7 +1822,15 @@ def relatorios_diversos(request):
     
 def previsao_demanda(request):
 
-    dados = buscar_previsao_demanda()
+    status = request.GET.get("status")
+    Temperatura = request.GET.get("Temperatura")
+    identificacao_cDesOp = request.GET.get("identificacao_cDesOp")
+
+    dados = buscar_previsao_demanda(
+        status=status,
+        Temperatura=Temperatura,
+        identificacao_cDesOp=identificacao_cDesOp
+    )
 
     return render(
         request,

@@ -23,8 +23,10 @@
             margin: 0 auto;
         }
 
+        /* CABEÇALHO */
+
         .cabecalho {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .cabecalho h1 {
@@ -38,12 +40,92 @@
             color: #6c757d;
         }
 
+
+        /* BOTÃO VOLTAR */
+
+        .btn-voltar {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #0D3B66;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+
+        /* CARDS */
+
         .card {
             background-color: white;
             border-radius: 10px;
             padding: 25px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
         }
+
+
+        /* FILTROS */
+
+        .filtros {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .filtro {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filtro label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+
+        .filtro input {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+
+        /* BOTÕES */
+
+        .botoes {
+            margin-top: 20px;
+        }
+
+        .btn-filtrar {
+            background-color: #0D3B66;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-filtrar:hover {
+            background-color: #092d4f;
+        }
+
+        .btn-limpar {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 10px 18px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+
+        /* TABELA */
 
         .tabela-container {
             overflow-x: auto;
@@ -59,25 +141,28 @@
             color: white;
             padding: 12px;
             text-align: left;
+            white-space: nowrap;
         }
 
         td {
             padding: 10px;
             border-bottom: 1px solid #dee2e6;
+            white-space: nowrap;
         }
 
         tr:hover {
             background-color: #f8f9fa;
         }
 
-        .btn-voltar {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            background-color: #0D3B66;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
+
+        /* RESPONSIVO */
+
+        @media (max-width: 900px) {
+
+            .filtros {
+                grid-template-columns: 1fr;
+            }
+
         }
 
     </style>
@@ -89,10 +174,15 @@
 
 <div class="container">
 
+
+    <!-- VOLTAR -->
+
     <a href="{% url 'relatorios_diversos' %}" class="btn-voltar">
         ← Voltar para Relatórios
     </a>
 
+
+    <!-- CABEÇALHO -->
 
     <div class="cabecalho">
 
@@ -106,6 +196,99 @@
 
     </div>
 
+
+    <!-- FILTROS -->
+
+    <div class="card">
+
+        <form method="GET">
+
+            <div class="filtros">
+
+
+                <!-- STATUS -->
+
+                <div class="filtro">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <input
+                        type="text"
+                        id="status"
+                        name="status"
+                        value="{{ request.GET.status|default:'' }}"
+                        placeholder="Digite o status"
+                    >
+
+                </div>
+
+
+                <!-- TEMPERATURA -->
+
+                <div class="filtro">
+
+                    <label for="Temperatura">
+                        Temperatura
+                    </label>
+
+                    <input
+                        type="text"
+                        id="Temperatura"
+                        name="Temperatura"
+                        value="{{ request.GET.Temperatura|default:'' }}"
+                        placeholder="Digite a temperatura"
+                    >
+
+                </div>
+
+
+                <!-- OPERAÇÃO -->
+
+                <div class="filtro">
+
+                    <label for="identificacao_cDesOp">
+                        Operação
+                    </label>
+
+                    <input
+                        type="text"
+                        id="identificacao_cDesOp"
+                        name="identificacao_cDesOp"
+                        value="{{ request.GET.identificacao_cDesOp|default:'' }}"
+                        placeholder="Digite a operação"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <!-- BOTÕES -->
+
+            <div class="botoes">
+
+                <button type="submit" class="btn-filtrar">
+                    Filtrar
+                </button>
+
+                <a
+                    href="{% url 'previsao_demanda' %}"
+                    class="btn-limpar"
+                >
+                    Limpar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- RESULTADOS -->
 
     <div class="card">
 
@@ -154,7 +337,10 @@
 
                         <tr>
 
-                            <td colspan="100%" style="text-align: center;">
+                            <td
+                                colspan="100%"
+                                style="text-align: center; padding: 30px;"
+                            >
                                 Nenhum registro encontrado.
                             </td>
 
@@ -169,6 +355,7 @@
         </div>
 
     </div>
+
 
 </div>
 
