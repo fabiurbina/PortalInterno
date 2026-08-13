@@ -1825,17 +1825,49 @@ def previsao_demanda(request):
     status = request.GET.get("status")
     Temperatura = request.GET.get("Temperatura")
     identificacao_cDesOp = request.GET.get("identificacao_cDesOp")
+    previsao = request.GET.get("previsao")
 
     dados = buscar_previsao_demanda(
         status=status,
         Temperatura=Temperatura,
-        identificacao_cDesOp=identificacao_cDesOp
+        identificacao_cDesOp=identificacao_cDesOp,
+        previsao=previsao
+    )
+
+    # Valores disponíveis para os filtros
+    todos_dados = buscar_previsao_demanda()
+
+    status_lista = sorted(
+        set(
+            item["status"]
+            for item in todos_dados
+            if item.get("status")
+        )
+    )
+
+    temperatura_lista = sorted(
+        set(
+            item["Temperatura"]
+            for item in todos_dados
+            if item.get("Temperatura")
+        )
+    )
+
+    previsao_lista = sorted(
+        set(
+            item["previsao"]
+            for item in todos_dados
+            if item.get("previsao")
+        )
     )
 
     return render(
         request,
         "relatorios/previsao_demanda.html",
         {
-            "dados": dados
+            "dados": dados,
+            "status_lista": status_lista,
+            "temperatura_lista": temperatura_lista,
+            "previsao_lista": previsao_lista,
         }
     )

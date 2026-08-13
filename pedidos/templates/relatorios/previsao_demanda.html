@@ -11,6 +11,10 @@
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f6f8;
@@ -19,9 +23,11 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
         }
+
 
         /* CABEÇALHO */
 
@@ -41,7 +47,7 @@
         }
 
 
-        /* BOTÃO VOLTAR */
+        /* VOLTAR */
 
         .btn-voltar {
             display: inline-block;
@@ -54,12 +60,12 @@
         }
 
 
-        /* CARDS */
+        /* CARD */
 
         .card {
             background-color: white;
             border-radius: 10px;
-            padding: 25px;
+            padding: 18px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
         }
@@ -69,8 +75,8 @@
 
         .filtros {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
         }
 
         .filtro {
@@ -79,75 +85,79 @@
         }
 
         .filtro label {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: #495057;
             margin-bottom: 6px;
         }
 
-        .filtro input {
-            padding: 10px;
+        .filtro select {
+            width: 100%;
+            padding: 9px;
             border: 1px solid #ced4da;
             border-radius: 5px;
-            font-size: 14px;
+            background-color: white;
+            font-size: 13px;
         }
 
 
         /* BOTÕES */
 
         .botoes {
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .btn-filtrar {
             background-color: #0D3B66;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 9px 18px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-filtrar:hover {
-            background-color: #092d4f;
         }
 
         .btn-limpar {
             display: inline-block;
             margin-left: 8px;
-            padding: 10px 18px;
+            padding: 9px 18px;
             background-color: #6c757d;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            font-size: 14px;
         }
 
 
         /* TABELA */
 
         .tabela-container {
-            overflow-x: auto;
+            width: 100%;
         }
 
         table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
         }
 
         th {
             background-color: #0D3B66;
             color: white;
-            padding: 12px;
+            padding: 10px 8px;
             text-align: left;
-            white-space: nowrap;
+            font-size: 12px;
+            word-break: break-word;
         }
 
         td {
-            padding: 10px;
+            padding: 8px;
             border-bottom: 1px solid #dee2e6;
-            white-space: nowrap;
+            font-size: 12px;
+            vertical-align: top;
+
+            /* permite quebrar textos grandes */
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         tr:hover {
@@ -155,12 +165,68 @@
         }
 
 
+        /* LARGURA DAS COLUNAS */
+
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 13%;
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 32%;
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 10%;
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 14%;
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 13%;
+        }
+
+        th:nth-child(6),
+        td:nth-child(6) {
+            width: 8%;
+        }
+
+        th:nth-child(7),
+        td:nth-child(7) {
+            width: 10%;
+        }
+
+
         /* RESPONSIVO */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
+
+            .filtros {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
 
             .filtros {
                 grid-template-columns: 1fr;
+            }
+
+            .cabecalho h1 {
+                font-size: 24px;
+            }
+
+            th,
+            td {
+                font-size: 11px;
+                padding: 6px;
             }
 
         }
@@ -203,7 +269,39 @@
 
         <form method="GET">
 
-            <div class="filtros">
+            < class="filtros">
+
+
+                <!-- PREVISÃO -->
+
+                <div class="filtro">
+
+                    <label for="previsao">
+                        Previsão
+                    </label>
+
+                    <select name="previsao" id="previsao">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+                        {% for item in previsao_lista %}
+
+                            <option
+                                value="{{ item }}"
+                                {% if request.GET.previsao == item|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ item }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
 
 
                 <!-- STATUS -->
@@ -214,13 +312,26 @@
                         Status
                     </label>
 
-                    <input
-                        type="text"
-                        id="status"
-                        name="status"
-                        value="{{ request.GET.status|default:'' }}"
-                        placeholder="Digite o status"
-                    >
+                    <select name="status" id="status">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        {% for item in status_lista %}
+
+                            <option
+                                value="{{ item }}"
+                                {% if request.GET.status == item %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ item }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
 
                 </div>
 
@@ -233,32 +344,26 @@
                         Temperatura
                     </label>
 
-                    <input
-                        type="text"
-                        id="Temperatura"
-                        name="Temperatura"
-                        value="{{ request.GET.Temperatura|default:'' }}"
-                        placeholder="Digite a temperatura"
-                    >
+                    <select name="Temperatura" id="Temperatura">
 
-                </div>
+                        <option value="">
+                            Todas
+                        </option>
 
+                        {% for item in temperatura_lista %}
 
-                <!-- OPERAÇÃO -->
+                            <option
+                                value="{{ item }}"
+                                {% if request.GET.Temperatura == item %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ item }}
+                            </option>
 
-                <div class="filtro">
+                        {% endfor %}
 
-                    <label for="identificacao_cDesOp">
-                        Operação
-                    </label>
-
-                    <input
-                        type="text"
-                        id="identificacao_cDesOp"
-                        name="identificacao_cDesOp"
-                        value="{{ request.GET.identificacao_cDesOp|default:'' }}"
-                        placeholder="Digite a operação"
-                    >
+                    </select>
 
                 </div>
 

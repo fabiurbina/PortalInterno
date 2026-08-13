@@ -819,8 +819,10 @@ def buscar_posicao_estoque(nome_estoque=None):
 def buscar_previsao_demanda(
     status=None,
     Temperatura=None,
-    identificacao_cDesOp=None
+    identificacao_cDesOp=None,
+    previsao=None
 ):
+
     sql = """
         SELECT *
         FROM ViesanoDW.vw_previsao_demandas
@@ -837,9 +839,10 @@ def buscar_previsao_demanda(
         filtros.append("Temperatura = %s")
         parametros.append(Temperatura)
 
-    if identificacao_cDesOp:
-        filtros.append("identificacao_cDesOp = %s")
-        parametros.append(identificacao_cDesOp)
+
+    if previsao:
+        filtros.append("previsao = %s")
+        parametros.append(previsao)
 
     if filtros:
         sql += " WHERE " + " AND ".join(filtros)
