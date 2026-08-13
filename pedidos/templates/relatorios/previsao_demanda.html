@@ -288,7 +288,7 @@
 
                             <option
                                 value="{{ item }}"
-                                {% if request.GET.previsao == item|stringformat:"s" %}
+                                {% if request.GET.previsao == item|date:'Y-m-d' %}
                                     selected
                                 {% endif %}
                             >
@@ -364,26 +364,6 @@
                 </div>
 
             </div>
-
-
-            <div class="botoes">
-
-                <button type="submit" class="btn-filtrar">
-                    Filtrar
-                </button>
-
-                <a
-                    href="{% url 'previsao_demanda' %}"
-                    class="btn-limpar"
-                >
-                    Limpar
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
 
 
             <!-- BOTÕES -->
