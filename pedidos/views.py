@@ -175,6 +175,9 @@ def ficha_op(request, codigo_op):
                 )
             }
         )
+        
+    # Observação da OP
+    observacao_op = op.get('observacoes', {}).get('cObs', '')
 
     # Busca descrição das matérias-primas
     produtos_cache = {}
@@ -455,6 +458,7 @@ def ficha_op(request, codigo_op):
         'ficha_op.html',
         {
             'op': op,
+            'observacao_op': observacao_op,
             'nome_produto': nome_produto,
             'nome_etapa': nome_etapa,
             'materias_primas': materias_primas,
