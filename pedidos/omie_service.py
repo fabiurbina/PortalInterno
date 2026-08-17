@@ -54,6 +54,8 @@ def listar_ops():
             "erro": str(e)
         }
         
+        
+        
 def consultar_produto(codigo_produto):
 
     cache_key = f'produto_{codigo_produto}'
