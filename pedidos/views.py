@@ -1880,7 +1880,6 @@ def previsao_demanda(request):
     )
     
     
-    
 def qualidade_controle(request):
 
     ops = listar_ops()
@@ -1895,4 +1894,9 @@ def qualidade_controle(request):
         {
             "ops": ops
         }
-    )
+    ) 
+
+    
+
+def controle_peso(request):
+    return render(request, "controle_peso.html")
