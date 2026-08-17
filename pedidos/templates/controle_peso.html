@@ -1,0 +1,886 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Controle de Peso - Qualidade</title>
+
+    <link rel="icon"
+          type="image/png"
+          href="{% static 'img/logo_viesano.png' %}">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background: #f4f6f9;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .qualidade-header {
+            background: linear-gradient(
+                90deg,
+                #0D3B66,
+                #2EC4B6
+            );
+
+            color: white;
+            padding: 25px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .section-title {
+            background: #0D3B66;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .peso-input {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .resultado {
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .conforme {
+            color: #198754;
+        }
+
+        .nao-conforme {
+            color: #dc3545;
+        }
+
+        .pendente {
+            color: #6c757d;
+        }
+
+        .limite-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            height: 100%;
+        }
+
+        .limite-valor {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .amostra-table th {
+            background: #0D3B66;
+            color: white;
+            text-align: center;
+        }
+
+        .amostra-table td {
+            vertical-align: middle;
+        }
+
+        .inspecao-btn {
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: #0D3B66;
+            border-color: #0D3B66;
+        }
+
+        .btn-primary:hover {
+            background: #092b4a;
+            border-color: #092b4a;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container-fluid mt-4 mb-5">
+
+    <!-- CABEÇALHO -->
+
+    <div class="card shadow qualidade-card">
+
+        <div class="qualidade-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h2 class="mb-0">
+                        Controle de Qualidade
+                    </h2>
+
+                    <small>
+                        Controle de Peso - Envase de Pós
+                    </small>
+
+                </div>
+
+                <div class="text-end">
+
+                    <strong>
+                        VIESANO SUPLEMENTOS
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        Sistema de Gestão da Qualidade
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <!-- IDENTIFICAÇÃO -->
+
+            <div class="section-title mb-3">
+                Identificação da Produção
+            </div>
+
+
+            <div class="row g-3 mb-4">
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        OP
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="codigo_op"
+                        placeholder="Ex.: 2026/00067"
+                    >
+
+                </div>
+
+
+                <div class="col-md-5">
+
+                    <label class="form-label">
+                        Produto
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="produto"
+                        placeholder="Produto"
+                    >
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <label class="form-label">
+                        Data
+                    </label>
+
+                    <input
+                        type="date"
+                        class="form-control"
+                        id="data"
+                    >
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <label class="form-label">
+                        Responsável
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="responsavel"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- DADOS DE PESAGEM -->
+
+            <div class="section-title mb-3">
+                Parâmetros de Pesagem
+            </div>
+
+
+            <div class="row g-3 mb-4">
+
+
+                <div class="col-md-3">
+
+                    <div class="limite-card">
+
+                        <label class="form-label">
+                            Peso nominal
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                class="form-control"
+                                id="peso_nominal"
+                                placeholder="900"
+                                oninput="calcularLimites()"
+                            >
+
+                            <span class="input-group-text">
+                                g
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <div class="limite-card">
+
+                        <label class="form-label">
+                            Tara da embalagem
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                class="form-control"
+                                id="tara"
+                                placeholder="0"
+                                oninput="calcularLimites()"
+                            >
+
+                            <span class="input-group-text">
+                                g
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <div class="limite-card">
+
+                        <label class="form-label">
+                            Peso mín. aceitável
+                        </label>
+
+                        <div
+                            id="peso_minimo"
+                            class="limite-valor text-danger"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <div class="limite-card">
+
+                        <label class="form-label">
+                            Peso máx. aceitável
+                        </label>
+
+                        <div
+                            id="peso_maximo"
+                            class="limite-valor text-success"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFERÊNCIA -->
+
+            <div class="section-title mb-3">
+
+                Conferência de Peso
+
+            </div>
+
+
+            <div class="row mb-3">
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Hora da conferência
+                    </label>
+
+                    <input
+                        type="time"
+                        class="form-control"
+                        id="hora"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered amostra-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th width="10%">
+                                Amostra
+                            </th>
+
+                            <th width="25%">
+                                Peso (g)
+                            </th>
+
+                            <th width="20%">
+                                Resultado
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    {% for i in "1234567890" %}
+
+                    <tr>
+
+                        <td class="text-center fw-bold">
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <td>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                class="form-control peso-input"
+                                id="peso_{{ forloop.counter }}"
+                                oninput="avaliarPeso({{ forloop.counter }})"
+                            >
+
+                        </td>
+
+
+                        <td>
+
+                            <div
+                                id="resultado_{{ forloop.counter }}"
+                                class="resultado pendente"
+                            >
+                                —
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+
+
+                    <tfoot>
+
+                        <tr>
+
+                            <th colspan="2"
+                                class="text-end">
+
+                                Peso Médio
+
+                            </th>
+
+                            <th>
+
+                                <div
+                                    id="peso_medio"
+                                    class="resultado"
+                                >
+                                    -
+                                </div>
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+
+            <!-- INSPEÇÃO -->
+
+            <div class="section-title mt-4 mb-3">
+
+                Inspeção
+
+            </div>
+
+
+            <div class="row g-3">
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Embalagem
+                    </label>
+
+                    <div>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✓ Conforme
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✕ Não Conforme
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Selagem
+                    </label>
+
+                    <div>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✓ Conforme
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✕ Não Conforme
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Rótulagem
+                    </label>
+
+                    <div>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✓ Conforme
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✕ Não Conforme
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Codificação
+                    </label>
+
+                    <div>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✓ Conforme
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✕ Não Conforme
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Lacre
+                    </label>
+
+                    <div>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✓ Conforme
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger inspecao-btn"
+                            onclick="selecionarInspecao(this)"
+                        >
+                            ✕ Não Conforme
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- OBSERVAÇÕES -->
+
+            <div class="section-title mt-4 mb-3">
+
+                Observações
+
+            </div>
+
+
+            <textarea
+                class="form-control"
+                rows="4"
+                id="observacoes"
+                placeholder="Digite as observações da conferência..."
+            ></textarea>
+
+
+            <!-- BOTÕES -->
+
+            <div class="d-flex justify-content-between mt-4">
+
+
+                <a
+                    href="{% url 'qualidade_home' %}"
+                    class="btn btn-secondary"
+                >
+                    ← Voltar
+                </a>
+
+
+                <button
+                    type="button"
+                    class="btn btn-primary px-5"
+                    onclick="salvarConferencia()"
+                >
+                    Salvar Conferência
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+function calcularLimites() {
+
+    let nominal = parseFloat(
+        document.getElementById("peso_nominal").value
+    );
+
+    if (isNaN(nominal)) {
+
+        document.getElementById("peso_minimo").innerText = "-";
+        document.getElementById("peso_maximo").innerText = "-";
+
+        return;
+    }
+
+
+    /*
+        Regra:
+        limite inferior = nominal - 1%
+        limite superior = nominal + 1%
+    */
+
+    let minimo = nominal * 0.99;
+    let maximo = nominal * 1.01;
+
+
+    document.getElementById("peso_minimo").innerText =
+        minimo.toFixed(2) + " g";
+
+
+    document.getElementById("peso_maximo").innerText =
+        maximo.toFixed(2) + " g";
+
+
+    for (let i = 1; i <= 10; i++) {
+
+        avaliarPeso(i);
+
+    }
+
+}
+
+
+function avaliarPeso(numero) {
+
+    let input = document.getElementById(
+        "peso_" + numero
+    );
+
+    let resultado = document.getElementById(
+        "resultado_" + numero
+    );
+
+
+    let peso = parseFloat(input.value);
+
+    let nominal = parseFloat(
+        document.getElementById("peso_nominal").value
+    );
+
+
+    if (
+        isNaN(peso) ||
+        isNaN(nominal)
+    ) {
+
+        resultado.innerText = "—";
+        resultado.className =
+            "resultado pendente";
+
+        calcularMedia();
+
+        return;
+
+    }
+
+
+    let minimo = nominal * 0.99;
+    let maximo = nominal * 1.01;
+
+
+    if (
+        peso >= minimo &&
+        peso <= maximo
+    ) {
+
+        resultado.innerText =
+            "✓ CONFORME";
+
+        resultado.className =
+            "resultado conforme";
+
+    } else {
+
+        resultado.innerText =
+            "✕ NÃO CONFORME";
+
+        resultado.className =
+            "resultado nao-conforme";
+
+    }
+
+
+    calcularMedia();
+
+}
+
+
+function calcularMedia() {
+
+    let soma = 0;
+    let quantidade = 0;
+
+
+    for (let i = 1; i <= 10; i++) {
+
+        let valor = parseFloat(
+            document.getElementById(
+                "peso_" + i
+            ).value
+        );
+
+
+        if (!isNaN(valor)) {
+
+            soma += valor;
+            quantidade++;
+
+        }
+
+    }
+
+
+    let mediaElement =
+        document.getElementById(
+            "peso_medio"
+        );
+
+
+    if (quantidade === 0) {
+
+        mediaElement.innerText = "-";
+
+        return;
+
+    }
+
+
+    let media = soma / quantidade;
+
+
+    mediaElement.innerText =
+        media.toFixed(2) + " g";
+
+}
+
+
+function selecionarInspecao(botao) {
+
+    let grupo =
+        botao.parentElement;
+
+
+    grupo
+        .querySelectorAll("button")
+        .forEach(function(btn) {
+
+            btn.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    botao.classList.add("active");
+
+}
+
+
+function salvarConferencia() {
+
+    alert(
+        "A tela está pronta. O próximo passo será conectar o botão ao Django/SQL."
+    );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
