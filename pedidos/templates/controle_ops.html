@@ -5,17 +5,328 @@
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Controle de Qualidade</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .titulo h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .titulo p {
+            margin: 6px 0 0;
+            color: #6b7280;
+        }
+
+        .contador {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.06);
+        }
+
+        .contador strong {
+            font-size: 20px;
+        }
+
+        .lista-ops {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card-op {
+            background: white;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.07);
+            border: 1px solid #e5e7eb;
+            transition: .2s;
+        }
+
+        .card-op:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,.10);
+        }
+
+        .topo-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .op-numero {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-producao {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-concluida {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .produto {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 18px;
+        }
+
+        .produto-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .produto-codigo {
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .informacoes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .info span {
+            display: block;
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .info strong {
+            display: block;
+            margin-top: 4px;
+        }
+
+        .botao {
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 10px;
+            background: #111827;
+            color: white;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .botao:hover {
+            background: #374151;
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-    <h1>Controle de Qualidade</h1>
+<div class="container">
 
-    <h2>Retorno das OPs</h2>
+    <div class="cabecalho">
 
-    <pre>{{ ops }}</pre>
+        <div class="titulo">
+
+            <h1>⚖ Controle de Qualidade</h1>
+
+            <p>Selecione uma Ordem de Produção para iniciar a inspeção.</p>
+
+        </div>
+
+        <div class="contador">
+
+            <strong>{{ ops.cadastros|length }}</strong>
+
+            <span> OPs</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="lista-ops">
+
+        {% for op in ops.cadastros %}
+
+            <div class="card-op">
+
+                <div class="topo-card">
+
+                    <div class="op-numero">
+
+                        OP {{ op.identificacao.cNumOP }}
+
+                    </div>
+
+
+                    {% if op.outrasInf.cConcluida == "N" %}
+
+                        <div class="status status-producao">
+
+                            ● EM PRODUÇÃO
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="status status-concluida">
+
+                            ● CONCLUÍDA
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="produto">
+
+                    <div class="produto-label">
+
+                        Código do produto
+
+                    </div>
+
+                    <div class="produto-codigo">
+
+                        {{ op.identificacao.nCodProduto }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="informacoes">
+
+                    <div class="info">
+
+                        <span>Quantidade</span>
+
+                        <strong>
+
+                            {{ op.identificacao.nQtde }}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>Etapa</span>
+
+                        <strong>
+
+                            {{ op.infAdicionais.cEtapa }}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>Início</span>
+
+                        <strong>
+
+                            {{ op.infAdicionais.dDtInicio }}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>Previsão</span>
+
+                        <strong>
+
+                            {{ op.identificacao.dDtPrevisao }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="{% url 'controle_peso' %}?op={{ op.identificacao.cNumOP }}"
+                    class="botao"
+                >
+
+                    Abrir controle de qualidade →
+
+                </a>
+
+            </div>
+
+        {% empty %}
+
+            <div class="card-op">
+
+                <strong>Nenhuma OP encontrada.</strong>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
 
 </body>
 
