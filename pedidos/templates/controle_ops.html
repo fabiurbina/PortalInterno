@@ -230,18 +230,16 @@
                 </div>
 
 
-                <div class="produto">
-
-                    <div class="produto-label">
-
-                        Código do produto
-
+                <div class="produto-label">
+                        Produto
                     </div>
 
                     <div class="produto-codigo">
+                        {{ op.nome_produto }}
+                    </div>
 
-                        {{ op.identificacao.nCodProduto }}
-
+                    <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">
+                        Código: {{ op.identificacao.nCodProduto }}
                     </div>
 
                 </div>

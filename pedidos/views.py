@@ -1884,9 +1884,13 @@ def qualidade_controle(request):
 
     ops = listar_ops()
 
-    print("========== RETORNO DAS OPS ==========")
-    print(ops)
-    print("======================================")
+    for op in ops.get("cadastros", []):
+
+        codigo_produto = op["identificacao"]["nCodProduto"]
+
+        produto = consultar_produto(codigo_produto)
+
+        op["nome_produto"] = produto.get("descricao", "Produto não encontrado")
 
     return render(
         request,
@@ -1894,7 +1898,7 @@ def qualidade_controle(request):
         {
             "ops": ops
         }
-    ) 
+    )
 
     
 
