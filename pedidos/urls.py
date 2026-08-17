@@ -27,7 +27,8 @@ from .views import (
     posicao_estoque_view,
     exportar_posicao_estoque_excel,
     relatorios_diversos,
-    previsao_demanda
+    previsao_demanda,
+    controle_peso
 )
 
 urlpatterns = [
@@ -185,6 +186,12 @@ urlpatterns = [
         previsao_demanda,
         name="previsao_demanda"
     ),
+    
+    path(
+    "qualidade/controle-peso/",
+    controle_peso,
+    name="controle_peso"
+),
 
 
 ]
