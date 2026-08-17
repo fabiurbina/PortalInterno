@@ -1890,7 +1890,7 @@ def qualidade_controle(request):
 
     return render(
         request,
-        "qualidade/controle_ops.html",
+        "controle_ops.html",
         {
             "ops": ops
         }
