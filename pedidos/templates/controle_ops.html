@@ -18,81 +18,221 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            color: #1f2937;
+            background: #f4f6f8;
+            color: #111827;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 30px;
+            padding: 28px 32px;
         }
+
+        /* =========================
+           CABEÇALHO
+        ========================= */
 
         .cabecalho {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 22px;
         }
 
         .titulo h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 25px;
+            font-weight: 700;
         }
 
         .titulo p {
-            margin: 6px 0 0;
-            color: #6b7280;
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 13px;
         }
 
         .contador {
             background: white;
-            padding: 12px 18px;
-            border-radius: 12px;
+            padding: 10px 16px;
+            border-radius: 11px;
             box-shadow: 0 3px 12px rgba(0,0,0,.06);
+            font-size: 13px;
         }
 
         .contador strong {
-            font-size: 20px;
+            font-size: 17px;
         }
+
+
+        /* =========================
+           FILTROS
+        ========================= */
+
+        .filtros {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .filtro {
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .filtro:hover {
+            background: #f8fafc;
+        }
+
+        .filtro.ativo {
+            background: #111827;
+            color: white;
+            border-color: #111827;
+        }
+
+
+        /* =========================
+           CABEÇALHO DA TABELA
+        ========================= */
 
         .lista-ops {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .card-op {
-            background: white;
-            border-radius: 18px;
-            padding: 22px;
-            box-shadow: 0 5px 18px rgba(0,0,0,.07);
-            border: 1px solid #e5e7eb;
-            transition: .2s;
-        }
-
-        .card-op:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,.10);
-        }
-
-        .topo-card {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
+            flex-direction: column;
+            gap: 7px;
         }
+
+        .cabecalho-lista {
+            display: grid;
+
+            grid-template-columns:
+                135px
+                minmax(230px, 1fr)
+                80px
+                80px
+                105px
+                120px
+                115px;
+
+            align-items: center;
+
+            padding: 0 18px 7px;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+        }
+
+
+        /* =========================
+           LINHA DA OP
+        ========================= */
+
+        .linha-op {
+            display: grid;
+
+            grid-template-columns:
+                135px
+                minmax(230px, 1fr)
+                80px
+                80px
+                105px
+                120px
+                115px;
+
+            align-items: center;
+
+            min-height: 68px;
+
+            background: white;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            padding: 10px 18px;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+
+            transition: .18s;
+        }
+
+        .linha-op:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0,0,0,.08);
+            border-color: #cbd5e1;
+        }
+
+
+        /* =========================
+           OP
+        ========================= */
 
         .op-numero {
-            font-size: 21px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 700;
         }
 
-        .status {
-            padding: 6px 10px;
-            border-radius: 20px;
+
+        /* =========================
+           PRODUTO
+        ========================= */
+
+        .produto-nome {
+            font-size: 13px;
+            font-weight: 600;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            padding-right: 15px;
+        }
+
+        .produto-codigo {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+
+        /* =========================
+           INFORMAÇÕES
+        ========================= */
+
+        .info {
             font-size: 12px;
-            font-weight: bold;
+            color: #334155;
+        }
+
+        .info-label {
+            display: none;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+            display: inline-flex;
+
+            width: fit-content;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: 700;
         }
 
         .status-producao {
@@ -101,77 +241,107 @@
         }
 
         .status-concluida {
-            background: #e5e7eb;
-            color: #4b5563;
+            background: #e2e8f0;
+            color: #475569;
         }
 
-        .produto {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 18px;
-        }
 
-        .produto-label {
-            font-size: 11px;
-            color: #6b7280;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .produto-codigo {
-            font-weight: bold;
-            font-size: 17px;
-        }
-
-        .informacoes {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .info {
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-        }
-
-        .info span {
-            display: block;
-            font-size: 11px;
-            color: #6b7280;
-            text-transform: uppercase;
-        }
-
-        .info strong {
-            display: block;
-            margin-top: 4px;
-        }
+        /* =========================
+           BOTÃO
+        ========================= */
 
         .botao {
-            display: block;
-            width: 100%;
-            text-align: center;
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
             text-decoration: none;
-            padding: 12px;
-            border-radius: 10px;
+
             background: #111827;
+
             color: white;
-            font-weight: bold;
-            transition: .2s;
+
+            padding: 9px 12px;
+
+            border-radius: 8px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition: .18s;
         }
 
         .botao:hover {
-            background: #374151;
+            background: #1f2937;
+        }
+
+
+        /* =========================
+           VAZIO
+        ========================= */
+
+        .vazio {
+            background: white;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            padding: 35px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           RESPONSIVO
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .container {
+                padding: 20px;
+            }
+
+            .cabecalho-lista {
+                display: none;
+            }
+
+            .linha-op {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 16px;
+            }
+
+            .produto-nome {
+                white-space: normal;
+            }
+
+            .botao {
+                margin-top: 5px;
+            }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
 
 <div class="container">
+
+
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
 
     <div class="cabecalho">
 
@@ -179,28 +349,88 @@
 
             <h1>⚖ Controle de Qualidade</h1>
 
-            <p>Selecione uma Ordem de Produção para iniciar a inspeção.</p>
+            <p>
+                Selecione uma Ordem de Produção para iniciar a inspeção.
+            </p>
 
         </div>
+
 
         <div class="contador">
 
             <strong>{{ ops.cadastros|length }}</strong>
 
-            <span> OPs</span>
+            OPs
 
         </div>
 
     </div>
 
 
+
+    <!-- =========================
+         FILTROS
+    ========================== -->
+
+    <div class="filtros">
+
+        <button class="filtro ativo">
+            Todas
+        </button>
+
+        <button class="filtro">
+            Em produção
+        </button>
+
+        <button class="filtro">
+            Concluídas
+        </button>
+
+    </div>
+
+
+
+    <!-- =========================
+         LISTA
+    ========================== -->
+
     <div class="lista-ops">
 
-        {% for op in ops.cadastros %}
 
-            <div class="card-op">
+        {% if ops.cadastros %}
 
-                <div class="topo-card">
+
+            <!-- CABEÇALHO -->
+
+            <div class="cabecalho-lista">
+
+                <div>OP</div>
+
+                <div>Produto</div>
+
+                <div>Qtd.</div>
+
+                <div>Etapa</div>
+
+                <div>Início</div>
+
+                <div>Status</div>
+
+                <div></div>
+
+            </div>
+
+
+
+            <!-- OPs -->
+
+            {% for op in ops.cadastros %}
+
+
+                <div class="linha-op">
+
+
+                    <!-- OP -->
 
                     <div class="op-numero">
 
@@ -209,120 +439,120 @@
                     </div>
 
 
-                    {% if op.outrasInf.cConcluida == "N" %}
 
-                        <div class="status status-producao">
+                    <!-- PRODUTO -->
 
-                            ● EM PRODUÇÃO
+                    <div>
 
-                        </div>
+                        <div class="produto-nome">
 
-                    {% else %}
-
-                        <div class="status status-concluida">
-
-                            ● CONCLUÍDA
+                            {{ op.nome_produto }}
 
                         </div>
 
-                    {% endif %}
+                        <div class="produto-codigo">
+
+                            Código: {{ op.identificacao.nCodProduto }}
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- QUANTIDADE -->
+
+                    <div class="info">
+
+                        {{ op.identificacao.nQtde }}
+
+                    </div>
+
+
+
+                    <!-- ETAPA -->
+
+                    <div class="info">
+
+                        {{ op.infAdicionais.cEtapa }}
+
+                    </div>
+
+
+
+                    <!-- INÍCIO -->
+
+                    <div class="info">
+
+                        {{ op.infAdicionais.dDtInicio }}
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div>
+
+                        {% if op.outrasInf.cConcluida == "N" %}
+
+                            <span class="status status-producao">
+
+                                ● EM PRODUÇÃO
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status status-concluida">
+
+                                ● CONCLUÍDA
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- AÇÃO -->
+
+                    <div>
+
+                        <a
+                            href="{% url 'controle_peso' %}?op={{ op.identificacao.cNumOP }}"
+                            class="botao"
+                        >
+
+                            Abrir controle →
+
+                        </a>
+
+                    </div>
+
 
                 </div>
 
 
-                <div class="produto-label">
-                        Produto
-                    </div>
-
-                    <div class="produto-codigo">
-                        {{ op.nome_produto }}
-                    </div>
-
-                    <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">
-                        Código: {{ op.identificacao.nCodProduto }}
-                    </div>
-
-                </div>
+            {% endfor %}
 
 
-                <div class="informacoes">
-
-                    <div class="info">
-
-                        <span>Quantidade</span>
-
-                        <strong>
-
-                            {{ op.identificacao.nQtde }}
-
-                        </strong>
-
-                    </div>
+        {% else %}
 
 
-                    <div class="info">
+            <div class="vazio">
 
-                        <span>Etapa</span>
-
-                        <strong>
-
-                            {{ op.infAdicionais.cEtapa }}
-
-                        </strong>
-
-                    </div>
-
-
-                    <div class="info">
-
-                        <span>Início</span>
-
-                        <strong>
-
-                            {{ op.infAdicionais.dDtInicio }}
-
-                        </strong>
-
-                    </div>
-
-
-                    <div class="info">
-
-                        <span>Previsão</span>
-
-                        <strong>
-
-                            {{ op.identificacao.dDtPrevisao }}
-
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <a
-                    href="{% url 'controle_peso' %}?op={{ op.identificacao.cNumOP }}"
-                    class="botao"
-                >
-
-                    Abrir controle de qualidade →
-
-                </a>
+                Nenhuma Ordem de Produção encontrada.
 
             </div>
 
-        {% empty %}
 
-            <div class="card-op">
+        {% endif %}
 
-                <strong>Nenhuma OP encontrada.</strong>
-
-            </div>
-
-        {% endfor %}
 
     </div>
+
 
 </div>
 
