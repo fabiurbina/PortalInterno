@@ -431,12 +431,9 @@
                         <div class="input-group mt-2">
 
                             <input
-                                type="number"
-                                step="0.01"
-                                id="peso_nominal"
+                                type="text"
                                 class="form-control"
-                                value= "{{ op.peso_liq }}"
-                                oninput="atualizarLimites()"
+                                value="{{ op.peso_liq }}"
                             >
 
                             <span class="input-group-text">
@@ -461,9 +458,7 @@
                         <div class="input-group mt-2">
 
                             <input
-                                type="number"
-                                step="0.01"
-                                id="tara"
+                                type="text"
                                 class="form-control"
                                 value="{{ op.peso_bruto }}"
                             >
