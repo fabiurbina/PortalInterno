@@ -1280,15 +1280,28 @@ function atualizarMedia(numero) {
 
 function atualizarResultadoInspecao(numero) {
 
-    const inputs =
-        document.querySelectorAll(
-            `[data-inspecao="${numero}"]`
-        );
-
+    const inputs = document.querySelectorAll(
+        `[data-inspecao="${numero}"]`
+    );
 
     let preenchidos = 0;
     let desvios = 0;
     let ultrapassouAbsoluto = false;
+
+    // Limites calculados a partir do peso nominal
+    const nominal = PESO_NOMINAL;
+
+    if (isNaN(nominal) || nominal <= 0) {
+        return;
+    }
+
+    // Tolerância normal = 1%
+    const minimo = nominal * 0.99;
+    const maximo = nominal * 1.01;
+
+    // Tolerância absoluta = 2%
+    const minimoAbsoluto = nominal * 0.98;
+    const maximoAbsoluto = nominal * 1.02;
 
 
     inputs.forEach(input => {
@@ -1307,12 +1320,12 @@ function atualizarResultadoInspecao(numero) {
 
 
             // ==========================================
-            // LIMITE ABSOLUTO
+            // FORA DA TOLERÂNCIA ABSOLUTA
             // ==========================================
 
             if (
-                peso < window.limitesPeso.minimoAbsoluto ||
-                peso > window.limitesPeso.maximoAbsoluto
+                peso < minimoAbsoluto ||
+                peso > maximoAbsoluto
             ) {
 
                 ultrapassouAbsoluto = true;
@@ -1321,12 +1334,12 @@ function atualizarResultadoInspecao(numero) {
 
 
             // ==========================================
-            // FORA DO LIMITE NORMAL
+            // FORA DA FAIXA NORMAL
             // ==========================================
 
             else if (
-                peso < window.limitesPeso.minimo ||
-                peso > window.limitesPeso.maximo
+                peso < minimo ||
+                peso > maximo
             ) {
 
                 desvios++;
@@ -1338,10 +1351,9 @@ function atualizarResultadoInspecao(numero) {
     });
 
 
-    const resultado =
-        document.getElementById(
-            "resultado_inspecao_" + numero
-        );
+    const resultado = document.getElementById(
+        "resultado_inspecao_" + numero
+    );
 
 
     // ==========================================
@@ -1350,14 +1362,12 @@ function atualizarResultadoInspecao(numero) {
 
     if (preenchidos === 0) {
 
-        resultado.innerText =
-            "Aguardando pesos";
+        resultado.innerText = "Aguardando pesos";
 
         resultado.className =
             "resultado-box text-secondary";
 
         return;
-
     }
 
 
@@ -1374,19 +1384,11 @@ function atualizarResultadoInspecao(numero) {
             "resultado-box text-warning";
 
         return;
-
     }
-
-    console.log("RESULTADO INSPEÇÃO");
-    console.log("Número:", numero);
-    console.log("Preenchidos:", preenchidos);
-    console.log("Desvios:", desvios);
-    console.log("Ultrapassou absoluto:", ultrapassouAbsoluto);
-    console.log("Limites:", window.limitesPeso);
 
 
     // ==========================================
-    // REGRA DE NÃO CONFORMIDADE
+    // RESULTADO FINAL
     // ==========================================
 
     if (ultrapassouAbsoluto) {
@@ -1399,7 +1401,6 @@ function atualizarResultadoInspecao(numero) {
 
     }
 
-
     else if (desvios > 2) {
 
         resultado.innerText =
@@ -1409,11 +1410,6 @@ function atualizarResultadoInspecao(numero) {
             "resultado-box text-danger";
 
     }
-
-
-    // ==========================================
-    // CONFORME
-    // ==========================================
 
     else {
 
@@ -1431,12 +1427,10 @@ function atualizarResultadoInspecao(numero) {
 
         resultado.className =
             "resultado-box text-success";
-
     }
 
 
     atualizarResumo();
-
 }
 
 
