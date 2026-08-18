@@ -1891,6 +1891,20 @@ def qualidade_controle(request):
         produto = consultar_produto(codigo_produto)
 
         op["nome_produto"] = produto.get("descricao", "Produto não encontrado")
+        
+        
+        op["codigo_produto"] = produto.get(
+            "codigo",
+            ""
+        )
+
+        op["peso_liq"] = produto.get(
+            "peso_liq"
+        )
+
+        op["peso_bruto"] = produto.get(
+            "peso_bruto"
+        )
 
     return render(
         request,
