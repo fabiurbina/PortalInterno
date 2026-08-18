@@ -715,6 +715,10 @@
 
 <script>
 
+const PESO_NOMINAL = parseFloat("{{ op.peso_liq_g }}".replace(",", "."));
+const PESO_MINIMO = parseFloat("{{ op.peso_minimo_g }}".replace(",", "."));
+const PESO_MAXIMO = parseFloat("{{ op.peso_maximo_g }}".replace(",", "."));
+
 
 let contadorInspecoes = 0;
 
@@ -1003,17 +1007,11 @@ function gerarControle(nome, campo) {
 
 function avaliarPeso(input) {
 
-    const valor =
-        parseFloat(input.value);
+    const valor = parseFloat(input.value);
 
-
-    const nominal =
-        parseFloat(
-            document.getElementById(
-                "peso_nominal"
-            ).value
-        );
-
+    const nominal = PESO_NOMINAL;
+    const minimo = PESO_MINIMO;
+    const maximo = PESO_MAXIMO;
 
     if (
         isNaN(valor) ||
@@ -1030,23 +1028,12 @@ function avaliarPeso(input) {
         );
 
         return;
-
     }
-
-
-    const minimo =
-        nominal * 0.99;
-
-
-    const maximo =
-        nominal * 1.01;
-
 
     input.classList.remove(
         "conforme",
         "nao-conforme"
     );
-
 
     if (
         valor >= minimo &&
@@ -1062,14 +1049,11 @@ function avaliarPeso(input) {
         input.classList.add(
             "nao-conforme"
         );
-
     }
-
 
     atualizarMedia(
         input.dataset.inspecao
     );
-
 }
 
 
