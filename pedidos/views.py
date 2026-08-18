@@ -1942,6 +1942,7 @@ def controle_peso(request):
                 "codigo",
                 ""
             )
+            print(f"Produto: {op['nome_produto']}, Código: {op['codigo_produto']}")
 
             # ==========================================
             # PESOS DO PRODUTO
