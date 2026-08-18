@@ -1969,6 +1969,27 @@ def controle_peso(request):
                 op["peso_liq_g"] * (1 + tolerancia)
             )
 
+            print("===================================")
+            print("OP:", numero_op)
+            print("CÓDIGO PRODUTO:", codigo_produto)
+            print("PRODUTO:", produto)
+
+            print("-----------------------------------")
+            print("PESO LIQ KG:", peso_liq)
+            print("PESO BRUTO KG:", peso_bruto)
+
+            print("-----------------------------------")
+            print("PESO LIQ G:", op["peso_liq_g"])
+            print("TARA G:", op["tara_g"])
+
+            print("-----------------------------------")
+            print("TOLERÂNCIA:", tolerancia)
+
+            print("PESO MÍNIMO G:", op["peso_minimo_g"])
+            print("PESO MÁXIMO G:", op["peso_maximo_g"])
+
+            print("===================================")
+
             return render(
                 request,
                 "controle_peso.html",
@@ -1976,6 +1997,10 @@ def controle_peso(request):
                     "op": op
                 }
             )
+
+    print("===================================")
+    print("OP NÃO ENCONTRADA:", numero_op)
+    print("===================================")
 
     return render(
         request,
