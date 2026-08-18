@@ -1917,4 +1917,49 @@ def qualidade_controle(request):
     
 
 def controle_peso(request):
-    return render(request, "controle_peso.html")
+
+    numero_op = request.GET.get("op")
+
+    ops = listar_ops()
+
+    for op in ops.get("cadastros", []):
+
+        if op["identificacao"]["cNumOP"] == numero_op:
+
+            codigo_produto = op["identificacao"]["nCodProduto"]
+
+            produto = consultar_produto(codigo_produto)
+
+            op["nome_produto"] = produto.get(
+                "descricao",
+                "Produto não encontrado"
+            )
+
+            op["codigo_produto"] = produto.get(
+                "codigo",
+                ""
+            )
+
+            op["peso_liq"] = produto.get(
+                "peso_liq"
+            )
+
+            op["peso_bruto"] = produto.get(
+                "peso_bruto"
+            )
+
+            return render(
+                request,
+                "controle_peso.html",
+                {
+                    "op": op
+                }
+            )
+
+    return render(
+        request,
+        "controle_peso.html",
+        {
+            "op": None
+        }
+    )
