@@ -416,109 +416,109 @@
 
         <div class="row g-3 mb-4">
 
-            <!-- PESO NOMINAL -->
-            <div class="col-md-3">
+    <!-- PESO NOMINAL -->
+    <div class="col-md-3">
 
-                <div class="param-card">
+        <div class="param-card">
 
-                    <div class="param-label">
-                        Peso nominal
-                    </div>
-
-                    <div class="input-group mt-2">
-
-                        <input
-                            type="number"
-                            step="0.01"
-                            id="peso_nominal"
-                            class="form-control"
-                            value="{{ op.peso_liq_g|floatformat:2 }}"
-                            oninput="atualizarLimites()"
-                        >
-
-                        <span class="input-group-text">
-                            g
-                        </span>
-
-                    </div>
-
-                </div>
-
+            <div class="param-label">
+                Peso nominal
             </div>
 
+            <div class="input-group mt-2">
 
-            <!-- TARA -->
-            <div class="col-md-3">
+                <input
+                    type="number"
+                    step="0.01"
+                    id="peso_nominal"
+                    class="form-control"
+                    value="{{ op.peso_liq_g|floatformat:2 }}"
+                    oninput="atualizarLimites()"
+                >
 
-                <div class="param-card">
-
-                    <div class="param-label">
-                        Tara da embalagem
-                    </div>
-
-                    <div class="input-group mt-2">
-
-                        <input
-                            type="number"
-                            step="0.01"
-                            id="tara"
-                            class="form-control"
-                            value="{{ op.tara_g|floatformat:2 }}"
-                        >
-
-                        <span class="input-group-text">
-                            g
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- PESO MÍNIMO -->
-            <div class="col-md-3">
-
-                <div class="param-card">
-
-                    <div class="param-label">
-                        Peso mínimo aceitável
-                    </div>
-
-                    <div
-                        class="param-value mt-2 text-danger"
-                        id="peso_minimo"
-                    >
-                        {{ op.peso_minimo_g|floatformat:2 }} g
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- PESO MÁXIMO -->
-            <div class="col-md-3">
-
-                <div class="param-card">
-
-                    <div class="param-label">
-                        Peso máximo aceitável
-                    </div>
-
-                    <div
-                        class="param-value mt-2 text-success"
-                        id="peso_maximo"
-                    >
-                        {{ op.peso_maximo_g|floatformat:2 }} g
-                    </div>
-
-                </div>
+                <span class="input-group-text">
+                    g
+                </span>
 
             </div>
 
         </div>
+
+    </div>
+
+
+    <!-- TARA / PESO BRUTO -->
+    <div class="col-md-3">
+
+        <div class="param-card">
+
+            <div class="param-label">
+                Tara da embalagem
+            </div>
+
+            <div class="input-group mt-2">
+
+                <input
+                    type="number"
+                    step="0.01"
+                    id="tara"
+                    class="form-control"
+                    value="{{ op.tara_g|floatformat:2 }}"
+                >
+
+                <span class="input-group-text">
+                    g
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MÍNIMO -->
+    <div class="col-md-3">
+
+        <div class="param-card">
+
+            <div class="param-label">
+                Peso mínimo aceitável
+            </div>
+
+            <div
+                class="param-value mt-2 text-danger"
+                id="peso_minimo"
+            >
+                {{ op.peso_minimo_g|floatformat:2 }} g
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MÁXIMO -->
+    <div class="col-md-3">
+
+        <div class="param-card">
+
+            <div class="param-label">
+                Peso máximo aceitável
+            </div>
+
+            <div
+                class="param-value mt-2 text-success"
+                id="peso_maximo"
+            >
+                {{ op.peso_maximo_g|floatformat:2 }} g
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
             <!-- CONTROLE -->
 

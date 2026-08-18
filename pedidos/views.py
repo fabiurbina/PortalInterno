@@ -1943,47 +1943,30 @@ def controle_peso(request):
                 ""
             )
 
-            # =========================
-            # PESOS
-            # =========================
-
-            peso_liq_kg = Decimal(str(
-                produto.get("peso_liq") or 0
-            ))
-
-            peso_bruto_kg = Decimal(str(
-                produto.get("peso_bruto") or 0
-            ))
-
+            # ==========================================
+            # PESOS DO PRODUTO
             # Omie retorna em KG
-            op["peso_liq_g"] = peso_liq_kg * 1000
-            op["peso_bruto_g"] = peso_bruto_kg * 1000
+            # ==========================================
 
-            # Tara = peso bruto - peso líquido
-            op["tara_g"] = (
-                op["peso_bruto_g"] - op["peso_liq_g"]
-            )
+            peso_liq = produto.get("peso_liq") or 0
+            peso_bruto = produto.get("peso_bruto") or 0
 
-            # =========================
-            # TOLERÂNCIA
-            # =========================
+            # Converter KG -> GRAMAS
+            op["peso_liq_g"] = float(peso_liq) * 1000
+            op["tara_g"] = float(peso_bruto) * 1000
 
-            op["tolerancia_percentual"] = Decimal("1.00")
+            # ==========================================
+            # TOLERÂNCIA DE PESAGEM
+            # ==========================================
+
+            tolerancia = 0.01  # 1%
 
             op["peso_minimo_g"] = (
-                op["peso_liq_g"]
-                * (
-                    Decimal("1")
-                    - op["tolerancia_percentual"] / 100
-                )
+                op["peso_liq_g"] * (1 - tolerancia)
             )
 
             op["peso_maximo_g"] = (
-                op["peso_liq_g"]
-                * (
-                    Decimal("1")
-                    + op["tolerancia_percentual"] / 100
-                )
+                op["peso_liq_g"] * (1 + tolerancia)
             )
 
             return render(
