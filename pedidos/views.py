@@ -1929,6 +1929,14 @@ def controle_peso(request):
             codigo_produto = op["identificacao"]["nCodProduto"]
 
             produto = consultar_produto(codigo_produto)
+            
+            print("===================================")
+            print("OP:", numero_op)
+            print("CÓDIGO PRODUTO:", codigo_produto)
+            print("PRODUTO:", produto)
+            print("PESO LIQ:", produto.get("peso_liq"))
+            print("PESO BRUTO:", produto.get("peso_bruto"))
+            print("===================================")
 
             op["nome_produto"] = produto.get(
                 "descricao",
