@@ -343,6 +343,8 @@
 
             <div class="row g-3 mb-4">
 
+                {% if ops.cadastros %}
+
 
                 <div class="col-md-3">
 
@@ -354,7 +356,7 @@
                         type="text"
                         id="codigo_op"
                         class="form-control"
-                        placeholder="2026/00067"
+                        value="{{ op.identificacao.cNumOP }}"
                     >
 
                 </div>
@@ -370,7 +372,7 @@
                         type="text"
                         id="produto"
                         class="form-control"
-                        placeholder="Whey Protein 900g"
+                        value="{{op.nome_produto}}"
                     >
 
                 </div>
@@ -435,7 +437,7 @@
                                 step="0.01"
                                 id="peso_nominal"
                                 class="form-control"
-                                value="900"
+                                value= {{ op.peso_liq }}
                                 oninput="atualizarLimites()"
                             >
 
@@ -465,7 +467,7 @@
                                 step="0.01"
                                 id="tara"
                                 class="form-control"
-                                value="0"
+                                value={{ op.peso_bruto }}
                             >
 
                             <span class="input-group-text">
