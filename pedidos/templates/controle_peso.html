@@ -410,13 +410,13 @@
 
             <!-- PARÂMETROS -->
 
-            <div class="section-title mb-3">
+        <div class="section-title mb-3">
+            ⚖ Parâmetros de Pesagem
+        </div>
 
-                ⚖ Parâmetros de Pesagem
+        <div class="row g-3 mb-4">
 
-            </div>
-
-
+            <!-- PESO NOMINAL -->
             <div class="col-md-3">
 
                 <div class="param-card">
@@ -444,8 +444,11 @@
 
                 </div>
 
+            </div>
 
-                <div class="col-md-3">
+
+            <!-- TARA -->
+            <div class="col-md-3">
 
                 <div class="param-card">
 
@@ -474,39 +477,43 @@
             </div>
 
 
-                <div class="col-md-3">
+            <!-- PESO MÍNIMO -->
+            <div class="col-md-3">
 
-            <div class="param-card">
+                <div class="param-card">
 
-                <div class="param-label">
-                    Peso mínimo aceitável
-                </div>
+                    <div class="param-label">
+                        Peso mínimo aceitável
+                    </div>
 
-                <div
-                    class="param-value mt-2 text-danger"
-                    id="peso_minimo"
-                >
-                    {{ op.peso_minimo_g|floatformat:2 }} g
+                    <div
+                        class="param-value mt-2 text-danger"
+                        id="peso_minimo"
+                    >
+                        {{ op.peso_minimo_g|floatformat:2 }} g
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
 
+            <!-- PESO MÁXIMO -->
+            <div class="col-md-3">
 
-        <div class="col-md-3">
+                <div class="param-card">
 
-            <div class="param-card">
+                    <div class="param-label">
+                        Peso máximo aceitável
+                    </div>
 
-                <div class="param-label">
-                    Peso máximo aceitável
-                </div>
+                    <div
+                        class="param-value mt-2 text-success"
+                        id="peso_maximo"
+                    >
+                        {{ op.peso_maximo_g|floatformat:2 }} g
+                    </div>
 
-                <div
-                    class="param-value mt-2 text-success"
-                    id="peso_maximo"
-                >
-                    {{ op.peso_maximo_g|floatformat:2 }} g
                 </div>
 
             </div>
