@@ -417,77 +417,28 @@
             </div>
 
 
-            <div class="row g-3 mb-4">
+            <div class="col-md-3">
 
+                <div class="param-card">
 
-                <div class="col-md-3">
-
-                    <div class="param-card">
-
-                        <div class="param-label">
-                            Peso nominal
-                        </div>
-
-                        <div class="input-group mt-2">
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                value="{{ op.peso_liq }}"
-                            >
-
-                            <span class="input-group-text">
-                                g
-                            </span>
-
-                        </div>
-
+                    <div class="param-label">
+                        Peso nominal
                     </div>
 
-                </div>
+                    <div class="input-group mt-2">
 
-
-                <div class="col-md-3">
-
-                    <div class="param-card">
-
-                        <div class="param-label">
-                            Tara da embalagem
-                        </div>
-
-                        <div class="input-group mt-2">
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                value="{{ op.peso_bruto }}"
-                            >
-
-                            <span class="input-group-text">
-                                g
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="param-card">
-
-                        <div class="param-label">
-                            Peso mínimo aceitável
-                        </div>
-
-                        <div
-                            class="param-value mt-2 text-danger"
-                            id="peso_minimo"
+                        <input
+                            type="number"
+                            step="0.01"
+                            id="peso_nominal"
+                            class="form-control"
+                            value="{{ op.peso_liq_g|floatformat:2 }}"
+                            oninput="atualizarLimites()"
                         >
-                            891,00 g
-                        </div>
+
+                        <span class="input-group-text">
+                            g
+                        </span>
 
                     </div>
 
@@ -496,24 +447,71 @@
 
                 <div class="col-md-3">
 
-                    <div class="param-card">
+                <div class="param-card">
 
-                        <div class="param-label">
-                            Peso máximo aceitável
-                        </div>
+                    <div class="param-label">
+                        Tara da embalagem
+                    </div>
 
-                        <div
-                            class="param-value mt-2 text-success"
-                            id="peso_maximo"
+                    <div class="input-group mt-2">
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            id="tara"
+                            class="form-control"
+                            value="{{ op.tara_g|floatformat:2 }}"
                         >
-                            909,00 g
-                        </div>
+
+                        <span class="input-group-text">
+                            g
+                        </span>
 
                     </div>
 
                 </div>
 
             </div>
+
+
+                <div class="col-md-3">
+
+            <div class="param-card">
+
+                <div class="param-label">
+                    Peso mínimo aceitável
+                </div>
+
+                <div
+                    class="param-value mt-2 text-danger"
+                    id="peso_minimo"
+                >
+                    {{ op.peso_minimo_g|floatformat:2 }} g
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="param-card">
+
+                <div class="param-label">
+                    Peso máximo aceitável
+                </div>
+
+                <div
+                    class="param-value mt-2 text-success"
+                    id="peso_maximo"
+                >
+                    {{ op.peso_maximo_g|floatformat:2 }} g
+                </div>
+
+            </div>
+
+        </div>
 
             <!-- CONTROLE -->
 
@@ -768,40 +766,35 @@ let contadorInspecoes = 0;
 
 function atualizarLimites() {
 
-    const nominal = parseFloat(
+    const pesoNominal = parseFloat(
         document.getElementById("peso_nominal").value
     );
 
-
-    if (isNaN(nominal)) {
-
-        document.getElementById("peso_minimo").innerText = "-";
-        document.getElementById("peso_maximo").innerText = "-";
-
+    if (isNaN(pesoNominal) || pesoNominal <= 0) {
+        document.getElementById("peso_minimo").textContent = "-";
+        document.getElementById("peso_maximo").textContent = "-";
         return;
-
     }
 
+    const tolerancia = 1; // 1%
 
-    const minimo = nominal * 0.99;
-    const maximo = nominal * 1.01;
+    const pesoMinimo =
+        pesoNominal * (1 - tolerancia / 100);
 
+    const pesoMaximo =
+        pesoNominal * (1 + tolerancia / 100);
 
-    document.getElementById("peso_minimo").innerText =
-        minimo.toFixed(2) + " g";
+    document.getElementById("peso_minimo").textContent =
+        pesoMinimo.toFixed(2).replace(".", ",") + " g";
 
+    document.getElementById("peso_maximo").textContent =
+        pesoMaximo.toFixed(2).replace(".", ",") + " g";
+}
 
-    document.getElementById("peso_maximo").innerText =
-        maximo.toFixed(2) + " g";
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarLimites();
+});
 
-
-    document
-        .querySelectorAll(".peso-input")
-        .forEach(input => {
-
-            avaliarPeso(input);
-
-        });
 
 }
 

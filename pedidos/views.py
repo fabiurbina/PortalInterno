@@ -1916,6 +1916,9 @@ def qualidade_controle(request):
 
     
 
+from decimal import Decimal
+
+
 def controle_peso(request):
 
     numero_op = request.GET.get("op")
@@ -1929,14 +1932,6 @@ def controle_peso(request):
             codigo_produto = op["identificacao"]["nCodProduto"]
 
             produto = consultar_produto(codigo_produto)
-            
-            print("===================================")
-            print("OP:", numero_op)
-            print("CÓDIGO PRODUTO:", codigo_produto)
-            print("PRODUTO:", produto)
-            print("PESO LIQ:", produto.get("peso_liq"))
-            print("PESO BRUTO:", produto.get("peso_bruto"))
-            print("===================================")
 
             op["nome_produto"] = produto.get(
                 "descricao",
@@ -1948,12 +1943,47 @@ def controle_peso(request):
                 ""
             )
 
-            op["peso_liq"] = produto.get(
-                "peso_liq"
+            # =========================
+            # PESOS
+            # =========================
+
+            peso_liq_kg = Decimal(str(
+                produto.get("peso_liq") or 0
+            ))
+
+            peso_bruto_kg = Decimal(str(
+                produto.get("peso_bruto") or 0
+            ))
+
+            # Omie retorna em KG
+            op["peso_liq_g"] = peso_liq_kg * 1000
+            op["peso_bruto_g"] = peso_bruto_kg * 1000
+
+            # Tara = peso bruto - peso líquido
+            op["tara_g"] = (
+                op["peso_bruto_g"] - op["peso_liq_g"]
             )
 
-            op["peso_bruto"] = produto.get(
-                "peso_bruto"
+            # =========================
+            # TOLERÂNCIA
+            # =========================
+
+            op["tolerancia_percentual"] = Decimal("1.00")
+
+            op["peso_minimo_g"] = (
+                op["peso_liq_g"]
+                * (
+                    Decimal("1")
+                    - op["tolerancia_percentual"] / 100
+                )
+            )
+
+            op["peso_maximo_g"] = (
+                op["peso_liq_g"]
+                * (
+                    Decimal("1")
+                    + op["tolerancia_percentual"] / 100
+                )
             )
 
             return render(
