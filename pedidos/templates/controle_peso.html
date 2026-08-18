@@ -778,7 +778,7 @@ document.addEventListener("DOMContentLoaded", function () {
    AVALIAÇÃO DE UMA PESAGEM
 ============================================================ */
 
-function avaliarPeso(peso) {
+function classificarPeso(peso) {
 
     const limites = window.limitesPeso;
 
@@ -860,7 +860,7 @@ function avaliarLote(pesos) {
 
     pesos.forEach(function (peso) {
 
-        const resultado = avaliarPeso(peso);
+        const resultado = classificarPeso(peso);
 
         if (resultado.desvio) {
             desvios++;
