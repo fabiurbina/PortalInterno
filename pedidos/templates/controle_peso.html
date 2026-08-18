@@ -729,31 +729,82 @@ let contadorInspecoes = 0;
 
 function atualizarLimites() {
 
-    const pesoNominal = parseFloat(
-        document.getElementById("peso_nominal").value
-    );
+    // Peso nominal vindo diretamente da VIEW
+    const pesoNominal = parseFloat("{{ op.peso_liq_g }}");
 
     if (isNaN(pesoNominal) || pesoNominal <= 0) {
+
         document.getElementById("peso_minimo").textContent = "-";
         document.getElementById("peso_maximo").textContent = "-";
+
         return;
     }
 
-    const tolerancia = 1; // 1%
+    // =========================================================
+    // TOLERÂNCIA NORMAL
+    // =========================================================
+
+    const tolerancia = 0.01; // 1%
 
     const pesoMinimo =
-        pesoNominal * (1 - tolerancia / 100);
+        pesoNominal * (1 - tolerancia);
 
     const pesoMaximo =
-        pesoNominal * (1 + tolerancia / 100);
+        pesoNominal * (1 + tolerancia);
+
+
+    // =========================================================
+    // LIMITE ABSOLUTO
+    // DOBRO DA TOLERÂNCIA
+    // =========================================================
+
+    const toleranciaAbsoluta = tolerancia * 2; // 2%
+
+    const pesoMinimoAbsoluto =
+        pesoNominal * (1 - toleranciaAbsoluta);
+
+    const pesoMaximoAbsoluto =
+        pesoNominal * (1 + toleranciaAbsoluta);
+
+
+    // =========================================================
+    // EXIBE OS LIMITES NORMAIS
+    // =========================================================
 
     document.getElementById("peso_minimo").textContent =
         pesoMinimo.toFixed(2).replace(".", ",") + " g";
 
     document.getElementById("peso_maximo").textContent =
         pesoMaximo.toFixed(2).replace(".", ",") + " g";
+
+
+    // =========================================================
+    // GUARDA OS VALORES PARA A REGRA DAS INSPEÇÕES
+    // =========================================================
+
+    window.limitesPeso = {
+        nominal: pesoNominal,
+
+        minimo: pesoMinimo,
+        maximo: pesoMaximo,
+
+        minimoAbsoluto: pesoMinimoAbsoluto,
+        maximoAbsoluto: pesoMaximoAbsoluto,
+
+        tolerancia: tolerancia
+    };
+
+
+    console.log("===== LIMITES DE PESAGEM =====");
+    console.log("Peso nominal:", pesoNominal);
+    console.log("Mínimo:", pesoMinimo);
+    console.log("Máximo:", pesoMaximo);
+    console.log("Mínimo absoluto:", pesoMinimoAbsoluto);
+    console.log("Máximo absoluto:", pesoMaximoAbsoluto);
 }
 
+
+// Executa quando a página carregar
 document.addEventListener("DOMContentLoaded", function () {
     atualizarLimites();
 });
