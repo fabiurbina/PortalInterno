@@ -4,7 +4,6 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Controle de Qualidade</title>
@@ -18,86 +17,205 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #111827;
+            background: #f1f5f9;
+            color: #172033;
         }
+
+        /* =========================================================
+           CONTAINER
+        ========================================================= */
 
         .container {
-            max-width: 1200px;
+            max-width: 1450px;
             margin: 0 auto;
-            padding: 28px 32px;
+            padding: 28px 30px 40px;
         }
 
-        /* =========================
+
+        /* =========================================================
            CABEÇALHO
-        ========================= */
+        ========================================================= */
 
         .cabecalho {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 26px 30px;
             margin-bottom: 22px;
+
+            background: linear-gradient(
+                135deg,
+                #0d3b66 0%,
+                #14527d 55%,
+                #1aa69a 100%
+            );
+
+            border-radius: 16px;
+            color: white;
+
+            box-shadow:
+                0 10px 30px rgba(13, 59, 102, .18);
         }
 
         .titulo h1 {
             margin: 0;
-            font-size: 25px;
+            font-size: 27px;
             font-weight: 700;
+            letter-spacing: -.4px;
         }
 
         .titulo p {
-            margin: 5px 0 0;
-            color: #64748b;
+            margin: 7px 0 0;
             font-size: 13px;
+            color: rgba(255,255,255,.82);
         }
 
-        .contador {
+        .marca {
+            text-align: right;
+        }
+
+        .marca strong {
+            display: block;
+            font-size: 15px;
+            letter-spacing: .3px;
+        }
+
+        .marca span {
+            display: block;
+            margin-top: 4px;
+            font-size: 11px;
+            color: rgba(255,255,255,.75);
+        }
+
+
+        /* =========================================================
+           RESUMO
+        ========================================================= */
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card-resumo {
+            position: relative;
+            overflow: hidden;
+
             background: white;
-            padding: 10px 16px;
-            border-radius: 11px;
-            box-shadow: 0 3px 12px rgba(0,0,0,.06);
-            font-size: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+
+            padding: 19px 20px;
+
+            box-shadow: 0 4px 14px rgba(15, 23, 42, .05);
         }
 
-        .contador strong {
-            font-size: 17px;
+        .card-resumo::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #0d3b66;
+        }
+
+        .card-resumo:nth-child(2)::before {
+            background: #f59e0b;
+        }
+
+        .card-resumo:nth-child(3)::before {
+            background: #10b981;
+        }
+
+        .resumo-label {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .resumo-numero {
+            margin-top: 5px;
+            font-size: 25px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .resumo-info {
+            margin-top: 3px;
+            font-size: 11px;
+            color: #94a3b8;
         }
 
 
-        /* =========================
-           FILTROS
-        ========================= */
+        /* =========================================================
+           BARRA DE FILTROS
+        ========================================================= */
+
+        .barra-controles {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+
+            padding: 13px 16px;
+            margin-bottom: 14px;
+
+            box-shadow: 0 3px 12px rgba(15, 23, 42, .04);
+        }
 
         .filtros {
             display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 7px;
         }
 
         .filtro {
             border: 1px solid #e2e8f0;
-            background: white;
+            background: #f8fafc;
             color: #475569;
-            padding: 7px 13px;
+
+            padding: 8px 15px;
             border-radius: 8px;
+
             font-size: 12px;
+            font-weight: 600;
+
             cursor: pointer;
+            transition: .18s;
         }
 
         .filtro:hover {
-            background: #f8fafc;
+            background: #eef2f7;
+            border-color: #cbd5e1;
         }
 
         .filtro.ativo {
-            background: #111827;
+            background: #0d3b66;
             color: white;
-            border-color: #111827;
+            border-color: #0d3b66;
+            box-shadow: 0 3px 8px rgba(13,59,102,.2);
+        }
+
+        .total-lista {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .total-lista strong {
+            color: #0f172a;
         }
 
 
-        /* =========================
-           CABEÇALHO DA TABELA
-        ========================= */
+        /* =========================================================
+           LISTA
+        ========================================================= */
 
         .lista-ops {
             display: flex;
@@ -105,89 +223,121 @@
             gap: 7px;
         }
 
+
+        /* =========================================================
+           CABEÇALHO DA TABELA
+        ========================================================= */
+
         .cabecalho-lista {
             display: grid;
 
             grid-template-columns:
-                135px
+                130px
                 minmax(230px, 1fr)
-                80px
-                80px
+                75px
+                105px
+                105px
+                105px
                 105px
                 120px
-                115px;
+                145px;
 
             align-items: center;
 
-            padding: 0 18px 7px;
+            padding: 0 18px 8px;
 
             color: #64748b;
 
             font-size: 10px;
+            font-weight: 700;
 
             text-transform: uppercase;
-
-            letter-spacing: .04em;
+            letter-spacing: .05em;
         }
 
 
-        /* =========================
+        /* =========================================================
            LINHA DA OP
-        ========================= */
+        ========================================================= */
 
         .linha-op {
             display: grid;
 
             grid-template-columns:
-                135px
+                130px
                 minmax(230px, 1fr)
-                80px
-                80px
+                75px
+                105px
+                105px
+                105px
                 105px
                 120px
-                115px;
+                145px;
 
             align-items: center;
 
-            min-height: 68px;
+            min-height: 72px;
 
             background: white;
 
             border: 1px solid #e2e8f0;
+            border-radius: 13px;
 
-            border-radius: 12px;
+            padding: 11px 18px;
 
-            padding: 10px 18px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .035);
 
-            box-shadow: 0 2px 8px rgba(0,0,0,.04);
-
-            transition: .18s;
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                border-color .18s ease;
         }
 
         .linha-op:hover {
             transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0,0,0,.08);
+
             border-color: #cbd5e1;
+
+            box-shadow:
+                0 7px 18px rgba(15, 23, 42, .08);
         }
 
 
-        /* =========================
+        /* =========================================================
            OP
-        ========================= */
+        ========================================================= */
 
         .op-numero {
-            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+
+            font-size: 13px;
             font-weight: 700;
+
+            color: #0d3b66;
+        }
+
+        .op-numero::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+
+            margin-right: 8px;
+
+            border-radius: 50%;
+            background: #1aa69a;
         }
 
 
-        /* =========================
+        /* =========================================================
            PRODUTO
-        ========================= */
+        ========================================================= */
 
         .produto-nome {
             font-size: 13px;
             font-weight: 600;
+
+            color: #1e293b;
 
             white-space: nowrap;
             overflow: hidden;
@@ -197,69 +347,75 @@
         }
 
         .produto-codigo {
+            margin-top: 3px;
+
             font-size: 10px;
             color: #94a3b8;
-            margin-top: 2px;
         }
 
 
-        /* =========================
+        /* =========================================================
            INFORMAÇÕES
-        ========================= */
+        ========================================================= */
 
         .info {
             font-size: 12px;
-            color: #334155;
-        }
-
-        .info-label {
-            display: none;
-        }
-
-
-        /* =========================
-           STATUS
-        ========================= */
-
-        .status {
-            display: inline-flex;
-
-            width: fit-content;
-
-            padding: 5px 9px;
-
-            border-radius: 20px;
-
-            font-size: 10px;
-
-            font-weight: 700;
-        }
-
-        .status-producao {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-concluida {
-            background: #e2e8f0;
             color: #475569;
         }
 
+        .info strong {
+            color: #1e293b;
+        }
 
-        /* =========================
+
+        /* =========================================================
+           STATUS
+        ========================================================= */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+
+            width: fit-content;
+
+            padding: 6px 10px;
+
+            border-radius: 20px;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .02em;
+        }
+
+        .status-producao {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-concluida {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+
+        /* =========================================================
            BOTÃO
-        ========================= */
+        ========================================================= */
 
         .botao {
-            display: flex;
-
+            display: inline-flex;
             justify-content: center;
             align-items: center;
 
+            width: 100%;
+
             text-decoration: none;
 
-            background: #111827;
-
+            background: #0d3b66;
             color: white;
 
             padding: 9px 12px;
@@ -267,43 +423,48 @@
             border-radius: 8px;
 
             font-size: 11px;
-
             font-weight: 700;
+
+            border: 1px solid #0d3b66;
 
             transition: .18s;
         }
 
         .botao:hover {
-            background: #1f2937;
+            background: #092f52;
+            border-color: #092f52;
+
+            box-shadow:
+                0 4px 10px rgba(13,59,102,.18);
         }
 
 
-        /* =========================
-           VAZIO
-        ========================= */
+        /* =========================================================
+           ESTADO VAZIO
+        ========================================================= */
 
         .vazio {
             background: white;
 
             border: 1px solid #e2e8f0;
+            border-radius: 14px;
 
-            border-radius: 12px;
-
-            padding: 35px;
+            padding: 55px 30px;
 
             text-align: center;
 
             color: #64748b;
-
             font-size: 13px;
+
+            box-shadow: 0 3px 12px rgba(15,23,42,.04);
         }
 
 
-        /* =========================
+        /* =========================================================
            RESPONSIVO
-        ========================= */
+        ========================================================= */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
 
             .container {
                 padding: 20px;
@@ -315,7 +476,7 @@
 
             .linha-op {
                 grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 10px;
                 padding: 16px;
             }
 
@@ -323,10 +484,21 @@
                 white-space: normal;
             }
 
-            .botao {
-                margin-top: 5px;
+            .status {
+                margin-top: 2px;
             }
 
+            .botao {
+                margin-top: 4px;
+            }
+
+            .resumo {
+                grid-template-columns: 1fr;
+            }
+
+            .marca {
+                display: none;
+            }
         }
 
     </style>
@@ -339,9 +511,9 @@
 <div class="container">
 
 
-    <!-- =========================
+    <!-- =========================================================
          CABEÇALHO
-    ========================== -->
+    ========================================================== -->
 
     <div class="cabecalho">
 
@@ -355,44 +527,125 @@
 
         </div>
 
+        <div class="marca">
 
-        <div class="contador">
+            <strong>VIESANO SUPLEMENTOS</strong>
 
-            <strong>{{ ops.cadastros|length }}</strong>
-
-            OPs
+            <span>
+                Sistema de Gestão da Qualidade
+            </span>
 
         </div>
 
     </div>
 
 
+    <!-- =========================================================
+         RESUMO
+    ========================================================== -->
 
-    <!-- =========================
-         FILTROS
-    ========================== -->
+    <div class="resumo">
 
-    <div class="filtros">
+        <div class="card-resumo">
 
-        <button class="filtro ativo">
-            Todas
-        </button>
+            <div class="resumo-label">
+                Ordens disponíveis
+            </div>
 
-        <button class="filtro">
-            Em produção
-        </button>
+            <div class="resumo-numero">
+                {{ ops.cadastros|length }}
+            </div>
 
-        <button class="filtro">
-            Concluídas
-        </button>
+            <div class="resumo-info">
+                Ordens de produção encontradas
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <div class="resumo-label">
+                Status
+            </div>
+
+            <div class="resumo-numero">
+                Produção
+            </div>
+
+            <div class="resumo-info">
+                Acompanhe as OPs em andamento
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <div class="resumo-label">
+                Inspeção
+            </div>
+
+            <div class="resumo-numero">
+                Controle
+            </div>
+
+            <div class="resumo-info">
+                Acesse a análise de cada OP
+            </div>
+
+        </div>
 
     </div>
 
 
+    <!-- =========================================================
+         CONTROLES
+    ========================================================== -->
 
-    <!-- =========================
+    <div class="barra-controles">
+
+        <div class="filtros">
+
+            <button
+                class="filtro ativo"
+                type="button"
+                onclick="filtrarOps('todas', this)"
+            >
+                Todas
+            </button>
+
+            <button
+                class="filtro"
+                type="button"
+                onclick="filtrarOps('producao', this)"
+            >
+                Em produção
+            </button>
+
+            <button
+                class="filtro"
+                type="button"
+                onclick="filtrarOps('concluida', this)"
+            >
+                Concluídas
+            </button>
+
+        </div>
+
+        <div class="total-lista">
+
+            <strong>{{ ops.cadastros|length }}</strong>
+            OPs encontradas
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
          LISTA
-    ========================== -->
+    ========================================================== -->
 
     <div class="lista-ops">
 
@@ -414,24 +667,25 @@
 
                 <div>Início</div>
 
-                <div>Status</div>
-
-                <div>Peso Líquido</div>
+                <div>Peso Líq.</div>
 
                 <div>Peso Bruto</div>
 
-                <div></div>
+                <div>Status</div>
+
+                <div>Ação</div>
 
             </div>
-
 
 
             <!-- OPs -->
 
             {% for op in ops.cadastros %}
 
-
-                <div class="linha-op">
+                <div
+                    class="linha-op"
+                    data-status="{% if op.outrasInf.cConcluida == 'N' %}producao{% else %}concluida{% endif %}"
+                >
 
 
                     <!-- OP -->
@@ -441,7 +695,6 @@
                         OP {{ op.identificacao.cNumOP }}
 
                     </div>
-
 
 
                     <!-- PRODUTO -->
@@ -463,7 +716,6 @@
                     </div>
 
 
-
                     <!-- QUANTIDADE -->
 
                     <div class="info">
@@ -471,7 +723,6 @@
                         {{ op.identificacao.nQtde }}
 
                     </div>
-
 
 
                     <!-- ETAPA -->
@@ -483,7 +734,6 @@
                     </div>
 
 
-
                     <!-- INÍCIO -->
 
                     <div class="info">
@@ -492,6 +742,7 @@
 
                     </div>
 
+
                     <!-- PESO LÍQUIDO -->
 
                     <div class="info">
@@ -499,6 +750,7 @@
                         {{ op.peso_liq }}
 
                     </div>
+
 
                     <!-- PESO BRUTO -->
 
@@ -516,23 +768,18 @@
                         {% if op.outrasInf.cConcluida == "N" %}
 
                             <span class="status status-producao">
-
                                 ● EM PRODUÇÃO
-
                             </span>
 
                         {% else %}
 
                             <span class="status status-concluida">
-
                                 ● CONCLUÍDA
-
                             </span>
 
                         {% endif %}
 
                     </div>
-
 
 
                     <!-- AÇÃO -->
@@ -552,7 +799,6 @@
 
 
                 </div>
-
 
             {% endfor %}
 
@@ -574,6 +820,43 @@
 
 
 </div>
+
+
+<script>
+
+    function filtrarOps(filtro, botao) {
+
+        const linhas = document.querySelectorAll(".linha-op");
+        const botoes = document.querySelectorAll(".filtro");
+
+        botoes.forEach(btn => {
+            btn.classList.remove("ativo");
+        });
+
+        botao.classList.add("ativo");
+
+        linhas.forEach(linha => {
+
+            const status = linha.dataset.status;
+
+            if (filtro === "todas") {
+                linha.style.display = "grid";
+            }
+
+            else if (status === filtro) {
+                linha.style.display = "grid";
+            }
+
+            else {
+                linha.style.display = "none";
+            }
+
+        });
+
+    }
+
+</script>
+
 
 </body>
 

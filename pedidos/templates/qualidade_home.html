@@ -155,28 +155,35 @@
 
                     </div>
 
-                    <div class="col-md-2 d-flex align-items-end">
+                    <div class="col-md-4 d-flex align-items-end gap-2">
 
-                        <a
-                            href="/"
-                            class="btn w-100"
-                            style="
-                                background:#0D3B66;
-                                color:white;
-                            "
-                        >
-                            Voltar
-                        </a>
+                    <a 
+                        href="/" 
+                        class="btn"
+                        style="
+                            background:#0D3B66;
+                            color:white;
+                            white-space: nowrap;
+                        "
+                    >
+                        Voltar
+                    </a>
 
-                    </div>
+                    <a 
+                        href="{% url 'qualidade_controle' %}" 
+                        class="btn btn-primary"
+                        style="white-space: nowrap;"
+                    >
+                        ⚖ Controle de Qualidade
+                    </a>
 
                 </div>
 
-                    </div>
+                </div>
 
-                    <a href="{% url 'qualidade_controle' %}" class="btn btn-primary">
-                        ⚖ Controle de Qualidade
-                    </a>
+            </div>
+
+                    
 
                 </div>
 
