@@ -398,7 +398,7 @@
 
                             {% if item.status == "Aguardando" %}
 
-                                <a href="/qualidade/inspecao/{{ item.cod_prod }}/?lote={{ item.lote }}&data_inicial={{ data_inicial }}&data_final={{ data_final }}">
+                                <a href="/qualidade/inspecao/{{ item.cod_prod }}/?lote={{ item.lote }}&data_inicial={{ request.GET.data_inicial }}&data_final={{ request.GET.data_final }}">
                                     Realizar inspeção
                                 </a>
 

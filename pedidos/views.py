@@ -1101,35 +1101,40 @@ def qualidade_inspecao(request, cod_prod):
     data_final = request.GET.get("data_final")
     lote = request.GET.get("lote")
 
-    data_inicial = data_inicial.split("-")
-    data_inicial = (
-        f"{data_inicial[2]}/"
-        f"{data_inicial[1]}/"
-        f"{data_inicial[0]}"
+    # Garante que as datas existam
+    if not data_inicial or not data_final:
+        return redirect("qualidade_home")
+
+    # Converte YYYY-MM-DD para DD/MM/YYYY
+    partes = data_inicial.split("-")
+    data_inicial_formatada = (
+        f"{partes[2]}/"
+        f"{partes[1]}/"
+        f"{partes[0]}"
     )
 
-    data_final = data_final.split("-")
-    data_final = (
-        f"{data_final[2]}/"
-        f"{data_final[1]}/"
-        f"{data_final[0]}"
+    partes = data_final.split("-")
+    data_final_formatada = (
+        f"{partes[2]}/"
+        f"{partes[1]}/"
+        f"{partes[0]}"
     )
 
     entradas = listar_entradas_com_fornecedor(
-        data_inicial,
-        data_final
+        data_inicial_formatada,
+        data_final_formatada
     )
 
     item = None
 
+    # Produto + LOTE selecionado
     for entrada in entradas:
         if entrada["cod_prod"] == cod_prod:
-            if entrada["lote"] == lote:
+            if entrada.get("lote") == lote:
                 item = entrada
                 break
 
     if item is None:
-
         return render(
             request,
             "qualidade_ficha.html",
@@ -1141,11 +1146,11 @@ def qualidade_inspecao(request, cod_prod):
                     "codigo_fornecedor": "",
                     "quantidade": "",
                     "data": "",
-                    "lote": "",
+                    "lote": lote or "",
                     "fabricacao": "",
                     "validade": ""
                 },
-                "erro": "Não foi possível localizar o produto. Refaça a pesquisa."
+                "erro": "Não foi possível localizar o lote. Refaça a pesquisa."
             }
         )
 
@@ -1153,7 +1158,9 @@ def qualidade_inspecao(request, cod_prod):
         request,
         "qualidade_ficha.html",
         {
-            "item": item
+            "item": item,
+            "data_inicial": data_inicial,
+            "data_final": data_final
         }
     )
     
