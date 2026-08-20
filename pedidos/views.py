@@ -1322,7 +1322,7 @@ def salvar_inspecao(request):
     f"&data_final={request.POST.get('data_final')}"
 )
     
-    
+    listar_entradas_com_fornecedor
 @login_required
 def pedidos(request):
 

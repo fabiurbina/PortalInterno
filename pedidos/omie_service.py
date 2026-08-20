@@ -478,13 +478,10 @@ def criar_indice_lotes(data):
 def listar_entradas_com_fornecedor(data_inicial, data_final):
 
     entradas = listar_movimentos_entrada(data_inicial, data_final)
-
     pedidos = listar_pedidos_compra(data_inicial, data_final)
-
     lotes = listar_lotes()
 
     indice = criar_indice_pedidos(pedidos)
-
     indice_lotes = criar_indice_lotes(lotes)
 
     from pprint import pprint
@@ -493,6 +490,7 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
     pprint(indice_lotes)
 
     cache_fornecedor = {}
+    novas_entradas = []
 
     for entrada in entradas:
 
@@ -507,7 +505,6 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
             cod_for = info["cod_fornecedor"]
 
             if cod_for == 0:
-
                 entrada["fornecedor"] = "Não cadastrado"
 
             else:
@@ -527,32 +524,59 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
             entrada.update(info)
 
         # ==========================
-        # Lote
+        # Lotes
         # ==========================
-        lote = indice_lotes.get(entrada["cod_prod"])
 
-        if lote:
-            entrada.update(lote)
-        else:
+        lotes_produto = indice_lotes.get(
+            entrada["cod_prod"],
+            []
+        )
+
+        if not lotes_produto:
+
             entrada["lote"] = "Não cadastrado"
             entrada["fabricacao"] = "Não cadastrado"
             entrada["validade"] = "Não cadastrado"
+            entrada["status"] = "Aguardando"
+
+            novas_entradas.append(entrada)
+
+            continue
 
         # ==========================
-        # Status Qualidade
+        # Criar uma entrada por lote
         # ==========================
-        if entrada["lote"] == "Não cadastrado":
-            entrada["status"] = "Aguardando"
-        else:
-            entrada["status"] = consultar_status_qualidade(
-                entrada["cod_prod"],
-                entrada["lote"]
+
+        for lote in lotes_produto:
+
+            # Ignora lote sem saldo
+            if float(lote.get("quantidade", 0)) <= 0:
+                continue
+
+            nova_entrada = entrada.copy()
+
+            nova_entrada["lote"] = lote["lote"]
+            nova_entrada["fabricacao"] = lote["fabricacao"]
+            nova_entrada["validade"] = lote["validade"]
+
+            # Quantidade do lote
+            nova_entrada["quantidade"] = lote["quantidade"]
+
+            # ==========================
+            # Status da inspeção
+            # ==========================
+
+            nova_entrada["status"] = consultar_status_qualidade(
+                nova_entrada["cod_prod"],
+                nova_entrada["lote"]
             )
 
-        print(entrada)
-        print(entrada["status"])
+            print("===== ENTRADA POR LOTE =====")
+            print(nova_entrada)
 
-    return entradas
+            novas_entradas.append(nova_entrada)
+
+    return novas_entradas
 
 
 def buscar_cliente_cnpj(cnpj):
