@@ -19,6 +19,7 @@ from .mysql_service import (
     inserir_resultado_inspecao,
     salvar_conferencia_mysql,
     consultar_conferencias,
+    salvar_controle_qualidade,
     salvar_observacao_op,
     salvar_apontamento,
     consultar_apontamentos,
@@ -1933,70 +1934,131 @@ from decimal import Decimal
 
 def controle_peso(request):
 
+    # ==========================================================
+    # SALVAR CONTROLE DE QUALIDADE
+    # ==========================================================
+
+    if request.method == "POST":
+
+        try:
+
+            dados = json.loads(request.body)
+
+            codigo_op = dados.get("codigo_op")
+            codigo_produto = dados.get("codigo_produto")
+            produto = dados.get("produto")
+
+            data_controle = dados.get("data_controle")
+            responsavel = dados.get("responsavel")
+
+            peso_nominal = dados.get("peso_nominal")
+            peso_minimo = dados.get("peso_minimo")
+            peso_maximo = dados.get("peso_maximo")
+
+            observacao = dados.get("observacao")
+
+            inspecoes = dados.get("inspecoes", [])
+
+            ids_salvos = []
+
+
+            # ==================================================
+            # SALVA CADA INSPEÇÃO
+            # ==================================================
+
+            for inspecao in inspecoes:
+
+                controle_id = salvar_controle_qualidade(
+
+                    codigo_op=codigo_op,
+                    codigo_produto=codigo_produto,
+                    produto=produto,
+
+                    data_controle=data_controle,
+                    responsavel=responsavel,
+
+                    peso_nominal=peso_nominal,
+                    peso_minimo=peso_minimo,
+                    peso_maximo=peso_maximo,
+
+                    numero_inspecao=inspecao.get(
+                        "numero_inspecao"
+                    ),
+
+                    horario=inspecao.get(
+                        "horario"
+                    ),
+
+                    media_peso=inspecao.get(
+                        "media_peso"
+                    ),
+
+                    embalagem=inspecao.get(
+                        "embalagem"
+                    ),
+
+                    selagem=inspecao.get(
+                        "selagem"
+                    ),
+
+                    rotulagem=inspecao.get(
+                        "rotulagem"
+                    ),
+
+                    codificacao=inspecao.get(
+                        "codificacao"
+                    ),
+
+                    lacre=inspecao.get(
+                        "lacre"
+                    ),
+
+                    resultado=inspecao.get(
+                        "resultado"
+                    ),
+
+                    motivo=inspecao.get(
+                        "motivo"
+                    ),
+
+                    observacao=observacao,
+
+                    pesagens=inspecao.get(
+                        "pesagens",
+                        []
+                    )
+                )
+
+                ids_salvos.append(controle_id)
+
+
+            return JsonResponse({
+                "sucesso": True,
+                "ids": ids_salvos
+            })
+
+
+        except Exception as e:
+
+            print(
+                "❌ ERRO AO SALVAR CONTROLE DE QUALIDADE:"
+            )
+
+            print(e)
+
+            return JsonResponse(
+                {
+                    "sucesso": False,
+                    "erro": str(e)
+                },
+                status=500
+            )
+
+
+    # ==========================================================
+    # GET — SEU CÓDIGO ATUAL
+    # ==========================================================
+
     numero_op = request.GET.get("op")
 
-    ops = listar_ops()
-
-    for op in ops.get("cadastros", []):
-
-        if op["identificacao"]["cNumOP"] == numero_op:
-
-            codigo_produto = op["identificacao"]["nCodProduto"]
-
-            produto = consultar_produto(codigo_produto)
-
-            op["nome_produto"] = produto.get(
-                "descricao",
-                "Produto não encontrado"
-            )
-
-            op["codigo_produto"] = produto.get(
-                "codigo",
-                ""
-            )
-            print(f"Produto: {op['nome_produto']}, Código: {op['codigo_produto']}")
-
-            # ==========================================
-            # PESOS DO PRODUTO
-            # Omie retorna em KG
-            # ==========================================
-
-            peso_liq = produto.get("peso_liq") or 0
-            peso_bruto = produto.get("peso_bruto") or 0
-
-            # Converter KG -> GRAMAS
-            op["peso_liq_g"] = float(peso_liq) * 1000
-            op["tara_g"] = float(peso_bruto) * 1000
-
-            # ==========================================
-            # TOLERÂNCIA DE PESAGEM
-            # ==========================================
-
-            tolerancia = 0.01  # 1%
-
-            op["peso_minimo_g"] = (
-                op["peso_liq_g"] * (1 - tolerancia)
-            )
-
-            op["peso_maximo_g"] = (
-                op["peso_liq_g"] * (1 + tolerancia)
-            )
-
-            
-
-            return render(
-                request,
-                "controle_peso.html",
-                {
-                    "op": op
-                }
-            )
-
-
-    return render(
-        request,
-        "controle_peso.html",
-        {
-            "op": None
-        }
-    )
+    # DAQUI PARA BAIXO MANTÉM O SEU CÓDIGO ATUAL

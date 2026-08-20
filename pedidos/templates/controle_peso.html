@@ -1716,36 +1716,528 @@ function atualizarResumo() {
 
 }
 
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+
+        const cookies =
+            document.cookie.split(";");
+
+        for (
+            let cookie of cookies
+        ) {
+
+            cookie =
+                cookie.trim();
+
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) ===
+                (name + "=")
+            ) {
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
 
 
 /* ============================================================
    SALVAR
 ============================================================ */
 
-function salvarControle() {
+async function salvarControle() {
 
-    const total =
-        document.querySelectorAll(
-            ".inspecao-card"
-        ).length;
+    const cards =
+        document.querySelectorAll(".inspecao-card");
 
 
-    if (
-        total === 0
-    ) {
+    // ==========================================================
+    // VALIDAÇÃO
+    // ==========================================================
+
+    if (cards.length === 0) {
 
         alert(
             "Adicione pelo menos uma inspeção antes de salvar."
         );
 
         return;
+    }
+
+
+    const responsavel =
+        document.getElementById("responsavel").value.trim();
+
+    const dataControle =
+        document.getElementById("data").value;
+
+
+    if (!dataControle) {
+
+        alert(
+            "Informe a data do controle."
+        );
+
+        return;
+    }
+
+
+    if (!responsavel) {
+
+        alert(
+            "Informe o responsável."
+        );
+
+        return;
+    }
+
+
+    // ==========================================================
+    // MONTA AS INSPEÇÕES
+    // ==========================================================
+
+    const inspecoes = [];
+
+    let erro = false;
+
+
+    cards.forEach(card => {
+
+        if (erro) {
+            return;
+        }
+
+
+        const numero =
+            card.id.replace(
+                "inspecao_",
+                ""
+            );
+
+
+        // ------------------------------------------------------
+        // PESAGENS
+        // ------------------------------------------------------
+
+        const inputs =
+            card.querySelectorAll(".peso-input");
+
+
+        const pesagens = [];
+
+
+        inputs.forEach(input => {
+
+            const valor =
+                parseFloat(input.value);
+
+
+            if (isNaN(valor)) {
+
+                erro = true;
+
+                return;
+            }
+
+
+            let classificacao = "CONFORME";
+
+
+            if (
+                input.classList.contains(
+                    "nao-conforme"
+                )
+            ) {
+
+                classificacao =
+                    "NAO_CONFORME";
+            }
+
+
+            pesagens.push({
+
+                numero_amostra:
+                    parseInt(
+                        input.dataset.amostra
+                    ),
+
+                peso: valor,
+
+                classificacao:
+                    classificacao
+            });
+
+        });
+
+
+        if (erro) {
+
+            alert(
+                `A Inspeção ${numero} possui amostras sem peso.`
+            );
+
+            return;
+        }
+
+
+        if (pesagens.length !== 10) {
+
+            erro = true;
+
+            alert(
+                `A Inspeção ${numero} precisa ter as 10 amostras preenchidas.`
+            );
+
+            return;
+        }
+
+
+        // ------------------------------------------------------
+        // MÉDIA
+        // ------------------------------------------------------
+
+        const mediaElement =
+            card.querySelector(
+                "#media_" + numero
+            );
+
+
+        let mediaPeso = null;
+
+
+        if (mediaElement) {
+
+            const texto =
+                mediaElement.innerText
+                    .replace("g", "")
+                    .replace(",", ".")
+                    .trim();
+
+
+            const valorMedia =
+                parseFloat(texto);
+
+
+            if (!isNaN(valorMedia)) {
+
+                mediaPeso =
+                    valorMedia;
+
+            }
+
+        }
+
+
+        // ------------------------------------------------------
+        // RESULTADO
+        // ------------------------------------------------------
+
+        const resultadoElement =
+            card.querySelector(
+                "#resultado_inspecao_" + numero
+            );
+
+
+        let resultado = "";
+
+
+        if (resultadoElement) {
+
+            const texto =
+                resultadoElement.innerText.trim();
+
+
+            if (
+                texto.includes("NC")
+            ) {
+
+                resultado =
+                    "NAO_CONFORME";
+
+            } else if (
+                texto.includes("CONFORME")
+            ) {
+
+                resultado =
+                    "CONFORME";
+
+            } else {
+
+                resultado =
+                    texto;
+            }
+
+        }
+
+
+        // ------------------------------------------------------
+        // CONTROLES C / NC
+        // ------------------------------------------------------
+
+        const controles = {};
+
+
+        card.querySelectorAll(
+            ".controle-buttons"
+        ).forEach(grupo => {
+
+            const selecionado =
+                grupo.querySelector(
+                    ".active"
+                );
+
+
+            if (!selecionado) {
+
+                erro = true;
+
+                return;
+            }
+
+
+            const campo =
+                selecionado.dataset.controle;
+
+
+            const texto =
+                selecionado.innerText;
+
+
+            controles[campo] =
+                texto.includes("NC")
+                    ? "NC"
+                    : "C";
+
+        });
+
+
+        if (erro) {
+
+            alert(
+                `Preencha todos os controles da Inspeção ${numero}.`
+            );
+
+            return;
+        }
+
+
+        // ------------------------------------------------------
+        // ADICIONA INSPEÇÃO
+        // ------------------------------------------------------
+
+        inspecoes.push({
+
+            numero_inspecao:
+                parseInt(numero),
+
+            horario:
+                card.querySelector(
+                    ".hora-input"
+                )?.value || null,
+
+            media_peso:
+                mediaPeso,
+
+            embalagem:
+                controles.embalagem || null,
+
+            selagem:
+                controles.selagem || null,
+
+            rotulagem:
+                controles.rotulagem || null,
+
+            codificacao:
+                controles.codificacao || null,
+
+            lacre:
+                controles.lacre || null,
+
+            resultado:
+                resultado,
+
+            motivo:
+                null,
+
+            pesagens:
+                pesagens
+
+        });
+
+    });
+
+
+    if (erro) {
+        return;
+    }
+
+
+    // ==========================================================
+    // MONTA O OBJETO FINAL
+    // ==========================================================
+
+    const dados = {
+
+        codigo_op:
+            document.getElementById(
+                "codigo_op"
+            ).value,
+
+        codigo_produto:
+            "{{ op.codigo_produto }}",
+
+        produto:
+            document.getElementById(
+                "produto"
+            ).value,
+
+        data_controle:
+            dataControle,
+
+        responsavel:
+            responsavel,
+
+        peso_nominal:
+            PESO_NOMINAL,
+
+        peso_minimo:
+            PESO_MINIMO,
+
+        peso_maximo:
+            PESO_MAXIMO,
+
+        observacao:
+            document.getElementById(
+                "observacoes"
+            ).value,
+
+        inspecoes:
+            inspecoes
+
+    };
+
+
+    // ==========================================================
+    // DESABILITA BOTÃO
+    // ==========================================================
+
+    const botao =
+        document.querySelector(
+            'button[onclick="salvarControle()"]'
+        );
+
+
+    if (botao) {
+
+        botao.disabled = true;
+
+        botao.innerHTML =
+            "⏳ Salvando...";
 
     }
 
 
-    alert(
-        "Interface pronta! Na próxima etapa vamos conectar este botão ao Django e ao SQL."
-    );
+    // ==========================================================
+    // ENVIA PARA O DJANGO
+    // ==========================================================
+
+    try {
+
+        const resposta =
+            await fetch(
+                window.location.href,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            getCookie("csrftoken")
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            dados
+                        )
+
+                }
+            );
+
+
+        const resultado =
+            await resposta.json();
+
+
+        if (!resposta.ok || !resultado.sucesso) {
+
+            throw new Error(
+                resultado.erro ||
+                "Erro ao salvar o controle."
+            );
+
+        }
+
+
+        // ======================================================
+        // SUCESSO
+        // ======================================================
+
+        alert(
+            "✅ Controle de qualidade salvo com sucesso!"
+        );
+
+
+        console.log(
+            "IDs salvos:",
+            resultado.ids
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
+
+
+        alert(
+            "❌ Erro ao salvar:\n\n" +
+            erro.message
+        );
+
+
+        if (botao) {
+
+            botao.disabled = false;
+
+            botao.innerHTML =
+                "💾 Salvar Controle";
+
+        }
+
+    }
 
 }
 

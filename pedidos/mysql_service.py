@@ -857,6 +857,150 @@ def buscar_previsao_demanda(
         conexao.close()
         
         
-        
+def salvar_controle_qualidade(
+    codigo_op,
+    codigo_produto,
+    produto,
+    data_controle,
+    responsavel,
+    peso_nominal,
+    peso_minimo,
+    peso_maximo,
+    numero_inspecao,
+    horario,
+    media_peso,
+    embalagem,
+    selagem,
+    rotulagem,
+    codificacao,
+    lacre,
+    resultado,
+    motivo,
+    observacao,
+    pesagens
+):
+    conn = pymysql.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database=os.getenv("DATABASE"),
+        charset="utf8mb4"
+    )
+
+    cursor = conn.cursor()
+
+    try:
+
+        # =====================================================
+        # 1. SALVA A INSPEÇÃO
+        # =====================================================
+
+        sql_controle = """
+            INSERT INTO controle_qualidade (
+                codigo_op,
+                codigo_produto,
+                produto,
+                data_controle,
+                responsavel,
+                peso_nominal,
+                peso_minimo,
+                peso_maximo,
+                numero_inspecao,
+                horario,
+                media_peso,
+                embalagem,
+                selagem,
+                rotulagem,
+                codificacao,
+                lacre,
+                resultado,
+                motivo,
+                observacao
+            )
+            VALUES (
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s
+            )
+        """
+
+        cursor.execute(
+            sql_controle,
+            (
+                codigo_op,
+                codigo_produto,
+                produto,
+                data_controle,
+                responsavel,
+                peso_nominal,
+                peso_minimo,
+                peso_maximo,
+                numero_inspecao,
+                horario,
+                media_peso,
+                embalagem,
+                selagem,
+                rotulagem,
+                codificacao,
+                lacre,
+                resultado,
+                motivo,
+                observacao
+            )
+        )
+
+        controle_id = cursor.lastrowid
+
+
+        # =====================================================
+        # 2. SALVA AS PESAGENS
+        # =====================================================
+
+        sql_pesagem = """
+            INSERT INTO controle_qualidade_pesagens (
+                controle_id,
+                numero_amostra,
+                peso,
+                classificacao
+            )
+            VALUES (%s, %s, %s, %s)
+        """
+
+        for pesagem in pesagens:
+
+            cursor.execute(
+                sql_pesagem,
+                (
+                    controle_id,
+                    pesagem["numero_amostra"],
+                    pesagem["peso"],
+                    pesagem.get("classificacao")
+                )
+            )
+
+
+        # =====================================================
+        # 3. CONFIRMA TUDO
+        # =====================================================
+
+        conn.commit()
+
+        return controle_id
+
+
+    except Exception as e:
+
+        conn.rollback()
+
+        print(f"❌ Erro ao salvar controle de qualidade: {e}")
+
+        raise
+
+
+    finally:
+
+        cursor.close()
+        conn.close()
 
         
