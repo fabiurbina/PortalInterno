@@ -1893,6 +1893,45 @@ def previsao_demanda(request):
     )
     
     
+def qualidade_controle(request):
+
+    ops = listar_ops()
+
+    for op in ops.get("cadastros", []):
+
+        codigo_produto = op["identificacao"]["nCodProduto"]
+
+        produto = consultar_produto(codigo_produto)
+
+        op["nome_produto"] = produto.get("descricao", "Produto não encontrado")
+        
+        
+        op["codigo_produto"] = produto.get(
+            "codigo",
+            ""
+        )
+
+        op["peso_liq"] = produto.get(
+            "peso_liq"
+        )
+
+        op["peso_bruto"] = produto.get(
+            "peso_bruto"
+        )
+
+    return render(
+        request,
+        "controle_ops.html",
+        {
+            "ops": ops
+        }
+    )
+
+    
+
+from decimal import Decimal
+
+
 def controle_peso(request):
 
     # ==========================================================
@@ -1921,8 +1960,6 @@ def controle_peso(request):
             inspecoes = dados.get("inspecoes", [])
 
             ids_salvos = []
-            
-            print(f"Salvando controle de qualidade para OP {codigo_op} e produto {codigo_produto}")
 
 
             # ==================================================
