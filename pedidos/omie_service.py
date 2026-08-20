@@ -462,14 +462,15 @@ def criar_indice_lotes(data):
         cod_prod = produto["ident"]["nCodProd"]
         lotes = produto.get("lotes", [])
 
-        if len(lotes) == 1:
-            lote = lotes[0]
+        indice[cod_prod] = []
 
-            indice[cod_prod] = {
+        for lote in lotes:
+            indice[cod_prod].append({
                 "lote": lote["cNumLote"],
                 "fabricacao": lote["dDataFabricacao"],
-                "validade": lote["dDataValidade"]
-            }
+                "validade": lote["dDataValidade"],
+                "quantidade": lote["nQuantDisponivel"]
+            })
 
     return indice
 
@@ -620,3 +621,4 @@ def consultar_estrutura(id_produto):
     response.raise_for_status()
 
     return response.json()
+
