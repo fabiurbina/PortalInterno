@@ -1921,6 +1921,8 @@ def controle_peso(request):
             inspecoes = dados.get("inspecoes", [])
 
             ids_salvos = []
+            
+            print(f"Salvando controle de qualidade para OP {codigo_op} e produto {codigo_produto}")
 
 
             # ==================================================
