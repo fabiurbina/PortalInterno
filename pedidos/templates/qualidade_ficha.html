@@ -142,6 +142,36 @@ body{
     value="{{ request.GET.data_final }}"
 >
 
+<!-- INFORMAÇÕES DO LOTE -->
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <strong>Quantidade:</strong><br>
+        {{ item.quantidade }}
+    </div>
+
+    <div class="col-md-3">
+        <strong>Data de recebimento:</strong><br>
+        {{ item.data }}
+    </div>
+
+    <div class="col-md-3">
+        <strong>Lote:</strong><br>
+        {{ item.lote }}
+    </div>
+
+    <div class="col-md-3">
+        <strong>Fabricação:</strong><br>
+        {{ item.fabricacao }}
+    </div>
+
+    <div class="col-md-3 mt-3">
+        <strong>Validade:</strong><br>
+        {{ item.validade }}
+    </div>
+
+</div>
+
 <div class="card shadow qualidade-card mb-4">
 
     <div class="qualidade-header">

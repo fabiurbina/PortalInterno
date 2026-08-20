@@ -1099,6 +1099,7 @@ def qualidade_inspecao(request, cod_prod):
 
     data_inicial = request.GET.get("data_inicial")
     data_final = request.GET.get("data_final")
+    lote = request.GET.get("lote")
 
     data_inicial = data_inicial.split("-")
     data_inicial = (
@@ -1122,12 +1123,10 @@ def qualidade_inspecao(request, cod_prod):
     item = None
 
     for entrada in entradas:
-
         if entrada["cod_prod"] == cod_prod:
-
-            item = entrada
-
-            break
+            if entrada["lote"] == lote:
+                item = entrada
+                break
 
     if item is None:
 
