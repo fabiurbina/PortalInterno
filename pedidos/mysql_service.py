@@ -1,4 +1,3 @@
-# mysql_service.py
 
 import pymysql
 import os
@@ -638,7 +637,9 @@ def consultar_status_qualidade(codigo_produto, lote):
     )
 
     cursor = conn.cursor()
-
+    
+    
+    """"""
     sql = """
         SELECT parecer
         FROM tabInpecaoQualidade

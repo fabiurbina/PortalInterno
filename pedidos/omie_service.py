@@ -456,23 +456,19 @@ def consultar_fornecedor(cod_fornecedor):
     return response.json()
 
 def criar_indice_lotes(data):
-
     indice = {}
 
     for produto in data.get("listaLotes", []):
-
         cod_prod = produto["ident"]["nCodProd"]
+        lotes = produto.get("lotes", [])
 
-        if produto.get("lotes"):
-
-            lote = produto["lotes"][0]
+        if len(lotes) == 1:
+            lote = lotes[0]
 
             indice[cod_prod] = {
-
                 "lote": lote["cNumLote"],
                 "fabricacao": lote["dDataFabricacao"],
                 "validade": lote["dDataValidade"]
-
             }
 
     return indice
@@ -532,25 +528,27 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
         # ==========================
         # Lote
         # ==========================
-
         lote = indice_lotes.get(entrada["cod_prod"])
 
         if lote:
-
             entrada.update(lote)
-
         else:
-
             entrada["lote"] = "Não cadastrado"
             entrada["fabricacao"] = "Não cadastrado"
             entrada["validade"] = "Não cadastrado"
 
+        # ==========================
+        # Status Qualidade
+        # ==========================
+        if entrada["lote"] == "Não cadastrado":
+            entrada["status"] = "Aguardando"
+        else:
+            entrada["status"] = consultar_status_qualidade(
+                entrada["cod_prod"],
+                entrada["lote"]
+            )
+
         print(entrada)
-        
-        entrada["status"] = consultar_status_qualidade(
-            entrada["cod_prod"],
-            entrada["lote"]
-    )
         print(entrada["status"])
 
     return entradas
