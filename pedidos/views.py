@@ -1171,14 +1171,20 @@ def salvar_inspecao(request):
     qtdd = request.POST.get("qtdd")
     data_recebimento = request.POST.get("data_recebimento")
     if data_recebimento:
-        data_recebimento = datetime.strptime(data_recebimento, "%Y-%m-%d").date()
+        data_recebimento = datetime.strptime(
+            data_recebimento, "%d/%m/%Y"
+    ).date()
     lote = request.POST.get("lote")
     data_fabricacao = request.POST.get("data_fabricacao")
     if data_fabricacao:
-        data_fabricacao = datetime.strptime(data_fabricacao, "%Y-%m-%d").date()
+        data_fabricacao = datetime.strptime(
+            data_fabricacao, "%d/%m/%Y"
+        ).date()
     data_validade = request.POST.get("data_validade")
     if data_validade:
-        data_validade = datetime.strptime(data_validade, "%Y-%m-%d").date()
+        data_validade = datetime.strptime(
+            data_validade, "%d/%m/%Y"
+        ).date()
     data = request.POST.get("data")
     hora_inicio = request.POST.get("hora_inicio")
     hora_atual = datetime.now().strftime("%H:%M")
@@ -1322,7 +1328,7 @@ def salvar_inspecao(request):
     f"&data_final={request.POST.get('data_final')}"
 )
     
-    listar_entradas_com_fornecedor
+    
 @login_required
 def pedidos(request):
 
