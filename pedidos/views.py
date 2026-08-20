@@ -1893,45 +1893,6 @@ def previsao_demanda(request):
     )
     
     
-def qualidade_controle(request):
-
-    ops = listar_ops()
-
-    for op in ops.get("cadastros", []):
-
-        codigo_produto = op["identificacao"]["nCodProduto"]
-
-        produto = consultar_produto(codigo_produto)
-
-        op["nome_produto"] = produto.get("descricao", "Produto não encontrado")
-        
-        
-        op["codigo_produto"] = produto.get(
-            "codigo",
-            ""
-        )
-
-        op["peso_liq"] = produto.get(
-            "peso_liq"
-        )
-
-        op["peso_bruto"] = produto.get(
-            "peso_bruto"
-        )
-
-    return render(
-        request,
-        "controle_ops.html",
-        {
-            "ops": ops
-        }
-    )
-
-    
-
-from decimal import Decimal
-
-
 def controle_peso(request):
 
     # ==========================================================
@@ -2056,9 +2017,96 @@ def controle_peso(request):
 
 
     # ==========================================================
-    # GET — SEU CÓDIGO ATUAL
+    # GET — ABRIR CONTROLE DE PESO
     # ==========================================================
 
     numero_op = request.GET.get("op")
 
-    # DAQUI PARA BAIXO MANTÉM O SEU CÓDIGO ATUAL
+    ops = listar_ops()
+
+    for op in ops.get("cadastros", []):
+
+        if op["identificacao"]["cNumOP"] == numero_op:
+
+            codigo_produto = op["identificacao"]["nCodProduto"]
+
+            produto = consultar_produto(codigo_produto)
+
+            op["nome_produto"] = produto.get(
+                "descricao",
+                "Produto não encontrado"
+            )
+
+            op["codigo_produto"] = produto.get(
+                "codigo",
+                ""
+            )
+
+            print(
+                f"Produto: {op['nome_produto']}, "
+                f"Código: {op['codigo_produto']}"
+            )
+
+
+            # ==========================================
+            # PESOS DO PRODUTO
+            # Omie retorna em KG
+            # ==========================================
+
+            peso_liq = produto.get("peso_liq") or 0
+            peso_bruto = produto.get("peso_bruto") or 0
+
+
+            # Converter KG -> GRAMAS
+
+            op["peso_liq_g"] = (
+                float(peso_liq) * 1000
+            )
+
+            op["tara_g"] = (
+                float(peso_bruto) * 1000
+            )
+
+
+            # ==========================================
+            # TOLERÂNCIA DE PESAGEM
+            # ==========================================
+
+            tolerancia = 0.01
+
+
+            op["peso_minimo_g"] = (
+                op["peso_liq_g"] *
+                (1 - tolerancia)
+            )
+
+            op["peso_maximo_g"] = (
+                op["peso_liq_g"] *
+                (1 + tolerancia)
+            )
+
+
+            # ==========================================
+            # ABRE A PÁGINA
+            # ==========================================
+
+            return render(
+                request,
+                "controle_peso.html",
+                {
+                    "op": op
+                }
+            )
+
+
+    # ==========================================================
+    # OP NÃO ENCONTRADA
+    # ==========================================================
+
+    return render(
+        request,
+        "controle_peso.html",
+        {
+            "op": None
+        }
+    )
