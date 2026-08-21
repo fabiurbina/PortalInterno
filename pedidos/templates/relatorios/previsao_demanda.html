@@ -9,11 +9,13 @@
 
     <title>Previsão de Demanda</title>
 
+
     <style>
 
         * {
             box-sizing: border-box;
         }
+
 
         body {
             font-family: Arial, sans-serif;
@@ -21,6 +23,7 @@
             margin: 0;
             padding: 20px;
         }
+
 
         .container {
             width: 100%;
@@ -57,6 +60,10 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
+        }
+
+        .btn-voltar:hover {
+            background-color: #092f52;
         }
 
 
@@ -116,6 +123,10 @@
             cursor: pointer;
         }
 
+        .btn-filtrar:hover {
+            background-color: #092f52;
+        }
+
         .btn-limpar {
             display: inline-block;
             margin-left: 8px;
@@ -126,18 +137,30 @@
             border-radius: 5px;
         }
 
+        .btn-limpar:hover {
+            background-color: #5a6268;
+        }
 
-        /* TABELA */
+
+        /* ==========================================
+           TABELA
+           ========================================== */
 
         .tabela-container {
             width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-radius: 6px;
         }
+
 
         table {
             width: 100%;
-            table-layout: fixed;
+            min-width: 1000px;
             border-collapse: collapse;
+            table-layout: auto;
         }
+
 
         th {
             background-color: #0D3B66;
@@ -145,8 +168,11 @@
             padding: 10px 8px;
             text-align: left;
             font-size: 12px;
-            word-break: break-word;
+
+            /* Mantém o nome da coluna inteiro */
+            white-space: nowrap;
         }
+
 
         td {
             padding: 8px;
@@ -154,56 +180,100 @@
             font-size: 12px;
             vertical-align: top;
 
-            /* permite quebrar textos grandes */
+            /* Permite quebra de texto */
             white-space: normal;
-            overflow-wrap: anywhere;
-            word-break: break-word;
+            overflow-wrap: break-word;
+            word-break: normal;
         }
+
 
         tr:hover {
             background-color: #f8f9fa;
         }
 
 
-        /* LARGURA DAS COLUNAS */
+        /* ==========================================
+           LARGURA DAS COLUNAS
+           ========================================== */
 
         th:nth-child(1),
         td:nth-child(1) {
             width: 13%;
+            min-width: 120px;
         }
+
 
         th:nth-child(2),
         td:nth-child(2) {
-            width: 32%;
+            width: 25%;
+            min-width: 200px;
         }
+
 
         th:nth-child(3),
         td:nth-child(3) {
-            width: 10%;
+            width: 12%;
+            min-width: 120px;
         }
+
 
         th:nth-child(4),
         td:nth-child(4) {
-            width: 14%;
+            width: 18%;
+            min-width: 160px;
         }
+
 
         th:nth-child(5),
         td:nth-child(5) {
-            width: 13%;
+            width: 12%;
+            min-width: 110px;
         }
+
 
         th:nth-child(6),
         td:nth-child(6) {
-            width: 8%;
+            width: 10%;
+            min-width: 90px;
         }
+
 
         th:nth-child(7),
         td:nth-child(7) {
             width: 10%;
+            min-width: 90px;
         }
 
 
-        /* RESPONSIVO */
+        /* ==========================================
+           BARRA DE ROLAGEM DA TABELA
+           ========================================== */
+
+        .tabela-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+
+        .tabela-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+
+
+        .tabela-container::-webkit-scrollbar-thumb {
+            background: #adb5bd;
+            border-radius: 5px;
+        }
+
+
+        .tabela-container::-webkit-scrollbar-thumb:hover {
+            background: #6c757d;
+        }
+
+
+        /* ==========================================
+           RESPONSIVO
+           ========================================== */
 
         @media (max-width: 1000px) {
 
@@ -211,7 +281,16 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
+            .tabela-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 1000px;
+            }
+
         }
+
 
         @media (max-width: 600px) {
 
@@ -229,6 +308,10 @@
                 padding: 6px;
             }
 
+            table {
+                min-width: 900px;
+            }
+
         }
 
     </style>
@@ -238,17 +321,22 @@
 
 <body>
 
+
 <div class="container">
 
 
-    <!-- VOLTAR -->
+    <!-- ==========================================
+         VOLTAR
+         ========================================== -->
 
     <a href="{% url 'relatorios_diversos' %}" class="btn-voltar">
         ← Voltar para Relatórios
     </a>
 
 
-    <!-- CABEÇALHO -->
+    <!-- ==========================================
+         CABEÇALHO
+         ========================================== -->
 
     <div class="cabecalho">
 
@@ -263,15 +351,19 @@
     </div>
 
 
-        <!-- FILTROS -->
+    <!-- ==========================================
+         FILTROS
+         ========================================== -->
 
-        <div class="card">
+    <div class="card">
 
         <form method="GET">
 
             <div class="filtros">
 
+
                 <!-- PREVISÃO -->
+
                 <div class="filtro">
 
                     <label for="previsao">
@@ -303,6 +395,7 @@
 
 
                 <!-- STATUS -->
+
                 <div class="filtro">
 
                     <label for="status">
@@ -334,13 +427,17 @@
 
 
                 <!-- TEMPERATURA -->
+
                 <div class="filtro">
 
                     <label for="Temperatura">
                         Temperatura
                     </label>
 
-                    <select name="Temperatura" id="Temperatura">
+                    <select
+                        name="Temperatura"
+                        id="Temperatura"
+                    >
 
                         <option value="">
                             Todas
@@ -363,16 +460,23 @@
 
                 </div>
 
+
             </div>
 
 
-            <!-- BOTÕES -->
+            <!-- ==========================================
+                 BOTÕES
+                 ========================================== -->
 
             <div class="botoes">
 
-                <button type="submit" class="btn-filtrar">
+                <button
+                    type="submit"
+                    class="btn-filtrar"
+                >
                     Filtrar
                 </button>
+
 
                 <a
                     href="{% url 'previsao_demanda' %}"
@@ -388,7 +492,9 @@
     </div>
 
 
-    <!-- RESULTADOS -->
+    <!-- ==========================================
+         RESULTADOS
+         ========================================== -->
 
     <div class="card">
 
@@ -439,7 +545,10 @@
 
                             <td
                                 colspan="100%"
-                                style="text-align: center; padding: 30px;"
+                                style="
+                                    text-align: center;
+                                    padding: 30px;
+                                "
                             >
                                 Nenhum registro encontrado.
                             </td>
@@ -458,6 +567,7 @@
 
 
 </div>
+
 
 </body>
 
