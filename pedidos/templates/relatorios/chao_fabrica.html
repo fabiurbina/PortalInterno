@@ -649,6 +649,22 @@
             background: #0D3B66;
         }
 
+        .sla {
+            font-weight: 700;
+            }
+
+            .sla.atrasado {
+                color: #dc3545;
+            }
+
+            .sla.hoje {
+                color: #d39e00;
+            }
+
+            .sla.prazo {
+                color: #198754;
+            }
+
 
         /* =====================================================
            RESPONSIVO
@@ -968,6 +984,9 @@
                             Quantidade
                         </th>
 
+                        <th>
+                            SLA
+                        </th>
 
                         <th
                             class="coluna-ordem"
@@ -1088,6 +1107,18 @@
 
                                 {{ linha.quantidade }}
 
+                            </td>
+
+                            <td class="sla
+                                {% if 'ATRASADO' in linha.SLA %}
+                                    atrasado
+                                {% elif 'VENCE HOJE' in linha.SLA %}
+                                    hoje
+                                {% elif 'NO PRAZO' in linha.SLA %}
+                                    prazo
+                                {% endif %}
+                            ">
+                                {{ linha.SLA }}
                             </td>
 
 

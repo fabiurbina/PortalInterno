@@ -1014,7 +1014,36 @@ def consulta_chao_fabrica():
             p.descricao AS Produto,
             e.descricao_etapa AS Etapa,
             op.quantidade AS Quantidade,
-            op.ordem AS Ordem
+            op.ordem AS Ordem,
+            CASE
+
+        WHEN op.Previsao_Termino IS NULL
+            THEN 'SEM PRAZO'
+
+        WHEN op.Previsao_Termino < CURDATE()
+            THEN CONCAT(
+                'ATRASADO - ',
+                DATEDIFF(
+                    CURDATE(),
+                    op.Previsao_Termino
+                ),
+                ' dias'
+            )
+
+        WHEN op.Previsao_Termino = CURDATE()
+            THEN 'VENCE HOJE'
+
+        ELSE CONCAT(
+            'NO PRAZO - ',
+            DATEDIFF(
+                op.Previsao_Termino,
+                CURDATE()
+            ),
+            ' dias'
+        )
+
+    END AS SLA
+
 
         FROM ViesanoDW.ordem_producao op
 
