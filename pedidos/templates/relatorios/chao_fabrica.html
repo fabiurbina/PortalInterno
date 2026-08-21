@@ -5,9 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Chão de Fábrica</title>
+    <title>Chão de Fábrica | Viesano</title>
 
 
     <style>
@@ -18,304 +19,665 @@
 
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f6f8;
+
             margin: 0;
-            padding: 20px;
+
+            padding: 24px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f3f5f7;
+
+            color: #212529;
         }
 
 
         .container {
+
             width: 100%;
+
             max-width: 1600px;
+
             margin: 0 auto;
         }
 
 
-        /* =========================
-           CARD
-           ========================= */
+        /* =====================================================
+           CABEÇALHO
+           ===================================================== */
 
-        .card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        .topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 22px;
         }
 
 
-        h1 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #212529;
-            font-size: 28px;
+        .topo-esquerda {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
         }
 
 
-        /* =========================
-           BOTÃO VOLTAR
-           ========================= */
+        .icone-pagina {
 
-        .btn-voltar {
-            display: inline-block;
+            width: 48px;
 
-            margin-top: 20px;
+            height: 48px;
 
-            padding: 10px 15px;
+            display: flex;
 
-            background-color: #0D3B66;
+            align-items: center;
+
+            justify-content: center;
+
+            background: #0D3B66;
 
             color: white;
 
-            text-decoration: none;
+            border-radius: 10px;
 
-            border-radius: 5px;
+            font-size: 23px;
+
+            box-shadow:
+                0 3px 8px
+                rgba(13, 59, 102, 0.20);
+        }
+
+
+        .titulo-area h1 {
+
+            margin: 0;
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            color: #1f2933;
+        }
+
+
+        .titulo-area p {
+
+            margin: 4px 0 0;
+
+            font-size: 13px;
+
+            color: #6c757d;
+        }
+
+
+        .marca {
 
             font-size: 14px;
+
+            font-weight: bold;
+
+            color: #0D3B66;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* =====================================================
+           BOTÃO VOLTAR
+           ===================================================== */
+
+        .btn-voltar {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 18px;
+
+            padding: 9px 14px;
+
+            background: white;
+
+            color: #0D3B66;
+
+            border: 1px solid #d9dee3;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
         }
 
 
         .btn-voltar:hover {
-            background-color: #092f52;
+
+            background: #0D3B66;
+
+            color: white;
+
+            border-color: #0D3B66;
         }
 
 
-        /* =========================
+        /* =====================================================
+           INDICADORES
+           ===================================================== */
+
+        .indicadores {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .indicador {
+
+            background: white;
+
+            border-radius: 9px;
+
+            padding: 16px 18px;
+
+            border: 1px solid #e1e5e9;
+
+            box-shadow:
+                0 2px 6px
+                rgba(0, 0, 0, 0.04);
+        }
+
+
+        .indicador-label {
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            font-weight: bold;
+
+            color: #6c757d;
+
+            margin-bottom: 6px;
+        }
+
+
+        .indicador-valor {
+
+            font-size: 25px;
+
+            font-weight: 700;
+
+            color: #0D3B66;
+        }
+
+
+        /* =====================================================
+           CARD PRINCIPAL
+           ===================================================== */
+
+        .card {
+
+            background: white;
+
+            border-radius: 10px;
+
+            border: 1px solid #e1e5e9;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0, 0, 0, 0.05);
+
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           BARRA DO CARD
+           ===================================================== */
+
+        .card-topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 15px 18px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            background: #fafbfc;
+        }
+
+
+        .card-titulo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #212529;
+        }
+
+
+        .card-titulo-icone {
+
+            color: #0D3B66;
+
+            font-size: 17px;
+        }
+
+
+        .instrucao {
+
+            font-size: 12px;
+
+            color: #6c757d;
+        }
+
+
+        /* =====================================================
+           STATUS
+           ===================================================== */
+
+        .status-salvamento {
+
+            display: none;
+
+            padding: 9px 14px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            border-bottom: 1px solid transparent;
+        }
+
+
+        .status-salvamento.sucesso {
+
+            display: block;
+
+            color: #198754;
+
+            background: #edf8f1;
+
+            border-color: #d6efdf;
+        }
+
+
+        .status-salvamento.erro {
+
+            display: block;
+
+            color: #dc3545;
+
+            background: #fdf0f1;
+
+            border-color: #f4d5d8;
+        }
+
+
+        /* =====================================================
            TABELA
-           ========================= */
+           ===================================================== */
 
         .tabela-container {
+
             width: 100%;
 
             overflow-x: auto;
 
-            border-radius: 5px;
+            max-height: 650px;
+
+            overflow-y: auto;
         }
 
 
         table {
+
             width: 100%;
 
-            min-width: 1200px;
+            min-width: 1250px;
 
-            border-collapse: collapse;
+            border-collapse: separate;
 
-            table-layout: fixed;
+            border-spacing: 0;
         }
 
 
-        th {
-            background-color: #0D3B66;
+        /* =====================================================
+           CABEÇALHO DA TABELA
+           ===================================================== */
+
+        thead th {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 5;
+
+            background: #0D3B66;
 
             color: white;
 
-            padding: 10px 8px;
+            padding: 11px 10px;
 
             text-align: left;
 
-            font-size: 12px;
+            font-size: 11px;
 
-            white-space: normal;
+            text-transform: uppercase;
 
-            overflow-wrap: break-word;
+            letter-spacing: 0.3px;
+
+            white-space: nowrap;
+
+            border-right:
+                1px solid
+                rgba(255,255,255,0.12);
         }
 
 
-        td {
-            padding: 9px 8px;
+        thead th:first-child {
 
-            border-bottom: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           CÉLULAS
+           ===================================================== */
+
+        tbody td {
+
+            padding: 11px 10px;
 
             font-size: 12px;
 
-            vertical-align: top;
+            border-bottom: 1px solid #e9ecef;
 
-            white-space: normal;
+            color: #343a40;
 
-            overflow-wrap: break-word;
+            white-space: nowrap;
 
-            word-break: break-word;
+            vertical-align: middle;
         }
 
+
+        /* =====================================================
+           LINHAS
+           ===================================================== */
 
         tbody tr {
-            transition: background-color 0.15s ease;
+
+            background: white;
+
+            transition:
+                background-color 0.15s,
+                opacity 0.15s,
+                transform 0.15s;
         }
 
 
         tbody tr:hover {
-            background-color: #f8f9fa;
+
+            background: #f5f8fb;
         }
 
 
-        /* =========================
-           COLUNA ARRASTAR
-           ========================= */
+        tbody tr.arrastando {
+
+            opacity: 0.45;
+
+            background: #e9eef3;
+        }
+
+
+        /* =====================================================
+           COLUNA DE ARRASTE
+           ===================================================== */
 
         .coluna-arrastar {
-            width: 40px;
 
-            min-width: 40px;
+            width: 45px;
 
             text-align: center;
         }
 
 
         .arrastar {
-            width: 40px;
+
+            width: 45px;
 
             text-align: center;
 
-            font-size: 18px;
-
-            color: #6c757d;
-
             cursor: grab;
+
+            color: #89939d;
+
+            font-size: 18px;
 
             user-select: none;
         }
 
 
         .arrastar:hover {
+
             color: #0D3B66;
         }
 
 
         .arrastar:active {
+
             cursor: grabbing;
         }
 
 
-        /* =========================
-           LINHA SENDO ARRASTADA
-           ========================= */
+        /* =====================================================
+           CÓDIGO DA OP
+           ===================================================== */
 
-        tr.arrastando {
-            opacity: 0.4;
+        .codigo-op {
 
-            background-color: #e9ecef;
+            font-weight: 700;
+
+            color: #0D3B66;
         }
 
 
-        tr.destino-arraste {
-            border-top: 3px solid #0D3B66;
+        .ordem-producao {
+
+            font-weight: 700;
+
+            color: #212529;
         }
 
 
-        /* =========================
-           LARGURA DAS COLUNAS
-           ========================= */
+        /* =====================================================
+           ORDEM
+           ===================================================== */
 
-        th:nth-child(1),
-        td:nth-child(1) {
-            width: 40px;
+        .coluna-ordem {
+
+            width: 75px;
+
+            text-align: center;
         }
 
 
-        /* razão social */
+        .valor-ordem {
 
-        th:nth-child(2),
-        td:nth-child(2) {
-            width: 14%;
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 32px;
+
+            height: 28px;
+
+            padding: 0 8px;
+
+            border-radius: 5px;
+
+            background: #eef2f6;
+
+            color: #0D3B66;
+
+            font-size: 12px;
+
+            font-weight: 700;
         }
 
 
-        /* início */
+        /* =====================================================
+           QUANTIDADE
+           ===================================================== */
 
-        th:nth-child(3),
-        td:nth-child(3) {
-            width: 9%;
+        .quantidade {
+
+            font-weight: 700;
+
+            text-align: right;
         }
 
 
-        /* previsão término */
+        /* =====================================================
+           PRIMEIRA OP DA FILA
+           ===================================================== */
 
-        th:nth-child(4),
-        td:nth-child(4) {
-            width: 9%;
+        tbody tr:first-child
+        .valor-ordem {
+
+            background: #0D3B66;
+
+            color: white;
         }
 
 
-        /* pedido */
+        /* =====================================================
+           SEM REGISTROS
+           ===================================================== */
 
-        th:nth-child(5),
-        td:nth-child(5) {
-            width: 7%;
+        .sem-registros {
+
+            text-align: center !important;
+
+            padding: 50px !important;
+
+            color: #6c757d !important;
+
+            font-size: 14px !important;
         }
 
 
-        /* OP */
+        /* =====================================================
+           RODAPÉ
+           ===================================================== */
 
-        th:nth-child(6),
-        td:nth-child(6) {
-            width: 8%;
+        .rodape-card {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 11px 18px;
+
+            background: #fafbfc;
+
+            border-top: 1px solid #e5e7eb;
+
+            color: #6c757d;
+
+            font-size: 11px;
         }
 
 
-        /* código produto */
+        .rodape-esquerda {
 
-        th:nth-child(7),
-        td:nth-child(7) {
-            width: 9%;
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
         }
 
 
-        /* descrição */
+        .indicador-arraste {
 
-        th:nth-child(8),
-        td:nth-child(8) {
-            width: 14%;
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #0D3B66;
         }
 
 
-        /* etapa */
-
-        th:nth-child(9),
-        td:nth-child(9) {
-            width: 6%;
-        }
-
-
-        /* descrição etapa */
-
-        th:nth-child(10),
-        td:nth-child(10) {
-            width: 10%;
-        }
-
-
-        /* quantidade */
-
-        th:nth-child(11),
-        td:nth-child(11) {
-            width: 7%;
-        }
-
-
-        /* ordem */
-
-        th:nth-child(12),
-        td:nth-child(12) {
-            width: 5%;
-        }
-
-
-        /* =========================
+        /* =====================================================
            RESPONSIVO
-           ========================= */
+           ===================================================== */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 900px) {
 
-            .container {
-                max-width: 100%;
+            body {
+
+                padding: 12px;
             }
 
-            .card {
-                padding: 15px;
+
+            .topo {
+
+                align-items: flex-start;
             }
 
-            h1 {
-                font-size: 24px;
+
+            .marca {
+
+                display: none;
+            }
+
+
+            .indicadores {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
             }
 
         }
@@ -323,22 +685,47 @@
 
         @media (max-width: 600px) {
 
-            body {
-                padding: 10px;
+            .topo {
+
+                margin-bottom: 15px;
             }
 
-            .card {
-                padding: 12px;
+
+            .icone-pagina {
+
+                width: 42px;
+
+                height: 42px;
+
+                font-size: 20px;
             }
 
-            h1 {
+
+            .titulo-area h1 {
+
                 font-size: 22px;
             }
 
-            th,
-            td {
-                font-size: 11px;
-                padding: 7px 6px;
+
+            .indicadores {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .indicador-valor {
+
+                font-size: 21px;
+            }
+
+
+            .card-topo {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 6px;
             }
 
         }
@@ -354,13 +741,170 @@
 <div class="container">
 
 
+    <!-- =====================================================
+         VOLTAR
+         ===================================================== -->
+
+    <a
+        href="{% url 'relatorios_diversos' %}"
+        class="btn-voltar"
+    >
+
+        ←
+
+        Voltar para Relatórios
+
+    </a>
+
+
+    <!-- =====================================================
+         CABEÇALHO
+         ===================================================== -->
+
+    <div class="topo">
+
+
+        <div class="topo-esquerda">
+
+
+            <div class="icone-pagina">
+
+                🏭
+
+            </div>
+
+
+            <div class="titulo-area">
+
+                <h1>
+                    Chão de Fábrica
+                </h1>
+
+                <p>
+                    Sequenciamento e acompanhamento
+                    das ordens de produção
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="marca">
+
+            VIESANO SUPLEMENTOS
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         INDICADORES
+         ===================================================== -->
+
+    <div class="indicadores">
+
+
+        <div class="indicador">
+
+            <div class="indicador-label">
+                Total de OPs
+            </div>
+
+            <div class="indicador-valor"
+                 id="total-ops">
+
+                {{ dados|length }}
+
+            </div>
+
+        </div>
+
+
+        <div class="indicador">
+
+            <div class="indicador-label">
+                Sequência Atual
+            </div>
+
+            <div class="indicador-valor">
+
+                {% if dados %}
+                    1 → {{ dados|length }}
+                {% else %}
+                    0
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="indicador">
+
+            <div class="indicador-label">
+                Status
+            </div>
+
+            <div class="indicador-valor">
+
+                Ativo
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         CARD PRINCIPAL
+         ===================================================== -->
+
     <div class="card">
 
 
-        <h1>
-            Chão de Fábrica
-        </h1>
+        <!-- CABEÇALHO -->
 
+        <div class="card-topo">
+
+
+            <div class="card-titulo">
+
+                <span class="card-titulo-icone">
+                    ☷
+                </span>
+
+                Sequenciamento da Produção
+
+            </div>
+
+
+            <div class="instrucao">
+
+                ↕ Arraste as OPs para definir a sequência
+
+            </div>
+
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div
+            id="status-salvamento"
+            class="status-salvamento"
+        ></div>
+
+
+        <!-- =================================================
+             TABELA
+             ================================================= -->
 
         <div class="tabela-container">
 
@@ -372,34 +916,78 @@
 
                     <tr>
 
-                        <!-- COLUNA ARRASTAR -->
 
-                        <th class="coluna-arrastar">
+                        <th
+                            class="coluna-arrastar"
+                        >
                             ☰
                         </th>
 
 
-                        {% if dados %}
+                        <th>
+                            Cliente
+                        </th>
 
-                            {% for coluna in dados.0.keys %}
 
-                                <th>
-                                    {{ coluna }}
-                                </th>
+                        <th>
+                            Data
+                        </th>
 
-                            {% endfor %}
 
-                        {% endif %}
+                        <th>
+                            Previsão
+                        </th>
+
+
+                        <th>
+                            Nº Pedido
+                        </th>
+
+
+                        <th>
+                            Ordem Produção
+                        </th>
+
+
+                        <th>
+                            Código OP
+                        </th>
+
+
+                        <th>
+                            Produto
+                        </th>
+
+
+                        <th>
+                            Etapa
+                        </th>
+
+
+                        <th>
+                            Quantidade
+                        </th>
+
+
+                        <th
+                            class="coluna-ordem"
+                        >
+                            Ordem
+                        </th>
+
 
                     </tr>
 
                 </thead>
 
 
-                <tbody id="tabela-chao-fabrica">
+                <tbody
+                    id="tabela-chao-fabrica"
+                >
 
 
                     {% for linha in dados %}
+
 
                         <tr
                             draggable="true"
@@ -407,18 +995,117 @@
                         >
 
 
+                            <!-- ARRASTAR -->
+
                             <td class="arrastar">
+
                                 ☰
+
                             </td>
 
 
-                            {% for valor in linha.values %}
+                            <!-- CLIENTE -->
 
-                                <td>
-                                    {{ valor }}
-                                </td>
+                            <td>
 
-                            {% endfor %}
+                                {{ linha.Cliente }}
+
+                            </td>
+
+
+                            <!-- DATA -->
+
+                            <td>
+
+                                {{ linha.Data|date:"d/m/Y" }}
+
+                            </td>
+
+
+                            <!-- PREVISÃO -->
+
+                            <td>
+
+                                {{ linha.Previsão|date:"d/m/Y" }}
+
+                            </td>
+
+
+                            <!-- PEDIDO -->
+
+                            <td>
+
+                                {{ linha.NumeroPedido }}
+
+                            </td>
+
+
+                            <!-- ORDEM PRODUÇÃO -->
+
+                            <td
+                                class="ordem-producao"
+                            >
+
+                                {{ linha.OrdemProdução }}
+
+                            </td>
+
+
+                            <!-- CÓDIGO OP -->
+
+                            <td
+                                class="codigo-op"
+                            >
+
+                                {{ linha.numero_CodOP }}
+
+                            </td>
+
+
+                            <!-- PRODUTO -->
+
+                            <td>
+
+                                {{ linha.Produto }}
+
+                            </td>
+
+
+                            <!-- ETAPA -->
+
+                            <td>
+
+                                {{ linha.Etapa }}
+
+                            </td>
+
+
+                            <!-- QUANTIDADE -->
+
+                            <td
+                                class="quantidade"
+                            >
+
+                                {{ linha.quantidade }}
+
+                            </td>
+
+
+                            <!-- ORDEM -->
+
+                            <td
+                                class="coluna-ordem"
+                            >
+
+                                <span
+                                    class="valor-ordem"
+                                >
+
+                                    {{ linha.ordem }}
+
+                                </span>
+
+                            </td>
 
 
                         </tr>
@@ -426,19 +1113,21 @@
 
                     {% empty %}
 
+
                         <tr>
 
                             <td
-                                colspan="100%"
-                                style="
-                                    text-align: center;
-                                    padding: 30px;
-                                "
+                                colspan="11"
+                                class="sem-registros"
                             >
-                                Nenhum registro encontrado.
+
+                                Nenhuma ordem de produção
+                                encontrada.
+
                             </td>
 
                         </tr>
+
 
                     {% endfor %}
 
@@ -452,29 +1141,47 @@
         </div>
 
 
+        <!-- =================================================
+             RODAPÉ
+             ================================================= -->
+
+        <div class="rodape-card">
+
+
+            <div class="rodape-esquerda">
+
+                <span
+                    class="indicador-arraste"
+                ></span>
+
+                Arraste uma OP para alterar
+                sua posição na sequência.
+
+            </div>
+
+
+            <div>
+
+                Alterações salvas automaticamente
+
+            </div>
+
+
+        </div>
+
+
     </div>
-
-
-    <!-- BOTÃO VOLTAR -->
-
-    <a
-        href="{% url 'relatorios_diversos' %}"
-        class="btn-voltar"
-    >
-        ← Voltar para Relatórios
-    </a>
 
 
 </div>
 
 
-
 <script>
 
 
-/* ==========================================
+/* =========================================================
    TABELA
-   ========================================== */
+   ========================================================= */
 
 const tabela =
     document.getElementById(
@@ -485,24 +1192,28 @@ const tabela =
 let linhaArrastada = null;
 
 
-/* ==========================================
+/* =========================================================
    INÍCIO DO ARRASTE
-   ========================================== */
+   ========================================================= */
 
 tabela.addEventListener(
     "dragstart",
     function(event) {
+
 
         const linha =
             event.target.closest("tr");
 
 
         if (!linha) {
+
             return;
+
         }
 
 
-        linhaArrastada = linha;
+        linhaArrastada =
+            linha;
 
 
         linha.classList.add(
@@ -517,13 +1228,14 @@ tabela.addEventListener(
 );
 
 
-/* ==========================================
-   DURANTE O ARRASTE
-   ========================================== */
+/* =========================================================
+   ARRASTANDO
+   ========================================================= */
 
 tabela.addEventListener(
     "dragover",
     function(event) {
+
 
         event.preventDefault();
 
@@ -536,13 +1248,10 @@ tabela.addEventListener(
             !linhaDestino ||
             linhaDestino === linhaArrastada
         ) {
+
             return;
+
         }
-
-
-        linhaDestino.classList.add(
-            "destino-arraste"
-        );
 
 
         const retangulo =
@@ -558,12 +1267,15 @@ tabela.addEventListener(
             event.clientY < meio
         ) {
 
+
             tabela.insertBefore(
                 linhaArrastada,
                 linhaDestino
             );
 
+
         } else {
+
 
             tabela.insertBefore(
                 linhaArrastada,
@@ -576,13 +1288,14 @@ tabela.addEventListener(
 );
 
 
-/* ==========================================
+/* =========================================================
    FINAL DO ARRASTE
-   ========================================== */
+   ========================================================= */
 
 tabela.addEventListener(
     "dragend",
     function(event) {
+
 
         const linha =
             event.target.closest("tr");
@@ -597,22 +1310,10 @@ tabela.addEventListener(
         }
 
 
-        document
-            .querySelectorAll(
-                "#tabela-chao-fabrica tr"
-            )
-            .forEach(
-                function(linha) {
-
-                    linha.classList.remove(
-                        "destino-arraste"
-                    );
-
-                }
-            );
-
-
         linhaArrastada = null;
+
+
+        atualizarNumeracao();
 
 
         salvarNovaOrdem();
@@ -621,11 +1322,47 @@ tabela.addEventListener(
 );
 
 
-/* ==========================================
-   SALVAR NOVA ORDEM
-   ========================================== */
+/* =========================================================
+   ATUALIZA NUMERAÇÃO
+   ========================================================= */
+
+function atualizarNumeracao() {
+
+
+    const linhas =
+        tabela.querySelectorAll("tr");
+
+
+    linhas.forEach(
+        function(linha, index) {
+
+
+            const elemento =
+                linha.querySelector(
+                    ".valor-ordem"
+                );
+
+
+            if (elemento) {
+
+
+                elemento.textContent =
+                    index + 1;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SALVA ORDEM NO MYSQL
+   ========================================================= */
 
 function salvarNovaOrdem() {
+
 
     const linhas =
         tabela.querySelectorAll("tr");
@@ -637,19 +1374,22 @@ function salvarNovaOrdem() {
     linhas.forEach(
         function(linha, index) {
 
-            const codigoOp =
+
+            const codigoOP =
                 linha.dataset.codigoOp;
 
 
-            if (!codigoOp) {
+            if (!codigoOP) {
+
                 return;
+
             }
 
 
             ordens.push({
 
                 numero_CodOP:
-                    codigoOp,
+                    codigoOP,
 
                 ordem:
                     index + 1
@@ -660,11 +1400,40 @@ function salvarNovaOrdem() {
     );
 
 
+    if (
+        ordens.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const status =
+        document.getElementById(
+            "status-salvamento"
+        );
+
+
+    status.className =
+        "status-salvamento";
+
+
+    status.textContent =
+        "Salvando sequência de produção...";
+
+
+    status.style.display =
+        "block";
+
+
     fetch(
         "{% url 'atualizar_ordem_chao_fabrica' %}",
         {
 
+
             method: "POST",
+
 
             headers: {
 
@@ -672,62 +1441,79 @@ function salvarNovaOrdem() {
                     "application/json",
 
                 "X-CSRFToken":
-                    getCookie("csrftoken")
+                    getCookie(
+                        "csrftoken"
+                    )
 
             },
 
+
             body:
-                JSON.stringify(ordens)
+                JSON.stringify(
+                    ordens
+                )
 
         }
-    )
 
+    )
 
     .then(
         function(response) {
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Erro HTTP: " +
-                    response.status
-                );
-
-            }
 
             return response.json();
 
         }
     )
 
-
     .then(
         function(data) {
 
-            if (!data.sucesso) {
 
-                throw new Error(
-                    data.erro ||
-                    "Erro ao salvar ordem."
-                );
+            if (
+                data.sucesso
+            ) {
+
+
+                status.className =
+                    "status-salvamento sucesso";
+
+
+                status.textContent =
+                    "✓ Sequência de produção salva com sucesso.";
+
+
+            } else {
+
+
+                status.className =
+                    "status-salvamento erro";
+
+
+                status.textContent =
+                    "Erro ao salvar: " +
+                    data.erro;
 
             }
-
-            console.log(
-                "Ordem salva com sucesso."
-            );
 
         }
     )
 
-
     .catch(
         function(error) {
 
+
             console.error(
-                "Erro ao salvar ordem:",
+                "Erro:",
                 error
             );
+
+
+            status.className =
+                "status-salvamento erro";
+
+
+            status.textContent =
+                "Erro ao atualizar a sequência de produção.";
 
         }
     );
@@ -735,11 +1521,12 @@ function salvarNovaOrdem() {
 }
 
 
-/* ==========================================
+/* =========================================================
    CSRF
-   ========================================== */
+   ========================================================= */
 
 function getCookie(name) {
+
 
     let cookieValue = null;
 
@@ -748,6 +1535,7 @@ function getCookie(name) {
         document.cookie &&
         document.cookie !== ""
     ) {
+
 
         const cookies =
             document.cookie.split(";");
@@ -758,6 +1546,7 @@ function getCookie(name) {
             i < cookies.length;
             i++
         ) {
+
 
             const cookie =
                 cookies[i].trim();
@@ -771,12 +1560,14 @@ function getCookie(name) {
                 (name + "=")
             ) {
 
+
                 cookieValue =
                     decodeURIComponent(
                         cookie.substring(
                             name.length + 1
                         )
                     );
+
 
                 break;
 
@@ -790,6 +1581,7 @@ function getCookie(name) {
     return cookieValue;
 
 }
+
 
 </script>
 

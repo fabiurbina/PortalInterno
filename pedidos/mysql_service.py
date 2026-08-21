@@ -1005,26 +1005,35 @@ def consulta_chao_fabrica():
 
     sql = """
         SELECT 
-        razao_social as Cliente,
-        op.dDtInicio as Data, 
-        op.Previsao_Termino as Previsão,
-        op.numero_pedido as NumeroPedido, 
-        op.numero_op as OrdemProdução, 
-        op.numero_CodOP,
-        p.descricao as Produto,
-        e.descricao_etapa as Etapa,
-        op.quantidade,
-        op.ordem
+            c.razao_social AS Cliente,
+            op.dDtInicio AS Data,
+            op.Previsao_Termino AS Previsão,
+            op.numero_pedido AS NumeroPedido,
+            op.numero_op AS OrdemProdução,
+            op.numero_CodOP,
+            p.descricao AS Produto,
+            e.descricao_etapa AS Etapa,
+            op.quantidade AS Quantidade,
+            op.ordem AS Ordem
+
         FROM ViesanoDW.ordem_producao op
-        LEFT JOIN produtos p on p.codigo_produto = op.numero_CodProduto
-        LEFT JOIN etapas e ON e.codigo_etapa = op.etapaid AND e.descricao_operacao = 'Ordem de Produção'
-        LEFT JOIN pedidos ped on ped.numero_pedido = op.numero_pedido
-        LEFT JOIN clientes c on c.codigo_cliente_omie = ped.codigo_cliente
-        where etapaid = 20 
 
+        LEFT JOIN produtos p
+            ON p.codigo_produto = op.numero_CodProduto
 
+        LEFT JOIN etapas e
+            ON e.codigo_etapa = op.etapaid
+            AND e.descricao_operacao = 'Ordem de Produção'
 
+        LEFT JOIN pedidos ped
+            ON ped.numero_pedido = op.numero_pedido
 
+        LEFT JOIN clientes c
+            ON c.codigo_cliente_omie = ped.codigo_cliente
+
+        WHERE op.etapaid = 20
+
+        ORDER BY op.ordem ASC, op.dDtInicio ASC
     """
 
     conexao = conectar()

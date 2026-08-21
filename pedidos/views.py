@@ -2371,13 +2371,9 @@ def atualizar_ordem_chao_fabrica(request):
 
     try:
 
-        dados = json.loads(
-            request.body
-        )
+        dados = json.loads(request.body)
 
-        salvar_ordem_chao_fabrica(
-            dados
-        )
+        salvar_ordem_chao_fabrica(dados)
 
         return JsonResponse(
             {
