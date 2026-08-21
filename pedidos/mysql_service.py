@@ -781,10 +781,7 @@ def buscar_CRM():
 
         conexao.close()
         
-if __name__ == "__main__":
-    dados = buscar_CRM()
-    print(dados)
-    
+
     
 def buscar_posicao_estoque(nome_estoque=None):
 
@@ -1003,4 +1000,68 @@ def salvar_controle_qualidade(
         cursor.close()
         conn.close()
 
+
+
+def consulta_chao_fabrica():
+
+    sql = """
+        SELECT 
+            op.numero_CodOP,
+            op.dDtInicio, 
+            op.numero_pedido, 
+            op.numero_op, 
+            op.numero_CodProduto, 
+            p.descricao,
+            op.etapaid,
+            op.quantidade,
+            op.ordem
+        FROM ViesanoDW.ordem_producao op
+        LEFT JOIN produtos p 
+            ON p.codigo_produto = op.numero_CodProduto
+        ORDER BY op.ordem ASC, op.dDtInicio ASC
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()
         
+        
+def salvar_ordem_chao_fabrica(ordens):
+
+    sql = """
+        UPDATE ViesanoDW.ordem_producao
+        SET ordem = %s
+        WHERE numero_CodOP = %s
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            for item in ordens:
+
+                cursor.execute(
+                    sql,
+                    (
+                        item["ordem"],
+                        item["numero_CodOP"]
+                    )
+                )
+
+        conexao.commit()
+
+    finally:
+
+        conexao.close()

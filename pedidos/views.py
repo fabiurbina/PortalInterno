@@ -29,7 +29,9 @@ from .mysql_service import (
     buscar_posicao_estoque,
     salvar_setup,
     salvar_parada_sql,
-    buscar_previsao_demanda
+    buscar_previsao_demanda,
+    consulta_chao_fabrica,
+    salvar_ordem_chao_fabrica
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -2340,3 +2342,55 @@ def controle_peso(request):
             "op": None
         }
     )
+    
+
+def chao_fabrica(request):
+
+    dados = consulta_chao_fabrica()
+
+    return render(
+        request,
+        "relatorios/chao_fabrica.html",
+        {
+            "dados": dados
+        }
+    )
+    
+    
+def atualizar_ordem_chao_fabrica(request):
+
+    if request.method != "POST":
+
+        return JsonResponse(
+            {
+                "sucesso": False,
+                "erro": "Método não permitido."
+            },
+            status=405
+        )
+
+    try:
+
+        dados = json.loads(
+            request.body
+        )
+
+        salvar_ordem_chao_fabrica(
+            dados
+        )
+
+        return JsonResponse(
+            {
+                "sucesso": True
+            }
+        )
+
+    except Exception as e:
+
+        return JsonResponse(
+            {
+                "sucesso": False,
+                "erro": str(e)
+            },
+            status=500
+        )

@@ -30,7 +30,9 @@ from .views import (
     previsao_demanda,
     exportar_previsao_demanda_excel,
     controle_peso,
-    qualidade_controle
+    qualidade_controle,
+    chao_fabrica,
+    atualizar_ordem_chao_fabrica
 )
 
 urlpatterns = [
@@ -189,11 +191,28 @@ urlpatterns = [
         name="previsao_demanda"
     ),
     
-        path(
-        "relatorios/previsao-demanda/exportar/",
-        exportar_previsao_demanda_excel,
-        name="exportar_previsao_demanda_excel",
+    
+    path(
+    "relatorios/previsao-demanda/exportar/",
+    exportar_previsao_demanda_excel,
+    name="exportar_previsao_demanda_excel",
     ),
+    
+    
+    path(
+    "relatorios/chao-fabrica/",
+    chao_fabrica,
+    name="chao_fabrica"
+        ),
+    
+    
+    path(
+    "relatorios/chao-fabrica/atualizar-ordem/",
+    atualizar_ordem_chao_fabrica,
+    name="atualizar_ordem_chao_fabrica"
+),
+    
+    
     
     path(
     "qualidade/controle/",

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chão de Fábrica</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+
+        h1 {
+            margin-top: 0;
+            color: #212529;
+        }
+
+
+        /* =========================
+           TABELA
+           ========================= */
+
+        .tabela-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+
+        th {
+            background-color: #0D3B66;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+        }
+
+
+        tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+
+        /* =========================
+           COLUNA DE ARRASTE
+           ========================= */
+
+        .coluna-arrastar {
+            width: 45px;
+            min-width: 45px;
+            text-align: center;
+        }
+
+
+        .arrastar {
+            width: 45px;
+            text-align: center;
+            font-size: 20px;
+            color: #6c757d;
+            cursor: grab;
+            user-select: none;
+        }
+
+
+        .arrastar:hover {
+            color: #0D3B66;
+        }
+
+
+        .arrastar:active {
+            cursor: grabbing;
+        }
+
+
+        /* =========================
+           LINHA SENDO ARRASTADA
+           ========================= */
+
+        tr.arrastando {
+            opacity: 0.4;
+            background-color: #e9ecef;
+        }
+
+
+        /* =========================
+           LOCAL DE DESTINO
+           ========================= */
+
+        tr.destino-arraste {
+            border-top: 3px solid #0D3B66;
+        }
+
+
+        /* =========================
+           STATUS DO SALVAMENTO
+           ========================= */
+
+        .status-ordem {
+            display: none;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+
+        .status-ordem.salvando {
+            display: block;
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+
+
+        .status-ordem.sucesso {
+            display: block;
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .status-ordem.erro {
+            display: block;
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+
+        /* =========================
+           RESPONSIVO
+           ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            th,
+            td {
+                font-size: 11px;
+                padding: 7px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="card">
+
+
+        <h1>
+            Chão de Fábrica
+        </h1>
+
+
+        <!-- =========================
+             STATUS
+             ========================= -->
+
+        <div
+            id="status-ordem"
+            class="status-ordem"
+        ></div>
+
+
+        <!-- =========================
+             TABELA
+             ========================= -->
+
+        <div class="tabela-container">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+
+                        <!-- COLUNA PARA ARRASTAR -->
+
+                        <th class="coluna-arrastar">
+                            ☰
+                        </th>
+
+
+                        {% if dados %}
+
+                            {% for coluna in dados.0.keys %}
+
+                                <th>
+                                    {{ coluna }}
+                                </th>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="tabela-chao-fabrica">
+
+
+                    {% for linha in dados %}
+
+                        <tr
+                            draggable="true"
+                            data-codigo-op="{{ linha.numero_CodOP }}"
+                        >
+
+
+                            <!-- ALÇA DE ARRASTE -->
+
+                            <td class="arrastar">
+                                ☰
+                            </td>
+
+
+                            <!-- DADOS DA LINHA -->
+
+                            {% for valor in linha.values %}
+
+                                <td>
+                                    {{ valor }}
+                                </td>
+
+                            {% endfor %}
+
+
+                        </tr>
+
+
+                    {% empty %}
+
+
+                        <tr>
+
+                            <td
+                                colspan="100%"
+                                style="
+                                    text-align: center;
+                                    padding: 30px;
+                                "
+                            >
+                                Nenhum registro encontrado.
+                            </td>
+
+                        </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* ==========================================
+   TABELA
+   ========================================== */
+
+const tabela =
+    document.getElementById(
+        "tabela-chao-fabrica"
+    );
+
+
+let linhaArrastada = null;
+
+
+
+/* ==========================================
+   INÍCIO DO ARRASTE
+   ========================================== */
+
+tabela.addEventListener(
+    "dragstart",
+    function(event) {
+
+
+        const linha =
+            event.target.closest("tr");
+
+
+        if (!linha) {
+            return;
+        }
+
+
+        linhaArrastada = linha;
+
+
+        linha.classList.add(
+            "arrastando"
+        );
+
+
+        event.dataTransfer.effectAllowed =
+            "move";
+
+    }
+);
+
+
+
+/* ==========================================
+   DURANTE O ARRASTE
+   ========================================== */
+
+tabela.addEventListener(
+    "dragover",
+    function(event) {
+
+
+        event.preventDefault();
+
+
+        const linhaDestino =
+            event.target.closest("tr");
+
+
+        if (
+            !linhaDestino ||
+            linhaDestino === linhaArrastada
+        ) {
+
+            return;
+
+        }
+
+
+        linhaDestino.classList.add(
+            "destino-arraste"
+        );
+
+
+        const retangulo =
+            linhaDestino.getBoundingClientRect();
+
+
+        const meio =
+            retangulo.top +
+            retangulo.height / 2;
+
+
+        if (
+            event.clientY < meio
+        ) {
+
+
+            tabela.insertBefore(
+                linhaArrastada,
+                linhaDestino
+            );
+
+
+        } else {
+
+
+            tabela.insertBefore(
+                linhaArrastada,
+                linhaDestino.nextSibling
+            );
+
+        }
+
+    }
+);
+
+
+
+/* ==========================================
+   LIMPA DESTAQUE DA LINHA
+   ========================================== */
+
+tabela.addEventListener(
+    "dragleave",
+    function(event) {
+
+
+        const linha =
+            event.target.closest("tr");
+
+
+        if (linha) {
+
+            linha.classList.remove(
+                "destino-arraste"
+            );
+
+        }
+
+    }
+);
+
+
+
+/* ==========================================
+   FINAL DO ARRASTE
+   ========================================== */
+
+tabela.addEventListener(
+    "dragend",
+    function(event) {
+
+
+        const linha =
+            event.target.closest("tr");
+
+
+        if (linha) {
+
+            linha.classList.remove(
+                "arrastando"
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(
+                "#tabela-chao-fabrica tr"
+            )
+            .forEach(
+                function(linha) {
+
+                    linha.classList.remove(
+                        "destino-arraste"
+                    );
+
+                }
+            );
+
+
+        linhaArrastada = null;
+
+
+        /*
+         * Depois que o usuário soltar a linha,
+         * salva a nova sequência no banco.
+         */
+
+        salvarNovaOrdem();
+
+    }
+);
+
+
+
+/* ==========================================
+   SALVAR NOVA ORDEM
+   ========================================== */
+
+function salvarNovaOrdem() {
+
+
+    const linhas =
+        tabela.querySelectorAll("tr");
+
+
+    const ordens = [];
+
+
+    linhas.forEach(
+        function(linha, index) {
+
+
+            const codigoOP =
+                linha.dataset.codigoOp;
+
+
+            /*
+             * Ignora linhas que não possuem
+             * numero_CodOP.
+             */
+
+            if (!codigoOP) {
+                return;
+            }
+
+
+            ordens.push({
+
+                numero_CodOP:
+                    codigoOP,
+
+                ordem:
+                    index + 1
+
+            });
+
+        }
+    );
+
+
+    /* ======================================
+       MOSTRA STATUS
+       ====================================== */
+
+    mostrarStatus(
+        "salvando",
+        "Salvando nova ordem..."
+    );
+
+
+    /* ======================================
+       ENVIA PARA DJANGO
+       ====================================== */
+
+    fetch(
+        "{% url 'atualizar_ordem_chao_fabrica' %}",
+        {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type":
+                    "application/json",
+
+                "X-CSRFToken":
+                    getCookie("csrftoken")
+
+            },
+
+            body:
+                JSON.stringify(ordens)
+
+        }
+    )
+
+
+    .then(
+        function(response) {
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Erro HTTP: " +
+                    response.status
+                );
+
+            }
+
+
+            return response.json();
+
+        }
+    )
+
+
+    .then(
+        function(data) {
+
+
+            if (data.sucesso) {
+
+
+                mostrarStatus(
+                    "sucesso",
+                    "✓ Ordem de produção salva."
+                );
+
+
+                /*
+                 * Esconde a mensagem
+                 * depois de 2 segundos.
+                 */
+
+                setTimeout(
+                    function() {
+
+                        esconderStatus();
+
+                    },
+                    2000
+                );
+
+
+            } else {
+
+
+                throw new Error(
+                    data.erro ||
+                    "Erro ao salvar a ordem."
+                );
+
+            }
+
+        }
+    )
+
+
+    .catch(
+        function(error) {
+
+
+            console.error(
+                "Erro ao salvar ordem:",
+                error
+            );
+
+
+            mostrarStatus(
+                "erro",
+                "✕ Não foi possível salvar a nova ordem."
+            );
+
+        }
+    );
+
+}
+
+
+
+/* ==========================================
+   MOSTRAR STATUS
+   ========================================== */
+
+function mostrarStatus(
+    tipo,
+    mensagem
+) {
+
+
+    const status =
+        document.getElementById(
+            "status-ordem"
+        );
+
+
+    status.className =
+        "status-ordem " + tipo;
+
+
+    status.textContent =
+        mensagem;
+
+}
+
+
+
+/* ==========================================
+   ESCONDER STATUS
+   ========================================== */
+
+function esconderStatus() {
+
+
+    const status =
+        document.getElementById(
+            "status-ordem"
+        );
+
+
+    status.className =
+        "status-ordem";
+
+
+    status.textContent =
+        "";
+
+}
+
+
+
+/* ==========================================
+   PEGAR CSRF TOKEN
+   ========================================== */
+
+function getCookie(name) {
+
+
+    let cookieValue = null;
+
+
+    if (
+        document.cookie &&
+        document.cookie !== ""
+    ) {
+
+
+        const cookies =
+            document.cookie.split(";");
+
+
+        for (
+            let i = 0;
+            i < cookies.length;
+            i++
+        ) {
+
+
+            const cookie =
+                cookies[i].trim();
+
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) ===
+                (name + "=")
+            ) {
+
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return cookieValue;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
