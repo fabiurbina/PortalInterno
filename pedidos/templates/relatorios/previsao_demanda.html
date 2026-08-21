@@ -312,6 +312,22 @@
                 min-width: 900px;
             }
 
+        }.btn-excel {
+            display: inline-block;
+            padding: 9px 18px;
+            background-color: #198754;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .btn-excel:hover {
+            background-color: #157347;
         }
 
     </style>
@@ -485,7 +501,7 @@
                     href="{% url 'exportar_previsao_demanda_excel' %}?Previsão={{ request.GET.Previsão|urlencode }}&Status={{ request.GET.Status|urlencode }}&Temperatura={{ request.GET.Temperatura|urlencode }}"
                     class="btn-excel"
                 >
-                    📊 Exportar Excel
+                    📊 Excel
                 </a>
 
             </div>
