@@ -27,10 +27,14 @@
 
         .container {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
+
+        /* =========================
+           CARD
+           ========================= */
 
         .card {
             background-color: white;
@@ -42,7 +46,37 @@
 
         h1 {
             margin-top: 0;
+            margin-bottom: 20px;
             color: #212529;
+            font-size: 28px;
+        }
+
+
+        /* =========================
+           BOTÃO VOLTAR
+           ========================= */
+
+        .btn-voltar {
+            display: inline-block;
+
+            margin-top: 20px;
+
+            padding: 10px 15px;
+
+            background-color: #0D3B66;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+        }
+
+
+        .btn-voltar:hover {
+            background-color: #092f52;
         }
 
 
@@ -52,31 +86,55 @@
 
         .tabela-container {
             width: 100%;
+
             overflow-x: auto;
+
+            border-radius: 5px;
         }
 
 
         table {
             width: 100%;
+
+            min-width: 1200px;
+
             border-collapse: collapse;
-            min-width: 900px;
+
+            table-layout: fixed;
         }
 
 
         th {
             background-color: #0D3B66;
+
             color: white;
-            padding: 10px;
+
+            padding: 10px 8px;
+
             text-align: left;
-            font-size: 13px;
-            white-space: nowrap;
+
+            font-size: 12px;
+
+            white-space: normal;
+
+            overflow-wrap: break-word;
         }
 
 
         td {
-            padding: 10px;
+            padding: 9px 8px;
+
             border-bottom: 1px solid #dee2e6;
-            font-size: 13px;
+
+            font-size: 12px;
+
+            vertical-align: top;
+
+            white-space: normal;
+
+            overflow-wrap: break-word;
+
+            word-break: break-word;
         }
 
 
@@ -91,22 +149,29 @@
 
 
         /* =========================
-           COLUNA DE ARRASTE
+           COLUNA ARRASTAR
            ========================= */
 
         .coluna-arrastar {
-            width: 45px;
-            min-width: 45px;
+            width: 40px;
+
+            min-width: 40px;
+
             text-align: center;
         }
 
 
         .arrastar {
-            width: 45px;
+            width: 40px;
+
             text-align: center;
-            font-size: 20px;
+
+            font-size: 18px;
+
             color: #6c757d;
+
             cursor: grab;
+
             user-select: none;
         }
 
@@ -127,13 +192,10 @@
 
         tr.arrastando {
             opacity: 0.4;
+
             background-color: #e9ecef;
         }
 
-
-        /* =========================
-           LOCAL DE DESTINO
-           ========================= */
 
         tr.destino-arraste {
             border-top: 3px solid #0D3B66;
@@ -141,50 +203,100 @@
 
 
         /* =========================
-           STATUS DO SALVAMENTO
+           LARGURA DAS COLUNAS
            ========================= */
 
-        .status-ordem {
-            display: none;
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 13px;
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 40px;
         }
 
 
-        .status-ordem.salvando {
-            display: block;
-            background-color: #fff3cd;
-            color: #664d03;
+        /* razão social */
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 14%;
         }
 
 
-        .status-ordem.sucesso {
-            display: block;
-            background-color: #d1e7dd;
-            color: #0f5132;
+        /* início */
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 9%;
         }
 
 
-        .status-ordem.erro {
-            display: block;
-            background-color: #f8d7da;
-            color: #842029;
-        }
-        
-        .btn-voltar {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            background-color: #0D3B66;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
+        /* previsão término */
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 9%;
         }
 
-        .btn-voltar:hover {
-            background-color: #092f52;
+
+        /* pedido */
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 7%;
+        }
+
+
+        /* OP */
+
+        th:nth-child(6),
+        td:nth-child(6) {
+            width: 8%;
+        }
+
+
+        /* código produto */
+
+        th:nth-child(7),
+        td:nth-child(7) {
+            width: 9%;
+        }
+
+
+        /* descrição */
+
+        th:nth-child(8),
+        td:nth-child(8) {
+            width: 14%;
+        }
+
+
+        /* etapa */
+
+        th:nth-child(9),
+        td:nth-child(9) {
+            width: 6%;
+        }
+
+
+        /* descrição etapa */
+
+        th:nth-child(10),
+        td:nth-child(10) {
+            width: 10%;
+        }
+
+
+        /* quantidade */
+
+        th:nth-child(11),
+        td:nth-child(11) {
+            width: 7%;
+        }
+
+
+        /* ordem */
+
+        th:nth-child(12),
+        td:nth-child(12) {
+            width: 5%;
         }
 
 
@@ -192,10 +304,10 @@
            RESPONSIVO
            ========================= */
 
-        @media (max-width: 600px) {
+        @media (max-width: 1000px) {
 
-            body {
-                padding: 10px;
+            .container {
+                max-width: 100%;
             }
 
             .card {
@@ -206,10 +318,27 @@
                 font-size: 24px;
             }
 
+        }
+
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
             th,
             td {
                 font-size: 11px;
-                padding: 7px;
+                padding: 7px 6px;
             }
 
         }
@@ -233,20 +362,6 @@
         </h1>
 
 
-        <!-- =========================
-             STATUS
-             ========================= -->
-
-        <div
-            id="status-ordem"
-            class="status-ordem"
-        ></div>
-
-
-        <!-- =========================
-             TABELA
-             ========================= -->
-
         <div class="tabela-container">
 
 
@@ -257,8 +372,7 @@
 
                     <tr>
 
-
-                        <!-- COLUNA PARA ARRASTAR -->
+                        <!-- COLUNA ARRASTAR -->
 
                         <th class="coluna-arrastar">
                             ☰
@@ -277,7 +391,6 @@
 
                         {% endif %}
 
-
                     </tr>
 
                 </thead>
@@ -294,14 +407,10 @@
                         >
 
 
-                            <!-- ALÇA DE ARRASTE -->
-
                             <td class="arrastar">
                                 ☰
                             </td>
 
-
-                            <!-- DADOS DA LINHA -->
 
                             {% for valor in linha.values %}
 
@@ -317,7 +426,6 @@
 
                     {% empty %}
 
-
                         <tr>
 
                             <td
@@ -331,7 +439,6 @@
                             </td>
 
                         </tr>
-
 
                     {% endfor %}
 
@@ -348,14 +455,17 @@
     </div>
 
 
-</div>
+    <!-- BOTÃO VOLTAR -->
 
-<a
-    href="{% url 'relatorios_diversos' %}"
-    class="btn-voltar"
->
-    ← Voltar para Relatórios
-</a>
+    <a
+        href="{% url 'relatorios_diversos' %}"
+        class="btn-voltar"
+    >
+        ← Voltar para Relatórios
+    </a>
+
+
+</div>
 
 
 
@@ -375,7 +485,6 @@ const tabela =
 let linhaArrastada = null;
 
 
-
 /* ==========================================
    INÍCIO DO ARRASTE
    ========================================== */
@@ -383,7 +492,6 @@ let linhaArrastada = null;
 tabela.addEventListener(
     "dragstart",
     function(event) {
-
 
         const linha =
             event.target.closest("tr");
@@ -409,7 +517,6 @@ tabela.addEventListener(
 );
 
 
-
 /* ==========================================
    DURANTE O ARRASTE
    ========================================== */
@@ -417,7 +524,6 @@ tabela.addEventListener(
 tabela.addEventListener(
     "dragover",
     function(event) {
-
 
         event.preventDefault();
 
@@ -430,9 +536,7 @@ tabela.addEventListener(
             !linhaDestino ||
             linhaDestino === linhaArrastada
         ) {
-
             return;
-
         }
 
 
@@ -454,15 +558,12 @@ tabela.addEventListener(
             event.clientY < meio
         ) {
 
-
             tabela.insertBefore(
                 linhaArrastada,
                 linhaDestino
             );
 
-
         } else {
-
 
             tabela.insertBefore(
                 linhaArrastada,
@@ -475,33 +576,6 @@ tabela.addEventListener(
 );
 
 
-
-/* ==========================================
-   LIMPA DESTAQUE DA LINHA
-   ========================================== */
-
-tabela.addEventListener(
-    "dragleave",
-    function(event) {
-
-
-        const linha =
-            event.target.closest("tr");
-
-
-        if (linha) {
-
-            linha.classList.remove(
-                "destino-arraste"
-            );
-
-        }
-
-    }
-);
-
-
-
 /* ==========================================
    FINAL DO ARRASTE
    ========================================== */
@@ -509,7 +583,6 @@ tabela.addEventListener(
 tabela.addEventListener(
     "dragend",
     function(event) {
-
 
         const linha =
             event.target.closest("tr");
@@ -542,16 +615,10 @@ tabela.addEventListener(
         linhaArrastada = null;
 
 
-        /*
-         * Depois que o usuário soltar a linha,
-         * salva a nova sequência no banco.
-         */
-
         salvarNovaOrdem();
 
     }
 );
-
 
 
 /* ==========================================
@@ -559,7 +626,6 @@ tabela.addEventListener(
    ========================================== */
 
 function salvarNovaOrdem() {
-
 
     const linhas =
         tabela.querySelectorAll("tr");
@@ -571,17 +637,11 @@ function salvarNovaOrdem() {
     linhas.forEach(
         function(linha, index) {
 
-
-            const codigoOP =
+            const codigoOp =
                 linha.dataset.codigoOp;
 
 
-            /*
-             * Ignora linhas que não possuem
-             * numero_CodOP.
-             */
-
-            if (!codigoOP) {
+            if (!codigoOp) {
                 return;
             }
 
@@ -589,7 +649,7 @@ function salvarNovaOrdem() {
             ordens.push({
 
                 numero_CodOP:
-                    codigoOP,
+                    codigoOp,
 
                 ordem:
                     index + 1
@@ -599,20 +659,6 @@ function salvarNovaOrdem() {
         }
     );
 
-
-    /* ======================================
-       MOSTRA STATUS
-       ====================================== */
-
-    mostrarStatus(
-        "salvando",
-        "Salvando nova ordem..."
-    );
-
-
-    /* ======================================
-       ENVIA PARA DJANGO
-       ====================================== */
 
     fetch(
         "{% url 'atualizar_ordem_chao_fabrica' %}",
@@ -640,7 +686,6 @@ function salvarNovaOrdem() {
     .then(
         function(response) {
 
-
             if (!response.ok) {
 
                 throw new Error(
@@ -649,7 +694,6 @@ function salvarNovaOrdem() {
                 );
 
             }
-
 
             return response.json();
 
@@ -660,40 +704,18 @@ function salvarNovaOrdem() {
     .then(
         function(data) {
 
-
-            if (data.sucesso) {
-
-
-                mostrarStatus(
-                    "sucesso",
-                    "✓ Ordem de produção salva."
-                );
-
-
-                /*
-                 * Esconde a mensagem
-                 * depois de 2 segundos.
-                 */
-
-                setTimeout(
-                    function() {
-
-                        esconderStatus();
-
-                    },
-                    2000
-                );
-
-
-            } else {
-
+            if (!data.sucesso) {
 
                 throw new Error(
                     data.erro ||
-                    "Erro ao salvar a ordem."
+                    "Erro ao salvar ordem."
                 );
 
             }
+
+            console.log(
+                "Ordem salva com sucesso."
+            );
 
         }
     )
@@ -702,16 +724,9 @@ function salvarNovaOrdem() {
     .catch(
         function(error) {
 
-
             console.error(
                 "Erro ao salvar ordem:",
                 error
-            );
-
-
-            mostrarStatus(
-                "erro",
-                "✕ Não foi possível salvar a nova ordem."
             );
 
         }
@@ -720,64 +735,11 @@ function salvarNovaOrdem() {
 }
 
 
-
 /* ==========================================
-   MOSTRAR STATUS
-   ========================================== */
-
-function mostrarStatus(
-    tipo,
-    mensagem
-) {
-
-
-    const status =
-        document.getElementById(
-            "status-ordem"
-        );
-
-
-    status.className =
-        "status-ordem " + tipo;
-
-
-    status.textContent =
-        mensagem;
-
-}
-
-
-
-/* ==========================================
-   ESCONDER STATUS
-   ========================================== */
-
-function esconderStatus() {
-
-
-    const status =
-        document.getElementById(
-            "status-ordem"
-        );
-
-
-    status.className =
-        "status-ordem";
-
-
-    status.textContent =
-        "";
-
-}
-
-
-
-/* ==========================================
-   PEGAR CSRF TOKEN
+   CSRF
    ========================================== */
 
 function getCookie(name) {
-
 
     let cookieValue = null;
 
@@ -786,7 +748,6 @@ function getCookie(name) {
         document.cookie &&
         document.cookie !== ""
     ) {
-
 
         const cookies =
             document.cookie.split(";");
@@ -797,7 +758,6 @@ function getCookie(name) {
             i < cookies.length;
             i++
         ) {
-
 
             const cookie =
                 cookies[i].trim();
@@ -811,14 +771,12 @@ function getCookie(name) {
                 (name + "=")
             ) {
 
-
                 cookieValue =
                     decodeURIComponent(
                         cookie.substring(
                             name.length + 1
                         )
                     );
-
 
                 break;
 
@@ -832,7 +790,6 @@ function getCookie(name) {
     return cookieValue;
 
 }
-
 
 </script>
 
