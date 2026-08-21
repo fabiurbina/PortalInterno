@@ -370,7 +370,7 @@
                         Previsão
                     </label>
 
-                    <select name="previsao" id="previsao">
+                    <select name="Previsão" id="Previsão">
 
                         <option value="">
                             Todas
@@ -470,19 +470,22 @@
 
             <div class="botoes">
 
-                <button
-                    type="submit"
-                    class="btn-filtrar"
-                >
+                <button type="submit" class="btn-filtrar">
                     Filtrar
                 </button>
-
 
                 <a
                     href="{% url 'previsao_demanda' %}"
                     class="btn-limpar"
                 >
                     Limpar
+                </a>
+
+                <a
+                    href="{% url 'exportar_previsao_demanda_excel' %}?Previsão={{ request.GET.Previsão|urlencode }}&Status={{ request.GET.Status|urlencode }}&Temperatura={{ request.GET.Temperatura|urlencode }}"
+                    class="btn-excel"
+                >
+                    📊 Exportar Excel
                 </a>
 
             </div>

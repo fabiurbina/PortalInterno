@@ -43,6 +43,11 @@ from .email_service import enviar_email_boas_vindas
 from .groq_service import gerar_relatorio_comercial, gerar_relatorio_producao
 from .preparar_dados import preparar_dados_comercial, preparar_dados_producao
 import markdown
+from django.http import HttpResponse
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.utils import get_column_letter
+from datetime import datetime
 
 
 
@@ -1844,9 +1849,9 @@ def relatorios_diversos(request):
     
 def previsao_demanda(request):
 
-    status = request.GET.get("status")
+    status = request.GET.get("Status")
     Temperatura = request.GET.get("Temperatura")
-    previsao = request.GET.get("previsao")
+    previsao = request.GET.get("Previsão")
 
     dados = buscar_previsao_demanda(
         status=status,
@@ -1859,9 +1864,9 @@ def previsao_demanda(request):
 
     status_lista = sorted(
         set(
-            item["status"]
+            item["Status"]
             for item in todos_dados
-            if item.get("status")
+            if item.get("Status")
         )
     )
 
@@ -1875,9 +1880,9 @@ def previsao_demanda(request):
 
     previsao_lista = sorted(
     set(
-            item["previsao"].strftime("%Y-%m-%d")
+            item["Previsão"].strftime("%Y-%m-%d")
             for item in todos_dados
-            if item.get("previsao")
+            if item.get("Previsão")
         )
     )
 
@@ -1891,6 +1896,192 @@ def previsao_demanda(request):
             "previsao_lista": previsao_lista,
         }
     )
+    
+    
+def exportar_previsao_demanda_excel(request):
+
+    # ==========================================
+    # RECEBE OS FILTROS DA TELA
+    # ==========================================
+
+    status = request.GET.get("Status")
+    Temperatura = request.GET.get("Temperatura")
+    previsao = request.GET.get("Previsão")
+
+
+    # ==========================================
+    # BUSCA OS DADOS USANDO A MESMA FUNÇÃO
+    # DO RELATÓRIO
+    # ==========================================
+
+    dados = buscar_previsao_demanda(
+        status=status,
+        Temperatura=Temperatura,
+        previsao=previsao
+    )
+
+
+    # ==========================================
+    # CRIA O ARQUIVO EXCEL
+    # ==========================================
+
+    workbook = Workbook()
+
+    worksheet = workbook.active
+
+    worksheet.title = "Previsão de Demanda"
+
+
+    # ==========================================
+    # COLUNAS DA VIEW
+    # ==========================================
+
+    colunas = [
+        "DataInclusão",
+        "Cliente",
+        "Previsão",
+        "Produto",
+        "Temperatura",
+        "Fase",
+        "Status",
+        "Valor",
+        "SLA",
+    ]
+
+
+    # ==========================================
+    # CABEÇALHO
+    # ==========================================
+
+    for numero_coluna, nome_coluna in enumerate(colunas, start=1):
+
+        celula = worksheet.cell(
+            row=1,
+            column=numero_coluna,
+            value=nome_coluna
+        )
+
+        celula.font = Font(
+            bold=True,
+            color="FFFFFF"
+        )
+
+        celula.fill = PatternFill(
+            fill_type="solid",
+            fgColor="0D3B66"
+        )
+
+        celula.alignment = Alignment(
+            horizontal="center",
+            vertical="center"
+        )
+
+
+    # ==========================================
+    # DADOS
+    # ==========================================
+
+    for numero_linha, item in enumerate(dados, start=2):
+
+        for numero_coluna, nome_coluna in enumerate(colunas, start=1):
+
+            valor = item.get(nome_coluna)
+
+            celula = worksheet.cell(
+                row=numero_linha,
+                column=numero_coluna,
+                value=valor
+            )
+
+            celula.alignment = Alignment(
+                vertical="top"
+            )
+
+
+    # ==========================================
+    # FORMATAÇÃO DAS DATAS
+    # ==========================================
+
+    for linha in range(2, worksheet.max_row + 1):
+
+        worksheet.cell(
+            row=linha,
+            column=1
+        ).number_format = "dd/mm/yyyy"
+
+
+        worksheet.cell(
+            row=linha,
+            column=3
+        ).number_format = "dd/mm/yyyy"
+
+
+    # ==========================================
+    # LARGURA DAS COLUNAS
+    # ==========================================
+
+    larguras = {
+        1: 16,   # DataInclusão
+        2: 40,   # Cliente
+        3: 16,   # Previsão
+        4: 40,   # Produto
+        5: 16,   # Temperatura
+        6: 25,   # Fase
+        7: 16,   # Status
+        8: 18,   # Valor
+        9: 16,   # SLA
+    }
+
+
+    for numero_coluna, largura in larguras.items():
+
+        worksheet.column_dimensions[
+            get_column_letter(numero_coluna)
+        ].width = largura
+
+
+    # ==========================================
+    # CONGELA O CABEÇALHO
+    # ==========================================
+
+    worksheet.freeze_panes = "A2"
+
+
+    # ==========================================
+    # FILTRO AUTOMÁTICO DO EXCEL
+    # ==========================================
+
+    if worksheet.max_row > 1:
+
+        worksheet.auto_filter.ref = worksheet.dimensions
+
+
+    # ==========================================
+    # RESPOSTA PARA DOWNLOAD
+    # ==========================================
+
+    resposta = HttpResponse(
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
+    )
+
+
+    data_atual = datetime.now().strftime("%Y-%m-%d")
+
+
+    resposta["Content-Disposition"] = (
+        f'attachment; filename="previsao_demanda_{data_atual}.xlsx"'
+    )
+
+
+    workbook.save(resposta)
+
+
+    return resposta
+    
+    
     
     
 def qualidade_controle(request):

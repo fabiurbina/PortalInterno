@@ -832,7 +832,7 @@ def buscar_previsao_demanda(
     parametros = []
 
     if status:
-        filtros.append("status = %s")
+        filtros.append("Status = %s")
         parametros.append(status)
 
     if Temperatura:
@@ -840,7 +840,7 @@ def buscar_previsao_demanda(
         parametros.append(Temperatura)
 
     if previsao:
-        filtros.append("previsao = %s")
+        filtros.append("Previsão = %s")
         parametros.append(previsao)
 
     if filtros:

@@ -28,6 +28,7 @@ from .views import (
     exportar_posicao_estoque_excel,
     relatorios_diversos,
     previsao_demanda,
+    exportar_previsao_demanda_excel,
     controle_peso,
     qualidade_controle
 )
@@ -186,6 +187,12 @@ urlpatterns = [
         "relatorios/previsao-demanda/",
         previsao_demanda,
         name="previsao_demanda"
+    ),
+    
+        path(
+        "relatorios/previsao-demanda/exportar/",
+        exportar_previsao_demanda_excel,
+        name="exportar_previsao_demanda_excel",
     ),
     
     path(
