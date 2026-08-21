@@ -1,4 +1,4 @@
-
+*
 import pymysql
 import os
 from dotenv import load_dotenv
@@ -1005,20 +1005,25 @@ def salvar_controle_qualidade(
 def consulta_chao_fabrica():
 
     sql = """
-        SELECT 
-            op.numero_CodOP,
+        	SELECT 
+            razao_social,
             op.dDtInicio, 
+            op.Previsao_Termino,
             op.numero_pedido, 
             op.numero_op, 
             op.numero_CodProduto, 
             p.descricao,
             op.etapaid,
+            e.descricao_etapa,
             op.quantidade,
             op.ordem
-        FROM ViesanoDW.ordem_producao op
-        LEFT JOIN produtos p 
-            ON p.codigo_produto = op.numero_CodProduto
-        ORDER BY op.ordem ASC, op.dDtInicio ASC
+            FROM ViesanoDW.ordem_producao op
+            LEFT JOIN produtos p on p.codigo_produto = op.numero_CodProduto
+            LEFT JOIN etapas e ON e.codigo_etapa = op.etapaid AND e.descricao_operacao = 'Ordem de Produção'
+            LEFT JOIN pedidos ped on ped.numero_pedido = op.numero_pedido
+            LEFT JOIN clientes c on c.codigo_cliente_omie = ped.codigo_cliente
+            where etapaid = 20 
+
     """
 
     conexao = conectar()
