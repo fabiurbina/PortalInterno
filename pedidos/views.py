@@ -2095,6 +2095,7 @@ def qualidade_controle(request):
         codigo_produto = op["identificacao"]["nCodProduto"]
 
         produto = consultar_produto(codigo_produto)
+        
 
         op["nome_produto"] = produto.get("descricao", "Produto não encontrado")
         
@@ -2110,6 +2111,15 @@ def qualidade_controle(request):
 
         op["peso_bruto"] = produto.get(
             "peso_bruto"
+        )
+        
+        # Característica do produto
+        caracteristicas = produto.get("caracteristicas", [])
+        
+        op["caracteristica"] = (
+            caracteristicas[0].get("cConteudo")
+            if caracteristicas
+            else None
         )
 
     return render(
