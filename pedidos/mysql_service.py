@@ -1003,10 +1003,10 @@ def salvar_controle_qualidade(
 def consulta_inspecoes(codigo_op):
 
     sql = """
-        SELECT COUNT(*) 
+        SELECT resultado, COUNT(*) AS total
         FROM controle_qualidade
         WHERE codigo_op = %s
-        group by resultado;
+        GROUP BY resultado;
     """
 
     conexao = conectar()
@@ -1014,8 +1014,7 @@ def consulta_inspecoes(codigo_op):
     try:
         with conexao.cursor() as cursor:
             cursor.execute(sql, (codigo_op,))
-            resultado = cursor.fetchone()
-            return resultado["total"]
+            return cursor.fetchall()
 
     finally:
         conexao.close()
