@@ -2277,7 +2277,19 @@ def controle_peso(request):
 
             produto = consultar_produto(codigo_produto)
             
-            total_inspecoes = consulta_inspecoes(numero_op)
+            inspecoes = consulta_inspecoes(numero_op)
+
+            total_inspecoes = sum(item["total"] for item in inspecoes)
+
+            conformes = sum(
+                item["total"] for item in inspecoes
+                if item["resultado"] == "CONFORME"
+            )
+
+            nao_conformes = sum(
+                item["total"] for item in inspecoes
+                if item["resultado"] == "NAO_CONFORME"
+            )
             
             caracteristicas = produto.get("caracteristicas", [])
 
@@ -2354,7 +2366,9 @@ def controle_peso(request):
                 "controle_peso.html",
                 {
                     "op": op,
-                    "total_inspecoes": total_inspecoes
+                    "total_inspecoes": total_inspecoes,
+                    "conformes": conformes,
+                    "nao_conformes": nao_conformes,
                 }
             )
 

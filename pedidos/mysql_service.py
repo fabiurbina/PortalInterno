@@ -1003,9 +1003,10 @@ def salvar_controle_qualidade(
 def consulta_inspecoes(codigo_op):
 
     sql = """
-        SELECT COUNT(*) AS total
+        SELECT COUNT(*) 
         FROM controle_qualidade
-        WHERE codigo_op = %s;
+        WHERE codigo_op = %s
+        group by resultado;
     """
 
     conexao = conectar()
