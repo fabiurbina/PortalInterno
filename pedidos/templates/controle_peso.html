@@ -520,45 +520,11 @@
                             Inspeção
                         </div>
 
-                        <div>
-                            1 - Peso (g)
-                        </div>
-
-                        <div>
-                            2 - Peso (g)
-                        </div>
-
-                        <div>
-                            3 - Peso (g)
-                        </div>
-
-                        <div>
-                            4 - Peso (g)
-                        </div>
-
-                        <div>
-                            5 - Peso (g)
-                        </div>
-
-                        <div>
-                            6 - Peso (g)
-                        </div>
-
-                        <div>
-                            7 - Peso (g)
-                        </div>
-
-                        <div>
-                            8 - Peso (g)
-                        </div>
-
-                        <div>
-                            9 - Peso (g)
-                        </div>
-
-                        <div>
-                            10 - Peso (g)
-                        </div>
+                        {% for i in quantidade_amostras %}
+                            <div>
+                                {{ i }} - Peso (g)
+                            </div>
+                        {% endfor %}
 
                         <div class="media-label">
                             Peso Médio

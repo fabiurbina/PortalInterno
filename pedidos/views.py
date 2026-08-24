@@ -2121,6 +2121,8 @@ def qualidade_controle(request):
             if caracteristicas
             else None
         )
+        
+        
 
     return render(
         request,
@@ -2273,6 +2275,18 @@ def controle_peso(request):
             codigo_produto = op["identificacao"]["nCodProduto"]
 
             produto = consultar_produto(codigo_produto)
+            
+            caracteristicas = produto.get("caracteristicas", [])
+
+            op["caracteristica"] = (
+                caracteristicas[0].get("cConteudo", "").strip().upper()
+                if caracteristicas
+                else ""
+            )
+
+            op["quantidade_amostras"] = (
+                20 if op["caracteristica"] == "CAPSULA" else 10
+            )
 
             op["nome_produto"] = produto.get(
                 "descricao",
