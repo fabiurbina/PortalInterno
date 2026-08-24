@@ -304,7 +304,11 @@
                     </h2>
 
                     <div>
-                        Envase de Pós
+                        {% if op.caracteristica == "PÓS" %}
+                            Envase de Pós
+                        {% else %}
+                            Envase de Cápsula
+                        {% endif %}
                     </div>
 
                 </div>
@@ -397,10 +401,12 @@
                         Responsável
                     </label>
 
-                    <input
-                        type="text"
-                        id="responsavel"
+                    <input 
+                        type="text" 
+                        id="responsavel" 
                         class="form-control"
+                        value="{{ request.user.get_full_name|default:request.user.username }}"
+                        readonly
                     >
 
                 </div>
@@ -719,6 +725,9 @@ const PESO_NOMINAL = parseFloat("{{ op.peso_liq_g }}".replace(",", "."));
 const PESO_MINIMO = parseFloat("{{ op.peso_minimo_g }}".replace(",", "."));
 const PESO_MAXIMO = parseFloat("{{ op.peso_maximo_g }}".replace(",", "."));
 
+const CARACTERISTICA = "{{ op.caracteristica|default:'' }}".trim().toUpperCase();
+
+const QUANTIDADE_AMOSTRAS = CARACTERISTICA === "CAPSULA" ? 20 : 10;
 
 let contadorInspecoes = 0;
 
@@ -1079,7 +1088,7 @@ function gerarPesos(numero) {
     let html = "";
 
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= QUANTIDADE_AMOSTRAS; i++) {
 
         html += `
 
@@ -1375,10 +1384,11 @@ function atualizarResultadoInspecao(numero) {
     // AINDA NÃO COMPLETOU 10
     // ==========================================
 
-    if (preenchidos < 10) {
-
-        resultado.innerText =
-            `${preenchidos}/10 amostras`;
+    if (preenchidos < QUANTIDADE_AMOSTRAS) {
+        
+        resultado.innerText = 
+        
+        `${preenchidos}/${QUANTIDADE_AMOSTRAS} amostras`;
 
         resultado.className =
             "resultado-box text-warning";
@@ -1523,16 +1533,11 @@ function finalizarInspecao(numero) {
     });
 
 
-    if (
-        preenchidos < 10
-    ) {
-
+    if (preenchidos < QUANTIDADE_AMOSTRAS) {
         alert(
-            "É necessário preencher as 10 amostras antes de finalizar a inspeção."
+            `É necessário preencher as ${QUANTIDADE_AMOSTRAS} amostras antes de finalizar a inspeção.`
         );
-
         return;
-
     }
 
 
@@ -1897,14 +1902,11 @@ async function salvarControle() {
         }
 
 
-        if (pesagens.length !== 10) {
-
+        if (pesagens.length !== QUANTIDADE_AMOSTRAS) {
             erro = true;
-
             alert(
-                `A Inspeção ${numero} precisa ter as 10 amostras preenchidas.`
+                `A Inspeção ${numero} precisa ter as ${QUANTIDADE_AMOSTRAS} amostras preenchidas.`
             );
-
             return;
         }
 
