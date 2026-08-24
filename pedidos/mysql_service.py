@@ -1003,7 +1003,7 @@ def salvar_controle_qualidade(
 def consulta_inspecoes(codigo_op):
 
     sql = """
-        SELECT COUNT(*)
+        SELECT COUNT(*) AS total
         FROM controle_qualidade
         WHERE codigo_op = %s;
     """
@@ -1014,7 +1014,7 @@ def consulta_inspecoes(codigo_op):
         with conexao.cursor() as cursor:
             cursor.execute(sql, (codigo_op,))
             resultado = cursor.fetchone()
-            return resultado[0]
+            return resultado["total"]
 
     finally:
         conexao.close()
