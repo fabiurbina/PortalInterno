@@ -979,32 +979,7 @@ function novaInspecao() {
         <div class="p-2">
 
             <div class="inspecao-extra">
-
-                ${gerarControle(
-                    "Embalagem",
-                    "embalagem"
-                )}
-
-                ${gerarControle(
-                    "Selagem",
-                    "selagem"
-                )}
-
-                ${gerarControle(
-                    "Rótulagem",
-                    "rotulagem"
-                )}
-
-                ${gerarControle(
-                    "Codificação",
-                    "codificacao"
-                )}
-
-                ${gerarControle(
-                    "Lacre",
-                    "lacre"
-                )}
-
+                ${gerarControlesPorCaracteristica()}
             </div>
 
 
@@ -1124,6 +1099,32 @@ function gerarControle(nome, campo) {
 
     `;
 
+}
+
+/* ============================================================
+   ESCOLHER PERGUNTAS PARA SALVAR
+============================================================ */
+
+
+function gerarControlesPorCaracteristica() {
+
+    if (CARACTERISTICA === "CAPSULA") {
+
+        return `
+            ${gerarControle("Fechamento adequado", "fechamento")}
+            ${gerarControle("Sem rachaduras", "rachaduras")}
+            ${gerarControle("Sem deformação", "deformacao")}
+        `;
+
+    }
+
+    return `
+        ${gerarControle("Embalagem", "embalagem")}
+        ${gerarControle("Selagem", "selagem")}
+        ${gerarControle("Rótulagem", "rotulagem")}
+        ${gerarControle("Codificação", "codificacao")}
+        ${gerarControle("Lacre", "lacre")}
+    `;
 }
 
 
