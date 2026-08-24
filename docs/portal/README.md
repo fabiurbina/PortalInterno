@@ -122,119 +122,62 @@ De forma simplificada, o fluxo de dados pode ser representado da seguinte maneir
 │       Usuários      │
 │ Internos / Operação │
 └─────────────────────┘
-
+```
 
 ## Estrutura e organização do projeto
 
-C:
-│   .gitignore
-│   db.sqlite3
-│   manage.py
-│   Portal.py
-│   requirements.txt
+A estrutura do Portal Viesano foi organizada de forma modular, separando as configurações do projeto, as funcionalidades da aplicação, as integrações externas, os arquivos de apresentação e a documentação.
+
+A organização principal do projeto é apresentada abaixo:
+
+```text
+Portal Viesano/
 │
-├───docs
-│   └───portal
-│           README.md
+├── portal/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
 │
-├───integracoes
-│       omie.py
+├── pedidos/
+│   ├── views.py
+│   ├── urls.py
+│   ├── models.py
+│   ├── mysql_service.py
+│   ├── omie_service.py
+│   ├── status_service.py
+│   ├── preparar_dados.py
+│   ├── email_service.py
+│   ├── email_ses.py
+│   ├── groq_service.py
+│   │
+│   ├── migrations/
+│   │
+│   ├── sql/
+│   │   └── Posicao_estoque.sql
+│   │
+│   ├── static/
+│   │   ├── css/
+│   │   └── img/
+│   │
+│   ├── templates/
+│   │   ├── páginas do portal
+│   │   ├── emails/
+│   │   └── relatorios/
+│   │
+│   └── templatetags/
 │
-├───Manual
-├───pedidos
-│   │   .env
-│   │   admin.py
-│   │   apps.py
-│   │   email_service.py
-│   │   email_ses.py
-│   │   groq_service.py
-│   │   models.py
-│   │   mysql_service.py
-│   │   omie_service.py
-│   │   preparar_dados.py
-│   │   status_service.py
-│   │   tests.py
-│   │   urls.py
-│   │   views.py
-│   │   __init__.py
-│   │
-│   ├───migrations
-│   │   │   __init__.py
-│   │   │
-│   │   └───__pycache__
-│   │           __init__.cpython-310.pyc
-│   │
-│   ├───sql
-│   │       Posicao_estoque.sql
-│   │
-│   ├───static
-│   │   ├───css
-│   │   │       style.css
-│   │   │
-│   │   └───img
-│   │           logo.png
-│   │           logo_viesano.png
-│   │
-│   ├───templates
-│   │   │   alterar_senha.html
-│   │   │   base.html
-│   │   │   controle_ops.html
-│   │   │   controle_peso.html
-│   │   │   criar_acesso_cliente.html
-│   │   │   dashboard.html
-│   │   │   estoque_home.html
-│   │   │   ficha_logistica.html
-│   │   │   ficha_op.html
-│   │   │   ficha_op_Back.html
-│   │   │   home.html
-│   │   │   indicadores.html
-│   │   │   inteligencia_comercial.html
-│   │   │   inteligencia_producao.html
-│   │   │   login.html
-│   │   │   password_reset.html
-│   │   │   password_reset_done.html
-│   │   │   pedidos.html
-│   │   │   qualidade_ficha.html
-│   │   │   qualidade_home.html
-│   │   │   qualidade_inspecao.html
-│   │   │   relatorio_mrp.html
-│   │   │   relatórios.html
-│   │   │
-│   │   ├───emails
-│   │   │       boas_vindas.html
-│   │   │       password_reset_email.html
-│   │   │       password_reset_subject.txt
-│   │   │
-│   │   └───relatorios
-│   │           chao_fabrica.html
-│   │           posicao_estoque.html
-│   │           previsao_demanda.html
-│   │           relatorios_diversos.html
-│   │
-│   ├───templatetags
-│   │       formatacao.py
-│   │       __init__.py
-│   │
-│   └───__pycache__
-│           admin.cpython-310.pyc
-│           apps.cpython-310.pyc
-│           models.cpython-310.pyc
-│           mysql_service.cpython-310.pyc
-│           omie_service.cpython-310.pyc
-│           status_service.cpython-310.pyc
-│           urls.cpython-310.pyc
-│           views.cpython-310.pyc
-│           __init__.cpython-310.pyc
+├── integracoes/
+│   └── omie.py
 │
-└───portal
-    │   asgi.py
-    │   settings.py
-    │   urls.py
-    │   wsgi.py
-    │   __init__.py
-    │
-    └───__pycache__
-            settings.cpython-310.pyc
-            urls.cpython-310.pyc
-            wsgi.cpython-310.pyc
-            __init__.cpython-310.pyc
+├── docs/
+│   └── portal/
+│       └── README.md
+│
+├── Manual/
+│
+├── manage.py
+├── Portal.py
+├── requirements.txt
+└── .gitignore
+```
