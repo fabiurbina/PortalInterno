@@ -31,7 +31,8 @@ from .mysql_service import (
     salvar_parada_sql,
     buscar_previsao_demanda,
     consulta_chao_fabrica,
-    salvar_ordem_chao_fabrica
+    salvar_ordem_chao_fabrica,
+    consulta_inspecoes
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -2276,6 +2277,8 @@ def controle_peso(request):
 
             produto = consultar_produto(codigo_produto)
             
+            total_inspecoes = consulta_inspecoes(numero_op)
+            
             caracteristicas = produto.get("caracteristicas", [])
 
             op["caracteristica"] = (
@@ -2350,7 +2353,8 @@ def controle_peso(request):
                 request,
                 "controle_peso.html",
                 {
-                    "op": op
+                    "op": op,
+                    "total_inspecoes": total_inspecoes
                 }
             )
 

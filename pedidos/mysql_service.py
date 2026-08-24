@@ -998,6 +998,27 @@ def salvar_controle_qualidade(
 
         cursor.close()
         conn.close()
+        
+        
+def consulta_inspecoes(codigo_op):
+
+    sql = """
+        SELECT COUNT(*)
+        FROM controle_qualidade
+        WHERE codigo_op = %s;
+    """
+
+    conexao = conectar()
+
+    try:
+        with conexao.cursor() as cursor:
+            cursor.execute(sql, (codigo_op,))
+            resultado = cursor.fetchone()
+            return resultado[0]
+
+    finally:
+        conexao.close()
+        
 
 
 
