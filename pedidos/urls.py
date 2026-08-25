@@ -33,7 +33,8 @@ from .views import (
     qualidade_controle,
     chao_fabrica,
     atualizar_ordem_chao_fabrica,
-    relatorio_lote_validade
+    relatorio_lote_validade,
+    exportar_lote_validade_excel
 )
 
 urlpatterns = [
@@ -232,6 +233,12 @@ urlpatterns = [
         relatorio_lote_validade,
         name="relatorio_lote_validade"
     ),
+     
+     path(
+    "relatorio/lote-validade/exportar/",
+        exportar_lote_validade_excel,
+    name="exportar_lote_validade_excel"
+),
 
 
 ]

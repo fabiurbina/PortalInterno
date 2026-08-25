@@ -2445,3 +2445,72 @@ def relatorio_lote_validade(request):
     {
         "dados": dados
     })
+    
+    
+def exportar_lote_validade_excel(request):
+
+    dados = buscar_lote_validade()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Lote e Validade"
+
+    # Cabeçalho
+    ws.append([
+        "Código Produto",
+        "Nome Produto",
+        "Código Lote",
+        "Validade",
+        "Estoque",
+        "Quantidade Disponível",
+        "Quantidade Entrada",
+        "Quantidade Reservada",
+        "Quantidade Saída",
+    ])
+
+    # Dados
+    for item in dados:
+
+        ws.append([
+            item["codigoProduto"],
+            item["NomeProduto"],
+            item["CodigoLote"],
+            item["Validade"],
+            item["LocalEstoque"],
+            item["nQuantDisponivel"],
+            item["nQuantEntrada"],
+            item["nQuantReservada"],
+            item["nQuantSaida"],
+        ])
+
+    # Ajuste de largura
+    larguras = {
+        "A": 18,
+        "B": 45,
+        "C": 25,
+        "D": 15,
+        "E": 20,
+        "F": 22,
+        "G": 22,
+        "H": 22,
+        "I": 20,
+    }
+
+    for coluna, largura in larguras.items():
+        ws.column_dimensions[coluna].width = largura
+
+    # Resposta para download
+    response = HttpResponse(
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="lote_validade.xlsx"'
+    )
+
+    wb.save(response)
+
+    return response
