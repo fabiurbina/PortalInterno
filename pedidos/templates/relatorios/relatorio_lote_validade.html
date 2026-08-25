@@ -1,432 +1,631 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
 
-<style>
+<head>
 
-    .relatorio-header {
-        margin-bottom: 24px;
-    }
+    <meta charset="UTF-8">
 
-    .relatorio-header h2 {
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 4px;
-    }
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    .relatorio-header p {
-        color: #6b7280;
-        margin: 0;
-    }
-
-    /* Cards de resumo */
-
-    .resumo-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 18px 20px;
-        height: 100%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .resumo-label {
-        font-size: 13px;
-        color: #6b7280;
-        margin-bottom: 6px;
-    }
-
-    .resumo-valor {
-        font-size: 25px;
-        font-weight: 700;
-        color: #1f2937;
-    }
-
-    .resumo-detalhe {
-        font-size: 12px;
-        color: #9ca3af;
-        margin-top: 3px;
-    }
-
-    /* Filtros */
-
-    .filtros-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .filtros-titulo {
-        font-size: 15px;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 16px;
-    }
-
-    .form-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: #6b7280;
-        margin-bottom: 6px;
-    }
-
-    .form-control,
-    .form-select {
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
-        min-height: 40px;
-        font-size: 13px;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.15rem rgba(25,135,84,.12);
-    }
-
-    /* Tabela */
-
-    .tabela-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .tabela-header {
-        padding: 18px 20px;
-        border-bottom: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .tabela-titulo {
-        font-weight: 600;
-        color: #374151;
-        margin: 0;
-    }
-
-    .contador-registros {
-        font-size: 12px;
-        color: #6b7280;
-        background: #f3f4f6;
-        padding: 5px 10px;
-        border-radius: 20px;
-    }
-
-    .table {
-        margin-bottom: 0;
-    }
-
-    .table thead th {
-        background: #f8fafc;
-        color: #6b7280;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .03em;
-        border-bottom: 1px solid #e5e7eb;
-        padding: 13px 15px;
-        white-space: nowrap;
-    }
-
-    .table tbody td {
-        padding: 13px 15px;
-        vertical-align: middle;
-        font-size: 13px;
-        color: #374151;
-        border-color: #f1f5f9;
-    }
-
-    .table tbody tr:hover {
-        background: #f8fafc;
-    }
-
-    .codigo-produto {
-        font-weight: 600;
-        color: #1f2937;
-    }
-
-    .lote {
-        font-family: monospace;
-        font-size: 12px;
-        background: #f3f4f6;
-        padding: 4px 7px;
-        border-radius: 5px;
-    }
-
-    .saldo {
-        font-weight: 600;
-    }
-
-    /* Status da validade */
-
-    .status-validade {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 9px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .status-ok {
-        background: #ecfdf3;
-        color: #15803d;
-    }
-
-    .status-atencao {
-        background: #fffbeb;
-        color: #b45309;
-    }
-
-    .status-critico {
-        background: #fef2f2;
-        color: #dc2626;
-    }
-
-    .status-vencido {
-        background: #f3f4f6;
-        color: #4b5563;
-    }
-
-    .ponto-status {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-
-    .btn-limpar {
-        border-radius: 8px;
-        min-height: 40px;
-        font-size: 13px;
-    }
-
-    .sem-registros {
-        padding: 45px 20px !important;
-        text-align: center;
-        color: #9ca3af;
-    }
-
-    .sem-registros-icon {
-        font-size: 30px;
-        margin-bottom: 10px;
-    }
-
-</style>
+    <title>Lote e Validade | Viesano</title>
 
 
-<div class="container-fluid">
+    <style>
 
-    <!-- CABEÇALHO -->
+        * {
+            box-sizing: border-box;
+        }
 
-    <div class="relatorio-header d-flex justify-content-between align-items-center">
 
-        <div>
-            <h2>Lote e Validade</h2>
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+
+        .pagina {
+            width: 100%;
+            padding: 28px 35px 40px;
+        }
+
+
+        /* ================================
+           CABEÇALHO
+        ================================= */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+
+        .titulo-area h1 {
+            margin: 0;
+
+            font-size: 27px;
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .titulo-area p {
+            margin: 6px 0 0;
+
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+            border: 1px solid #d8e1dc;
+
+            color: #174f35;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-voltar:hover {
+            background: #174f35;
+            color: #ffffff;
+            border-color: #174f35;
+        }
+
+
+        /* ================================
+           FILTROS
+        ================================= */
+
+        .filtros {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            padding: 20px 22px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .filtros-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 17px;
+        }
+
+
+        .filtros-titulo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #174f35;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .filtros-info {
+            font-size: 12px;
+            color: #8a9690;
+        }
+
+
+        .filtros-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                1.5fr
+                1.5fr
+                1.5fr
+                auto;
+
+            gap: 14px;
+
+            align-items: end;
+        }
+
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+
+        .campo label {
+            font-size: 12px;
+            font-weight: 600;
+
+            color: #59655f;
+        }
+
+
+        .campo select {
+            width: 100%;
+
+            height: 40px;
+
+            padding: 0 12px;
+
+            border: 1px solid #d6dfda;
+            border-radius: 7px;
+
+            background: #ffffff;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            outline: none;
+
+            cursor: pointer;
+        }
+
+
+        .campo select:focus {
+            border-color: #2d8a5b;
+
+            box-shadow:
+                0 0 0 3px rgba(45, 138, 91, .10);
+        }
+
+
+        .btn-limpar {
+            height: 40px;
+
+            padding: 0 17px;
+
+            border: 1px solid #d6dfda;
+            border-radius: 7px;
+
+            background: #f8faf9;
+
+            color: #59655f;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-limpar:hover {
+            background: #eaf3ee;
+            color: #174f35;
+            border-color: #b9d2c4;
+        }
+
+
+        /* ================================
+           RESUMO
+        ================================= */
+
+        .barra-resumo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+
+        .resultado {
+            font-size: 13px;
+            color: #69756f;
+        }
+
+
+        .resultado strong {
+            color: #174f35;
+        }
+
+
+        /* ================================
+           TABELA
+        ================================= */
+
+        .tabela-container {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .tabela-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 17px 20px;
+
+            border-bottom: 1px solid #e7ece9;
+        }
+
+
+        .tabela-titulo {
+            margin: 0;
+
+            color: #263c31;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .badge-registros {
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #eaf5ee;
+            color: #217447;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .tabela-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+
+        thead th {
+            padding: 13px 16px;
+
+            background: #f5f8f6;
+
+            border-bottom: 1px solid #dfe7e2;
+
+            color: #64736b;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .04em;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+
+        tbody td {
+            padding: 14px 16px;
+
+            border-bottom: 1px solid #edf1ef;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr {
+            transition: background .15s ease;
+        }
+
+
+        tbody tr:hover {
+            background: #f7fbf8;
+        }
+
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        .codigo-produto {
+            font-weight: 700;
+            color: #174f35;
+        }
+
+
+        .lote {
+            display: inline-block;
+
+            padding: 4px 8px;
+
+            background: #f1f5f3;
+
+            border-radius: 5px;
+
+            color: #3f4d46;
+
+            font-family: monospace;
+
+            font-size: 12px;
+        }
+
+
+        .saldo {
+            font-weight: 700;
+            text-align: right;
+        }
+
+
+        .data {
+            color: #59655f;
+        }
+
+
+        /* ================================
+           STATUS
+        ================================= */
+
+        .status {
+            display: inline-flex;
+
+            align-items: center;
+            gap: 6px;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .status-ponto {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
+
+        .status-ok {
+            background: #eaf7ef;
+            color: #21804a;
+        }
+
+
+        .status-atencao {
+            background: #fff7df;
+            color: #a36b00;
+        }
+
+
+        .status-critico {
+            background: #fff0e5;
+            color: #c45a14;
+        }
+
+
+        .status-vencido {
+            background: #fdecec;
+            color: #c43d3d;
+        }
+
+
+        /* ================================
+           SEM REGISTROS
+        ================================= */
+
+        .sem-registros {
+            padding: 55px 20px;
+
+            text-align: center;
+
+            color: #8b9791;
+
+            font-size: 13px;
+        }
+
+
+        .sem-registros-icon {
+            font-size: 32px;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* ================================
+           RESPONSIVO
+        ================================= */
+
+        @media (max-width: 1000px) {
+
+            .filtros-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .pagina {
+                padding: 20px;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .cabecalho {
+                align-items: flex-start;
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+
+            .filtros-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="pagina">
+
+
+    <!-- ================================
+         CABEÇALHO
+    ================================= -->
+
+    <div class="cabecalho">
+
+        <div class="titulo-area">
+
+            <h1>
+                Lote e Validade
+            </h1>
 
             <p>
                 Consulte os lotes, estoques, saldos e datas de validade dos produtos.
             </p>
+
         </div>
+
+
+        <a
+            href="javascript:history.back()"
+            class="btn-voltar"
+        >
+            ← Voltar
+        </a>
 
     </div>
 
 
-    <!-- RESUMO -->
 
-    <div class="row g-3 mb-4">
+    <!-- ================================
+         FILTROS
+    ================================= -->
 
-        <div class="col-md-3">
+    <div class="filtros">
 
-            <div class="resumo-card">
+        <div class="filtros-topo">
 
-                <div class="resumo-label">
-                    Total de lotes
-                </div>
+            <div class="filtros-titulo">
 
-                <div class="resumo-valor" id="totalLotes">
-                    0
-                </div>
+                <span>
+                    🔎
+                </span>
 
-                <div class="resumo-detalhe">
-                    Registros encontrados
-                </div>
+                <span>
+                    Filtros de consulta
+                </span>
+
+            </div>
+
+
+            <div class="filtros-info">
+
+                Os filtros são carregados com os dados do relatório.
 
             </div>
 
         </div>
 
 
-        <div class="col-md-3">
-
-            <div class="resumo-card">
-
-                <div class="resumo-label">
-                    Lotes válidos
-                </div>
-
-                <div class="resumo-valor" id="lotesValidos">
-                    0
-                </div>
-
-                <div class="resumo-detalhe">
-                    Validade superior a 90 dias
-                </div>
-
-            </div>
-
-        </div>
+        <div class="filtros-grid">
 
 
-        <div class="col-md-3">
+            <!-- ESTOQUE -->
 
-            <div class="resumo-card">
+            <div class="campo">
 
-                <div class="resumo-label">
-                    Atenção
-                </div>
-
-                <div class="resumo-valor" id="lotesAtencao">
-                    0
-                </div>
-
-                <div class="resumo-detalhe">
-                    Validade nos próximos 90 dias
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-md-3">
-
-            <div class="resumo-card">
-
-                <div class="resumo-label">
-                    Vencidos
-                </div>
-
-                <div class="resumo-valor" id="lotesVencidos">
-                    0
-                </div>
-
-                <div class="resumo-detalhe">
-                    Lotes com validade expirada
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- FILTROS -->
-
-    <div class="filtros-card">
-
-        <div class="filtros-titulo">
-            🔎 Filtros de consulta
-        </div>
-
-        <div class="row g-3">
-
-            <div class="col-md-2">
-
-                <label class="form-label">
+                <label for="filtroEstoque">
                     Estoque
                 </label>
 
-                <select
-                    id="filtroEstoque"
-                    class="form-select"
-                >
+                <select id="filtroEstoque">
 
                     <option value="">
-                        Todos
+                        Todos os estoques
                     </option>
-
-                    {% for item in dados %}
-
-                        <option value="{{ item.nIdLocal }}">
-                            {{ item.nIdLocal }}
-                        </option>
-
-                    {% endfor %}
 
                 </select>
 
             </div>
 
 
-            <div class="col-md-3">
+            <!-- PRODUTO -->
 
-                <label class="form-label">
+            <div class="campo">
+
+                <label for="filtroProduto">
                     Produto
                 </label>
 
-                <input
-                    type="text"
-                    id="filtroProduto"
-                    class="form-control"
-                    placeholder="Código do produto..."
-                >
-
-            </div>
-
-
-            <div class="col-md-3">
-
-                <label class="form-label">
-                    Lote
-                </label>
-
-                <input
-                    type="text"
-                    id="filtroLote"
-                    class="form-control"
-                    placeholder="Número do lote..."
-                >
-
-            </div>
-
-
-            <div class="col-md-2">
-
-                <label class="form-label">
-                    Validade
-                </label>
-
-                <select
-                    id="filtroValidade"
-                    class="form-select"
-                >
+                <select id="filtroProduto">
 
                     <option value="">
-                        Todas
-                    </option>
-
-                    <option value="vencido">
-                        Vencidos
-                    </option>
-
-                    <option value="critico">
-                        Até 30 dias
-                    </option>
-
-                    <option value="atencao">
-                        31 a 90 dias
-                    </option>
-
-                    <option value="ok">
-                        Mais de 90 dias
+                        Todos os produtos
                     </option>
 
                 </select>
@@ -434,36 +633,96 @@
             </div>
 
 
-            <div class="col-md-2 d-flex align-items-end">
+            <!-- LOTE -->
 
-                <button
-                    type="button"
-                    id="limparFiltros"
-                    class="btn btn-outline-secondary w-100 btn-limpar"
-                >
-                    Limpar filtros
-                </button>
+            <div class="campo">
+
+                <label for="filtroLote">
+                    Lote
+                </label>
+
+                <select id="filtroLote">
+
+                    <option value="">
+                        Todos os lotes
+                    </option>
+
+                </select>
 
             </div>
+
+
+            <!-- VALIDADE -->
+
+            <div class="campo">
+
+                <label for="filtroValidade">
+                    Validade
+                </label>
+
+                <select id="filtroValidade">
+
+                    <option value="">
+                        Todas as validades
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- LIMPAR -->
+
+            <button
+                type="button"
+                class="btn-limpar"
+                id="limparFiltros"
+            >
+                Limpar filtros
+            </button>
+
 
         </div>
 
     </div>
 
 
-    <!-- TABELA -->
 
-    <div class="tabela-card">
+    <!-- ================================
+         RESUMO
+    ================================= -->
 
-        <div class="tabela-header">
+    <div class="barra-resumo">
 
-            <h5 class="tabela-titulo">
+        <div class="resultado">
+
+            Exibindo
+            <strong id="quantidadeVisivel">0</strong>
+            registros
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================
+         TABELA
+    ================================= -->
+
+    <div class="tabela-container">
+
+
+        <div class="tabela-topo">
+
+            <h3 class="tabela-titulo">
                 Lotes disponíveis
-            </h5>
+            </h3>
+
 
             <span
-                class="contador-registros"
-                id="contadorRegistros"
+                class="badge-registros"
+                id="badgeRegistros"
             >
                 0 registros
             </span>
@@ -471,12 +730,9 @@
         </div>
 
 
-        <div class="table-responsive">
+        <div class="tabela-scroll">
 
-            <table
-                class="table table-hover align-middle"
-                id="tabelaLotes"
-            >
+            <table id="tabelaLotes">
 
                 <thead>
 
@@ -506,7 +762,7 @@
                             Situação
                         </th>
 
-                        <th class="text-end">
+                        <th style="text-align: right;">
                             Saldo
                         </th>
 
@@ -517,6 +773,7 @@
 
                 <tbody>
 
+
                     {% for item in dados %}
 
                     <tr
@@ -526,58 +783,74 @@
                         data-validade="{{ item.dDataValidade|date:'Y-m-d' }}"
                     >
 
+
                         <td>
-                            <span class="badge text-bg-light">
-                                {{ item.nIdLocal }}
-                            </span>
+
+                            {{ item.nIdLocal }}
+
                         </td>
 
 
                         <td>
+
                             <span class="codigo-produto">
+
                                 {{ item.cCodProduto }}
+
                             </span>
+
                         </td>
 
 
                         <td>
+
                             <span class="lote">
+
                                 {{ item.cNumLote }}
+
                             </span>
+
                         </td>
 
 
-                        <td>
+                        <td class="data">
+
                             {{ item.dDataFabricacao|date:"d/m/Y" }}
+
                         </td>
 
 
-                        <td>
+                        <td class="data">
+
                             {{ item.dDataValidade|date:"d/m/Y" }}
+
                         </td>
 
 
                         <td>
 
-                            <span class="status-validade status-ok status-auto">
-                                <span class="ponto-status"></span>
+                            <span class="status status-ok status-auto">
+
+                                <span class="status-ponto"></span>
+
                                 <span class="texto-status">
-                                    —
+                                    -
                                 </span>
+
                             </span>
 
                         </td>
 
 
-                        <td class="text-end">
+                        <td class="saldo">
 
-                            <span class="saldo">
-                                {{ item.nSaldoLote }}
-                            </span>
+                            {{ item.nSaldoLote }}
 
                         </td>
+
 
                     </tr>
+
 
                     {% empty %}
 
@@ -600,6 +873,7 @@
 
                     {% endfor %}
 
+
                 </tbody>
 
             </table>
@@ -608,360 +882,579 @@
 
     </div>
 
+
 </div>
+
 
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
 
-    const filtroEstoque = document.getElementById("filtroEstoque");
-    const filtroProduto = document.getElementById("filtroProduto");
-    const filtroLote = document.getElementById("filtroLote");
-    const filtroValidade = document.getElementById("filtroValidade");
-
-    const limparFiltros = document.getElementById("limparFiltros");
-
-    const linhas = document.querySelectorAll(
-        "#tabelaLotes tbody tr[data-estoque]"
-    );
-
-    const contador = document.getElementById("contadorRegistros");
-
-    const totalLotes = document.getElementById("totalLotes");
-    const lotesValidos = document.getElementById("lotesValidos");
-    const lotesAtencao = document.getElementById("lotesAtencao");
-    const lotesVencidos = document.getElementById("lotesVencidos");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-    function calcularSituacao(dataValidade) {
-
-        if (!dataValidade) {
-            return {
-                classe: "status-vencido",
-                texto: "Sem validade",
-                dias: null
-            };
-        }
-
-        const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
-
-        const partes = dataValidade.split("-");
-
-        const validade = new Date(
-            partes[0],
-            partes[1] - 1,
-            partes[2]
-        );
-
-        validade.setHours(0, 0, 0, 0);
-
-        const diferenca =
-            validade.getTime() - hoje.getTime();
-
-        const dias = Math.ceil(
-            diferenca / (1000 * 60 * 60 * 24)
-        );
+        const filtroEstoque =
+            document.getElementById("filtroEstoque");
 
 
-        if (dias < 0) {
-
-            return {
-                classe: "status-vencido",
-                texto: "Vencido",
-                dias: dias
-            };
-
-        }
+        const filtroProduto =
+            document.getElementById("filtroProduto");
 
 
-        if (dias <= 30) {
-
-            return {
-                classe: "status-critico",
-                texto: "Até 30 dias",
-                dias: dias
-            };
-
-        }
+        const filtroLote =
+            document.getElementById("filtroLote");
 
 
-        if (dias <= 90) {
-
-            return {
-                classe: "status-atencao",
-                texto: "31 a 90 dias",
-                dias: dias
-            };
-
-        }
+        const filtroValidade =
+            document.getElementById("filtroValidade");
 
 
-        return {
-            classe: "status-ok",
-            texto: "Válido",
-            dias: dias
-        };
-
-    }
+        const limparFiltros =
+            document.getElementById("limparFiltros");
 
 
-    function atualizarSituacoes() {
-
-        linhas.forEach(function (linha) {
-
-            const dataValidade =
-                linha.dataset.validade;
-
-            const situacao =
-                calcularSituacao(dataValidade);
-
-            const badge =
-                linha.querySelector(".status-auto");
-
-            const texto =
-                linha.querySelector(".texto-status");
-
-
-            badge.classList.remove(
-                "status-ok",
-                "status-atencao",
-                "status-critico",
-                "status-vencido"
+        const linhas =
+            document.querySelectorAll(
+                "#tabelaLotes tbody tr[data-estoque]"
             );
 
-            badge.classList.add(
-                situacao.classe
+
+        const quantidadeVisivel =
+            document.getElementById(
+                "quantidadeVisivel"
             );
 
-            texto.textContent =
-                situacao.texto;
 
-        });
-
-    }
-
-
-    function aplicarFiltros() {
-
-        const estoque =
-            filtroEstoque.value.toLowerCase();
-
-        const produto =
-            filtroProduto.value.toLowerCase().trim();
-
-        const lote =
-            filtroLote.value.toLowerCase().trim();
-
-        const validadeFiltro =
-            filtroValidade.value;
-
-
-        let quantidadeVisivel = 0;
-
-
-        linhas.forEach(function (linha) {
-
-            const linhaEstoque =
-                linha.dataset.estoque.toLowerCase();
-
-            const linhaProduto =
-                linha.dataset.produto.toLowerCase();
-
-            const linhaLote =
-                linha.dataset.lote.toLowerCase();
-
-            const dataValidade =
-                linha.dataset.validade;
-
-
-            const situacao =
-                calcularSituacao(dataValidade);
-
-
-            let mostrar = true;
-
-
-            if (
-                estoque &&
-                linhaEstoque !== estoque
-            ) {
-                mostrar = false;
-            }
-
-
-            if (
-                produto &&
-                !linhaProduto.includes(produto)
-            ) {
-                mostrar = false;
-            }
-
-
-            if (
-                lote &&
-                !linhaLote.includes(lote)
-            ) {
-                mostrar = false;
-            }
-
-
-            if (validadeFiltro) {
-
-                if (
-                    validadeFiltro === "vencido" &&
-                    situacao.dias >= 0
-                ) {
-                    mostrar = false;
-                }
-
-
-                if (
-                    validadeFiltro === "critico" &&
-                    (
-                        situacao.dias < 0 ||
-                        situacao.dias > 30
-                    )
-                ) {
-                    mostrar = false;
-                }
-
-
-                if (
-                    validadeFiltro === "atencao" &&
-                    (
-                        situacao.dias < 31 ||
-                        situacao.dias > 90
-                    )
-                ) {
-                    mostrar = false;
-                }
-
-
-                if (
-                    validadeFiltro === "ok" &&
-                    situacao.dias <= 90
-                ) {
-                    mostrar = false;
-                }
-
-            }
-
-
-            linha.style.display =
-                mostrar ? "" : "none";
-
-
-            if (mostrar) {
-                quantidadeVisivel++;
-            }
-
-        });
-
-
-        contador.textContent =
-            quantidadeVisivel +
-            (
-                quantidadeVisivel === 1
-                    ? " registro"
-                    : " registros"
+        const badgeRegistros =
+            document.getElementById(
+                "badgeRegistros"
             );
 
-    }
 
 
-    function atualizarResumo() {
+        /* ==================================
+           ADICIONA OPÇÕES DOS DADOS DO RELATÓRIO
+        ================================== */
 
-        let validos = 0;
-        let atencao = 0;
-        let vencidos = 0;
+        function adicionarOpcoes(
+            select,
+            valores,
+            textoPadrao
+        ) {
+
+            select.innerHTML = "";
+
+            const opcaoTodos =
+                document.createElement("option");
+
+            opcaoTodos.value = "";
+
+            opcaoTodos.textContent =
+                textoPadrao;
+
+            select.appendChild(opcaoTodos);
 
 
-        linhas.forEach(function (linha) {
+            valores
+                .sort(function (a, b) {
 
-            const situacao =
-                calcularSituacao(
-                    linha.dataset.validade
+                    return a.localeCompare(
+                        b,
+                        "pt-BR",
+                        {
+                            numeric: true
+                        }
+                    );
+
+                })
+                .forEach(function (valor) {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value = valor;
+
+                    option.textContent = valor;
+
+                    select.appendChild(option);
+
+                });
+
+        }
+
+
+
+        function carregarFiltros() {
+
+
+            const estoques =
+                new Set();
+
+
+            const produtos =
+                new Set();
+
+
+            const lotes =
+                new Set();
+
+
+            const validades =
+                new Set();
+
+
+
+            linhas.forEach(function (linha) {
+
+
+                if (linha.dataset.estoque) {
+
+                    estoques.add(
+                        linha.dataset.estoque
+                    );
+
+                }
+
+
+                if (linha.dataset.produto) {
+
+                    produtos.add(
+                        linha.dataset.produto
+                    );
+
+                }
+
+
+                if (linha.dataset.lote) {
+
+                    lotes.add(
+                        linha.dataset.lote
+                    );
+
+                }
+
+
+                if (linha.dataset.validade) {
+
+                    const partes =
+                        linha.dataset.validade.split("-");
+
+
+                    if (partes.length === 3) {
+
+                        const validadeFormatada =
+                            partes[2] +
+                            "/" +
+                            partes[1] +
+                            "/" +
+                            partes[0];
+
+
+                        validades.add(
+                            validadeFormatada
+                        );
+
+                    }
+
+                }
+
+            });
+
+
+
+            adicionarOpcoes(
+                filtroEstoque,
+                Array.from(estoques),
+                "Todos os estoques"
+            );
+
+
+            adicionarOpcoes(
+                filtroProduto,
+                Array.from(produtos),
+                "Todos os produtos"
+            );
+
+
+            adicionarOpcoes(
+                filtroLote,
+                Array.from(lotes),
+                "Todos os lotes"
+            );
+
+
+            adicionarOpcoes(
+                filtroValidade,
+                Array.from(validades),
+                "Todas as validades"
+            );
+
+        }
+
+
+
+        /* ==================================
+           SITUAÇÃO DA VALIDADE
+        ================================== */
+
+        function calcularSituacao(
+            dataValidade
+        ) {
+
+
+            if (!dataValidade) {
+
+                return {
+                    classe: "status-vencido",
+                    texto: "Sem validade",
+                    dias: null
+                };
+
+            }
+
+
+            const hoje =
+                new Date();
+
+
+            hoje.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+
+            const partes =
+                dataValidade.split("-");
+
+
+            const validade =
+                new Date(
+                    Number(partes[0]),
+                    Number(partes[1]) - 1,
+                    Number(partes[2])
                 );
 
 
-            if (situacao.dias < 0) {
+            validade.setHours(
+                0,
+                0,
+                0,
+                0
+            );
 
-                vencidos++;
 
-            } else if (situacao.dias <= 90) {
+            const diferenca =
+                validade.getTime() -
+                hoje.getTime();
 
-                atencao++;
 
-            } else {
+            const dias =
+                Math.ceil(
+                    diferenca /
+                    (1000 * 60 * 60 * 24)
+                );
 
-                validos++;
+
+
+            if (dias < 0) {
+
+                return {
+                    classe: "status-vencido",
+                    texto: "Vencido",
+                    dias: dias
+                };
 
             }
 
-        });
+
+            if (dias <= 30) {
+
+                return {
+                    classe: "status-critico",
+                    texto: "Até 30 dias",
+                    dias: dias
+                };
+
+            }
 
 
-        totalLotes.textContent =
-            linhas.length;
+            if (dias <= 90) {
 
-        lotesValidos.textContent =
-            validos;
+                return {
+                    classe: "status-atencao",
+                    texto: "Até 90 dias",
+                    dias: dias
+                };
 
-        lotesAtencao.textContent =
-            atencao;
-
-        lotesVencidos.textContent =
-            vencidos;
-
-    }
+            }
 
 
-    filtroEstoque.addEventListener(
-        "change",
-        aplicarFiltros
-    );
-
-
-    filtroValidade.addEventListener(
-        "change",
-        aplicarFiltros
-    );
-
-
-    filtroProduto.addEventListener(
-        "input",
-        aplicarFiltros
-    );
-
-
-    filtroLote.addEventListener(
-        "input",
-        aplicarFiltros
-    );
-
-
-    limparFiltros.addEventListener(
-        "click",
-        function () {
-
-            filtroEstoque.value = "";
-            filtroProduto.value = "";
-            filtroLote.value = "";
-            filtroValidade.value = "";
-
-            aplicarFiltros();
+            return {
+                classe: "status-ok",
+                texto: "Válido",
+                dias: dias
+            };
 
         }
-    );
 
 
-    atualizarSituacoes();
-    atualizarResumo();
-    aplicarFiltros();
 
-});
+        function atualizarSituacoes() {
+
+
+            linhas.forEach(function (linha) {
+
+
+                const situacao =
+                    calcularSituacao(
+                        linha.dataset.validade
+                    );
+
+
+                const badge =
+                    linha.querySelector(
+                        ".status-auto"
+                    );
+
+
+                const texto =
+                    linha.querySelector(
+                        ".texto-status"
+                    );
+
+
+                badge.classList.remove(
+                    "status-ok",
+                    "status-atencao",
+                    "status-critico",
+                    "status-vencido"
+                );
+
+
+                badge.classList.add(
+                    situacao.classe
+                );
+
+
+                texto.textContent =
+                    situacao.texto;
+
+            });
+
+        }
+
+
+
+        /* ==================================
+           FILTROS
+        ================================== */
+
+        function aplicarFiltros() {
+
+
+            const estoque =
+                filtroEstoque.value;
+
+
+            const produto =
+                filtroProduto.value;
+
+
+            const lote =
+                filtroLote.value;
+
+
+            const validade =
+                filtroValidade.value;
+
+
+            let visiveis = 0;
+
+
+
+            linhas.forEach(function (linha) {
+
+
+                let mostrar = true;
+
+
+
+                /* ESTOQUE */
+
+                if (
+                    estoque &&
+                    linha.dataset.estoque !== estoque
+                ) {
+
+                    mostrar = false;
+
+                }
+
+
+
+                /* PRODUTO */
+
+                if (
+                    produto &&
+                    linha.dataset.produto !== produto
+                ) {
+
+                    mostrar = false;
+
+                }
+
+
+
+                /* LOTE */
+
+                if (
+                    lote &&
+                    linha.dataset.lote !== lote
+                ) {
+
+                    mostrar = false;
+
+                }
+
+
+
+                /* VALIDADE */
+
+                if (validade) {
+
+
+                    const partes =
+                        linha.dataset.validade.split("-");
+
+
+                    const validadeFormatada =
+                        partes[2] +
+                        "/" +
+                        partes[1] +
+                        "/" +
+                        partes[0];
+
+
+                    if (
+                        validadeFormatada !== validade
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+                }
+
+
+
+                linha.style.display =
+                    mostrar
+                        ? ""
+                        : "none";
+
+
+                if (mostrar) {
+
+                    visiveis++;
+
+                }
+
+            });
+
+
+
+            quantidadeVisivel.textContent =
+                visiveis;
+
+
+            badgeRegistros.textContent =
+                visiveis +
+                (
+                    visiveis === 1
+                        ? " registro"
+                        : " registros"
+                );
+
+        }
+
+
+
+        /* ==================================
+           LIMPAR
+        ================================== */
+
+        limparFiltros.addEventListener(
+            "click",
+            function () {
+
+
+                filtroEstoque.value = "";
+
+                filtroProduto.value = "";
+
+                filtroLote.value = "";
+
+                filtroValidade.value = "";
+
+
+                aplicarFiltros();
+
+            }
+        );
+
+
+
+        /* ==================================
+           EVENTOS
+        ================================== */
+
+        filtroEstoque.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+        filtroProduto.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+        filtroLote.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+        filtroValidade.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+
+        /* ==================================
+           INICIALIZAÇÃO
+        ================================== */
+
+        carregarFiltros();
+
+        atualizarSituacoes();
+
+        aplicarFiltros();
+
+
+    }
+);
 
 </script>
 
+
+</body>
+
+</html>
+```
