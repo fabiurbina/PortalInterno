@@ -688,13 +688,36 @@
 
 <script>
 
-const PESO_NOMINAL = parseFloat("{{ op.peso_liq_g }}".replace(",", "."));
-const PESO_MINIMO = parseFloat("{{ op.peso_minimo_g }}".replace(",", "."));
-const PESO_MAXIMO = parseFloat("{{ op.peso_maximo_g }}".replace(",", "."));
+const PESO_NOMINAL = parseFloat(
+    "{{ op.peso_liq_g }}".replace(",", ".")
+);
 
-const CARACTERISTICA = "{{ op.caracteristica|default:'' }}".trim().toUpperCase();
+const CARACTERISTICA =
+    "{{ op.caracteristica|default:'' }}".trim().toUpperCase();
 
-const QUANTIDADE_AMOSTRAS = CARACTERISTICA === "CAPSULA" ? 20 : 10;
+const QUANTIDADE_AMOSTRAS =
+    CARACTERISTICA === "CAPSULA" ? 20 : 10;
+
+// ============================================================
+// TOLERÂNCIA DE QUALIDADE
+// ============================================================
+
+const TOLERANCIA =
+    CARACTERISTICA === "CAPSULA"
+        ? 0.075   // ±7,5%
+        : 0.01;   // ±1%
+
+const LIMITE_MINIMO =
+    PESO_NOMINAL * (1 - TOLERANCIA);
+
+const LIMITE_MAXIMO =
+    PESO_NOMINAL * (1 + TOLERANCIA);
+
+console.log("CARACTERÍSTICA:", CARACTERISTICA);
+console.log("PESO NOMINAL:", PESO_NOMINAL);
+console.log("TOLERÂNCIA:", TOLERANCIA * 100 + "%");
+console.log("LIMITE MÍNIMO:", LIMITE_MINIMO);
+console.log("LIMITE MÁXIMO:", LIMITE_MAXIMO);
 
 let contadorInspecoes = 0;
 
@@ -705,51 +728,28 @@ let contadorInspecoes = 0;
 
 function atualizarLimites() {
 
-    const pesoNominal = parseFloat("{{ op.peso_liq_g }}");
+    const pesoNominal = PESO_NOMINAL;
 
     if (isNaN(pesoNominal) || pesoNominal <= 0) {
-        document.getElementById("peso_minimo").textContent = "-";
-        document.getElementById("peso_maximo").textContent = "-";
+        window.limitesPeso = null;
         return;
     }
 
-    const tolerancia = 0.01;
-
     const pesoMinimo =
-        pesoNominal * (1 - tolerancia);
+        pesoNominal * (1 - TOLERANCIA);
 
     const pesoMaximo =
-        pesoNominal * (1 + tolerancia);
-
-    const toleranciaAbsoluta = tolerancia * 2;
-
-    const pesoMinimoAbsoluto =
-        pesoNominal * (1 - toleranciaAbsoluta);
-
-    const pesoMaximoAbsoluto =
-        pesoNominal * (1 + toleranciaAbsoluta);
-
-    document.getElementById("peso_minimo").textContent =
-        pesoMinimo.toFixed(2).replace(".", ",") + " g";
-
-    document.getElementById("peso_maximo").textContent =
-        pesoMaximo.toFixed(2).replace(".", ",") + " g";
+        pesoNominal * (1 + TOLERANCIA);
 
     window.limitesPeso = {
         nominal: pesoNominal,
         minimo: pesoMinimo,
         maximo: pesoMaximo,
-        minimoAbsoluto: pesoMinimoAbsoluto,
-        maximoAbsoluto: pesoMaximoAbsoluto,
-        tolerancia: tolerancia
+        tolerancia: TOLERANCIA
     };
+
+    console.log("LIMITES DE QUALIDADE:", window.limitesPeso);
 }
-
-console.log("LIMITES:", window.limitesPeso);
-
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarLimites();
-});
 /* ============================================================
    AVALIAÇÃO DE UMA PESAGEM
 ============================================================ */
@@ -761,51 +761,23 @@ function classificarPeso(peso) {
     if (!limites || isNaN(peso)) {
         return {
             status: "invalido",
-            desvio: false,
-            foraToleranciaAbsoluta: false
+            conforme: false
         };
     }
-
-    // ---------------------------------------------------------
-    // DENTRO DA FAIXA NORMAL
-    // ---------------------------------------------------------
 
     if (
         peso >= limites.minimo &&
         peso <= limites.maximo
     ) {
         return {
-            status: "normal",
-            desvio: false,
-            foraToleranciaAbsoluta: false
+            status: "conforme",
+            conforme: true
         };
     }
-
-
-    // ---------------------------------------------------------
-    // FORA DA FAIXA NORMAL, MAS DENTRO DA TOLERÂNCIA DOBRADA
-    // ---------------------------------------------------------
-
-    if (
-        peso >= limites.minimoAbsoluto &&
-        peso <= limites.maximoAbsoluto
-    ) {
-        return {
-            status: "desvio",
-            desvio: true,
-            foraToleranciaAbsoluta: false
-        };
-    }
-
-
-    // ---------------------------------------------------------
-    // ULTRAPASSOU A TOLERÂNCIA DOBRADA
-    // ---------------------------------------------------------
 
     return {
-        status: "reprovado",
-        desvio: true,
-        foraToleranciaAbsoluta: true
+        status: "nao-conforme",
+        conforme: false
     };
 }
 
@@ -822,66 +794,37 @@ function avaliarLote(pesos) {
         return {
             conforme: false,
             motivo: "Limites de peso não carregados.",
-            desvios: 0
+            naoConformidades: 0
         };
     }
 
-    let desvios = 0;
-    let ultrapassouToleranciaAbsoluta = false;
-
-
-    // =========================================================
-    // ANALISA CADA PESAGEM
-    // =========================================================
+    let naoConformidades = 0;
 
     pesos.forEach(function (peso) {
 
         const resultado = classificarPeso(peso);
 
-        if (resultado.desvio) {
-            desvios++;
-        }
-
-        if (resultado.foraToleranciaAbsoluta) {
-            ultrapassouToleranciaAbsoluta = true;
+        if (!resultado.conforme) {
+            naoConformidades++;
         }
 
     });
 
-
-    // =========================================================
-    // REGRA DE CONFORMIDADE
-    // =========================================================
-
-    let conforme = true;
-    let motivo = "Lote conforme";
-
-
-    // Qualquer pote além da tolerância absoluta reprova
-    if (ultrapassouToleranciaAbsoluta) {
-
-        conforme = false;
-
-        motivo =
-            "Peso ultrapassou a tolerância máxima permitida.";
-
-    }
-
-    // Mais de 2 desvios também reprova
-    else if (desvios > 2) {
-
-        conforme = false;
-
-        motivo =
-            desvios + " desvios encontrados. Máximo permitido: 2.";
-
-    }
-
+    const conforme =
+        naoConformidades <= 2;
 
     return {
         conforme: conforme,
-        motivo: motivo,
-        desvios: desvios
+        motivo: conforme
+            ? (
+                naoConformidades === 0
+                    ? "Lote conforme."
+                    : naoConformidades +
+                      " não conformidade(s). Dentro do limite permitido."
+              )
+            : naoConformidades +
+              " não conformidades. Limite permitido: 2.",
+        naoConformidades: naoConformidades
     };
 }
 
@@ -1135,15 +1078,13 @@ function gerarControlesPorCaracteristica() {
 
 function avaliarPeso(input) {
 
-    const valor = parseFloat(input.value);
-
-    const nominal = PESO_NOMINAL;
-    const minimo = PESO_MINIMO;
-    const maximo = PESO_MAXIMO;
+    const valor = parseFloat(
+        input.value.replace(",", ".")
+    );
 
     if (
         isNaN(valor) ||
-        isNaN(nominal)
+        isNaN(PESO_NOMINAL)
     ) {
 
         input.classList.remove(
@@ -1163,9 +1104,10 @@ function avaliarPeso(input) {
         "nao-conforme"
     );
 
+
     if (
-        valor >= minimo &&
-        valor <= maximo
+        valor >= LIMITE_MINIMO &&
+        valor <= LIMITE_MAXIMO
     ) {
 
         input.classList.add(
@@ -1178,6 +1120,7 @@ function avaliarPeso(input) {
             "nao-conforme"
         );
     }
+
 
     atualizarMedia(
         input.dataset.inspecao
@@ -1262,23 +1205,19 @@ function atualizarResultadoInspecao(numero) {
     );
 
     let preenchidos = 0;
-    let desvios = 0;
-    let ultrapassouAbsoluto = false;
+    let naoConformidades = 0;
 
-    // Limites calculados a partir do peso nominal
     const nominal = PESO_NOMINAL;
 
     if (isNaN(nominal) || nominal <= 0) {
         return;
     }
 
-    // Tolerância normal = 1%
-    const minimo = nominal * 0.99;
-    const maximo = nominal * 1.01;
+    const minimo =
+        nominal * (1 - TOLERANCIA);
 
-    // Tolerância absoluta = 2%
-    const minimoAbsoluto = nominal * 0.98;
-    const maximoAbsoluto = nominal * 1.02;
+    const maximo =
+        nominal * (1 + TOLERANCIA);
 
 
     inputs.forEach(input => {
@@ -1295,32 +1234,11 @@ function atualizarResultadoInspecao(numero) {
                 return;
             }
 
-
-            // ==========================================
-            // FORA DA TOLERÂNCIA ABSOLUTA
-            // ==========================================
-
             if (
-                peso < minimoAbsoluto ||
-                peso > maximoAbsoluto
-            ) {
-
-                ultrapassouAbsoluto = true;
-
-            }
-
-
-            // ==========================================
-            // FORA DA FAIXA NORMAL
-            // ==========================================
-
-            else if (
                 peso < minimo ||
                 peso > maximo
             ) {
-
-                desvios++;
-
+                naoConformidades++;
             }
 
         }
@@ -1333,13 +1251,14 @@ function atualizarResultadoInspecao(numero) {
     );
 
 
-    // ==========================================
+    // =========================================================
     // NENHUMA AMOSTRA
-    // ==========================================
+    // =========================================================
 
     if (preenchidos === 0) {
 
-        resultado.innerText = "Aguardando pesos";
+        resultado.innerText =
+            "Aguardando pesos";
 
         resultado.className =
             "resultado-box text-secondary";
@@ -1348,15 +1267,14 @@ function atualizarResultadoInspecao(numero) {
     }
 
 
-    // ==========================================
-    // AINDA NÃO COMPLETOU 10
-    // ==========================================
+    // =========================================================
+    // INSPEÇÃO INCOMPLETA
+    // =========================================================
 
     if (preenchidos < QUANTIDADE_AMOSTRAS) {
-        
-        resultado.innerText = 
-        
-        `${preenchidos}/${QUANTIDADE_AMOSTRAS} amostras`;
+
+        resultado.innerText =
+            `${preenchidos}/${QUANTIDADE_AMOSTRAS} amostras`;
 
         resultado.className =
             "resultado-box text-warning";
@@ -1365,43 +1283,34 @@ function atualizarResultadoInspecao(numero) {
     }
 
 
-    // ==========================================
+    // =========================================================
     // RESULTADO FINAL
-    // ==========================================
+    // =========================================================
 
-    if (ultrapassouAbsoluto) {
+    if (naoConformidades > 2) {
 
         resultado.innerText =
-            "✕ NC — peso ultrapassou a tolerância máxima";
+            `✕ NC — ${naoConformidades} não conformidades`;
 
         resultado.className =
             "resultado-box text-danger";
 
     }
 
-    else if (desvios > 2) {
+    else if (naoConformidades > 0) {
 
         resultado.innerText =
-            `✕ NC — ${desvios} desvios`;
+            `✓ CONFORME — ${naoConformidades} NC dentro do limite`;
 
         resultado.className =
-            "resultado-box text-danger";
+            "resultado-box text-success";
 
     }
 
     else {
 
-        if (desvios === 0) {
-
-            resultado.innerText =
-                "✓ CONFORME";
-
-        } else {
-
-            resultado.innerText =
-                `✓ CONFORME — ${desvios} desvio(s) tolerável(is)`;
-
-        }
+        resultado.innerText =
+            "✓ CONFORME";
 
         resultado.className =
             "resultado-box text-success";

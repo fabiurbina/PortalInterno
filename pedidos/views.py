@@ -2466,6 +2466,7 @@ def exportar_lote_validade_excel(request):
         "Quantidade Entrada",
         "Quantidade Reservada",
         "Quantidade Saída",
+        "Dias Vencimento"
     ])
 
     # Dados
@@ -2481,6 +2482,7 @@ def exportar_lote_validade_excel(request):
             item["nQuantEntrada"],
             item["nQuantReservada"],
             item["nQuantSaida"],
+            item["diasVencimento"],
         ])
 
     # Ajuste de largura
@@ -2494,6 +2496,7 @@ def exportar_lote_validade_excel(request):
         "G": 22,
         "H": 22,
         "I": 20,
+        "J": 18,
     }
 
     for coluna, largura in larguras.items():
