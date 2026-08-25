@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -19,7 +19,6 @@
         * {
             box-sizing: border-box;
         }
-
 
         body {
             margin: 0;
@@ -384,6 +383,22 @@
         }
 
 
+        .nome-produto {
+            display: block;
+
+            margin-top: 3px;
+
+            max-width: 360px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            color: #7a8580;
+
+            font-size: 11px;
+        }
+
+
         .lote {
             display: inline-block;
 
@@ -403,7 +418,10 @@
 
         .saldo {
             font-weight: 700;
+
             text-align: right;
+
+            color: #174f35;
         }
 
 
@@ -470,7 +488,7 @@
         ================================= */
 
         .sem-registros {
-            padding: 55px 20px;
+            padding: 55px 20px !important;
 
             text-align: center;
 
@@ -532,9 +550,7 @@
 <div class="pagina">
 
 
-    <!-- ================================
-         CABEÇALHO
-    ================================= -->
+    <!-- CABEÇALHO -->
 
     <div class="cabecalho">
 
@@ -562,9 +578,7 @@
 
 
 
-    <!-- ================================
-         FILTROS
-    ================================= -->
+    <!-- FILTROS -->
 
     <div class="filtros">
 
@@ -572,9 +586,7 @@
 
             <div class="filtros-titulo">
 
-                <span>
-                    🔎
-                </span>
+                <span>🔎</span>
 
                 <span>
                     Filtros de consulta
@@ -688,9 +700,7 @@
 
 
 
-    <!-- ================================
-         RESUMO
-    ================================= -->
+    <!-- CONTADOR -->
 
     <div class="barra-resumo">
 
@@ -706,9 +716,7 @@
 
 
 
-    <!-- ================================
-         TABELA
-    ================================= -->
+    <!-- TABELA -->
 
     <div class="tabela-container">
 
@@ -751,10 +759,6 @@
                         </th>
 
                         <th>
-                            Fabricação
-                        </th>
-
-                        <th>
                             Validade
                         </th>
 
@@ -763,7 +767,7 @@
                         </th>
 
                         <th style="text-align: right;">
-                            Saldo
+                            Saldo disponível
                         </th>
 
                     </tr>
@@ -777,59 +781,76 @@
                     {% for item in dados %}
 
                     <tr
-                        data-estoque="{{ item.nIdLocal }}"
-                        data-produto="{{ item.cCodProduto }}"
-                        data-lote="{{ item.cNumLote }}"
-                        data-validade="{{ item.dDataValidade|date:'Y-m-d' }}"
+
+                        data-estoque="{{ item.LocalEstoque }}"
+
+                        data-produto="{{ item.codigoProduto }}"
+
+                        data-lote="{{ item.CodigoLote }}"
+
+                        data-validade="{{ item.Validade|date:'Y-m-d' }}"
+
                     >
 
 
+                        <!-- ESTOQUE -->
+
                         <td>
 
-                            {{ item.nIdLocal }}
+                            {{ item.LocalEstoque }}
 
                         </td>
 
+
+                        <!-- PRODUTO -->
 
                         <td>
 
                             <span class="codigo-produto">
 
-                                {{ item.cCodProduto }}
+                                {{ item.codigoProduto }}
+
+                            </span>
+
+
+                            <span class="nome-produto">
+
+                                {{ item.NomeProduto }}
 
                             </span>
 
                         </td>
 
+
+                        <!-- LOTE -->
 
                         <td>
 
                             <span class="lote">
 
-                                {{ item.cNumLote }}
+                                {{ item.CodigoLote }}
 
                             </span>
 
                         </td>
 
 
+                        <!-- VALIDADE -->
+
                         <td class="data">
 
-                            {{ item.dDataFabricacao|date:"d/m/Y" }}
+                            {{ item.Validade|date:"d/m/Y" }}
 
                         </td>
 
 
-                        <td class="data">
-
-                            {{ item.dDataValidade|date:"d/m/Y" }}
-
-                        </td>
-
+                        <!-- SITUAÇÃO -->
 
                         <td>
 
-                            <span class="status status-ok status-auto">
+                            <span
+                                class="status status-ok status-auto"
+                            >
 
                                 <span class="status-ponto"></span>
 
@@ -842,9 +863,11 @@
                         </td>
 
 
+                        <!-- SALDO -->
+
                         <td class="saldo">
 
-                            {{ item.nSaldoLote }}
+                            {{ item.nQuantDisponivel }}
 
                         </td>
 
@@ -857,7 +880,7 @@
                     <tr>
 
                         <td
-                            colspan="7"
+                            colspan="6"
                             class="sem-registros"
                         >
 
@@ -935,7 +958,7 @@ document.addEventListener(
 
 
         /* ==================================
-           ADICIONA OPÇÕES DOS DADOS DO RELATÓRIO
+           FILTROS DINÂMICOS
         ================================== */
 
         function adicionarOpcoes(
@@ -944,43 +967,64 @@ document.addEventListener(
             textoPadrao
         ) {
 
+
             select.innerHTML = "";
+
 
             const opcaoTodos =
                 document.createElement("option");
 
+
             opcaoTodos.value = "";
+
 
             opcaoTodos.textContent =
                 textoPadrao;
 
-            select.appendChild(opcaoTodos);
+
+            select.appendChild(
+                opcaoTodos
+            );
+
 
 
             valores
-                .sort(function (a, b) {
+                .sort(
+                    function (a, b) {
 
-                    return a.localeCompare(
-                        b,
-                        "pt-BR",
-                        {
-                            numeric: true
-                        }
-                    );
+                        return a.localeCompare(
+                            b,
+                            "pt-BR",
+                            {
+                                numeric: true
+                            }
+                        );
 
-                })
-                .forEach(function (valor) {
+                    }
+                )
+                .forEach(
+                    function (valor) {
 
-                    const option =
-                        document.createElement("option");
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
 
-                    option.value = valor;
 
-                    option.textContent = valor;
+                        option.value =
+                            valor;
 
-                    select.appendChild(option);
 
-                });
+                        option.textContent =
+                            valor;
+
+
+                        select.appendChild(
+                            option
+                        );
+
+                    }
+                );
 
         }
 
@@ -1006,61 +1050,76 @@ document.addEventListener(
 
 
 
-            linhas.forEach(function (linha) {
+            linhas.forEach(
+                function (linha) {
 
 
-                if (linha.dataset.estoque) {
-
-                    estoques.add(
+                    if (
                         linha.dataset.estoque
-                    );
+                    ) {
 
-                }
-
-
-                if (linha.dataset.produto) {
-
-                    produtos.add(
-                        linha.dataset.produto
-                    );
-
-                }
-
-
-                if (linha.dataset.lote) {
-
-                    lotes.add(
-                        linha.dataset.lote
-                    );
-
-                }
-
-
-                if (linha.dataset.validade) {
-
-                    const partes =
-                        linha.dataset.validade.split("-");
-
-
-                    if (partes.length === 3) {
-
-                        const validadeFormatada =
-                            partes[2] +
-                            "/" +
-                            partes[1] +
-                            "/" +
-                            partes[0];
-
-
-                        validades.add(
-                            validadeFormatada
+                        estoques.add(
+                            linha.dataset.estoque
                         );
 
                     }
 
-                }
 
-            });
+                    if (
+                        linha.dataset.produto
+                    ) {
+
+                        produtos.add(
+                            linha.dataset.produto
+                        );
+
+                    }
+
+
+                    if (
+                        linha.dataset.lote
+                    ) {
+
+                        lotes.add(
+                            linha.dataset.lote
+                        );
+
+                    }
+
+
+                    if (
+                        linha.dataset.validade
+                    ) {
+
+
+                        const partes =
+                            linha.dataset.validade
+                                .split("-");
+
+
+                        if (
+                            partes.length === 3
+                        ) {
+
+
+                            const validadeFormatada =
+                                partes[2] +
+                                "/" +
+                                partes[1] +
+                                "/" +
+                                partes[0];
+
+
+                            validades.add(
+                                validadeFormatada
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
 
 
 
@@ -1107,9 +1166,16 @@ document.addEventListener(
             if (!dataValidade) {
 
                 return {
-                    classe: "status-vencido",
-                    texto: "Sem validade",
-                    dias: null
+
+                    classe:
+                        "status-vencido",
+
+                    texto:
+                        "Sem validade",
+
+                    dias:
+                        null
+
                 };
 
             }
@@ -1163,9 +1229,16 @@ document.addEventListener(
             if (dias < 0) {
 
                 return {
-                    classe: "status-vencido",
-                    texto: "Vencido",
-                    dias: dias
+
+                    classe:
+                        "status-vencido",
+
+                    texto:
+                        "Vencido",
+
+                    dias:
+                        dias
+
                 };
 
             }
@@ -1174,9 +1247,16 @@ document.addEventListener(
             if (dias <= 30) {
 
                 return {
-                    classe: "status-critico",
-                    texto: "Até 30 dias",
-                    dias: dias
+
+                    classe:
+                        "status-critico",
+
+                    texto:
+                        "Até 30 dias",
+
+                    dias:
+                        dias
+
                 };
 
             }
@@ -1185,18 +1265,32 @@ document.addEventListener(
             if (dias <= 90) {
 
                 return {
-                    classe: "status-atencao",
-                    texto: "Até 90 dias",
-                    dias: dias
+
+                    classe:
+                        "status-atencao",
+
+                    texto:
+                        "Até 90 dias",
+
+                    dias:
+                        dias
+
                 };
 
             }
 
 
             return {
-                classe: "status-ok",
-                texto: "Válido",
-                dias: dias
+
+                classe:
+                    "status-ok",
+
+                texto:
+                    "Válido",
+
+                dias:
+                    dias
+
             };
 
         }
@@ -1206,51 +1300,53 @@ document.addEventListener(
         function atualizarSituacoes() {
 
 
-            linhas.forEach(function (linha) {
+            linhas.forEach(
+                function (linha) {
 
 
-                const situacao =
-                    calcularSituacao(
-                        linha.dataset.validade
+                    const situacao =
+                        calcularSituacao(
+                            linha.dataset.validade
+                        );
+
+
+                    const badge =
+                        linha.querySelector(
+                            ".status-auto"
+                        );
+
+
+                    const texto =
+                        linha.querySelector(
+                            ".texto-status"
+                        );
+
+
+                    badge.classList.remove(
+                        "status-ok",
+                        "status-atencao",
+                        "status-critico",
+                        "status-vencido"
                     );
 
 
-                const badge =
-                    linha.querySelector(
-                        ".status-auto"
+                    badge.classList.add(
+                        situacao.classe
                     );
 
 
-                const texto =
-                    linha.querySelector(
-                        ".texto-status"
-                    );
+                    texto.textContent =
+                        situacao.texto;
 
-
-                badge.classList.remove(
-                    "status-ok",
-                    "status-atencao",
-                    "status-critico",
-                    "status-vencido"
-                );
-
-
-                badge.classList.add(
-                    situacao.classe
-                );
-
-
-                texto.textContent =
-                    situacao.texto;
-
-            });
+                }
+            );
 
         }
 
 
 
         /* ==================================
-           FILTROS
+           APLICA FILTROS
         ================================== */
 
         function aplicarFiltros() {
@@ -1276,94 +1372,97 @@ document.addEventListener(
 
 
 
-            linhas.forEach(function (linha) {
+            linhas.forEach(
+                function (linha) {
 
 
-                let mostrar = true;
-
-
-
-                /* ESTOQUE */
-
-                if (
-                    estoque &&
-                    linha.dataset.estoque !== estoque
-                ) {
-
-                    mostrar = false;
-
-                }
+                    let mostrar = true;
 
 
 
-                /* PRODUTO */
-
-                if (
-                    produto &&
-                    linha.dataset.produto !== produto
-                ) {
-
-                    mostrar = false;
-
-                }
-
-
-
-                /* LOTE */
-
-                if (
-                    lote &&
-                    linha.dataset.lote !== lote
-                ) {
-
-                    mostrar = false;
-
-                }
-
-
-
-                /* VALIDADE */
-
-                if (validade) {
-
-
-                    const partes =
-                        linha.dataset.validade.split("-");
-
-
-                    const validadeFormatada =
-                        partes[2] +
-                        "/" +
-                        partes[1] +
-                        "/" +
-                        partes[0];
-
+                    /* ESTOQUE */
 
                     if (
-                        validadeFormatada !== validade
+                        estoque &&
+                        linha.dataset.estoque !== estoque
                     ) {
 
                         mostrar = false;
 
                     }
 
+
+
+                    /* PRODUTO */
+
+                    if (
+                        produto &&
+                        linha.dataset.produto !== produto
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+
+
+                    /* LOTE */
+
+                    if (
+                        lote &&
+                        linha.dataset.lote !== lote
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+
+
+                    /* VALIDADE */
+
+                    if (validade) {
+
+
+                        const partes =
+                            linha.dataset.validade
+                                .split("-");
+
+
+                        const validadeFormatada =
+                            partes[2] +
+                            "/" +
+                            partes[1] +
+                            "/" +
+                            partes[0];
+
+
+                        if (
+                            validadeFormatada !== validade
+                        ) {
+
+                            mostrar = false;
+
+                        }
+
+                    }
+
+
+
+                    linha.style.display =
+                        mostrar
+                            ? ""
+                            : "none";
+
+
+                    if (mostrar) {
+
+                        visiveis++;
+
+                    }
+
                 }
-
-
-
-                linha.style.display =
-                    mostrar
-                        ? ""
-                        : "none";
-
-
-                if (mostrar) {
-
-                    visiveis++;
-
-                }
-
-            });
+            );
 
 
 
@@ -1384,7 +1483,7 @@ document.addEventListener(
 
 
         /* ==================================
-           LIMPAR
+           LIMPAR FILTROS
         ================================== */
 
         limparFiltros.addEventListener(
@@ -1457,4 +1556,4 @@ document.addEventListener(
 </body>
 
 </html>
-```
+
