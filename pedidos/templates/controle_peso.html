@@ -458,8 +458,11 @@
                         Peso mínimo aceitável
                     </div>
 
-                    <div class="param-value mt-2 text-danger">
-                        {{ op.peso_minimo_g }} g
+                    <div
+                        id="peso_minimo_card"
+                        class="param-value mt-2 text-danger"
+                    >
+                        -
                     </div>
                 </div>
             </div>
@@ -471,8 +474,11 @@
                         Peso máximo aceitável
                     </div>
 
-                    <div class="param-value mt-2 text-success">
-                        {{ op.peso_maximo_g }} g
+                    <div
+                        id="peso_maximo_card"
+                        class="param-value mt-2 text-success"
+                    >
+                        -
                     </div>
                 </div>
             </div>
@@ -741,44 +747,55 @@ function atualizarLimites() {
     const pesoMaximo =
         pesoNominal * (1 + TOLERANCIA);
 
+
+    // =========================================================
+    // ATUALIZA OS CARDS DA TELA
+    // =========================================================
+
+    const minimoCard =
+        document.getElementById("peso_minimo_card");
+
+    const maximoCard =
+        document.getElementById("peso_maximo_card");
+
+
+    if (minimoCard) {
+
+        minimoCard.textContent =
+            pesoMinimo.toFixed(2).replace(".", ",") + " g";
+
+    }
+
+
+    if (maximoCard) {
+
+        maximoCard.textContent =
+            pesoMaximo.toFixed(2).replace(".", ",") + " g";
+
+    }
+
+
+    // =========================================================
+    // GUARDA OS LIMITES
+    // =========================================================
+
     window.limitesPeso = {
+
         nominal: pesoNominal,
+
         minimo: pesoMinimo,
+
         maximo: pesoMaximo,
+
         tolerancia: TOLERANCIA
+
     };
 
-    console.log("LIMITES DE QUALIDADE:", window.limitesPeso);
-}
-/* ============================================================
-   AVALIAÇÃO DE UMA PESAGEM
-============================================================ */
 
-function classificarPeso(peso) {
-
-    const limites = window.limitesPeso;
-
-    if (!limites || isNaN(peso)) {
-        return {
-            status: "invalido",
-            conforme: false
-        };
-    }
-
-    if (
-        peso >= limites.minimo &&
-        peso <= limites.maximo
-    ) {
-        return {
-            status: "conforme",
-            conforme: true
-        };
-    }
-
-    return {
-        status: "nao-conforme",
-        conforme: false
-    };
+    console.log(
+        "LIMITES DE QUALIDADE:",
+        window.limitesPeso
+    );
 }
 
 
