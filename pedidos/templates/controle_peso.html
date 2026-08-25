@@ -698,6 +698,14 @@ const PESO_NOMINAL = parseFloat(
     "{{ op.peso_liq_g }}".replace(",", ".")
 );
 
+const PESO_MINIMO = parseFloat(
+    "{{ op.peso_minimo_g }}".replace(",", ".")
+);
+
+const PESO_MAXIMO = parseFloat(
+    "{{ op.peso_maximo_g }}".replace(",", ".")
+);
+
 const CARACTERISTICA =
     "{{ op.caracteristica|default:'' }}".trim().toUpperCase();
 
@@ -804,6 +812,9 @@ function atualizarLimites() {
     );
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarLimites();
+});
 
 /* ============================================================
    AVALIAÇÃO DO LOTE
