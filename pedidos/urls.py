@@ -32,7 +32,8 @@ from .views import (
     controle_peso,
     qualidade_controle,
     chao_fabrica,
-    atualizar_ordem_chao_fabrica
+    atualizar_ordem_chao_fabrica,
+    relatorio_lote_validade
 )
 
 urlpatterns = [
@@ -225,6 +226,12 @@ urlpatterns = [
     controle_peso,
     name="controle_peso"
 ),
+    
+     path(
+        "relatorio/lote-validade/",
+        relatorio_lote_validade,
+        name="relatorio_lote_validade"
+    ),
 
 
 ]

@@ -32,7 +32,8 @@ from .mysql_service import (
     buscar_previsao_demanda,
     consulta_chao_fabrica,
     salvar_ordem_chao_fabrica,
-    consulta_inspecoes
+    consulta_inspecoes,
+    buscar_lote_validade
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -2432,3 +2433,15 @@ def atualizar_ordem_chao_fabrica(request):
             },
             status=500
         )
+        
+        
+def relatorio_lote_validade(request):
+
+    dados = buscar_lote_validade()
+
+    return render(
+    request,
+    "relatorios/relatorio_lote_validade.html",
+    {
+        "dados": dados
+    })

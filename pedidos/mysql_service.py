@@ -1130,3 +1130,25 @@ def salvar_ordem_chao_fabrica(ordens):
     finally:
 
         conexao.close()
+        
+        
+def buscar_lote_validade():
+
+    sql = """
+        SELECT *
+        FROM vw_lote_validade
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()
