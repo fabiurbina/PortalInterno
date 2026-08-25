@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -425,8 +425,28 @@
         }
 
 
-        .data {
-            color: #59655f;
+        .dias {
+            font-weight: 700;
+        }
+
+
+        .dias-vencido {
+            color: #c43d3d;
+        }
+
+
+        .dias-critico {
+            color: #c45a14;
+        }
+
+
+        .dias-atencao {
+            color: #a36b00;
+        }
+
+
+        .dias-ok {
+            color: #21804a;
         }
 
 
@@ -480,6 +500,49 @@
         .status-vencido {
             background: #fdecec;
             color: #c43d3d;
+        }
+
+
+        /* ================================
+           EXCEL
+        ================================= */
+
+        .btn-excel {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            height: 34px;
+
+            padding: 0 13px;
+
+            border-radius: 7px;
+
+            background: #198754;
+
+            border: 1px solid #198754;
+
+            color: #ffffff;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-excel:hover {
+            background: #146c43;
+            border-color: #146c43;
+
+            color: #ffffff;
+
+            transform: translateY(-1px);
         }
 
 
@@ -539,45 +602,6 @@
 
         }
 
-        .btn-excel {
-            display: inline-flex;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 7px;
-
-            height: 34px;
-
-            padding: 0 13px;
-
-            border-radius: 7px;
-
-            background: #198754;
-
-            border: 1px solid #198754;
-
-            color: #ffffff;
-
-            font-size: 12px;
-            font-weight: 600;
-
-            text-decoration: none;
-
-            transition: all .2s ease;
-        }
-
-
-        .btn-excel:hover {
-            background: #146c43;
-
-            border-color: #146c43;
-
-            color: #ffffff;
-
-            transform: translateY(-1px);
-        }
-
     </style>
 
 </head>
@@ -600,7 +624,7 @@
             </h1>
 
             <p>
-                Consulte os lotes, estoques, saldos e datas de validade dos produtos.
+                Consulte os lotes, estoques, saldos e dias restantes para vencimento.
             </p>
 
         </div>
@@ -703,18 +727,18 @@
             </div>
 
 
-            <!-- VALIDADE -->
+            <!-- DIAS PARA VENCIMENTO -->
 
             <div class="campo">
 
-                <label for="filtroValidade">
-                    Validade
+                <label for="filtroDias">
+                    Dias para vencimento
                 </label>
 
-                <select id="filtroValidade">
+                <select id="filtroDias">
 
                     <option value="">
-                        Todas as validades
+                        Todos os dias
                     </option>
 
                 </select>
@@ -814,7 +838,7 @@
                         </th>
 
                         <th>
-                            Validade
+                            Dias para vencimento
                         </th>
 
                         <th>
@@ -843,7 +867,7 @@
 
                         data-lote="{{ item.CodigoLote }}"
 
-                        data-validade="{{ item.Validade|date:'Y-m-d' }}"
+                        data-dias-vencimento="{{ item.diasVencimento }}"
 
                     >
 
@@ -890,11 +914,15 @@
                         </td>
 
 
-                        <!-- VALIDADE -->
+                        <!-- DIAS PARA VENCIMENTO -->
 
-                        <td class="data">
+                        <td>
 
-                            {{ item.Validade|date:"d/m/Y" }}
+                            <span class="dias dias-auto">
+
+                                {{ item.diasVencimento }}
+
+                            </span>
 
                         </td>
 
@@ -985,8 +1013,8 @@ document.addEventListener(
             document.getElementById("filtroLote");
 
 
-        const filtroValidade =
-            document.getElementById("filtroValidade");
+        const filtroDias =
+            document.getElementById("filtroDias");
 
 
         const limparFiltros =
@@ -1042,18 +1070,11 @@ document.addEventListener(
             );
 
 
-
             valores
                 .sort(
                     function (a, b) {
 
-                        return a.localeCompare(
-                            b,
-                            "pt-BR",
-                            {
-                                numeric: true
-                            }
-                        );
+                        return Number(a) - Number(b);
 
                     }
                 )
@@ -1100,7 +1121,7 @@ document.addEventListener(
                 new Set();
 
 
-            const validades =
+            const diasVencimento =
                 new Set();
 
 
@@ -1143,33 +1164,12 @@ document.addEventListener(
 
 
                     if (
-                        linha.dataset.validade
+                        linha.dataset.diasVencimento !== ""
                     ) {
 
-
-                        const partes =
-                            linha.dataset.validade
-                                .split("-");
-
-
-                        if (
-                            partes.length === 3
-                        ) {
-
-
-                            const validadeFormatada =
-                                partes[2] +
-                                "/" +
-                                partes[1] +
-                                "/" +
-                                partes[0];
-
-
-                            validades.add(
-                                validadeFormatada
-                            );
-
-                        }
+                        diasVencimento.add(
+                            linha.dataset.diasVencimento
+                        );
 
                     }
 
@@ -1200,9 +1200,9 @@ document.addEventListener(
 
 
             adicionarOpcoes(
-                filtroValidade,
-                Array.from(validades),
-                "Todas as validades"
+                filtroDias,
+                Array.from(diasVencimento),
+                "Todos os dias"
             );
 
         }
@@ -1210,147 +1210,8 @@ document.addEventListener(
 
 
         /* ==================================
-           SITUAÇÃO DA VALIDADE
+           SITUAÇÃO
         ================================== */
-
-        function calcularSituacao(
-            dataValidade
-        ) {
-
-
-            if (!dataValidade) {
-
-                return {
-
-                    classe:
-                        "status-vencido",
-
-                    texto:
-                        "Sem validade",
-
-                    dias:
-                        null
-
-                };
-
-            }
-
-
-            const hoje =
-                new Date();
-
-
-            hoje.setHours(
-                0,
-                0,
-                0,
-                0
-            );
-
-
-            const partes =
-                dataValidade.split("-");
-
-
-            const validade =
-                new Date(
-                    Number(partes[0]),
-                    Number(partes[1]) - 1,
-                    Number(partes[2])
-                );
-
-
-            validade.setHours(
-                0,
-                0,
-                0,
-                0
-            );
-
-
-            const diferenca =
-                validade.getTime() -
-                hoje.getTime();
-
-
-            const dias =
-                Math.ceil(
-                    diferenca /
-                    (1000 * 60 * 60 * 24)
-                );
-
-
-
-            if (dias < 0) {
-
-                return {
-
-                    classe:
-                        "status-vencido",
-
-                    texto:
-                        "Vencido",
-
-                    dias:
-                        dias
-
-                };
-
-            }
-
-
-            if (dias <= 30) {
-
-                return {
-
-                    classe:
-                        "status-critico",
-
-                    texto:
-                        "Até 30 dias",
-
-                    dias:
-                        dias
-
-                };
-
-            }
-
-
-            if (dias <= 90) {
-
-                return {
-
-                    classe:
-                        "status-atencao",
-
-                    texto:
-                        "Até 90 dias",
-
-                    dias:
-                        dias
-
-                };
-
-            }
-
-
-            return {
-
-                classe:
-                    "status-ok",
-
-                texto:
-                    "Válido",
-
-                dias:
-                    dias
-
-            };
-
-        }
-
-
 
         function atualizarSituacoes() {
 
@@ -1359,9 +1220,9 @@ document.addEventListener(
                 function (linha) {
 
 
-                    const situacao =
-                        calcularSituacao(
-                            linha.dataset.validade
+                    const dias =
+                        Number(
+                            linha.dataset.diasVencimento
                         );
 
 
@@ -1377,6 +1238,12 @@ document.addEventListener(
                         );
 
 
+                    const diasElemento =
+                        linha.querySelector(
+                            ".dias-auto"
+                        );
+
+
                     badge.classList.remove(
                         "status-ok",
                         "status-atencao",
@@ -1385,13 +1252,83 @@ document.addEventListener(
                     );
 
 
-                    badge.classList.add(
-                        situacao.classe
+                    diasElemento.classList.remove(
+                        "dias-ok",
+                        "dias-atencao",
+                        "dias-critico",
+                        "dias-vencido"
                     );
 
 
-                    texto.textContent =
-                        situacao.texto;
+
+                    if (dias < 0) {
+
+
+                        badge.classList.add(
+                            "status-vencido"
+                        );
+
+
+                        texto.textContent =
+                            "Vencido";
+
+
+                        diasElemento.classList.add(
+                            "dias-vencido"
+                        );
+
+
+                    } else if (dias <= 30) {
+
+
+                        badge.classList.add(
+                            "status-critico"
+                        );
+
+
+                        texto.textContent =
+                            "Até 30 dias";
+
+
+                        diasElemento.classList.add(
+                            "dias-critico"
+                        );
+
+
+                    } else if (dias <= 90) {
+
+
+                        badge.classList.add(
+                            "status-atencao"
+                        );
+
+
+                        texto.textContent =
+                            "Até 90 dias";
+
+
+                        diasElemento.classList.add(
+                            "dias-atencao"
+                        );
+
+
+                    } else {
+
+
+                        badge.classList.add(
+                            "status-ok"
+                        );
+
+
+                        texto.textContent =
+                            "Válido";
+
+
+                        diasElemento.classList.add(
+                            "dias-ok"
+                        );
+
+                    }
 
                 }
             );
@@ -1419,8 +1356,8 @@ document.addEventListener(
                 filtroLote.value;
 
 
-            const validade =
-                filtroValidade.value;
+            const dias =
+                filtroDias.value;
 
 
             let visiveis = 0;
@@ -1474,31 +1411,14 @@ document.addEventListener(
 
 
 
-                    /* VALIDADE */
+                    /* DIAS PARA VENCIMENTO */
 
-                    if (validade) {
+                    if (
+                        dias &&
+                        linha.dataset.diasVencimento !== dias
+                    ) {
 
-
-                        const partes =
-                            linha.dataset.validade
-                                .split("-");
-
-
-                        const validadeFormatada =
-                            partes[2] +
-                            "/" +
-                            partes[1] +
-                            "/" +
-                            partes[0];
-
-
-                        if (
-                            validadeFormatada !== validade
-                        ) {
-
-                            mostrar = false;
-
-                        }
+                        mostrar = false;
 
                     }
 
@@ -1552,7 +1472,7 @@ document.addEventListener(
 
                 filtroLote.value = "";
 
-                filtroValidade.value = "";
+                filtroDias.value = "";
 
 
                 aplicarFiltros();
@@ -1584,7 +1504,7 @@ document.addEventListener(
         );
 
 
-        filtroValidade.addEventListener(
+        filtroDias.addEventListener(
             "change",
             aplicarFiltros
         );
@@ -1611,4 +1531,4 @@ document.addEventListener(
 </body>
 
 </html>
-
+```
