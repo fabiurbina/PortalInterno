@@ -747,17 +747,9 @@ function atualizarLimites() {
     const pesoMaximo =
         pesoNominal * (1 + TOLERANCIA);
 
-    document.getElementById("peso_minimo_card").textContent =
-    pesoMinimo.toFixed(2).replace(".", ",") +
-    " g (-" + (tolerancia * 100).toFixed(1).replace(".", ",") + "%)";
-
-    document.getElementById("peso_maximo_card").textContent =
-    pesoMaximo.toFixed(2).replace(".", ",") +
-    " g (+" + (tolerancia * 100).toFixed(1).replace(".", ",") + "%)";
-
 
     // =========================================================
-    // ATUALIZA OS CARDS DA TELA
+    // ATUALIZA OS CARDS
     // =========================================================
 
     const minimoCard =
@@ -770,7 +762,10 @@ function atualizarLimites() {
     if (minimoCard) {
 
         minimoCard.textContent =
-            pesoMinimo.toFixed(2).replace(".", ",") + " g";
+            pesoMinimo.toFixed(2).replace(".", ",") +
+            " g (-" +
+            (TOLERANCIA * 100).toFixed(1).replace(".", ",") +
+            "%)";
 
     }
 
@@ -778,7 +773,10 @@ function atualizarLimites() {
     if (maximoCard) {
 
         maximoCard.textContent =
-            pesoMaximo.toFixed(2).replace(".", ",") + " g";
+            pesoMaximo.toFixed(2).replace(".", ",") +
+            " g (+" +
+            (TOLERANCIA * 100).toFixed(1).replace(".", ",") +
+            "%)";
 
     }
 
