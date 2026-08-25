@@ -453,34 +453,34 @@
 
 
             <div class="col-md-3">
-                <div class="param-card">
-                    <div class="param-label">
-                        Peso mínimo aceitável
-                    </div>
 
-                    <div
-                        id="peso_minimo_card"
-                        class="param-value mt-2 text-danger"
-                    >
-                        -
-                    </div>
+            <div class="param-card">
+
+                <div class="param-label">
+                    Peso mínimo aceitável
                 </div>
+
+                <div class="param-value mt-2 text-danger" id="peso_minimo_card">
+                    -
+                </div>
+
             </div>
 
+        </div>
 
-            <div class="col-md-3">
-                <div class="param-card">
-                    <div class="param-label">
-                        Peso máximo aceitável
-                    </div>
 
-                    <div
-                        id="peso_maximo_card"
-                        class="param-value mt-2 text-success"
-                    >
-                        -
-                    </div>
+        <div class="col-md-3">
+
+            <div class="param-card">
+
+                <div class="param-label">
+                    Peso máximo aceitável
                 </div>
+
+                <div class="param-value mt-2 text-success" id="peso_maximo_card">
+                    -
+                </div>
+
             </div>
 
         </div>
@@ -746,6 +746,14 @@ function atualizarLimites() {
 
     const pesoMaximo =
         pesoNominal * (1 + TOLERANCIA);
+
+    document.getElementById("peso_minimo_card").textContent =
+    pesoMinimo.toFixed(2).replace(".", ",") +
+    " g (-" + (tolerancia * 100).toFixed(1).replace(".", ",") + "%)";
+
+    document.getElementById("peso_maximo_card").textContent =
+    pesoMaximo.toFixed(2).replace(".", ",") +
+    " g (+" + (tolerancia * 100).toFixed(1).replace(".", ",") + "%)";
 
 
     // =========================================================
