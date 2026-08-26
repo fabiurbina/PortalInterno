@@ -37,17 +37,16 @@
         display: none !important;
     }
 
+    body.imprimir-andar-1 .quebra-impressao {
+        display: none !important;
+    }
+
     body.imprimir-andar-2 .andar-1 {
         display: none !important;
     }
 
     body.imprimir-andar-2 .andar-2 {
         display: block !important;
-    }
-
-    body.imprimir-andar-1 .ficha-completa,
-    body.imprimir-andar-2 .ficha-completa {
-        display: none !important;
     }
 
     body.imprimir-andar-2 .quebra-impressao {
@@ -60,7 +59,7 @@
     }
 
     .cabecalho-impressao {
-        display: block !important;
+        display: none !important;
     }
 
     .quebra-impressao {
@@ -311,14 +310,7 @@
 
         </table>
 
-
-        <div class="andar-1"><div>
-                <strong>Característica:</strong> {{ caracteristica|default:"-" }}
-                &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
-            </div>
-        </div>
-
-        
+<div class="andar-1">
 
         <!-- RESUMO DA FORMULAÇÃO -->
         <div class="mb-3">
@@ -543,8 +535,6 @@
         </div>
     </div>
     {% endif %}
-
-<div class="quebra-impressao"></div>
 
 <h2 style="text-align:center;">
     Controle de Etiquetas
@@ -1133,19 +1123,11 @@
 
 </div>
 
-
         </div>
 
         <div class="quebra-impressao"></div>
 
-        <div class="andar-2"><div>
-                <strong>Característica:</strong> {{ caracteristica|default:"-" }}
-                &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
-            </div>
-        </div>
-
-        
-
+        <div class="andar-2">
 
         <h4>Setup da Linha</h4>
 
@@ -1536,7 +1518,10 @@
 
 
 
-<div class="mt-4">
+
+        </div>
+
+        <div class="mt-4">
 
     <button
         type="submit"
@@ -1679,12 +1664,7 @@ function imprimirAndar(andar) {
 
     document.body.classList.add("imprimir-andar-" + andar);
 
-    // Garante que o navegador aplique o CSS antes de abrir a impressão.
-    document.body.offsetHeight;
-
-    setTimeout(function () {
-        window.print();
-    }, 100);
+    window.print();
 }
 
 
@@ -1697,22 +1677,19 @@ function imprimirCompleta() {
 
     document.body.classList.add("imprimir-completa");
 
-    document.body.offsetHeight;
-
-    setTimeout(function () {
-        window.print();
-    }, 100);
+    window.print();
 }
 
 
 window.addEventListener("afterprint", function () {
+
     document.body.classList.remove(
         "imprimir-andar-1",
         "imprimir-andar-2",
         "imprimir-completa"
     );
-});
 
+});
 </script>
 
 </body>
