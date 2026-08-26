@@ -734,14 +734,19 @@
                     <!-- PESO LÍQUIDO -->
 
                     <td class="peso">
-                        {{ op.peso_liq_g|default:"-" }} g
+                        {% if op.peso_liq_g is not None %}
+                            {{ op.peso_liq_g }} g
+                        {% else %}
+                            -
+                        {% endif %}
                     </td>
 
-
-                    <!-- PESO BRUTO -->
-
                     <td class="peso">
-                        {{ op.peso_bruto_g|default:"-" }} g
+                        {% if op.peso_bruto_g is not None %}
+                            {{ op.peso_bruto_g }} g
+                        {% else %}
+                            -
+                        {% endif %}
                     </td>
 
 

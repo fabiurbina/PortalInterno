@@ -167,6 +167,19 @@ def home(request):
                 cod_produto
             ]['caracteristica']
 
+            op['peso_liq'] = produtos_cache[
+                cod_produto
+            ]['peso_liq']
+
+            op['peso_bruto'] = produtos_cache[
+                cod_produto
+            ]['peso_bruto']
+
+
+            # ==========================================
+            # PESOS EM GRAMAS
+            # ==========================================
+
             op['peso_liq_g'] = (
                 round(op['peso_liq'] * 1000)
                 if op['peso_liq'] is not None
