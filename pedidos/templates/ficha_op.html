@@ -120,6 +120,68 @@
 
     /* ===== TABELAS ===== */
 
+    /* MP e Embalagens: caber integralmente no A4 landscape */
+    table.tabela-insumos {
+        width: 100% !important;
+        table-layout: fixed !important;
+        font-size: 8px !important;
+    }
+
+    table.tabela-insumos th,
+    table.tabela-insumos td {
+        font-size: 8px !important;
+        padding: 2px 3px !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+    }
+
+    table.tabela-insumos th:nth-child(1),
+    table.tabela-insumos td:nth-child(1) { width: 4%; }
+
+    table.tabela-insumos th:nth-child(2),
+    table.tabela-insumos td:nth-child(2) { width: 9%; }
+
+    table.tabela-insumos th:nth-child(3),
+    table.tabela-insumos td:nth-child(3) { width: 19%; }
+
+    table.tabela-insumos th:nth-child(4),
+    table.tabela-insumos td:nth-child(4) { width: 6%; }
+
+    table.tabela-insumos th:nth-child(5),
+    table.tabela-insumos td:nth-child(5) { width: 11%; }
+
+    table.tabela-insumos th:nth-child(6),
+    table.tabela-insumos td:nth-child(6) { width: 10%; }
+
+    table.tabela-insumos th:nth-child(7),
+    table.tabela-insumos td:nth-child(7) { width: 10%; }
+
+    table.tabela-insumos th:nth-child(8),
+    table.tabela-insumos td:nth-child(8) { width: 7%; }
+
+    table.tabela-insumos th:nth-child(9),
+    table.tabela-insumos td:nth-child(9) { width: 14%; }
+
+    table.tabela-insumos th:nth-child(10),
+    table.tabela-insumos td:nth-child(10) { width: 10%; }
+
+    table.tabela-insumos input.form-control {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        font-size: 8px !important;
+        padding: 2px !important;
+    }
+
+    table.tabela-insumos tr {
+        page-break-inside: avoid !important;
+    }
+
+    table.tabela-insumos thead {
+        display: table-header-group !important;
+    }
+
     table{
         width:100% !important;
         border-collapse:collapse;
@@ -300,6 +362,20 @@
 
         <div class="andar-1">
 
+        <div class="cabecalho-impressao cabecalho-andar-1" style="text-align:center; margin-bottom:12px;">
+            <h2 style="margin:0;">VIESANO SUPLEMENTOS</h2>
+            <h3 style="margin:4px 0 8px;">FICHA DE PRODUÇÃO — 1º ANDAR</h3>
+            <div>
+                <strong>OP:</strong> {{ op.identificacao.cNumOP }}
+                &nbsp; | &nbsp; <strong>Produto:</strong> {{ nome_produto }}
+                &nbsp; | &nbsp; <strong>Qtde:</strong> {{ op.identificacao.nQtde }}
+            </div>
+            <div>
+                <strong>Característica:</strong> {{ caracteristica|default:"-" }}
+                &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
+            </div>
+        </div>
+
         <!-- RESUMO DA FORMULAÇÃO -->
         <div class="mb-3">
 
@@ -328,7 +404,7 @@
 
 
 
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm tabela-insumos">
 
                 <thead class="table-light">
                     <tr>
@@ -419,7 +495,7 @@
 
             <h5 class="mt-4">Embalagens</h5>
 
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm tabela-insumos">
 
                 <thead class="table-light">
                     <tr>
@@ -509,7 +585,7 @@
     "
 ></div>
 
-        </div>
+        
 
         {% if observacao_estrutura %}
     <div class="card shadow-sm mt-4">
@@ -1366,7 +1442,25 @@ A partir da qui é segundo andar
 <br>
 
 
+        </div>
+
+<div style="page-break-before: always;"></div>
+
 <div class="andar-2">
+
+        <div class="cabecalho-impressao cabecalho-andar-2" style="text-align:center; margin-bottom:12px;">
+            <h2 style="margin:0;">VIESANO SUPLEMENTOS</h2>
+            <h3 style="margin:4px 0 8px;">FICHA DE PRODUÇÃO — 2º ANDAR</h3>
+            <div>
+                <strong>OP:</strong> {{ op.identificacao.cNumOP }}
+                &nbsp; | &nbsp; <strong>Produto:</strong> {{ nome_produto }}
+                &nbsp; | &nbsp; <strong>Qtde:</strong> {{ op.identificacao.nQtde }}
+            </div>
+            <div>
+                <strong>Característica:</strong> {{ caracteristica|default:"-" }}
+                &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
+            </div>
+        </div>
 
         <h4>Setup da Linha</h4>
 
