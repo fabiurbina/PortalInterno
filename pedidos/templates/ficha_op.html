@@ -50,6 +50,10 @@
         display: none !important;
     }
 
+    body.imprimir-andar-2 .quebra-impressao {
+        display: none !important;
+    }
+
     body.imprimir-completa .andar-1,
     body.imprimir-completa .andar-2 {
         display: block !important;
@@ -308,17 +312,7 @@
         </table>
 
 
-        <div class="andar-1">
-
-        <div class="cabecalho-impressao" style="text-align:center; margin-bottom:12px;">
-            <h2 style="margin:0;">VIESANO SUPLEMENTOS</h2>
-            <h3 style="margin:4px 0 8px;">FICHA DE PRODUÇÃO — 1º ANDAR</h3>
-            <div>
-                <strong>OP:</strong> {{ op.identificacao.cNumOP }}
-                &nbsp; | &nbsp; <strong>Produto:</strong> {{ nome_produto }}
-                &nbsp; | &nbsp; <strong>Qtde:</strong> {{ op.identificacao.nQtde }}
-            </div>
-            <div>
+        <div class="andar-1"><div>
                 <strong>Característica:</strong> {{ caracteristica|default:"-" }}
                 &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
             </div>
@@ -1144,17 +1138,7 @@
 
         <div class="quebra-impressao"></div>
 
-        <div class="andar-2">
-
-        <div class="cabecalho-impressao" style="text-align:center; margin-bottom:12px;">
-            <h2 style="margin:0;">VIESANO SUPLEMENTOS</h2>
-            <h3 style="margin:4px 0 8px;">FICHA DE PRODUÇÃO — 2º ANDAR</h3>
-            <div>
-                <strong>OP:</strong> {{ op.identificacao.cNumOP }}
-                &nbsp; | &nbsp; <strong>Produto:</strong> {{ nome_produto }}
-                &nbsp; | &nbsp; <strong>Qtde:</strong> {{ op.identificacao.nQtde }}
-            </div>
-            <div>
+        <div class="andar-2"><div>
                 <strong>Característica:</strong> {{ caracteristica|default:"-" }}
                 &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
             </div>
@@ -1695,11 +1679,12 @@ function imprimirAndar(andar) {
 
     document.body.classList.add("imprimir-andar-" + andar);
 
-    window.print();
+    // Garante que o navegador aplique o CSS antes de abrir a impressão.
+    document.body.offsetHeight;
 
     setTimeout(function () {
-        document.body.classList.remove("imprimir-andar-" + andar);
-    }, 1000);
+        window.print();
+    }, 100);
 }
 
 
@@ -1712,12 +1697,21 @@ function imprimirCompleta() {
 
     document.body.classList.add("imprimir-completa");
 
-    window.print();
+    document.body.offsetHeight;
 
     setTimeout(function () {
-        document.body.classList.remove("imprimir-completa");
-    }, 1000);
+        window.print();
+    }, 100);
 }
+
+
+window.addEventListener("afterprint", function () {
+    document.body.classList.remove(
+        "imprimir-andar-1",
+        "imprimir-andar-2",
+        "imprimir-completa"
+    );
+});
 
 </script>
 
