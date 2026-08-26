@@ -4,8 +4,11 @@
 <html lang="pt-br">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Portal de Acompanhamento de OP</title>
 
@@ -18,85 +21,106 @@
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             background: #f4f7f9;
             font-family: Arial, Helvetica, sans-serif;
             color: #263238;
         }
 
-        /* TOPO */
+
+        /* =====================================================
+           TOPO
+        ===================================================== */
 
         .topo {
             background: linear-gradient(90deg, #0D3B66, #2EC4B6);
-            padding: 22px 30px;
+            padding: 15px 25px;
             text-align: center;
         }
 
         .topo img {
-            max-width: 260px;
+            max-width: 220px;
             height: auto;
         }
 
-        /* CONTAINER */
+
+        /* =====================================================
+           PAINEL
+        ===================================================== */
 
         .painel {
-            max-width: 1200px;
-            margin: 35px auto;
-            padding: 0 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 25px auto;
+            padding: 0 18px;
         }
 
-        /* CABEÇALHO */
+
+        /* =====================================================
+           CABEÇALHO
+        ===================================================== */
 
         .cabecalho {
             background: white;
-            border-radius: 14px;
-            padding: 25px 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border-left: 5px solid #0D3B66;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            border-left: 4px solid #0D3B66;
         }
 
         .cabecalho h2 {
             margin: 0;
+            font-size: 23px;
             font-weight: 600;
             color: #0D3B66;
         }
 
         .cabecalho p {
-            margin: 6px 0 0;
+            margin: 4px 0 0;
+            font-size: 13px;
             color: #6c757d;
         }
 
-        /* FILTROS */
+
+        /* =====================================================
+           FILTROS
+        ===================================================== */
 
         .filtros {
             background: white;
-            border-radius: 14px;
-            padding: 25px 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
         }
 
         .titulo-filtro {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
             color: #6c757d;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .botoes-filtro {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-filtro {
             border: 1px solid #d8dee3;
             background: #f8f9fa;
             color: #34495e;
-            padding: 10px 18px;
-            border-radius: 9px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 500;
             transition: all 0.2s ease;
         }
@@ -128,55 +152,133 @@
             background: #2EC4B6;
         }
 
-        /* TABELA */
+
+        /* =====================================================
+           CARD DA TABELA
+        ===================================================== */
 
         .card-tabela {
+            width: 100%;
             background: white;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
             overflow: hidden;
         }
 
         .cabecalho-tabela {
-            padding: 20px 25px;
+            padding: 15px 22px;
             border-bottom: 1px solid #e9ecef;
         }
 
         .cabecalho-tabela h5 {
             margin: 0;
+            font-size: 17px;
             color: #0D3B66;
             font-weight: 600;
         }
 
-        .table {
-            margin-bottom: 0;
+
+        /* =====================================================
+           TABELA
+        ===================================================== */
+
+        .tabela-op {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            margin: 0;
         }
 
-        .table thead th {
+        .tabela-op thead th {
             background: #f5f7f9;
             color: #495057;
-            font-size: 13px;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
             border-bottom: 1px solid #dee2e6;
-            padding: 14px;
+            padding: 10px 6px;
+            text-align: center;
+            vertical-align: middle;
             white-space: nowrap;
         }
 
-        .table tbody td {
-            padding: 14px;
+        .tabela-op tbody td {
+            padding: 9px 6px;
+            font-size: 12px;
             vertical-align: middle;
+            border-bottom: 1px solid #edf0f2;
+            text-align: center;
         }
 
-        .table tbody tr:hover {
+        .tabela-op tbody tr:hover {
             background: #f8fbfc;
         }
 
-        /* LINK DA OP */
+
+        /* =====================================================
+           LARGURA DAS COLUNAS
+        ===================================================== */
+
+        .col-selecionar {
+            width: 6%;
+        }
+
+        .col-op {
+            width: 9%;
+        }
+
+        .col-produto {
+            width: 20%;
+        }
+
+        .col-quantidade {
+            width: 8%;
+        }
+
+        .col-previsao {
+            width: 10%;
+        }
+
+        .col-caracteristica {
+            width: 15%;
+        }
+
+        .col-peso {
+            width: 8%;
+        }
+
+        .col-etapa {
+            width: 16%;
+        }
+
+
+        /* =====================================================
+           PRODUTO E CARACTERÍSTICA
+        ===================================================== */
+
+        .produto {
+            text-align: left !important;
+            font-weight: 500;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+
+        .caracteristica {
+            text-align: left !important;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           LINK DA OP
+        ===================================================== */
 
         .op-link {
-            font-weight: 600;
+            font-weight: 700;
             color: #0D3B66;
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .op-link:hover {
@@ -184,49 +286,94 @@
             text-decoration: underline;
         }
 
-        /* BADGE ETAPA */
 
-        .badge-etapa {
-            display: inline-block;
-            padding: 7px 11px;
-            border-radius: 20px;
-            background: #eef4f8;
-            color: #0D3B66;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* CHECKBOX */
+        /* =====================================================
+           CHECKBOX
+        ===================================================== */
 
         .checkbox-op {
-            width: 17px;
-            height: 17px;
+            width: 15px;
+            height: 15px;
             cursor: pointer;
         }
 
-        /* MENSAGEM */
 
-        .mensagem {
-            border-radius: 10px;
-            margin-bottom: 20px;
+        /* =====================================================
+           BADGE ETAPA
+        ===================================================== */
+
+        .badge-etapa {
+            display: inline-block;
+            max-width: 100%;
+            padding: 5px 8px;
+            border-radius: 15px;
+            background: #eef4f8;
+            color: #0D3B66;
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.2;
+            white-space: normal;
         }
 
-        /* BOTÕES INFERIORES */
+
+        /* =====================================================
+           PESOS
+        ===================================================== */
+
+        .peso {
+            white-space: nowrap;
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           MENSAGENS
+        ===================================================== */
+
+        .mensagem {
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           SEM RESULTADOS
+        ===================================================== */
+
+        .sem-resultados {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            text-align: center;
+            color: #6c757d;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           BOTÕES INFERIORES
+        ===================================================== */
 
         .acoes {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin: 30px 0 40px;
+            gap: 10px;
+            margin: 25px 0 30px;
+        }
+
+        .btn-voltar,
+        .btn-sair {
+            min-width: 110px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
         }
 
         .btn-voltar {
             background: #0D3B66;
             color: white;
-            min-width: 120px;
             border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
             text-decoration: none;
             text-align: center;
         }
@@ -236,54 +383,111 @@
             color: white;
         }
 
-        .btn-sair {
-            min-width: 120px;
-            border-radius: 8px;
-            padding: 10px 20px;
-        }
 
-        /* RESPONSIVO */
+        /* =====================================================
+           TABLET / NOTEBOOK
+        ===================================================== */
 
-        @media (max-width: 768px) {
+        @media (max-width: 1100px) {
 
             .painel {
-                margin-top: 20px;
                 padding: 0 10px;
             }
 
-            .cabecalho,
+            .tabela-op thead th {
+                font-size: 10px;
+                padding: 8px 4px;
+            }
+
+            .tabela-op tbody td {
+                font-size: 11px;
+                padding: 8px 4px;
+            }
+
+            .badge-etapa {
+                font-size: 9px;
+                padding: 4px 6px;
+            }
+
+            .produto,
+            .caracteristica {
+                font-size: 11px;
+            }
+        }
+
+
+        /* =====================================================
+           CELULAR
+        ===================================================== */
+
+        @media (max-width: 768px) {
+
+            .topo {
+                padding: 12px;
+            }
+
+            .topo img {
+                max-width: 180px;
+            }
+
+            .painel {
+                margin-top: 15px;
+                padding: 0 8px;
+            }
+
+            .cabecalho {
+                padding: 15px;
+            }
+
+            .cabecalho h2 {
+                font-size: 19px;
+            }
+
             .filtros {
-                padding: 20px;
+                padding: 15px;
             }
 
             .botoes-filtro {
-                flex-direction: column;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
             }
 
             .btn-filtro {
                 width: 100%;
+                font-size: 12px;
+                padding: 8px 5px;
             }
+
+            /*
+               No celular a tabela vira uma área
+               rolável, pois não existe espaço físico
+               para 9 colunas.
+            */
 
             .card-tabela {
                 overflow-x: auto;
             }
 
-            .table {
-                min-width: 850px;
+            .tabela-op {
+                min-width: 900px;
             }
 
+            .acoes {
+                margin-top: 20px;
+            }
         }
 
     </style>
 
 </head>
 
+
 <body>
 
 
-<!-- ========================================================= -->
-<!-- TOPO -->
-<!-- ========================================================= -->
+<!-- =========================================================
+     TOPO
+========================================================= -->
 
 <div class="topo">
 
@@ -293,15 +497,15 @@
 </div>
 
 
-<!-- ========================================================= -->
-<!-- MENSAGENS DJANGO -->
-<!-- ========================================================= -->
+<!-- =========================================================
+     MENSAGENS
+========================================================= -->
 
 {% if messages %}
 
     {% for message in messages %}
 
-        <div class="container mt-3">
+        <div class="container-fluid px-3 mt-3">
 
             <div class="alert alert-warning mensagem">
                 {{ message }}
@@ -314,14 +518,16 @@
 {% endif %}
 
 
-<!-- ========================================================= -->
-<!-- PAINEL PRINCIPAL -->
-<!-- ========================================================= -->
+<!-- =========================================================
+     PAINEL
+========================================================= -->
 
 <div class="painel">
 
 
-    <!-- CABEÇALHO -->
+    <!-- =====================================================
+         CABEÇALHO
+    ===================================================== -->
 
     <div class="cabecalho">
 
@@ -336,16 +542,15 @@
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- FILTROS -->
-    <!-- ===================================================== -->
+    <!-- =====================================================
+         FILTROS
+    ===================================================== -->
 
     <div class="filtros">
 
         <div class="titulo-filtro">
             Filtrar por etapa
         </div>
-
 
         <form method="POST">
 
@@ -355,64 +560,37 @@
                    name="etapa"
                    id="etapaSelecionada">
 
-
             <div class="botoes-filtro">
-
-
-                <!-- TODAS -->
 
                 <button type="submit"
                         class="btn btn-filtro todas"
                         onclick="document.getElementById('etapaSelecionada').value=''">
-
                     Todas
-
                 </button>
-
-
-                <!-- PROGRAMADO -->
 
                 <button type="submit"
                         class="btn btn-filtro programado"
                         onclick="document.getElementById('etapaSelecionada').value='10'">
-
                     Programado
-
                 </button>
-
-
-                <!-- PRODUZINDO -->
 
                 <button type="submit"
                         class="btn btn-filtro produzindo"
                         onclick="document.getElementById('etapaSelecionada').value='20'">
-
                     Produzindo
-
                 </button>
-
-
-                <!-- CONCLUÍDO -->
 
                 <button type="submit"
                         class="btn btn-filtro concluido"
                         onclick="document.getElementById('etapaSelecionada').value='50'">
-
                     Concluído
-
                 </button>
-
-
-                <!-- ARMAZENAR / EXPEDIR -->
 
                 <button type="submit"
                         class="btn btn-filtro expedicao"
                         onclick="document.getElementById('etapaSelecionada').value='60'">
-
                     Armazenar / Expedir
-
                 </button>
-
 
             </div>
 
@@ -421,9 +599,9 @@
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- RESULTADOS -->
-    <!-- ===================================================== -->
+    <!-- =====================================================
+         RESULTADOS
+    ===================================================== -->
 
     {% if ops %}
 
@@ -439,150 +617,184 @@
         </div>
 
 
-        <div class="table-responsive">
+        <table class="tabela-op">
 
-            <table class="table table-hover align-middle">
+            <thead>
+
+                <tr>
+
+                    <th class="col-selecionar">
+                        Selecionar
+                    </th>
+
+                    <th class="col-op">
+                        OP
+                    </th>
+
+                    <th class="col-produto">
+                        Produto
+                    </th>
+
+                    <th class="col-quantidade">
+                        Quantidade
+                    </th>
+
+                    <th class="col-previsao">
+                        Previsão
+                    </th>
+
+                    <th class="col-caracteristica">
+                        Característica
+                    </th>
+
+                    <th class="col-peso">
+                        Peso Líquido
+                    </th>
+
+                    <th class="col-peso">
+                        Peso Bruto
+                    </th>
+
+                    <th class="col-etapa">
+                        Etapa
+                    </th>
+
+                </tr>
+
+            </thead>
 
 
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Selecionar
-                        </th>
-
-                        <th>
-                            OP
-                        </th>
-
-                        <th>
-                            Produto
-                        </th>
-
-                        <th>
-                            Quantidade
-                        </th>
-
-                        <th>
-                            Previsão
-                        </th>
-
-                        <th>
-                            Etapa
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
+            <tbody>
 
                 {% for op in ops %}
 
-                    <tr>
+                <tr>
 
 
-                        <!-- CHECKBOX -->
+                    <!-- SELECIONAR -->
 
-                        <td>
+                    <td>
 
-                            <input type="checkbox"
-                                   class="checkbox-op">
+                        <input type="checkbox"
+                               class="checkbox-op">
 
-                        </td>
-
-
-                        <!-- OP -->
-
-                        <td>
-
-                            <a href="/ficha/{{ op.identificacao.nCodOP }}/"
-                               class="op-link">
-
-                                {{ op.identificacao.cNumOP }}
-
-                            </a>
-
-                        </td>
+                    </td>
 
 
-                        <!-- PRODUTO -->
+                    <!-- OP -->
 
-                        <td>
+                    <td>
 
-                            {{ op.nome_produto }}
+                        <a href="/ficha/{{ op.identificacao.nCodOP }}/"
+                           class="op-link">
 
-                        </td>
+                            {{ op.identificacao.cNumOP }}
 
+                        </a>
 
-                        <!-- QUANTIDADE -->
-
-                        <td>
-
-                            {{ op.identificacao.nQtde }}
-
-                        </td>
+                    </td>
 
 
-                        <!-- PREVISÃO -->
+                    <!-- PRODUTO -->
 
-                        <td>
+                    <td class="produto">
 
-                            {{ op.identificacao.dDtPrevisao }}
+                        {{ op.nome_produto }}
 
-                        </td>
-
-
-                        <!-- ETAPA -->
-
-                        <td>
-
-                            <span class="badge-etapa">
-
-                                {{ op.infAdicionais.cEtapa }}
-                                -
-                                {{ op.nome_etapa }}
-
-                            </span>
-
-                        </td>
+                    </td>
 
 
-                    </tr>
+                    <!-- QUANTIDADE -->
+
+                    <td>
+
+                        {{ op.identificacao.nQtde }}
+
+                    </td>
+
+
+                    <!-- PREVISÃO -->
+
+                    <td>
+
+                        {{ op.identificacao.dDtPrevisao }}
+
+                    </td>
+
+
+                    <!-- CARACTERÍSTICA -->
+
+                    <td class="caracteristica">
+
+                        {{ op.caracteristica|default:"-" }}
+
+                    </td>
+
+
+                    <!-- PESO LÍQUIDO -->
+
+                    <td class="peso">
+
+                        {{ op.peso_liq|default:"-" }}
+
+                    </td>
+
+
+                    <!-- PESO BRUTO -->
+
+                    <td class="peso">
+
+                        {{ op.peso_bruto|default:"-" }}
+
+                    </td>
+
+
+                    <!-- ETAPA -->
+
+                    <td>
+
+                        <span class="badge-etapa">
+
+                            {{ op.infAdicionais.cEtapa }}
+                            -
+                            {{ op.nome_etapa }}
+
+                        </span>
+
+                    </td>
+
+
+                </tr>
 
                 {% endfor %}
 
+            </tbody>
 
-                </tbody>
-
-            </table>
-
-        </div>
+        </table>
 
     </div>
 
+
     {% else %}
 
-        <div class="alert alert-light text-center"
-             style="border-radius: 12px;">
 
-            Nenhuma Ordem de Produção encontrada para o filtro selecionado.
+    <div class="sem-resultados">
 
-        </div>
+        Nenhuma Ordem de Produção encontrada para o filtro selecionado.
+
+    </div>
+
 
     {% endif %}
 
 
-    <!-- ===================================================== -->
-    <!-- STATUS -->
-    <!-- ===================================================== -->
+    <!-- =====================================================
+         STATUS
+    ===================================================== -->
 
     {% if status %}
 
-        <div class="alert alert-success mensagem mt-4">
+        <div class="alert alert-success mensagem mt-3">
 
             {{ status }}
 
@@ -594,9 +806,9 @@
 </div>
 
 
-<!-- ========================================================= -->
-<!-- AÇÕES -->
-<!-- ========================================================= -->
+<!-- =========================================================
+     AÇÕES
+========================================================= -->
 
 <div class="acoes">
 
@@ -606,7 +818,6 @@
         Voltar
 
     </a>
-
 
     <a href="/logout/"
        class="btn btn-outline-danger btn-sair">

@@ -107,6 +107,10 @@ def home(request):
 
         for op in ops:
 
+            # ==========================================
+            # ETAPA
+            # ==========================================
+
             codigo = op['infAdicionais']['cEtapa']
 
             op['nome_etapa'] = ETAPAS.get(
@@ -114,18 +118,62 @@ def home(request):
                 f"Etapa {codigo}"
             )
 
+            # ==========================================
+            # PRODUTO
+            # ==========================================
+
             cod_produto = op['identificacao']['nCodProduto']
 
             if cod_produto not in produtos_cache:
 
                 produto = consultar_produto(cod_produto)
 
-                produtos_cache[cod_produto] = produto.get(
-                    'descricao',
-                    str(cod_produto)
+                caracteristicas = produto.get(
+                    'caracteristicas',
+                    []
                 )
 
-            op['nome_produto'] = produtos_cache[cod_produto]
+                produtos_cache[cod_produto] = {
+
+                    'descricao': produto.get(
+                        'descricao',
+                        str(cod_produto)
+                    ),
+
+                    'caracteristica': (
+                        caracteristicas[0].get('cConteudo')
+                        if caracteristicas
+                        else None
+                    ),
+
+                    'peso_liq': produto.get(
+                        'peso_liq'
+                    ),
+
+                    'peso_bruto': produto.get(
+                        'peso_bruto'
+                    )
+                }
+
+            # ==========================================
+            # INFORMAÇÕES PARA O HTML
+            # ==========================================
+
+            op['nome_produto'] = produtos_cache[
+                cod_produto
+            ]['descricao']
+
+            op['caracteristica'] = produtos_cache[
+                cod_produto
+            ]['caracteristica']
+
+            op['peso_liq'] = produtos_cache[
+                cod_produto
+            ]['peso_liq']
+
+            op['peso_bruto'] = produtos_cache[
+                cod_produto
+            ]['peso_bruto']
 
         # aplica o filtro se selecionado
         if etapa_filtro:
