@@ -1131,6 +1131,253 @@
 
         <div class="andar-2">
 
+        <table class="table table-bordered table-sm mb-3">
+
+            <tr>
+                <th>OP</th>
+                <th>Produto</th>
+                <th>Qtde</th>
+                <th>Previsão</th>
+            </tr>
+
+            <tr>
+                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+                    {{ op.identificacao.cNumOP }}
+                </td>
+
+                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+                    {{ nome_produto }}
+                </td>
+
+                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+                    {{ op.identificacao.nQtde }}
+                </td>
+
+                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+                    {{ op.identificacao.dDtPrevisao }}
+                </td>
+            </tr>
+
+        </table>
+
+        <!-- RESUMO DA FORMULAÇÃO -->
+
+<div class="mb-3">
+
+    {% if quantidade_capsulas > 0 %}
+
+        <strong>Resumo da Formulação:</strong>
+        Batida teórica de
+        <strong>{{ peso_batida_kg|floatformat:5 }} kg</strong>,
+        para produção de
+        <strong>{{ quantidade_capsulas|floatformat:0 }} cápsulas</strong>,
+        com aproximadamente
+        <strong>{{ peso_por_capsula_mg|floatformat:2 }} mg de conteúdo por cápsula</strong>.
+
+    {% else %}
+
+        <strong>Resumo da Formulação:</strong>
+        Batida teórica total de
+        <strong>{{ peso_batida_kg|floatformat:5 }} kg</strong>.
+
+    {% endif %}
+
+</div>
+
+
+<h5>Matérias-Primas</h5>
+
+<table class="table table-bordered table-sm">
+
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th width="50">Qtde</th>
+            <th width="90">Local</th>
+            <th>Lote</th>
+            <th>Validade</th>
+            <th width="80">Conferência</th>
+            <th width="350">Observações</th>
+            <th>Responsavel</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for item in materias_primas %}
+
+        <tr>
+
+            <td>{{ forloop.counter }}</td>
+
+            <td>{{ item.codigo_produto }}</td>
+
+            <td>{{ item.descricao_produto }}</td>
+
+            <td>{{ item.nQtde }}</td>
+
+            <td>{{ item.descricao_local }}</td>
+
+            <td>{{ item.lote }}</td>
+
+            <td>{{ item.validade }}</td>
+
+            <td class="text-center">
+
+                <input
+                    type="checkbox"
+                    class="conferencia"
+                    data-op="{{ op.identificacao.cNumOP }}"
+                    data-produto="{{ item.codigo_produto }}"
+                    data-descricao="{{ item.descricao_produto }}"
+                    data-lote="{{ item.lote }}"
+                    data-validade="{{ item.validade }}"
+                    data-lote-pa="{{ lote_pa }}"
+                    data-validade-pa="{{ validade_pa }}"
+                    data-tipo="MP"
+                >
+
+            </td>
+
+            <td>
+
+                <input
+                    type="text"
+                    class="form-control observacao"
+                >
+
+            </td>
+
+            <td>
+
+                <input
+                    type="text"
+                    class="form-control"
+                >
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="10" class="text-center">
+                Nenhuma matéria-prima encontrada
+            </td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+<h5 class="mt-4">Embalagens</h5>
+
+<table class="table table-bordered table-sm">
+
+    <thead class="table-light">
+
+        <tr>
+            <th>#</th>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Qtdd</th>
+            <th>Local Estoque</th>
+            <th>Lote</th>
+            <th>Validade</th>
+            <th width="80">Conferência</th>
+            <th width="350">Observações</th>
+            <th>Responsavel</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for item in embalagens %}
+
+        <tr>
+
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.codigo_produto }}</td>
+            <td>{{ item.descricao_produto }}</td>
+            <td>{{ item.nQtde }}</td>
+            <td>{{ item.descricao_local }}</td>
+            <td>{{ item.lote }}</td>
+            <td>{{ item.validade }}</td>
+
+            <td class="text-center">
+
+                <input
+                    type="checkbox"
+                    class="conferencia"
+                    data-op="{{ op.identificacao.cNumOP }}"
+                    data-produto="{{ item.codigo_produto }}"
+                    data-descricao="{{ item.descricao_produto }}"
+                    data-lote="{{ item.lote }}"
+                    data-validade="{{ item.validade }}"
+                    data-lote-pa="{{ lote_pa }}"
+                    data-validade-pa="{{ validade_pa }}"
+                    data-tipo="EMBALAGEM"
+                >
+
+            </td>
+
+            <td>
+
+                <input
+                    type="text"
+                    class="form-control observacao"
+                >
+
+            </td>
+
+            <td>
+
+                <input
+                    type="text"
+                    class="form-control"
+                >
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="10" class="text-center">
+                Nenhuma embalagem encontrada
+            </td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+<h5 class="mt-4">Observações Gerais</h5>
+
+<div
+    style="
+        height:60px;
+        border:1px solid #000;
+        margin-bottom:20px;
+    "
+></div>
+
+<br>
+
+
+<h4>Setup da Linha</h4>  
+
         <h4>Setup da Linha</h4>
 
 <table class="table table-bordered">
