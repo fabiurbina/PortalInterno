@@ -25,10 +25,6 @@
        IMPRESSÃO POR ANDAR
        ========================================== */
 
-    body.imprimir-andar-1 .andar-1 {
-        display: block !important;
-    }
-
     body.imprimir-andar-1 .andar-2 {
         display: none !important;
     }
@@ -37,11 +33,10 @@
         display: none !important;
     }
 
-    body.imprimir-andar-2 .andar-2 {
-        display: block !important;
+    body.imprimir-andar-1 .ficha-completa {
+        display: none !important;
     }
 
-    body.imprimir-andar-1 .ficha-completa,
     body.imprimir-andar-2 .ficha-completa {
         display: none !important;
     }
@@ -298,8 +293,6 @@
         </table>
 
 
-        <div class="andar-1">
-
         <!-- RESUMO DA FORMULAÇÃO -->
         <div class="mb-3">
 
@@ -509,9 +502,7 @@
     "
 ></div>
 
-        </div>
-
-        {% if observacao_estrutura %}
+{% if observacao_estrutura %}
     <div class="card shadow-sm mt-4">
         <div class="card-header bg-info text-white">
             <i class="fas fa-clipboard-list"></i>
@@ -1117,9 +1108,7 @@
 
 <div style="height: 20px;"></div>
 
- </div>
-
-        <table class="table table-bordered table-sm mb-3">
+ <table class="table table-bordered table-sm mb-3">
 
             <tr>
                 <th>OP</th>
@@ -1361,9 +1350,7 @@
 <br>
 
 
-<div class="andar-2">
-
-        <h4>Setup da Linha</h4>
+<h4>Setup da Linha</h4>
 
 <table class="table table-bordered">
 
@@ -1762,23 +1749,9 @@
 
     <button
         type="button"
-        onclick="imprimirAndar(1)"
+        onclick="window.print()"
         class="btn btn-primary">
-        🖨 Imprimir 1º Andar
-    </button>
-
-    <button
-        type="button"
-        onclick="imprimirAndar(2)"
-        class="btn btn-success">
-        🖨 Imprimir 2º Andar
-    </button>
-
-    <button
-        type="button"
-        onclick="imprimirCompleta()"
-        class="btn btn-dark">
-        🖨 Ficha Completa
+        Imprimir Ficha
     </button>
 
     <a href="/" class="btn btn-secondary">
@@ -1883,41 +1856,6 @@ form.addEventListener("submit", function(e) {
     });
 
 });
-
-
-function imprimirAndar(andar) {
-
-    document.body.classList.remove(
-        "imprimir-andar-1",
-        "imprimir-andar-2",
-        "imprimir-completa"
-    );
-
-    document.body.classList.add("imprimir-andar-" + andar);
-
-    window.print();
-
-    setTimeout(function () {
-        document.body.classList.remove("imprimir-andar-" + andar);
-    }, 1000);
-}
-
-
-function imprimirCompleta() {
-
-    document.body.classList.remove(
-        "imprimir-andar-1",
-        "imprimir-andar-2"
-    );
-
-    document.body.classList.add("imprimir-completa");
-
-    window.print();
-
-    setTimeout(function () {
-        document.body.classList.remove("imprimir-completa");
-    }, 1000);
-}
 
 </script>
 

@@ -524,6 +524,10 @@ def ficha_op(request, codigo_op):
         "EXPEDICAO"
     ]
     
+    MISTURADORES = [
+            "Misturador de Pós 01",
+            "Misturador de Cápsulas 01",]
+    
     MAQUINAS = [
         "Linha de Pós 01",
         "Linha de Cápsulas 01",]
@@ -545,6 +549,7 @@ def ficha_op(request, codigo_op):
             'etapas_producao': ETAPAS_PRODUCAO,
             'apontamentos': mapa_apontamentos,
             'maquinas': MAQUINAS,
+            'misturadores': MISTURADORES,
              # Observações da estrutura
             'observacao_estrutura': observacao_estrutura,
         
