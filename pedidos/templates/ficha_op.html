@@ -19,6 +19,10 @@
     display: none;
     }
 
+    .quebra-impressao {
+        display: none;
+    }
+
 @media print {
 
         /* ==========================================
@@ -53,6 +57,12 @@
 
     .cabecalho-impressao {
         display: block !important;
+    }
+
+    .quebra-impressao {
+        display: block !important;
+        break-before: page;
+        page-break-before: always;
     }
 
     @page {
@@ -119,68 +129,6 @@
     }
 
     /* ===== TABELAS ===== */
-
-    /* MP e Embalagens: caber integralmente no A4 landscape */
-    table.tabela-insumos {
-        width: 100% !important;
-        table-layout: fixed !important;
-        font-size: 8px !important;
-    }
-
-    table.tabela-insumos th,
-    table.tabela-insumos td {
-        font-size: 8px !important;
-        padding: 2px 3px !important;
-        white-space: normal !important;
-        overflow-wrap: anywhere !important;
-        word-break: break-word !important;
-    }
-
-    table.tabela-insumos th:nth-child(1),
-    table.tabela-insumos td:nth-child(1) { width: 4%; }
-
-    table.tabela-insumos th:nth-child(2),
-    table.tabela-insumos td:nth-child(2) { width: 9%; }
-
-    table.tabela-insumos th:nth-child(3),
-    table.tabela-insumos td:nth-child(3) { width: 19%; }
-
-    table.tabela-insumos th:nth-child(4),
-    table.tabela-insumos td:nth-child(4) { width: 6%; }
-
-    table.tabela-insumos th:nth-child(5),
-    table.tabela-insumos td:nth-child(5) { width: 11%; }
-
-    table.tabela-insumos th:nth-child(6),
-    table.tabela-insumos td:nth-child(6) { width: 10%; }
-
-    table.tabela-insumos th:nth-child(7),
-    table.tabela-insumos td:nth-child(7) { width: 10%; }
-
-    table.tabela-insumos th:nth-child(8),
-    table.tabela-insumos td:nth-child(8) { width: 7%; }
-
-    table.tabela-insumos th:nth-child(9),
-    table.tabela-insumos td:nth-child(9) { width: 14%; }
-
-    table.tabela-insumos th:nth-child(10),
-    table.tabela-insumos td:nth-child(10) { width: 10%; }
-
-    table.tabela-insumos input.form-control {
-        width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-        font-size: 8px !important;
-        padding: 2px !important;
-    }
-
-    table.tabela-insumos tr {
-        page-break-inside: avoid !important;
-    }
-
-    table.tabela-insumos thead {
-        display: table-header-group !important;
-    }
 
     table{
         width:100% !important;
@@ -362,7 +310,7 @@
 
         <div class="andar-1">
 
-        <div class="cabecalho-impressao cabecalho-andar-1" style="text-align:center; margin-bottom:12px;">
+        <div class="cabecalho-impressao" style="text-align:center; margin-bottom:12px;">
             <h2 style="margin:0;">VIESANO SUPLEMENTOS</h2>
             <h3 style="margin:4px 0 8px;">FICHA DE PRODUÇÃO — 1º ANDAR</h3>
             <div>
@@ -375,6 +323,8 @@
                 &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
             </div>
         </div>
+
+        
 
         <!-- RESUMO DA FORMULAÇÃO -->
         <div class="mb-3">
@@ -404,7 +354,7 @@
 
 
 
-            <table class="table table-bordered table-sm tabela-insumos">
+            <table class="table table-bordered table-sm">
 
                 <thead class="table-light">
                     <tr>
@@ -495,7 +445,7 @@
 
             <h5 class="mt-4">Embalagens</h5>
 
-            <table class="table table-bordered table-sm tabela-insumos">
+            <table class="table table-bordered table-sm">
 
                 <thead class="table-light">
                     <tr>
@@ -585,8 +535,6 @@
     "
 ></div>
 
-        
-
         {% if observacao_estrutura %}
     <div class="card shadow-sm mt-4">
         <div class="card-header bg-info text-white">
@@ -602,7 +550,7 @@
     </div>
     {% endif %}
 
-<div style="page-break-before: always;"></div>
+<div class="quebra-impressao"></div>
 
 <h2 style="text-align:center;">
     Controle de Etiquetas
@@ -1192,263 +1140,13 @@
 </div>
 
 
-Até a qui é primeiro andar
-------------------------------------------------------------------------------------------------------------------------------------------------
-A partir da qui é segundo andar
-
-<div style="height: 20px;"></div>
-
- </div>
-
-        <table class="table table-bordered table-sm mb-3">
-
-            <tr>
-                <th>OP</th>
-                <th>Produto</th>
-                <th>Qtde</th>
-                <th>Previsão</th>
-            </tr>
-
-            <tr>
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ op.identificacao.cNumOP }}
-                </td>
-
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ nome_produto }}
-                </td>
-
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ op.identificacao.nQtde }}
-                </td>
-
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ op.identificacao.dDtPrevisao }}
-                </td>
-            </tr>
-
-        </table>
-
-
-        <!-- RESUMO DA FORMULAÇÃO -->
-        <div class="mb-3">
-
-            {% if quantidade_capsulas > 0 %}
-
-                <strong>Resumo da Formulação:</strong>
-                Batida teórica de
-                <strong>{{ peso_batida_kg|floatformat:5 }} kg</strong>,
-                para produção de
-                <strong>{{ quantidade_capsulas|floatformat:0 }} cápsulas</strong>,
-                com aproximadamente
-                <strong>{{ peso_por_capsula_mg|floatformat:2 }} mg de conteúdo por cápsula</strong>.
-
-            {% else %}
-
-                <strong>Resumo da Formulação:</strong>
-                Batida teórica total de
-                <strong>{{ peso_batida_kg|floatformat:5 }} kg</strong>.
-
-            {% endif %}
-
         </div>
 
+        <div class="quebra-impressao"></div>
 
-        <h5>Matérias-Primas</h5>
+        <div class="andar-2">
 
-
-
-            <table class="table table-bordered table-sm">
-
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Código</th>
-                        <th>Descrição</th>
-                        <th width="50">Qtde</th>
-                        <th width="90">Local</th>
-                        <th>Lote</th>
-                        <th>Validade</th>
-                        <th width="80">Conferência</th>
-                        <th width="350">Observações</th>
-                        <th>Responsavel</th>
-
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {% for item in materias_primas %}
-
-                    <tr>
-
-                <td>{{ forloop.counter }}</td>
-
-                <td>{{ item.codigo_produto }}</td>
-
-                <td>{{ item.descricao_produto }}</td>
-
-                <td>{{ item.nQtde }}</td>
-
-                <td>{{ item.descricao_local }}</td>
-
-                <td>{{ item.lote }}</td>
-
-                <td>{{ item.validade }}</td>
-
-                <td class="text-center">
-
-                    <input
-                        type="checkbox"
-                        class="conferencia"
-                        data-op="{{ op.identificacao.cNumOP }}"
-                        data-produto="{{ item.codigo_produto }}"
-                        data-descricao="{{ item.descricao_produto }}"
-                        data-lote="{{ item.lote }}"
-                        data-validade="{{ item.validade }}"
-                        data-lote-pa="{{ lote_pa }}"
-                        data-validade-pa="{{ validade_pa }}"
-                        data-tipo="MP"
-                    >
-
-                </td>
-
-                <td>
-
-                    <input
-                        type="text"
-                        class="form-control observacao"
-                    >
-
-                </td>
-
-                <td>
-
-                    <input
-                        type="text"
-                        class="form-control"
-                    >
-
-                </td>
-
-            </tr>
-
-                {% empty %}
-
-                    <tr>
-                        <td colspan="7" class="text-center">
-                            Nenhuma matéria-prima encontrada
-                        </td>
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-            <h5 class="mt-4">Embalagens</h5>
-
-            <table class="table table-bordered table-sm">
-
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Código</th>
-                        <th>Descrição</th>
-                        <th>Qtdd</th>
-                        <th>Local Estoque</th>
-                        <th>Lote</th>
-                        <th>Validade</th>
-                        <th width="80">Conferência</th>
-                        <th width="350">Observações</th>
-                        <th>Responsavel</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {% for item in embalagens %}
-
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ item.codigo_produto }}</td>
-                <td>{{ item.descricao_produto }}</td>
-                <td>{{ item.nQtde }}</td>
-                <td>{{ item.descricao_local }}</td>
-                <td>{{ item.lote }}</td>
-                <td>{{ item.validade }}</td>
-                <td class="text-center">
-
-                <input
-                    type="checkbox"
-                    class="conferencia"
-                    data-op="{{ op.identificacao.cNumOP }}"
-                    data-produto="{{ item.codigo_produto }}"
-                    data-descricao="{{ item.descricao_produto }}"
-                    data-lote="{{ item.lote }}"
-                    data-validade="{{ item.validade }}"
-                    data-lote-pa="{{ lote_pa }}"
-                    data-validade-pa="{{ validade_pa }}"
-                    data-tipo="EMBALAGEM"
-                >
-
-            </td>
-
-            <td>
-
-                <input
-                    type="text"
-                    class="form-control observacao"
-                >
-
-            </td>
-
-            <td>
-
-                <input
-                    type="text"
-                    class="form-control"
-                >
-
-            </td>
-
-            </tr>
-
-        {% empty %}
-
-            <tr>
-                <td colspan="7" class="text-center">
-                    Nenhuma embalagem encontrada
-                </td>
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
-
-        </table>
-
-        <h5 class="mt-4">Observações Gerais</h5>
-
-<div
-    style="
-        height:60px;
-        border:1px solid #000;
-        margin-bottom:20px;
-    "
-></div>
-
-<br>
-
-
-        </div>
-
-<div style="page-break-before: always;"></div>
-
-<div class="andar-2">
-
-        <div class="cabecalho-impressao cabecalho-andar-2" style="text-align:center; margin-bottom:12px;">
+        <div class="cabecalho-impressao" style="text-align:center; margin-bottom:12px;">
             <h2 style="margin:0;">VIESANO SUPLEMENTOS</h2>
             <h3 style="margin:4px 0 8px;">FICHA DE PRODUÇÃO — 2º ANDAR</h3>
             <div>
@@ -1461,6 +1159,9 @@ A partir da qui é segundo andar
                 &nbsp; | &nbsp; <strong>Previsão:</strong> {{ op.identificacao.dDtPrevisao }}
             </div>
         </div>
+
+        
+
 
         <h4>Setup da Linha</h4>
 
@@ -1849,7 +1550,7 @@ A partir da qui é segundo andar
 
 </table>
 
-<div style="page-break-before: always;"></div>
+
 
 <div class="mt-4">
 
