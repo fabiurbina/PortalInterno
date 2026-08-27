@@ -34,7 +34,9 @@ from .views import (
     chao_fabrica,
     atualizar_ordem_chao_fabrica,
     relatorio_lote_validade,
-    exportar_lote_validade_excel
+    exportar_lote_validade_excel,
+    relatorio_classificacao_cliente,
+    exportar_classificacao_cliente_excel
 )
 
 urlpatterns = [
@@ -238,6 +240,19 @@ urlpatterns = [
     "relatorio/lote-validade/exportar/",
         exportar_lote_validade_excel,
     name="exportar_lote_validade_excel"
+    
+),
+     
+     path(
+    "relatorios/classificacao-cliente/",
+        relatorio_classificacao_cliente,
+    name="relatorio_classificacao_cliente"
+),
+     
+     path(
+    "relatorios/classificacao-cliente/exportar/",
+    exportar_classificacao_cliente_excel,
+    name="exportar_classificacao_cliente_excel"
 ),
 
 

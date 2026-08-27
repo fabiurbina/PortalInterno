@@ -1152,3 +1152,24 @@ def buscar_lote_validade():
     finally:
 
         conexao.close()
+
+
+def BuscarclassificacaoCliente():
+
+    sql = """
+        SELECT * FROM ViesanoDW.vw_classificacaoCliente;
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()

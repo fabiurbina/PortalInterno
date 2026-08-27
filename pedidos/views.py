@@ -33,7 +33,8 @@ from .mysql_service import (
     consulta_chao_fabrica,
     salvar_ordem_chao_fabrica,
     consulta_inspecoes,
-    buscar_lote_validade
+    buscar_lote_validade,
+    BuscarclassificacaoCliente
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -2587,3 +2588,61 @@ def exportar_lote_validade_excel(request):
     wb.save(response)
 
     return response
+
+
+def relatorio_classificacao_cliente(request):
+
+    dados = BuscarclassificacaoCliente()
+
+    return render(
+
+        request,
+
+        "relatorios/relatorio_classificacao_cliente.html",
+
+        {
+
+            "dados": dados
+
+        }
+    )
+    
+def exportar_classificacao_cliente_excel(request):
+
+    dados = BuscarclassificacaoCliente()
+
+    df = pd.DataFrame(dados)
+
+    nome_colunas = {
+        "identificacao_nCod": "Código Conta",
+        "DataRegistro": "Data Registro",
+        "CNPJ": "CNPJ",
+        "Nome": "Nome",
+        "qtd_oportunidades": "Qtd. Oportunidades",
+        "UltimaAtividadeCRM": "Última Atividade CRM",
+        "qtd_pedidos": "Qtd. Pedidos",
+        "UltimaAtividadePedidos": "Última Atividade Pedidos",
+        "status_crm": "Status CRM",
+        "status_pedido": "Status Pedido",
+        "classificacao": "Classificação",
+    }
+
+    df = df.rename(columns=nome_colunas)
+
+    resposta = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    resposta["Content-Disposition"] = (
+        'attachment; filename="classificacao_clientes.xlsx"'
+    )
+
+    with pd.ExcelWriter(resposta, engine="openpyxl") as writer:
+
+        df.to_excel(
+            writer,
+            index=False,
+            sheet_name="Classificação"
+        )
+
+    return resposta
