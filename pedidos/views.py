@@ -2651,12 +2651,6 @@ def exportar_classificacao_cliente_excel(request):
 
 
 
-```python
-from django.shortcuts import render
-
-from .services.hostinger_calendar import buscar_reunioes
-
-
 def agenda_reunioes(request):
 
     reunioes = []
@@ -2705,7 +2699,7 @@ def agenda_reunioes(request):
         "agenda/reunioes.html",
         contexto
     )
-```
+
 
 
 
