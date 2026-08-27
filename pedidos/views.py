@@ -53,6 +53,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 from datetime import datetime
+from .services.hostinger_calendar import buscar_reunioes
 
 
 
@@ -2646,3 +2647,66 @@ def exportar_classificacao_cliente_excel(request):
         )
 
     return resposta
+
+
+
+
+```python
+from django.shortcuts import render
+
+from .services.hostinger_calendar import buscar_reunioes
+
+
+def agenda_reunioes(request):
+
+    reunioes = []
+    erro = ""
+    email_usuario = ""
+
+    if request.method == "POST":
+
+        email_usuario = request.POST.get(
+            "email",
+            ""
+        ).strip()
+
+        senha = request.POST.get(
+            "senha",
+            ""
+        )
+
+        if not email_usuario or not senha:
+
+            erro = "Informe o e-mail e a senha."
+
+        else:
+
+            resultado = buscar_reunioes(
+                email_usuario,
+                senha
+            )
+
+            if resultado["sucesso"]:
+
+                reunioes = resultado["reunioes"]
+
+            else:
+
+                erro = resultado["erro"]
+
+    contexto = {
+        "reunioes": reunioes,
+        "erro": erro,
+        "email_usuario": email_usuario,
+    }
+
+    return render(
+        request,
+        "agenda/reunioes.html",
+        contexto
+    )
+```
+
+
+
+

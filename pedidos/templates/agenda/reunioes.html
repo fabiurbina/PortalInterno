@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Agenda de Reuniões</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #f5f7fa;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* =====================================================
+           CABEÇALHO
+        ===================================================== */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .titulo {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .subtitulo {
+            margin-top: 6px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* =====================================================
+           CARD DE CONEXÃO
+        ===================================================== */
+
+        .card-conexao {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-titulo {
+            margin: 0 0 6px 0;
+            font-size: 19px;
+        }
+
+        .card-subtitulo {
+            margin: 0 0 20px 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .campo {
+            margin-bottom: 16px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .campo input:focus {
+            border-color: #6b7280;
+        }
+
+        .botao-conectar {
+            width: 100%;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .botao-conectar:hover {
+            opacity: 0.9;
+        }
+
+        /* =====================================================
+           BOTÃO ATUALIZAR
+        ===================================================== */
+
+        .botao-atualizar {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .botao-atualizar:hover {
+            opacity: 0.9;
+        }
+
+        /* =====================================================
+           MENSAGEM DE ERRO
+        ===================================================== */
+
+        .erro {
+            padding: 15px;
+            border-radius: 8px;
+            background: #fee2e2;
+            color: #991b1b;
+            margin-bottom: 20px;
+        }
+
+        /* =====================================================
+           LISTA DE REUNIÕES
+        ===================================================== */
+
+        .lista {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .reuniao {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .data {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 7px;
+        }
+
+        .nome {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .horario {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .organizador {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .acoes {
+            margin-top: 18px;
+        }
+
+        .meet {
+            display: inline-block;
+            padding: 9px 14px;
+            border-radius: 7px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .meet:hover {
+            opacity: 0.9;
+        }
+
+        /* =====================================================
+           SEM REUNIÕES
+        ===================================================== */
+
+        .sem-reunioes {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 12px;
+            color: #6b7280;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
+    <div class="cabecalho">
+
+        <div>
+
+            <h1 class="titulo">
+                📅 Agenda de Reuniões
+            </h1>
+
+            <div class="subtitulo">
+                Reuniões encontradas na sua caixa de e-mail
+            </div>
+
+        </div>
+
+
+        {% if reunioes %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="email"
+                    value="{{ email_usuario }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="senha"
+                    value="{{ request.POST.senha }}"
+                >
+
+                <button
+                    type="submit"
+                    class="botao-atualizar"
+                >
+                    🔄 Atualizar agenda
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =====================================================
+         ERRO
+    ====================================================== -->
+
+    {% if erro %}
+
+        <div class="erro">
+
+            ❌ {{ erro }}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         FORMULÁRIO DE CONEXÃO
+    ====================================================== -->
+
+    {% if not reunioes and not email_usuario %}
+
+        <div class="card-conexao">
+
+            <h2 class="card-titulo">
+                Conectar meu e-mail
+            </h2>
+
+            <p class="card-subtitulo">
+                Informe os dados da sua conta Hostinger
+                para carregar suas reuniões.
+            </p>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <div class="campo">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="seu@email.com"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="senha">
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="botao-conectar"
+                >
+                    🔐 Conectar e carregar agenda
+                </button>
+
+            </form>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         LISTA DE REUNIÕES
+    ====================================================== -->
+
+    {% if reunioes %}
+
+        <div class="lista">
+
+            {% for reuniao in reunioes %}
+
+                <div class="reuniao">
+
+
+                    <div class="data">
+
+                        📅 {{ reuniao.inicio_formatado }}
+
+                        →
+
+                        {{ reuniao.fim_formatado }}
+
+                    </div>
+
+
+                    <div class="nome">
+
+                        {{ reuniao.titulo }}
+
+                    </div>
+
+
+                    <div class="horario">
+
+                        👤 Organizador:
+
+                        {{ reuniao.organizador_nome }}
+
+
+                        {% if reuniao.organizador_email %}
+
+                            ({{ reuniao.organizador_email }})
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if reuniao.participantes %}
+
+                        <div class="organizador">
+
+                            👥 Participantes:
+
+                            {% for participante in reuniao.participantes %}
+
+                                {{ participante }}{% if not forloop.last %}, {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if reuniao.local %}
+
+                        <div class="organizador">
+
+                            📍 {{ reuniao.local }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if reuniao.link_reuniao %}
+
+                        <div class="acoes">
+
+                            <a
+                                href="{{ reuniao.link_reuniao }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="meet"
+                            >
+                                🔗 Entrar na reunião
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% elif email_usuario and not erro %}
+
+        <div class="sem-reunioes">
+
+            📭 Nenhuma reunião encontrada.
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+</body>
+
+</html>
+
