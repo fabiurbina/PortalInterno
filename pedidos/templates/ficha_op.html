@@ -1376,9 +1376,7 @@
 <br>
 
 
-<h4>Setup da Linha</h4>  
-
-        <h4>Setup da Linha</h4>
+<h4>Setup da Linha</h4>
 
 <table class="table table-bordered">
 
@@ -1465,145 +1463,158 @@
 
 </div>
 
-<h4>Encapsulamento</h4>
+{% if produto.caracteristicas %}
 
-<table class="table table-bordered">
+    {% for caracteristica in produto.caracteristicas %}
 
-    <tr>
-        <th>Verificação Pré-Operacional</th>
-        <th width="100">Sim</th>
-        <th width="100">Não</th>
-    </tr>
+        {% if caracteristica.cNomeCaract == "Tipo de Produto" and caracteristica.cConteudo == "Capsula" %}
 
-    <tr>
-        <td>Equipamento limpo e liberado para uso</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-    </tr>
+        <h4>Encapsulamento</h4>
 
-    <tr>
-        <td>Área limpa e organizada</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-    </tr>
+        <table class="table table-bordered">
 
-    <tr>
-        <td>Matérias-primas conferidas</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-    </tr>
+            <tr>
+                <th>Verificação Pré-Operacional</th>
+                <th width="100">Sim</th>
+                <th width="100">Não</th>
+            </tr>
+
+            <tr>
+                <td>Equipamento limpo e liberado para uso</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+            </tr>
+
+            <tr>
+                <td>Área limpa e organizada</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+            </tr>
+
+            <tr>
+                <td>Matérias-primas conferidas</td>
+                <td><input type="checkbox"></td>
+                <td><input type="checkbox"></td>
+            </tr>
 
 
-    <tr>
+            <tr>
 
-    <td width="35%">
-        <strong>Hora Início</strong>
-        </td>
+            <td width="35%">
+                <strong>Hora Início</strong>
+                </td>
 
-        <td colspan="2">
+                <td colspan="2">
 
-            <input
-                type="time"
+                    <input
+                        type="time"
+                        class="form-control"
+                        name="hora_inicio_encapsulamento">
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+            <td width="35%">
+                <strong>Hora Fim</strong>
+                </td>
+
+                <td colspan="2">
+
+                    <input
+                        type="time"
+                        class="form-control"
+                        name="hora_fim_encapsulamento">
+
+                </td>
+
+            </tr>
+
+                <td>
+                    <strong>Quantidade Produzida (Un)</strong>
+                </td>
+
+                <td colspan="2">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="quantidade_produzida_encapsulamento">
+
+                </td>
+
+
+            </tr>
+
+                <td>
+                    <strong>Quantidade Produzida Expedida (Un)</strong>
+                </td>
+
+                <td colspan="2">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="quantidade_expedida_encapsulamento">
+
+                </td>
+
+            </tr>
+
+        </table>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+
+                <label><strong>Responsável</strong></label>
+
+                <select class="form-control" name="responsavel_encapsulamento">
+
+                    <option value="">Selecione...</option>
+
+                    <option>Fabio</option>
+                    <option>João</option>
+                    <option>Maria</option>
+                    <option>Carlos</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label><strong>Data / Hora</strong></label>
+
+                <input
+                    type="datetime-local"
+                    class="form-control"
+                    name="data_hora_encapsulamento">
+
+            </div>
+
+        </div>
+
+        <div class="mt-3">
+
+            <label><strong>Observações</strong></label>
+
+            <textarea
                 class="form-control"
-                name="hora_inicio_encapsulamento">
+                rows="3"
+                name="observacao_Encapsulamento"
+                placeholder="Digite as observações da etapa..."></textarea>
 
-        </td>
-
-    </tr>
-
-    <tr>
-
-    <td width="35%">
-        <strong>Hora Fim</strong>
-        </td>
-
-        <td colspan="2">
-
-            <input
-                type="time"
-                class="form-control"
-                name="hora_fim_encapsulamento">
-
-        </td>
-
-    </tr>
-
-        <td>
-            <strong>Quantidade Produzida (Un)</strong>
-        </td>
-
-        <td colspan="2">
-
-            <input
-                type="number"
-                class="form-control"
-                name="quantidade_produzida_encapsulamento">
-
-        </td>
+        </div>
 
 
-    </tr>
+        {% endif %}
 
-        <td>
-            <strong>Quantidade Produzida Expedida (Un)</strong>
-        </td>
+    {% endfor %}
 
-        <td colspan="2">
-
-            <input
-                type="number"
-                class="form-control"
-                name="quantidade_expedida_encapsulamento">
-
-        </td>
-
-    </tr>
-
-</table>
-
-<div class="row mt-3">
-
-    <div class="col-md-6">
-
-        <label><strong>Responsável</strong></label>
-
-        <select class="form-control" name="responsavel_encapsulamento">
-
-            <option value="">Selecione...</option>
-
-            <option>Fabio</option>
-            <option>João</option>
-            <option>Maria</option>
-            <option>Carlos</option>
-
-        </select>
-
-    </div>
-
-    <div class="col-md-6">
-
-        <label><strong>Data / Hora</strong></label>
-
-        <input
-            type="datetime-local"
-            class="form-control"
-            name="data_hora_encapsulamento">
-
-    </div>
-
-</div>
-
-<div class="mt-3">
-
-    <label><strong>Observações</strong></label>
-
-    <textarea
-        class="form-control"
-        rows="3"
-        name="observacao_Encapsulamento"
-        placeholder="Digite as observações da etapa..."></textarea>
-
-</div>
+{% endif %}
 
 <br>
 
@@ -1759,6 +1770,29 @@
     </div>
     {% endif %}
 
+
+</div>
+
+<div class="mt-4">
+
+    <h4>Rótulo Utilizado</h4>
+
+    <div
+        style="
+            border: 2px dashed #999;
+            min-height: 180px;
+            padding: 15px;
+            text-align: center;
+        "
+    >
+        <strong>COLAR RÓTULO UTILIZADO AQUI</strong>
+
+        <br><br>
+
+        <span class="text-muted">
+            Espaço destinado à identificação do rótulo utilizado no envase.
+        </span>
+    </div>
 
 </div>
 
