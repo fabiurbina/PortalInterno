@@ -2656,8 +2656,11 @@ def exportar_classificacao_cliente_excel(request):
 def agenda_reunioes(request):
 
     reunioes = []
+
     erro = ""
+
     email_usuario = ""
+
 
     if request.method == "POST":
 
@@ -2671,9 +2674,14 @@ def agenda_reunioes(request):
             ""
         )
 
-        if not email_usuario or not senha:
 
-            erro = "Informe o e-mail e a senha."
+        if not email_usuario:
+
+            erro = "Informe o e-mail."
+
+        elif not senha:
+
+            erro = "Informe a senha."
 
         else:
 
@@ -2681,6 +2689,7 @@ def agenda_reunioes(request):
                 email_usuario,
                 senha
             )
+
 
             if resultado["sucesso"]:
 
@@ -2690,11 +2699,17 @@ def agenda_reunioes(request):
 
                 erro = resultado["erro"]
 
+
     contexto = {
+
         "reunioes": reunioes,
+
         "erro": erro,
+
         "email_usuario": email_usuario,
+
     }
+
 
     return render(
         request,

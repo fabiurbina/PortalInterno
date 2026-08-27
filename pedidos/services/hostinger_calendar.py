@@ -3,11 +3,20 @@ import imaplib
 import email
 from email.message import Message
 from datetime import datetime
+import re
 
+
+# ============================================================
+# CONFIGURAÇÃO IMAP
+# ============================================================
 
 IMAP_HOST = "imap.hostinger.com"
 IMAP_PORT = 993
 
+
+# ============================================================
+# EXTRAIR ICS
+# ============================================================
 
 def extrair_ics(mensagem: Message):
 
@@ -40,7 +49,30 @@ def extrair_ics(mensagem: Message):
     return None
 
 
+# ============================================================
+# NORMALIZAR ICS
+# ============================================================
+
+def normalizar_ics(ics):
+
+    # Remove quebra de linha usada para
+    # continuar uma propriedade do ICS.
+    ics = re.sub(
+        r"\r?\n[ \t]",
+        "",
+        ics
+    )
+
+    return ics
+
+
+# ============================================================
+# EXTRAIR CAMPO SIMPLES
+# ============================================================
+
 def extrair_campo(ics, campo):
+
+    ics = normalizar_ics(ics)
 
     for linha in ics.splitlines():
 
@@ -54,77 +86,172 @@ def extrair_campo(ics, campo):
     return ""
 
 
-def extrair_organizador(ics):
+# ============================================================
+# EXTRAIR CAMPO COM PARÂMETROS
+# ============================================================
+
+def extrair_campo_parametrizado(
+    ics,
+    campo
+):
+
+    ics = normalizar_ics(ics)
 
     for linha in ics.splitlines():
 
-        if not linha.startswith("ORGANIZER"):
+        if linha.startswith(campo + ";"):
+
+            partes = linha.split(
+                ":",
+                1
+            )
+
+            if len(partes) == 2:
+
+                return partes[1].strip()
+
+    return ""
+
+
+# ============================================================
+# EXTRAIR ORGANIZADOR
+# ============================================================
+
+def extrair_organizador(ics):
+
+    ics = normalizar_ics(ics)
+
+    for linha in ics.splitlines():
+
+        if not linha.startswith(
+            "ORGANIZER"
+        ):
             continue
 
         nome = ""
 
-        if "CN=" in linha:
+        match_nome = re.search(
+            r"CN=([^:;]+)",
+            linha
+        )
 
-            inicio = linha.find("CN=") + 3
-            fim = linha.find(":", inicio)
+        if match_nome:
 
-            if fim != -1:
-                nome = linha[inicio:fim]
-
-        email_organizador = ""
-
-        if "mailto:" in linha.lower():
-
-            email_organizador = (
-                linha.lower()
-                .split("mailto:", 1)[1]
+            nome = (
+                match_nome.group(1)
                 .strip()
             )
 
-        return nome, email_organizador
+        email_organizador = ""
+
+        match_email = re.search(
+            r"mailto:([^;\s]+)",
+            linha,
+            re.IGNORECASE
+        )
+
+        if match_email:
+
+            email_organizador = (
+                match_email.group(1)
+                .strip()
+                .lower()
+            )
+
+        return (
+            nome,
+            email_organizador
+        )
 
     return "", ""
 
+
+# ============================================================
+# EXTRAIR PARTICIPANTES
+# ============================================================
 
 def extrair_participantes(ics):
 
     participantes = []
 
+    ics = normalizar_ics(ics)
+
     for linha in ics.splitlines():
 
-        if not linha.startswith("ATTENDEE"):
+        if not linha.startswith(
+            "ATTENDEE"
+        ):
             continue
 
-        if "mailto:" not in linha.lower():
-            continue
-
-        email_participante = (
-            linha.lower()
-            .split("mailto:", 1)[1]
-            .strip()
+        match = re.search(
+            r"mailto:([^;\s]+)",
+            linha,
+            re.IGNORECASE
         )
 
-        if email_participante not in participantes:
+        if not match:
+            continue
+
+        participante = (
+            match.group(1)
+            .strip()
+            .lower()
+        )
+
+        if participante not in participantes:
 
             participantes.append(
-                email_participante
+                participante
             )
 
     return participantes
 
 
+# ============================================================
+# EXTRAIR LINK DA REUNIÃO
+# ============================================================
+
 def extrair_link_reuniao(ics):
 
-    # Google Meet
-    link = extrair_campo(
-        ics,
-        "X-GOOGLE-CONFERENCE"
-    )
+    ics = normalizar_ics(ics)
 
-    if link:
-        return link
+    # --------------------------------------------------------
+    # PROCURA DIRETAMENTE NO ICS
+    # --------------------------------------------------------
 
-    # Location
+    padroes = [
+        "https://meet.google.com/",
+        "https://teams.microsoft.com/",
+        "https://zoom.us/",
+        "https://webex.com/",
+        "https://www.webex.com/",
+    ]
+
+    for linha in ics.splitlines():
+
+        for padrao in padroes:
+
+            if padrao in linha:
+
+                inicio = linha.find(
+                    padrao
+                )
+
+                link = linha[inicio:]
+
+                link = re.split(
+                    r"[\\\s<>]",
+                    link
+                )[0]
+
+                return link.rstrip(
+                    ".,;)"
+                )
+
+    # --------------------------------------------------------
+    # LOCATION
+    # --------------------------------------------------------
+
     location = extrair_campo(
         ics,
         "LOCATION"
@@ -132,107 +259,217 @@ def extrair_link_reuniao(ics):
 
     if location:
 
-        if "http://" in location or "https://" in location:
-            return location
+        match = re.search(
+            r"https?://[^\s\\<>]+",
+            location,
+            re.IGNORECASE
+        )
 
+        if match:
+
+            return (
+                match.group(0)
+                .rstrip(".,;)")
+            )
+
+    # --------------------------------------------------------
     # DESCRIPTION
+    # --------------------------------------------------------
+
     descricao = extrair_campo(
         ics,
         "DESCRIPTION"
     )
 
-    for trecho in descricao.replace(
-        "\\n",
-        "\n"
-    ).split():
+    descricao = (
+        descricao
+        .replace("\\n", "\n")
+        .replace("\\,", ",")
+    )
 
-        if trecho.startswith("https://"):
+    match = re.search(
+        r"https?://[^\s\\<>]+",
+        descricao,
+        re.IGNORECASE
+    )
 
-            if any(
-                dominio in trecho.lower()
-                for dominio in [
-                    "meet.google.com",
-                    "teams.microsoft.com",
-                    "zoom.us",
-                    "webex.com"
-                ]
-            ):
-                return trecho
+    if match:
+
+        link = (
+            match.group(0)
+            .rstrip(".,;)")
+        )
+
+        if any(
+            dominio in link.lower()
+            for dominio in [
+                "meet.google.com",
+                "teams.microsoft.com",
+                "zoom.us",
+                "webex.com"
+            ]
+        ):
+
+            return link
 
     return ""
 
 
-def formatar_data(data):
+# ============================================================
+# CONVERTER DATA DO ICS
+# ============================================================
+
+def converter_data_ics(data):
 
     if not data:
-        return ""
+        return None
 
-    try:
+    data = data.strip()
 
-        data_limpa = data
+    formatos = [
+        "%Y%m%dT%H%M%S",
+        "%Y%m%dT%H%M%SZ",
+        "%Y%m%d",
+    ]
 
-        if data_limpa.endswith("Z"):
-            data_limpa = data_limpa[:-1]
+    for formato in formatos:
 
-        dt = datetime.strptime(
-            data_limpa,
-            "%Y%m%dT%H%M%S"
-        )
+        try:
 
-        return dt.strftime(
-            "%d/%m/%Y %H:%M"
-        )
+            return datetime.strptime(
+                data,
+                formato
+            )
 
-    except Exception:
+        except ValueError:
 
-        return data
+            continue
 
+    return None
+
+
+# ============================================================
+# FORMATAR DATA
+# ============================================================
+
+def formatar_data(data):
+
+    dt = converter_data_ics(
+        data
+    )
+
+    if not dt:
+        return data or ""
+
+    return dt.strftime(
+        "%d/%m/%Y %H:%M"
+    )
+
+
+# ============================================================
+# PROCESSAR CONVITE
+# ============================================================
 
 def processar_convite(mensagem):
 
-    ics = extrair_ics(mensagem)
+    ics = extrair_ics(
+        mensagem
+    )
 
     if not ics:
         return None
+
+    ics = normalizar_ics(
+        ics
+    )
 
     titulo = extrair_campo(
         ics,
         "SUMMARY"
     )
 
-    inicio = extrair_campo(
-        ics,
-        "DTSTART;TZID=America/Sao_Paulo"
-    )
+    # --------------------------------------------------------
+    # INÍCIO
+    # --------------------------------------------------------
 
-    fim = extrair_campo(
+    inicio = extrair_campo_parametrizado(
         ics,
-        "DTEND;TZID=America/Sao_Paulo"
+        "DTSTART"
     )
 
     if not inicio:
+
         inicio = extrair_campo(
             ics,
             "DTSTART"
         )
 
+    # --------------------------------------------------------
+    # FIM
+    # --------------------------------------------------------
+
+    fim = extrair_campo_parametrizado(
+        ics,
+        "DTEND"
+    )
+
     if not fim:
+
         fim = extrair_campo(
             ics,
             "DTEND"
         )
 
-    organizador_nome, organizador_email = (
-        extrair_organizador(ics)
+    # --------------------------------------------------------
+    # DATA
+    # --------------------------------------------------------
+
+    dt_inicio = converter_data_ics(
+        inicio
     )
 
-    participantes = extrair_participantes(
+    dt_fim = converter_data_ics(
+        fim
+    )
+
+    if not dt_inicio:
+
+        return None
+
+    # --------------------------------------------------------
+    # ORGANIZADOR
+    # --------------------------------------------------------
+
+    (
+        organizador_nome,
+        organizador_email
+    ) = extrair_organizador(
         ics
     )
 
-    link_reuniao = extrair_link_reuniao(
-        ics
+    # --------------------------------------------------------
+    # PARTICIPANTES
+    # --------------------------------------------------------
+
+    participantes = (
+        extrair_participantes(
+            ics
+        )
     )
+
+    # --------------------------------------------------------
+    # LINK
+    # --------------------------------------------------------
+
+    link_reuniao = (
+        extrair_link_reuniao(
+            ics
+        )
+    )
+
+    # --------------------------------------------------------
+    # OUTROS DADOS
+    # --------------------------------------------------------
 
     local = extrair_campo(
         ics,
@@ -254,28 +491,103 @@ def processar_convite(mensagem):
         "DESCRIPTION"
     )
 
+    descricao = (
+        descricao
+        .replace("\\n", "\n")
+        .replace("\\,", ",")
+    )
+
+    # --------------------------------------------------------
+    # EVENTO
+    # --------------------------------------------------------
+
     return {
+
         "uid": uid,
-        "titulo": titulo,
+
+        "titulo": (
+            titulo
+            or "Reunião"
+        ),
+
         "inicio": inicio,
-        "inicio_formatado": formatar_data(inicio),
+
         "fim": fim,
-        "fim_formatado": formatar_data(fim),
-        "organizador_nome": organizador_nome,
-        "organizador_email": organizador_email,
-        "participantes": participantes,
-        "link_reuniao": link_reuniao,
+
+        "inicio_formatado": (
+            formatar_data(
+                inicio
+            )
+        ),
+
+        "fim_formatado": (
+            formatar_data(
+                fim
+            )
+        ),
+
+        "data": dt_inicio.strftime(
+            "%Y-%m-%d"
+        ),
+
+        "hora_inicio": (
+            dt_inicio.strftime(
+                "%H:%M"
+            )
+            if "T" in inicio
+            else ""
+        ),
+
+        "hora_fim": (
+            dt_fim.strftime(
+                "%H:%M"
+            )
+            if dt_fim and "T" in fim
+            else ""
+        ),
+
+        "organizador_nome": (
+            organizador_nome
+        ),
+
+        "organizador_email": (
+            organizador_email
+        ),
+
+        "participantes": (
+            participantes
+        ),
+
+        "link_reuniao": (
+            link_reuniao
+        ),
+
         "local": local,
+
         "status": status,
+
         "descricao": descricao,
     }
 
 
-def buscar_reunioes(email_usuario, senha):
+# ============================================================
+# BUSCAR REUNIÕES
+# ============================================================
+
+def buscar_reunioes(
+    email_usuario,
+    senha
+):
 
     reunioes = []
 
+    mail = None
+
     try:
+
+        print(
+            "🔌 Conectando à Hostinger..."
+        )
 
         mail = imaplib.IMAP4_SSL(
             IMAP_HOST,
@@ -287,93 +599,240 @@ def buscar_reunioes(email_usuario, senha):
             senha
         )
 
+        print(
+            "✅ Conectado!"
+        )
+
+        # ----------------------------------------------------
+        # ABRIR INBOX
+        # ----------------------------------------------------
+
         status, _ = mail.select(
             "INBOX"
         )
 
         if status != "OK":
 
-            mail.logout()
-
             return {
                 "sucesso": False,
-                "erro": "Não foi possível acessar a caixa de entrada.",
+                "erro": (
+                    "Não foi possível acessar "
+                    "a caixa de entrada."
+                ),
                 "reunioes": []
             }
 
-        status, dados = mail.search(
-            None,
-            "BODY",
-            '"BEGIN:VCALENDAR"'
+        # ----------------------------------------------------
+        # PESQUISA INTELIGENTE
+        # ----------------------------------------------------
+        #
+        # Primeiro tentamos localizar mensagens que
+        # contenham indicadores típicos de convite.
+        #
+        # Não fazemos fetch de todos os e-mails.
+        #
+        # ----------------------------------------------------
+
+        buscas = [
+
+            (
+                "BODY",
+                '"BEGIN:VCALENDAR"'
+            ),
+
+            (
+                "SUBJECT",
+                '"Convite"'
+            ),
+
+            (
+                "SUBJECT",
+                '"Invitation"'
+            ),
+
+            (
+                "SUBJECT",
+                '"Reunião"'
+            ),
+
+            (
+                "SUBJECT",
+                '"Meeting"'
+            ),
+
+            (
+                "SUBJECT",
+                '"Calendar"'
+            ),
+
+        ]
+
+        candidatos = set()
+
+        for criterio, valor in buscas:
+
+            try:
+
+                status, dados = mail.search(
+                    None,
+                    criterio,
+                    valor
+                )
+
+                if status != "OK":
+                    continue
+
+                if not dados:
+                    continue
+
+                for numero in dados[0].split():
+
+                    candidatos.add(
+                        numero
+                    )
+
+            except Exception:
+
+                continue
+
+        # ----------------------------------------------------
+        # CASO A BUSCA NÃO RETORNE NADA
+        # ----------------------------------------------------
+
+        if not candidatos:
+
+            mail.logout()
+
+            return {
+                "sucesso": True,
+                "erro": "",
+                "reunioes": []
+            }
+
+        print(
+            f"📨 Mensagens candidatas: "
+            f"{len(candidatos)}"
         )
 
-        if status != "OK":
+        # ----------------------------------------------------
+        # BAIXAR SOMENTE CANDIDATOS
+        # ----------------------------------------------------
 
-            mail.logout()
+        for numero in reversed(
+            list(candidatos)
+        ):
 
-            return {
-                "sucesso": False,
-                "erro": "Não foi possível pesquisar os e-mails.",
-                "reunioes": []
-            }
+            try:
 
-        candidatos = dados[0].split()
+                status, dados = mail.fetch(
+                    numero,
+                    "(RFC822)"
+                )
 
-        for numero in reversed(candidatos):
+                if status != "OK":
+                    continue
 
-            status, dados = mail.fetch(
-                numero,
-                "(RFC822)"
-            )
+                mensagem = None
 
-            if status != "OK":
+                for item in dados:
+
+                    if (
+                        isinstance(item, tuple)
+                        and len(item) > 1
+                    ):
+
+                        mensagem = (
+                            email.message_from_bytes(
+                                item[1]
+                            )
+                        )
+
+                        break
+
+                if not mensagem:
+                    continue
+
+                reuniao = (
+                    processar_convite(
+                        mensagem
+                    )
+                )
+
+                # ------------------------------------------------
+                # CONFIRMA QUE É REALMENTE UM ICS
+                # ------------------------------------------------
+
+                if not reuniao:
+                    continue
+
+                # ------------------------------------------------
+                # EVITAR DUPLICIDADE
+                # ------------------------------------------------
+
+                uid = reuniao["uid"]
+
+                if uid:
+
+                    if any(
+                        item["uid"] == uid
+                        for item in reunioes
+                    ):
+
+                        continue
+
+                reunioes.append(
+                    reuniao
+                )
+
+            except Exception:
+
                 continue
 
-            status, dados = mail.fetch(
-                numero,
-                "(RFC822)"
+        # ----------------------------------------------------
+        # ORDENAR
+        # ----------------------------------------------------
+
+        reunioes.sort(
+            key=lambda item: (
+                item["data"],
+                item["hora_inicio"]
             )
+        )
 
-            if status != "OK":
-                continue
-
-            mensagem = email.message_from_bytes(
-                dados[0][1]
-            )
-
-            reuniao = processar_convite(
-                mensagem
-            )
-
-            if not reuniao:
-                continue
-
-            # Evita duplicidade pelo UID
-            uid = reuniao["uid"]
-
-            if uid and any(
-                item["uid"] == uid
-                for item in reunioes
-            ):
-                continue
-
-            reunioes.append(
-                reuniao
-            )
-
-        mail.logout()
+        print(
+            f"📅 Reuniões encontradas: "
+            f"{len(reunioes)}"
+        )
 
         return {
+
             "sucesso": True,
+
             "erro": "",
+
             "reunioes": reunioes
         }
 
     except Exception as e:
 
         return {
+
             "sucesso": False,
+
             "erro": str(e),
+
             "reunioes": []
         }
+
+    finally:
+
+        if mail:
+
+            try:
+
+                mail.logout()
+
+            except Exception:
+
+                pass
 
