@@ -318,8 +318,9 @@ def buscar_reunioes(email_usuario, senha):
 
         lista_emails = dados[0].split()
 
-        # Analisa os e-mails mais recentes primeiro
-        for numero in reversed(lista_emails):
+        ultimos_emails = lista_emails[-100:]
+
+        for numero in reversed(ultimos_emails):
 
             status, dados = mail.fetch(
                 numero,
