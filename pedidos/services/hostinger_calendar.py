@@ -303,7 +303,8 @@ def buscar_reunioes(email_usuario, senha):
 
         status, dados = mail.search(
             None,
-            "ALL"
+            "BODY",
+            '"BEGIN:VCALENDAR"'
         )
 
         if status != "OK":
@@ -316,11 +317,17 @@ def buscar_reunioes(email_usuario, senha):
                 "reunioes": []
             }
 
-        lista_emails = dados[0].split()
+        candidatos = dados[0].split()
 
-        ultimos_emails = lista_emails[-100:]
+        for numero in reversed(candidatos):
 
-        for numero in reversed(ultimos_emails):
+            status, dados = mail.fetch(
+                numero,
+                "(RFC822)"
+            )
+
+            if status != "OK":
+                continue
 
             status, dados = mail.fetch(
                 numero,

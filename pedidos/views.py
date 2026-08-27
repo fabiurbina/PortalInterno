@@ -2651,6 +2651,8 @@ def exportar_classificacao_cliente_excel(request):
 
 
 
+
+
 def agenda_reunioes(request):
 
     reunioes = []
@@ -2699,8 +2701,5 @@ def agenda_reunioes(request):
         "agenda/reunioes.html",
         contexto
     )
-
-
-
 
 

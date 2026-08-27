@@ -13,11 +13,13 @@
 
     <title>Agenda de Reuniões</title>
 
+
     <style>
 
         * {
             box-sizing: border-box;
         }
+
 
         body {
             margin: 0;
@@ -27,10 +29,12 @@
             color: #1f2937;
         }
 
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
+
 
         /* =====================================================
            CABEÇALHO
@@ -40,14 +44,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             gap: 20px;
         }
+
 
         .titulo {
             margin: 0;
             font-size: 28px;
         }
+
 
         .subtitulo {
             margin-top: 6px;
@@ -55,32 +61,39 @@
             font-size: 14px;
         }
 
+
         /* =====================================================
-           CARD DE CONEXÃO
+           FORMULÁRIO DE LOGIN
         ===================================================== */
 
         .card-conexao {
+            max-width: 500px;
+            margin: 50px auto;
             background: white;
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .card-conexao h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+
+        .card-conexao p {
+            margin-top: 0;
             margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .card-titulo {
-            margin: 0 0 6px 0;
-            font-size: 19px;
-        }
-
-        .card-subtitulo {
-            margin: 0 0 20px 0;
             color: #6b7280;
             font-size: 14px;
         }
 
+
         .campo {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
+
 
         .campo label {
             display: block;
@@ -88,6 +101,7 @@
             font-size: 14px;
             font-weight: bold;
         }
+
 
         .campo input {
             width: 100%;
@@ -98,14 +112,16 @@
             outline: none;
         }
 
+
         .campo input:focus {
             border-color: #6b7280;
         }
 
+
         .botao-conectar {
             width: 100%;
             border: none;
-            padding: 12px 18px;
+            padding: 13px 18px;
             border-radius: 8px;
             background: #111827;
             color: white;
@@ -113,110 +129,320 @@
             font-size: 14px;
             font-weight: bold;
         }
+
 
         .botao-conectar:hover {
             opacity: 0.9;
         }
 
+
         /* =====================================================
-           BOTÃO ATUALIZAR
+           CONTROLES DO CALENDÁRIO
         ===================================================== */
 
-        .botao-atualizar {
-            border: none;
-            padding: 11px 18px;
-            border-radius: 8px;
-            background: #111827;
-            color: white;
+        .controles {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        .botao {
+            border: 1px solid #d1d5db;
+            background: white;
+            padding: 9px 14px;
+            border-radius: 7px;
             cursor: pointer;
             font-size: 14px;
         }
 
-        .botao-atualizar:hover {
-            opacity: 0.9;
+
+        .botao:hover {
+            background: #f3f4f6;
         }
 
+
+        .botao-hoje {
+            background: #111827;
+            color: white;
+            border-color: #111827;
+        }
+
+
+        .mes-atual {
+            min-width: 180px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
         /* =====================================================
-           MENSAGEM DE ERRO
+           ERRO
         ===================================================== */
 
         .erro {
             padding: 15px;
+            margin-bottom: 20px;
             border-radius: 8px;
             background: #fee2e2;
             color: #991b1b;
-            margin-bottom: 20px;
         }
 
+
         /* =====================================================
-           LISTA DE REUNIÕES
+           CALENDÁRIO
         ===================================================== */
 
-        .lista {
+        .calendario {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+
+        .dias-semana {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        .dia-semana {
+            padding: 13px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            color: #6b7280;
+            border-right: 1px solid #e5e7eb;
+        }
+
+
+        .dia-semana:last-child {
+            border-right: none;
+        }
+
+
+        .dias {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+
+        .dia {
+            min-height: 130px;
+            padding: 8px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            position: relative;
+        }
+
+
+        .dia:nth-child(7n) {
+            border-right: none;
+        }
+
+
+        .dia-fora {
+            background: #fafafa;
+            color: #9ca3af;
+        }
+
+
+        .numero-dia {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+
+        .hoje .numero-dia {
+            background: #111827;
+            color: white;
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           EVENTOS
+        ===================================================== */
+
+        .evento {
+            display: block;
+            width: 100%;
+            margin-top: 4px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: #eef2ff;
+            border-left: 3px solid #4f46e5;
+            cursor: pointer;
+            text-decoration: none;
+            color: #1f2937;
+            overflow: hidden;
+        }
+
+
+        .evento:hover {
+            background: #e0e7ff;
+        }
+
+
+        .evento-hora {
+            font-size: 11px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+
+        .evento-titulo {
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal-fundo {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+
+        .modal {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .modal-cabecalho {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
             gap: 15px;
         }
 
-        .reuniao {
-            background: white;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+        .modal-titulo {
+            margin: 0;
+            font-size: 22px;
         }
 
-        .data {
-            font-size: 13px;
+
+        .fechar {
+            border: none;
+            background: transparent;
+            font-size: 25px;
+            cursor: pointer;
             color: #6b7280;
-            margin-bottom: 7px;
         }
 
-        .nome {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
+
+        .detalhes {
+            margin-top: 20px;
         }
 
-        .horario {
-            font-size: 15px;
-            margin-bottom: 10px;
-        }
 
-        .organizador {
+        .detalhe {
+            margin-bottom: 13px;
             font-size: 14px;
-            color: #4b5563;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        .acoes {
-            margin-top: 18px;
+
+        .detalhe strong {
+            color: #374151;
         }
 
-        .meet {
+
+        .participantes {
+            margin-top: 7px;
+            padding-left: 20px;
+        }
+
+
+        .botao-reuniao {
             display: inline-block;
-            padding: 9px 14px;
-            border-radius: 7px;
+            margin-top: 15px;
+            padding: 11px 16px;
+            border-radius: 8px;
             background: #111827;
             color: white;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: bold;
         }
 
-        .meet:hover {
+
+        .botao-reuniao:hover {
             opacity: 0.9;
         }
 
-        /* =====================================================
-           SEM REUNIÕES
-        ===================================================== */
 
-        .sem-reunioes {
-            background: white;
+        .sem-eventos {
             padding: 40px;
             text-align: center;
-            border-radius: 12px;
             color: #6b7280;
         }
+
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            body {
+                padding: 15px;
+            }
+
+
+            .cabecalho {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .controles {
+                justify-content: center;
+            }
+
+
+            .dia {
+                min-height: 100px;
+                padding: 5px;
+            }
+
+
+            .evento-titulo {
+                font-size: 11px;
+            }
+
+        }
+
 
     </style>
 
@@ -225,90 +451,25 @@
 
 <body>
 
+
 <div class="container">
 
 
     <!-- =====================================================
-         CABEÇALHO
+         FORMULÁRIO DE LOGIN
     ====================================================== -->
 
-    <div class="cabecalho">
-
-        <div>
-
-            <h1 class="titulo">
-                📅 Agenda de Reuniões
-            </h1>
-
-            <div class="subtitulo">
-                Reuniões encontradas na sua caixa de e-mail
-            </div>
-
-        </div>
-
-
-        {% if reunioes %}
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-                <input
-                    type="hidden"
-                    name="email"
-                    value="{{ email_usuario }}"
-                >
-
-                <input
-                    type="hidden"
-                    name="senha"
-                    value="{{ request.POST.senha }}"
-                >
-
-                <button
-                    type="submit"
-                    class="botao-atualizar"
-                >
-                    🔄 Atualizar agenda
-                </button>
-
-            </form>
-
-        {% endif %}
-
-    </div>
-
-
-    <!-- =====================================================
-         ERRO
-    ====================================================== -->
-
-    {% if erro %}
-
-        <div class="erro">
-
-            ❌ {{ erro }}
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- =====================================================
-         FORMULÁRIO DE CONEXÃO
-    ====================================================== -->
-
-    {% if not reunioes and not email_usuario %}
+    {% if not reunioes and not email_usuario and not erro %}
 
         <div class="card-conexao">
 
-            <h2 class="card-titulo">
-                Conectar meu e-mail
+            <h2>
+                📅 Agenda de Reuniões
             </h2>
 
-            <p class="card-subtitulo">
-                Informe os dados da sua conta Hostinger
-                para carregar suas reuniões.
+            <p>
+                Conecte sua conta de e-mail para visualizar
+                seus convites de reunião.
             </p>
 
 
@@ -358,6 +519,7 @@
                     🔐 Conectar e carregar agenda
                 </button>
 
+
             </form>
 
         </div>
@@ -366,117 +528,954 @@
 
 
     <!-- =====================================================
-         LISTA DE REUNIÕES
+         ERRO
+    ====================================================== -->
+
+    {% if erro %}
+
+        <div class="erro">
+
+            ❌ {{ erro }}
+
+        </div>
+
+
+        {% if not reunioes %}
+
+            <div class="card-conexao">
+
+                <h2>
+                    Conectar novamente
+                </h2>
+
+                <p>
+                    Verifique seu e-mail e senha.
+                </p>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="campo">
+
+                        <label for="email">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ email_usuario }}"
+                            placeholder="seu@email.com"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="senha">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Digite sua senha"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="botao-conectar"
+                    >
+                        🔐 Tentar novamente
+                    </button>
+
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         AGENDA
     ====================================================== -->
 
     {% if reunioes %}
 
-        <div class="lista">
 
-            {% for reuniao in reunioes %}
+        <!-- CABEÇALHO -->
 
-                <div class="reuniao">
-
-
-                    <div class="data">
-
-                        📅 {{ reuniao.inicio_formatado }}
-
-                        →
-
-                        {{ reuniao.fim_formatado }}
-
-                    </div>
+        <div class="cabecalho">
 
 
-                    <div class="nome">
+            <div>
 
-                        {{ reuniao.titulo }}
+                <h1 class="titulo">
+                    📅 Agenda de Reuniões
+                </h1>
 
-                    </div>
-
-
-                    <div class="horario">
-
-                        👤 Organizador:
-
-                        {{ reuniao.organizador_nome }}
-
-
-                        {% if reuniao.organizador_email %}
-
-                            ({{ reuniao.organizador_email }})
-
-                        {% endif %}
-
-                    </div>
-
-
-                    {% if reuniao.participantes %}
-
-                        <div class="organizador">
-
-                            👥 Participantes:
-
-                            {% for participante in reuniao.participantes %}
-
-                                {{ participante }}{% if not forloop.last %}, {% endif %}
-
-                            {% endfor %}
-
-                        </div>
-
-                    {% endif %}
-
-
-                    {% if reuniao.local %}
-
-                        <div class="organizador">
-
-                            📍 {{ reuniao.local }}
-
-                        </div>
-
-                    {% endif %}
-
-
-                    {% if reuniao.link_reuniao %}
-
-                        <div class="acoes">
-
-                            <a
-                                href="{{ reuniao.link_reuniao }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="meet"
-                            >
-                                🔗 Entrar na reunião
-                            </a>
-
-                        </div>
-
-                    {% endif %}
-
-
+                <div class="subtitulo">
+                    Reuniões encontradas na sua caixa de e-mail
                 </div>
 
-            {% endfor %}
+            </div>
+
+
+            <div class="controles">
+
+
+                <button
+                    class="botao"
+                    onclick="mesAnterior()"
+                    type="button"
+                >
+                    ←
+                </button>
+
+
+                <button
+                    class="botao botao-hoje"
+                    onclick="irParaHoje()"
+                    type="button"
+                >
+                    Hoje
+                </button>
+
+
+                <div
+                    id="mesAtual"
+                    class="mes-atual"
+                ></div>
+
+
+                <button
+                    class="botao"
+                    onclick="mesProximo()"
+                    type="button"
+                >
+                    →
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- CALENDÁRIO -->
+
+        <div class="calendario">
+
+
+            <div class="dias-semana">
+
+                <div class="dia-semana">
+                    SEG
+                </div>
+
+                <div class="dia-semana">
+                    TER
+                </div>
+
+                <div class="dia-semana">
+                    QUA
+                </div>
+
+                <div class="dia-semana">
+                    QUI
+                </div>
+
+                <div class="dia-semana">
+                    SEX
+                </div>
+
+                <div class="dia-semana">
+                    SÁB
+                </div>
+
+                <div class="dia-semana">
+                    DOM
+                </div>
+
+            </div>
+
+
+            <div
+                id="dias"
+                class="dias"
+            ></div>
+
 
         </div>
 
 
     {% elif email_usuario and not erro %}
 
-        <div class="sem-reunioes">
+
+        <div class="sem-eventos">
 
             📭 Nenhuma reunião encontrada.
 
         </div>
 
+
     {% endif %}
 
 
 </div>
+
+
+<!-- =========================================================
+     MODAL DA REUNIÃO
+========================================================= -->
+
+<div
+    id="modalFundo"
+    class="modal-fundo"
+    onclick="fecharModalFora(event)"
+>
+
+
+    <div class="modal">
+
+
+        <div class="modal-cabecalho">
+
+
+            <h2
+                id="modalTitulo"
+                class="modal-titulo"
+            ></h2>
+
+
+            <button
+                class="fechar"
+                onclick="fecharModal()"
+                type="button"
+            >
+                ×
+            </button>
+
+
+        </div>
+
+
+        <div
+            id="modalDetalhes"
+            class="detalhes"
+        ></div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // ========================================================
+    // REUNIÕES DO DJANGO
+    // ========================================================
+
+    const reunioes = {{ reunioes|safe }};
+
+
+    // ========================================================
+    // DATA ATUAL
+    // ========================================================
+
+    let dataAtual = new Date();
+
+
+    // ========================================================
+    // NOMES DOS MESES
+    // ========================================================
+
+    const nomesMeses = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+    ];
+
+
+    // ========================================================
+    // RENDERIZAR CALENDÁRIO
+    // ========================================================
+
+    function renderizarCalendario() {
+
+        const ano =
+            dataAtual.getFullYear();
+
+        const mes =
+            dataAtual.getMonth();
+
+
+        document.getElementById(
+            "mesAtual"
+        ).textContent =
+            `${nomesMeses[mes]} ${ano}`;
+
+
+        const container =
+            document.getElementById(
+                "dias"
+            );
+
+
+        container.innerHTML = "";
+
+
+        // ----------------------------------------------------
+        // PRIMEIRO DIA DO MÊS
+        // ----------------------------------------------------
+
+        const primeiroDia =
+            new Date(
+                ano,
+                mes,
+                1
+            );
+
+
+        let inicioSemana =
+            primeiroDia.getDay() - 1;
+
+
+        if (inicioSemana < 0) {
+
+            inicioSemana = 6;
+
+        }
+
+
+        // ----------------------------------------------------
+        // ÚLTIMO DIA DO MÊS
+        // ----------------------------------------------------
+
+        const ultimoDia =
+            new Date(
+                ano,
+                mes + 1,
+                0
+            );
+
+
+        const totalDias =
+            ultimoDia.getDate();
+
+
+        // ----------------------------------------------------
+        // DIAS DO MÊS ANTERIOR
+        // ----------------------------------------------------
+
+        const mesAnteriorData =
+            new Date(
+                ano,
+                mes,
+                0
+            );
+
+
+        const totalDiasMesAnterior =
+            mesAnteriorData.getDate();
+
+
+        for (
+            let i = inicioSemana - 1;
+            i >= 0;
+            i--
+        ) {
+
+            const dia =
+                totalDiasMesAnterior - i;
+
+
+            const celula =
+                criarCelulaDia(
+                    dia,
+                    true,
+                    ano,
+                    mes - 1
+                );
+
+
+            container.appendChild(
+                celula
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // DIAS DO MÊS ATUAL
+        // ----------------------------------------------------
+
+        for (
+            let dia = 1;
+            dia <= totalDias;
+            dia++
+        ) {
+
+            const celula =
+                criarCelulaDia(
+                    dia,
+                    false,
+                    ano,
+                    mes
+                );
+
+
+            container.appendChild(
+                celula
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // COMPLETAR ÚLTIMA SEMANA
+        // ----------------------------------------------------
+
+        const totalCelulas =
+            container.children.length;
+
+
+        const restantes =
+            totalCelulas % 7;
+
+
+        if (restantes !== 0) {
+
+            for (
+                let dia = 1;
+                dia <= 7 - restantes;
+                dia++
+            ) {
+
+                const celula =
+                    criarCelulaDia(
+                        dia,
+                        true,
+                        ano,
+                        mes + 1
+                    );
+
+
+                container.appendChild(
+                    celula
+                );
+
+            }
+
+        }
+
+    }
+
+
+    // ========================================================
+    // CRIAR CÉLULA DO DIA
+    // ========================================================
+
+    function criarCelulaDia(
+        dia,
+        fora,
+        ano,
+        mes
+    ) {
+
+        const celula =
+            document.createElement(
+                "div"
+            );
+
+
+        celula.className =
+            "dia";
+
+
+        if (fora) {
+
+            celula.classList.add(
+                "dia-fora"
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // NÚMERO DO DIA
+        // ----------------------------------------------------
+
+        const numero =
+            document.createElement(
+                "div"
+            );
+
+
+        numero.className =
+            "numero-dia";
+
+
+        numero.textContent =
+            dia;
+
+
+        celula.appendChild(
+            numero
+        );
+
+
+        // ----------------------------------------------------
+        // DATA
+        // ----------------------------------------------------
+
+        const dataCelula =
+            new Date(
+                ano,
+                mes,
+                dia
+            );
+
+
+        const anoData =
+            dataCelula.getFullYear();
+
+
+        const mesData =
+            String(
+                dataCelula.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const diaData =
+            String(
+                dataCelula.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const chaveData =
+            `${anoData}-${mesData}-${diaData}`;
+
+
+        // ----------------------------------------------------
+        // IDENTIFICAR HOJE
+        // ----------------------------------------------------
+
+        const hoje =
+            new Date();
+
+
+        const hojeChave =
+            `${hoje.getFullYear()}-` +
+            `${String(
+                hoje.getMonth() + 1
+            ).padStart(2, "0")}-` +
+            `${String(
+                hoje.getDate()
+            ).padStart(2, "0")}`;
+
+
+        if (
+            chaveData === hojeChave
+        ) {
+
+            celula.classList.add(
+                "hoje"
+            );
+
+        }
+
+
+        // ----------------------------------------------------
+        // ENCONTRAR REUNIÕES DO DIA
+        // ----------------------------------------------------
+
+        const eventos =
+            reunioes.filter(
+                reuniao =>
+                    reuniao.data === chaveData
+            );
+
+
+        eventos.forEach(
+            reuniao => {
+
+                const evento =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                evento.className =
+                    "evento";
+
+
+                // Hora
+
+                const hora =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                hora.className =
+                    "evento-hora";
+
+
+                hora.textContent =
+                    reuniao.hora_inicio || "";
+
+
+                evento.appendChild(
+                    hora
+                );
+
+
+                // Título
+
+                const titulo =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                titulo.className =
+                    "evento-titulo";
+
+
+                titulo.textContent =
+                    reuniao.titulo;
+
+
+                evento.appendChild(
+                    titulo
+                );
+
+
+                // Clique
+
+                evento.onclick =
+                    function() {
+
+                        abrirModal(
+                            reuniao
+                        );
+
+                    };
+
+
+                celula.appendChild(
+                    evento
+                );
+
+            }
+        );
+
+
+        return celula;
+
+    }
+
+
+    // ========================================================
+    // MÊS ANTERIOR
+    // ========================================================
+
+    function mesAnterior() {
+
+        dataAtual.setMonth(
+            dataAtual.getMonth() - 1
+        );
+
+
+        renderizarCalendario();
+
+    }
+
+
+    // ========================================================
+    // PRÓXIMO MÊS
+    // ========================================================
+
+    function mesProximo() {
+
+        dataAtual.setMonth(
+            dataAtual.getMonth() + 1
+        );
+
+
+        renderizarCalendario();
+
+    }
+
+
+    // ========================================================
+    // IR PARA HOJE
+    // ========================================================
+
+    function irParaHoje() {
+
+        dataAtual =
+            new Date();
+
+
+        renderizarCalendario();
+
+    }
+
+
+    // ========================================================
+    // ABRIR MODAL
+    // ========================================================
+
+    function abrirModal(
+        reuniao
+    ) {
+
+        document.getElementById(
+            "modalTitulo"
+        ).textContent =
+            reuniao.titulo;
+
+
+        let html = "";
+
+
+        // Data
+
+        html += `
+            <div class="detalhe">
+                📅 <strong>Data:</strong>
+                ${reuniao.inicio_formatado}
+            </div>
+        `;
+
+
+        // Horário
+
+        html += `
+            <div class="detalhe">
+                🕐 <strong>Horário:</strong>
+                ${reuniao.hora_inicio || ""}
+                ${
+                    reuniao.hora_fim
+                        ? " — " + reuniao.hora_fim
+                        : ""
+                }
+            </div>
+        `;
+
+
+        // Organizador
+
+        if (
+            reuniao.organizador_nome
+        ) {
+
+            html += `
+                <div class="detalhe">
+                    👤 <strong>Organizador:</strong>
+                    ${reuniao.organizador_nome}
+                </div>
+            `;
+
+        }
+
+
+        // E-mail
+
+        if (
+            reuniao.organizador_email
+        ) {
+
+            html += `
+                <div class="detalhe">
+                    📧 <strong>E-mail:</strong>
+                    ${reuniao.organizador_email}
+                </div>
+            `;
+
+        }
+
+
+        // Local
+
+        if (
+            reuniao.local
+        ) {
+
+            html += `
+                <div class="detalhe">
+                    📍 <strong>Local:</strong>
+                    ${reuniao.local}
+                </div>
+            `;
+
+        }
+
+
+        // Participantes
+
+        if (
+            reuniao.participantes &&
+            reuniao.participantes.length > 0
+        ) {
+
+            html += `
+                <div class="detalhe">
+                    👥 <strong>Participantes:</strong>
+
+                    <div class="participantes">
+            `;
+
+
+            reuniao.participantes.forEach(
+                participante => {
+
+                    html += `
+                        <div>
+                            • ${participante}
+                        </div>
+                    `;
+
+                }
+            );
+
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+        }
+
+
+        // Descrição
+
+        if (
+            reuniao.descricao
+        ) {
+
+            html += `
+                <div class="detalhe">
+                    📝 <strong>Descrição:</strong><br>
+                    ${reuniao.descricao}
+                </div>
+            `;
+
+        }
+
+
+        // Link da reunião
+
+        if (
+            reuniao.link_reuniao
+        ) {
+
+            html += `
+                <a
+                    href="${reuniao.link_reuniao}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="botao-reuniao"
+                >
+                    🔗 Entrar na reunião
+                </a>
+            `;
+
+        }
+
+
+        document.getElementById(
+            "modalDetalhes"
+        ).innerHTML =
+            html;
+
+
+        document.getElementById(
+            "modalFundo"
+        ).style.display =
+            "flex";
+
+    }
+
+
+    // ========================================================
+    // FECHAR MODAL
+    // ========================================================
+
+    function fecharModal() {
+
+        document.getElementById(
+            "modalFundo"
+        ).style.display =
+            "none";
+
+    }
+
+
+    function fecharModalFora(
+        event
+    ) {
+
+        if (
+            event.target.id ===
+            "modalFundo"
+        ) {
+
+            fecharModal();
+
+        }
+
+    }
+
+
+    // ========================================================
+    // INICIALIZAR
+    // ========================================================
+
+    {% if reunioes %}
+
+        renderizarCalendario();
+
+    {% endif %}
+
+
+</script>
+
 
 </body>
 
