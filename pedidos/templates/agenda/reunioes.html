@@ -649,44 +649,67 @@
 
             <div class="controles">
 
+    <form
+        method="POST"
+        action="{% url 'sincronizar_agenda' %}"
+        style="display: inline;"
+    >
 
-                <button
-                    class="botao"
-                    onclick="mesAnterior()"
-                    type="button"
-                >
-                    ←
-                </button>
+        {% csrf_token %}
 
+        <button
+            type="submit"
+            class="botao"
+            title="Buscar novos convites na Hostinger"
+        >
+            🔄 Sincronizar
+        </button>
 
-                <button
-                    class="botao botao-hoje"
-                    onclick="irParaHoje()"
-                    type="button"
-                >
-                    Hoje
-                </button>
-
-
-                <div
-                    id="mesAtual"
-                    class="mes-atual"
-                ></div>
+    </form>
 
 
-                <button
-                    class="botao"
-                    onclick="mesProximo()"
-                    type="button"
-                >
-                    →
-                </button>
+    <a
+        href="{% url 'dashboard' %}"
+        class="botao"
+        style="text-decoration: none;"
+    >
+        ↩️ Voltar ao Portal
+    </a>
 
 
-            </div>
+    <button
+        class="botao"
+        onclick="mesAnterior()"
+        type="button"
+    >
+        ←
+    </button>
 
 
-        </div>
+    <button
+        class="botao botao-hoje"
+        onclick="irParaHoje()"
+        type="button"
+    >
+        Hoje
+    </button>
+
+
+    <div
+        id="mesAtual"
+        class="mes-atual"
+    ></div>
+
+
+    <button
+        class="botao"
+        onclick="mesProximo()"
+        type="button"
+    >
+        →
+    </button>
+
+</div>
 
 
         <!-- CALENDÁRIO -->

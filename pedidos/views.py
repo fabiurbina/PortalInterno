@@ -2920,4 +2920,62 @@ def agenda_conectar(request):
         "agenda/conectar.html",
         contexto
     )
+    
+    
+@login_required
+def sincronizar_agenda(request):
+
+    if request.method != "POST":
+        return redirect("agenda_reunioes")
+
+    try:
+
+        conta = ContaHostinger.objects.get(
+            usuario=request.user
+        )
+
+    except ContaHostinger.DoesNotExist:
+
+        return redirect("agenda_conectar")
+
+    try:
+
+        senha = descriptografar_senha_hostinger(
+            conta.senha_criptografada
+        )
+
+        resultado = buscar_reunioes(
+            conta.email,
+            senha,
+            conta=conta
+        )
+
+        if resultado["sucesso"]:
+
+            messages.success(
+                request,
+                (
+                    f"Agenda sincronizada com sucesso. "
+                    f"{len(resultado['reunioes'])} "
+                    f"reuniões encontradas."
+                )
+            )
+
+        else:
+
+            messages.error(
+                request,
+                resultado["erro"]
+            )
+
+    except Exception as e:
+
+        messages.error(
+            request,
+            f"Erro ao sincronizar agenda: {e}"
+        )
+
+    return redirect(
+        "agenda_reunioes"
+    )
 

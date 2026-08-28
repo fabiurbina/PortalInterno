@@ -38,7 +38,8 @@ from .views import (
     relatorio_classificacao_cliente,
     exportar_classificacao_cliente_excel,
     agenda_reunioes,
-    agenda_conectar
+    agenda_conectar,
+    sincronizar_agenda
 )
 
 urlpatterns = [
@@ -267,7 +268,15 @@ urlpatterns = [
         "agenda/conectar/",
         agenda_conectar,
         name="agenda_conectar"
-    )
+    ),
+    
+    path(
+    "agenda/sincronizar/",
+    sincronizar_agenda,
+    name="sincronizar_agenda"
+),
+    
+    
 
 ]
 

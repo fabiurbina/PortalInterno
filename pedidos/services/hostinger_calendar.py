@@ -696,6 +696,73 @@ def sincronizar_reunioes(
 
     return quantidade
 
+# ============================================================
+# SINCRONIZAR TODAS AS CONTAS HOSTINGER
+# ============================================================
+
+def sincronizar_todas_agendas():
+
+    from ..models import ContaHostinger
+    from ..views import descriptografar_senha_hostinger
+
+    resultados = []
+
+    contas = ContaHostinger.objects.all()
+
+    for conta in contas:
+
+        try:
+
+            senha = descriptografar_senha_hostinger(
+                conta.senha_criptografada
+            )
+
+            resultado = buscar_reunioes(
+                conta.email,
+                senha,
+                conta=conta
+            )
+
+            resultados.append({
+
+                "usuario": conta.usuario.username,
+
+                "email": conta.email,
+
+                "sucesso": resultado["sucesso"],
+
+                "quantidade": len(
+                    resultado.get(
+                        "reunioes",
+                        []
+                    )
+                ),
+
+                "erro": resultado.get(
+                    "erro",
+                    ""
+                ),
+
+            })
+
+        except Exception as e:
+
+            resultados.append({
+
+                "usuario": conta.usuario.username,
+
+                "email": conta.email,
+
+                "sucesso": False,
+
+                "quantidade": 0,
+
+                "erro": str(e),
+
+            })
+
+    return resultados
+
 def buscar_reunioes(
     email_usuario,
     senha,
