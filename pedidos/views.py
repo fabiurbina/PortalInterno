@@ -63,7 +63,7 @@ from cryptography.fernet import Fernet
 from django.conf import settings
 
 from .models import ContaHostinger,ReuniaoAgenda
-from .services.hostinger_calendar import buscar_reunioes
+
 
 
 
@@ -2925,50 +2925,45 @@ def agenda_conectar(request):
 @login_required
 def sincronizar_agenda(request):
 
-    if request.method != "POST":
-        return redirect("agenda_reunioes")
+    if request.method == "POST":
 
-    try:
+        try:
+            from .views import descriptografar_senha_hostinger
 
-        conta = ContaHostinger.objects.get(
-            usuario=request.user
-        )
+            conta = ContaHostinger.objects.get(
+                usuario=request.user
+            )
 
-    except ContaHostinger.DoesNotExist:
+            senha = descriptografar_senha_hostinger(
+                conta.senha_criptografada
+            )
 
-        return redirect("agenda_conectar")
+            resultado = buscar_reunioes(
+                conta.email,
+                senha,
+                conta=conta
+            )
 
-    try:
+            if not resultado["sucesso"]:
 
-        senha = descriptografar_senha_hostinger(
-            conta.senha_criptografada
-        )
+                messages.error(
+                    request,
+                    resultado["erro"]
+                )
 
-        resultado = buscar_reunioes(
-            conta.email,
-            senha,
-            conta=conta
-        )
-
-        if resultado["sucesso"]:
-
-            pass 
-        
-        else:
+        except ContaHostinger.DoesNotExist:
 
             messages.error(
                 request,
-                resultado["erro"]
+                "Nenhuma conta de e-mail cadastrada para este usuário."
             )
 
-    except Exception as e:
+        except Exception as e:
 
-        messages.error(
-            request,
-            f"Erro ao sincronizar agenda: {e}"
-        )
+            messages.error(
+                request,
+                f"Erro ao sincronizar agenda: {e}"
+            )
 
-    return redirect(
-        "agenda_reunioes"
-    )
+    return redirect("agenda_reunioes")
 
