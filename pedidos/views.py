@@ -55,6 +55,16 @@ from openpyxl.utils import get_column_letter
 from datetime import datetime
 from .services.hostinger_calendar import buscar_reunioes
 
+import base64
+import hashlib
+
+from cryptography.fernet import Fernet
+
+from django.conf import settings
+
+from .models import ContaHostinger
+from .services.hostinger_calendar import buscar_reunioes
+
 
 
 @login_required
@@ -2649,18 +2659,137 @@ def exportar_classificacao_cliente_excel(request):
     return resposta
 
 
+def _chave_hostinger():
+    chave = hashlib.sha256(
+        settings.SECRET_KEY.encode("utf-8")
+    ).digest()
+
+    return base64.urlsafe_b64encode(chave)
+
+
+def criptografar_senha_hostinger(senha):
+    fernet = Fernet(_chave_hostinger())
+
+    return fernet.encrypt(
+        senha.encode("utf-8")
+    ).decode("utf-8")
+
+
+def descriptografar_senha_hostinger(senha_criptografada):
+    fernet = Fernet(_chave_hostinger())
+
+    return fernet.decrypt(
+        senha_criptografada.encode("utf-8")
+    ).decode("utf-8")
 
 
 
-
+@login_required
 def agenda_reunioes(request):
 
-    reunioes = []
+    # ---------------------------------------------------------
+    # VERIFICAR SE O USUÁRIO JÁ POSSUI CONTA HOSTINGER
+    # ---------------------------------------------------------
+
+    try:
+
+        conta = ContaHostinger.objects.get(
+            usuario=request.user
+        )
+
+    except ContaHostinger.DoesNotExist:
+
+        return redirect("agenda_conectar")
+
+
+    # ---------------------------------------------------------
+    # DESCRIPTOGRAFAR SENHA
+    # ---------------------------------------------------------
+
+    try:
+
+        senha = descriptografar_senha_hostinger(
+            conta.senha_criptografada
+        )
+
+    except Exception:
+
+        return redirect("agenda_conectar")
+
+
+    # ---------------------------------------------------------
+    # BUSCAR REUNIÕES
+    # ---------------------------------------------------------
+
+    resultado = buscar_reunioes(
+        conta.email,
+        senha
+    )
+
+
+    # ---------------------------------------------------------
+    # SE A CONTA NÃO FUNCIONAR
+    # ---------------------------------------------------------
+
+    if not resultado["sucesso"]:
+
+        return render(
+            request,
+            "agenda/reunioes.html",
+            {
+                "reunioes": [],
+                "erro": resultado["erro"],
+                "email_usuario": conta.email,
+            }
+        )
+
+
+    # ---------------------------------------------------------
+    # CALENDÁRIO
+    # ---------------------------------------------------------
+
+    contexto = {
+
+        "reunioes": resultado["reunioes"],
+
+        "erro": "",
+
+        "email_usuario": conta.email,
+
+    }
+
+
+    return render(
+        request,
+        "agenda/reunioes.html",
+        contexto
+    )   
+    
+    
+    
+@login_required
+def agenda_conectar(request):
 
     erro = ""
 
     email_usuario = ""
 
+
+    # ---------------------------------------------------------
+    # SE JÁ EXISTE UMA CONTA
+    # NÃO PRECISA CADASTRAR NOVAMENTE
+    # ---------------------------------------------------------
+
+    if ContaHostinger.objects.filter(
+        usuario=request.user
+    ).exists():
+
+        return redirect("agenda_reunioes")
+
+
+    # ---------------------------------------------------------
+    # FORMULÁRIO
+    # ---------------------------------------------------------
 
     if request.method == "POST":
 
@@ -2675,6 +2804,10 @@ def agenda_reunioes(request):
         )
 
 
+        # -----------------------------------------------------
+        # VALIDAÇÕES
+        # -----------------------------------------------------
+
         if not email_usuario:
 
             erro = "Informe o e-mail."
@@ -2685,6 +2818,10 @@ def agenda_reunioes(request):
 
         else:
 
+            # -------------------------------------------------
+            # TESTAR CONEXÃO COM HOSTINGER
+            # -------------------------------------------------
+
             resultado = buscar_reunioes(
                 email_usuario,
                 senha
@@ -2693,16 +2830,44 @@ def agenda_reunioes(request):
 
             if resultado["sucesso"]:
 
-                reunioes = resultado["reunioes"]
+                # ---------------------------------------------
+                # SALVAR CONTA
+                # ---------------------------------------------
+
+                ContaHostinger.objects.create(
+
+                    usuario=request.user,
+
+                    email=email_usuario,
+
+                    senha_criptografada=(
+                        criptografar_senha_hostinger(
+                            senha
+                        )
+                    ),
+
+                )
+
+
+                # ---------------------------------------------
+                # IR PARA O CALENDÁRIO
+                # ---------------------------------------------
+
+                return redirect(
+                    "agenda_reunioes"
+                )
+
 
             else:
 
                 erro = resultado["erro"]
 
 
-    contexto = {
+    # ---------------------------------------------------------
+    # TELA DE CONEXÃO
+    # ---------------------------------------------------------
 
-        "reunioes": reunioes,
+    contexto = {
 
         "erro": erro,
 
@@ -2713,8 +2878,7 @@ def agenda_reunioes(request):
 
     return render(
         request,
-        "agenda/reunioes.html",
+        "agenda/conectar.html",
         contexto
     )
-
 
