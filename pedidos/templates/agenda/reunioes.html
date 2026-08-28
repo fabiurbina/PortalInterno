@@ -647,70 +647,88 @@
             </div>
 
 
-            <div class="controles">
+            <!-- =====================================================
+            CONTROLES DA AGENDA
+        ===================================================== -->
 
-    <form
-        method="POST"
-        action="{% url 'sincronizar_agenda' %}"
-        style="display: inline;"
-    >
+        <div class="controles-agenda">
 
-        {% csrf_token %}
+            <!-- AÇÕES -->
+            <div class="acoes-agenda">
 
-        <button
-            type="submit"
-            class="botao"
-            title="Buscar novos convites na Hostinger"
-        >
-            🔄 Sincronizar
-        </button>
+                <form
+                    method="POST"
+                    action="{% url 'sincronizar_agenda' %}"
+                >
 
-    </form>
+                    {% csrf_token %}
 
+                    <button
+                        type="submit"
+                        class="botao"
+                        title="Buscar novos convites na Hostinger"
+                    >
+                        🔄 Sincronizar
+                    </button>
 
-    <a
-        href="{% url 'dashboard' %}"
-        class="botao"
-        style="text-decoration: none;"
-    >
-        ↩️ Voltar ao Portal
-    </a>
+                </form>
 
 
-    <button
-        class="botao"
-        onclick="mesAnterior()"
-        type="button"
-    >
-        ←
-    </button>
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="botao"
+                >
+                    ↩️ Voltar ao Portal
+                </a>
+
+            </div>
 
 
-    <button
-        class="botao botao-hoje"
-        onclick="irParaHoje()"
-        type="button"
-    >
-        Hoje
-    </button>
+            <!-- NAVEGAÇÃO DO CALENDÁRIO -->
+            <div class="navegacao-calendario">
+
+                <button
+                    class="botao"
+                    onclick="mesAnterior()"
+                    type="button"
+                    title="Mês anterior"
+                >
+                    ←
+                </button>
 
 
-    <div
-        id="mesAtual"
-        class="mes-atual"
-    ></div>
+                <button
+                    class="botao botao-hoje"
+                    onclick="irParaHoje()"
+                    type="button"
+                >
+                    Hoje
+                </button>
 
 
-    <button
-        class="botao"
-        onclick="mesProximo()"
-        type="button"
-    >
-        →
-    </button>
+                <div
+                    id="mesAtual"
+                    class="mes-atual"
+                ></div>
 
-</div>
 
+                <button
+                    class="botao"
+                    onclick="mesProximo()"
+                    type="button"
+                    title="Próximo mês"
+                >
+                    →
+                </button>
+
+            </div>
+
+        </div>
+
+
+<!-- =====================================================
+     CALENDÁRIO
+===================================================== -->
 
         <!-- CALENDÁRIO -->
 
