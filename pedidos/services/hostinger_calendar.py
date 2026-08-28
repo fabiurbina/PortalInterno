@@ -278,15 +278,45 @@ def extrair_link_reuniao(ics):
     # --------------------------------------------------------
 
     descricao = extrair_campo(
-        ics,
-        "DESCRIPTION"
-    )
+    ics,
+    "DESCRIPTION"
+)
 
     descricao = (
         descricao
         .replace("\\n", "\n")
         .replace("\\,", ",")
+        .replace("\\;", ";")
+        .strip()
     )
+
+    # ========================================================
+    # LIMPAR LIXO COMUM DE CONVITES OUTLOOK / TEAMS
+    # ========================================================
+
+    linhas_descricao = []
+
+    for linha in descricao.splitlines():
+
+        linha_limpa = linha.strip()
+
+        if not linha_limpa:
+            continue
+
+        # Ignora textos técnicos do convite
+        if linha_limpa.upper() in (
+            "REMINDER",
+            "REMINDER:",
+        ):
+            continue
+
+        linhas_descricao.append(
+            linha_limpa
+        )
+
+    descricao = "\n".join(
+        linhas_descricao
+    ).strip()
 
     match = re.search(
         r"https?://[^\s\\<>]+",
