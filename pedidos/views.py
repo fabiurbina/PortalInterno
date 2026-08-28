@@ -62,7 +62,7 @@ from cryptography.fernet import Fernet
 
 from django.conf import settings
 
-from .models import ContaHostinger
+from .models import ContaHostinger,ReuniaoAgenda
 from .services.hostinger_calendar import buscar_reunioes
 
 
@@ -2688,7 +2688,7 @@ def descriptografar_senha_hostinger(senha_criptografada):
 def agenda_reunioes(request):
 
     # ---------------------------------------------------------
-    # VERIFICAR SE O USUÁRIO JÁ POSSUI CONTA HOSTINGER
+    # VERIFICAR CONTA HOSTINGER
     # ---------------------------------------------------------
 
     try:
@@ -2703,54 +2703,94 @@ def agenda_reunioes(request):
 
 
     # ---------------------------------------------------------
-    # DESCRIPTOGRAFAR SENHA
+    # BUSCAR REUNIÕES DO BANCO
     # ---------------------------------------------------------
 
-    try:
-
-        senha = descriptografar_senha_hostinger(
-            conta.senha_criptografada
-        )
-
-    except Exception:
-
-        return redirect("agenda_conectar")
-
-
-    # ---------------------------------------------------------
-    # BUSCAR REUNIÕES
-    # ---------------------------------------------------------
-
-    resultado = buscar_reunioes(
-        conta.email,
-        senha
+    reunioes_db = (
+        ReuniaoAgenda.objects
+        .filter(conta=conta)
+        .order_by("inicio")
     )
 
 
+    reunioes = []
+
+    for reuniao in reunioes_db:
+
+        reunioes.append({
+
+            "uid": reuniao.uid,
+
+            "titulo": reuniao.titulo,
+
+            "inicio": (
+                reuniao.inicio.strftime(
+                    "%Y%m%dT%H%M%S"
+                )
+                if reuniao.inicio
+                else ""
+            ),
+
+            "fim": (
+                reuniao.fim.strftime(
+                    "%Y%m%dT%H%M%S"
+                )
+                if reuniao.fim
+                else ""
+            ),
+
+            "inicio_formatado": (
+                reuniao.inicio_formatado
+            ),
+
+            "fim_formatado": (
+                reuniao.fim_formatado
+            ),
+
+            "data": (
+                reuniao.data.strftime(
+                    "%Y-%m-%d"
+                )
+                if reuniao.data
+                else ""
+            ),
+
+            "hora_inicio": reuniao.hora_inicio,
+
+            "hora_fim": reuniao.hora_fim,
+
+            "organizador_nome": (
+                reuniao.organizador_nome
+            ),
+
+            "organizador_email": (
+                reuniao.organizador_email
+            ),
+
+            "participantes": (
+                reuniao.participantes
+            ),
+
+            "link_reuniao": (
+                reuniao.link_reuniao
+            ),
+
+            "local": reuniao.local,
+
+            "status": reuniao.status,
+
+            "descricao": reuniao.descricao,
+
+        })
+
+
     # ---------------------------------------------------------
-    # SE A CONTA NÃO FUNCIONAR
-    # ---------------------------------------------------------
-
-    if not resultado["sucesso"]:
-
-        return render(
-            request,
-            "agenda/reunioes.html",
-            {
-                "reunioes": [],
-                "erro": resultado["erro"],
-                "email_usuario": conta.email,
-            }
-        )
-
-
-    # ---------------------------------------------------------
-    # CALENDÁRIO
+    # CONTEXTO
     # ---------------------------------------------------------
 
     contexto = {
 
-        "reunioes": resultado["reunioes"],
+        "reunioes": reunioes,
 
         "erro": "",
 
@@ -2763,8 +2803,7 @@ def agenda_reunioes(request):
         request,
         "agenda/reunioes.html",
         contexto
-    )   
-    
+    )    
     
     
 @login_required

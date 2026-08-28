@@ -4,7 +4,8 @@ import email
 from email.message import Message
 from datetime import datetime
 import re
-
+from django.db import transaction
+from ..models import ReuniaoAgenda
 
 # ============================================================
 # CONFIGURAÇÃO IMAP
@@ -574,9 +575,131 @@ def processar_convite(mensagem):
 # BUSCAR REUNIÕES
 # ============================================================
 
+# ============================================================
+# SINCRONIZAR REUNIÕES COM O BANCO
+# ============================================================
+
+def sincronizar_reunioes(
+    conta,
+    reunioes
+):
+
+    quantidade = 0
+
+    with transaction.atomic():
+
+        for reuniao in reunioes:
+
+            uid = reuniao.get(
+                "uid",
+                ""
+            ).strip()
+
+            if not uid:
+                continue
+
+            inicio = converter_data_ics(
+                reuniao.get("inicio", "")
+            )
+
+            fim = converter_data_ics(
+                reuniao.get("fim", "")
+            )
+
+            data_evento = None
+
+            if inicio:
+
+                data_evento = inicio.date()
+
+            dados = {
+
+                "titulo": reuniao.get(
+                    "titulo",
+                    ""
+                ),
+
+                "inicio": inicio,
+
+                "fim": fim,
+
+                "inicio_formatado": reuniao.get(
+                    "inicio_formatado",
+                    ""
+                ),
+
+                "fim_formatado": reuniao.get(
+                    "fim_formatado",
+                    ""
+                ),
+
+                "data": data_evento,
+
+                "hora_inicio": reuniao.get(
+                    "hora_inicio",
+                    ""
+                ),
+
+                "hora_fim": reuniao.get(
+                    "hora_fim",
+                    ""
+                ),
+
+                "organizador_nome": reuniao.get(
+                    "organizador_nome",
+                    ""
+                ),
+
+                "organizador_email": reuniao.get(
+                    "organizador_email",
+                    ""
+                ),
+
+                "participantes": reuniao.get(
+                    "participantes",
+                    []
+                ),
+
+                "link_reuniao": reuniao.get(
+                    "link_reuniao",
+                    ""
+                ),
+
+                "local": reuniao.get(
+                    "local",
+                    ""
+                ),
+
+                "status": reuniao.get(
+                    "status",
+                    ""
+                ),
+
+                "descricao": reuniao.get(
+                    "descricao",
+                    ""
+                ),
+
+            }
+
+            ReuniaoAgenda.objects.update_or_create(
+
+                conta=conta,
+
+                uid=uid,
+
+                defaults=dados
+
+            )
+
+            quantidade += 1
+
+    return quantidade
+
 def buscar_reunioes(
     email_usuario,
-    senha
+    senha,
+    conta=None
 ):
 
     reunioes = []
@@ -803,6 +926,18 @@ def buscar_reunioes(
             f"📅 Reuniões encontradas: "
             f"{len(reunioes)}"
         )
+        
+        if conta:
+
+            quantidade = sincronizar_reunioes(
+                conta,
+                reunioes
+            )
+
+            print(
+                f"💾 Reuniões sincronizadas no banco: "
+                f"{quantidade}"
+            )
 
         return {
 
