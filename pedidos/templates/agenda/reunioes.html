@@ -14,437 +14,449 @@
     <title>Agenda de Reuniões</title>
 
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
+
+    body {
+        margin: 0;
+        padding: 30px;
+        background: #f5f7fa;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1f2937;
+    }
+
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+
+    /* =====================================================
+       CABEÇALHO
+    ===================================================== */
+
+    .cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 20px;
+    }
+
+
+    .titulo {
+        margin: 0;
+        font-size: 28px;
+    }
+
+
+    .subtitulo {
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+
+    /* =====================================================
+       FORMULÁRIO DE LOGIN
+    ===================================================== */
+
+    .card-conexao {
+        max-width: 500px;
+        margin: 50px auto;
+        background: white;
+        border-radius: 14px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    }
+
+
+    .card-conexao h2 {
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+
+    .card-conexao p {
+        margin-top: 0;
+        margin-bottom: 25px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+
+    .campo {
+        margin-bottom: 18px;
+    }
+
+
+    .campo label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+
+    .campo input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+    }
+
+
+    .campo input:focus {
+        border-color: #6b7280;
+    }
+
+
+    .botao-conectar {
+        width: 100%;
+        border: none;
+        padding: 13px 18px;
+        border-radius: 8px;
+        background: #111827;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+
+    .botao-conectar:hover {
+        opacity: 0.9;
+    }
+
+
+    /* =====================================================
+       CONTROLES DO CALENDÁRIO
+    ===================================================== */
+
+    .controles {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+
+    .botao {
+        border: 1px solid #d1d5db;
+        background: white;
+        padding: 9px 14px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+
+    .botao:hover {
+        background: #f3f4f6;
+    }
+
+
+    .botao-hoje {
+        background: #111827;
+        color: white;
+        border-color: #111827;
+    }
+
+
+    .mes-atual {
+        min-width: 180px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+
+    /* =====================================================
+       ERRO
+    ===================================================== */
+
+    .erro {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+
+    /* =====================================================
+       CALENDÁRIO
+    ===================================================== */
+
+    .calendario {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+
+    .dias-semana {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+
+    .dia-semana {
+        padding: 13px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: bold;
+        color: #6b7280;
+        border-right: 1px solid #e5e7eb;
+    }
+
+
+    .dia-semana:last-child {
+        border-right: none;
+    }
+
+
+    .dias {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+
+    .dia {
+        min-height: 130px;
+        min-width: 0;
+        padding: 8px;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        background: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    .dia:nth-child(7n) {
+        border-right: none;
+    }
+
+
+    .dia-fora {
+        background: #fafafa;
+        color: #9ca3af;
+    }
+
+
+    .numero-dia {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+
+    .hoje .numero-dia {
+        background: #111827;
+        color: white;
+        font-weight: bold;
+    }
+
+
+    /* =====================================================
+       EVENTOS
+    ===================================================== */
+
+    .evento {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin-top: 4px;
+        padding: 6px 8px;
+        border-radius: 6px;
+        background: #eef2ff;
+        border-left: 3px solid #4f46e5;
+        cursor: pointer;
+        text-decoration: none;
+        color: #1f2937;
+        overflow: hidden;
+    }
+
+
+    .evento:hover {
+        background: #e0e7ff;
+    }
+
+
+    .evento-hora {
+        font-size: 11px;
+        font-weight: bold;
+        color: #4f46e5;
+        line-height: 1.3;
+    }
+
+
+    .evento-titulo {
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 1.3;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+
+    /* =====================================================
+       MODAL
+    ===================================================== */
+
+    .modal-fundo {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 1000;
+    }
+
+
+    .modal {
+        width: 100%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        background: white;
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .modal-cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+
+    .modal-titulo {
+        margin: 0;
+        font-size: 22px;
+    }
+
+
+    .fechar {
+        border: none;
+        background: transparent;
+        font-size: 25px;
+        cursor: pointer;
+        color: #6b7280;
+    }
+
+
+    .detalhes {
+        margin-top: 20px;
+    }
+
+
+    .detalhe {
+        margin-bottom: 13px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+
+    .detalhe strong {
+        color: #374151;
+    }
+
+
+    .participantes {
+        margin-top: 7px;
+        padding-left: 20px;
+    }
+
+
+    .botao-reuniao {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 11px 16px;
+        border-radius: 8px;
+        background: #111827;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+
+    .botao-reuniao:hover {
+        opacity: 0.9;
+    }
+
+
+    .sem-eventos {
+        padding: 40px;
+        text-align: center;
+        color: #6b7280;
+    }
+
+
+    /* =====================================================
+       RESPONSIVO
+    ===================================================== */
+
+    @media (max-width: 800px) {
 
         body {
-            margin: 0;
-            padding: 30px;
-            background: #f5f7fa;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #1f2937;
+            padding: 15px;
         }
 
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-
-        /* =====================================================
-           CABEÇALHO
-        ===================================================== */
 
         .cabecalho {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            gap: 20px;
+            flex-direction: column;
+            align-items: stretch;
         }
 
-
-        .titulo {
-            margin: 0;
-            font-size: 28px;
-        }
-
-
-        .subtitulo {
-            margin-top: 6px;
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-
-        /* =====================================================
-           FORMULÁRIO DE LOGIN
-        ===================================================== */
-
-        .card-conexao {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 14px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-        }
-
-
-        .card-conexao h2 {
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-
-
-        .card-conexao p {
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-
-        .campo {
-            margin-bottom: 18px;
-        }
-
-
-        .campo label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-
-        .campo input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-
-        .campo input:focus {
-            border-color: #6b7280;
-        }
-
-
-        .botao-conectar {
-            width: 100%;
-            border: none;
-            padding: 13px 18px;
-            border-radius: 8px;
-            background: #111827;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-
-        .botao-conectar:hover {
-            opacity: 0.9;
-        }
-
-
-        /* =====================================================
-           CONTROLES DO CALENDÁRIO
-        ===================================================== */
 
         .controles {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-
-        .botao {
-            border: 1px solid #d1d5db;
-            background: white;
-            padding: 9px 14px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-
-        .botao:hover {
-            background: #f3f4f6;
-        }
-
-
-        .botao-hoje {
-            background: #111827;
-            color: white;
-            border-color: #111827;
-        }
-
-
-        .mes-atual {
-            min-width: 180px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-
-        /* =====================================================
-           ERRO
-        ===================================================== */
-
-        .erro {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-
-        /* =====================================================
-           CALENDÁRIO
-        ===================================================== */
-
-        .calendario {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-        }
-
-
-        .dias-semana {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-
-        .dia-semana {
-            padding: 13px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-            color: #6b7280;
-            border-right: 1px solid #e5e7eb;
-        }
-
-
-        .dia-semana:last-child {
-            border-right: none;
-        }
-
-
-        .dias {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            justify-content: center;
         }
 
 
         .dia {
-            min-height: 130px;
-            padding: 8px;
-            border-right: 1px solid #e5e7eb;
-            border-bottom: 1px solid #e5e7eb;
-            background: white;
-            position: relative;
+            min-height: 100px;
+            min-width: 0;
+            padding: 5px;
         }
 
-
-        .dia:nth-child(7n) {
-            border-right: none;
-        }
-
-
-        .dia-fora {
-            background: #fafafa;
-            color: #9ca3af;
-        }
-
-
-        .numero-dia {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-
-
-        .hoje .numero-dia {
-            background: #111827;
-            color: white;
-            font-weight: bold;
-        }
-
-
-        /* =====================================================
-           EVENTOS
-        ===================================================== */
 
         .evento {
-            display: block;
-            width: 100%;
-            margin-top: 4px;
-            padding: 6px 8px;
-            border-radius: 6px;
-            background: #eef2ff;
-            border-left: 3px solid #4f46e5;
-            cursor: pointer;
-            text-decoration: none;
-            color: #1f2937;
-            overflow: hidden;
-        }
-
-
-        .evento:hover {
-            background: #e0e7ff;
-        }
-
-
-        .evento-hora {
-            font-size: 11px;
-            font-weight: bold;
-            color: #4f46e5;
+            max-width: 100%;
         }
 
 
         .evento-titulo {
-            font-size: 12px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 11px;
         }
 
-
-        /* =====================================================
-           MODAL
-        ===================================================== */
-
-        .modal-fundo {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 1000;
-        }
+    }
 
 
-        .modal {
-            width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            background: white;
-            border-radius: 14px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        }
-
-
-        .modal-cabecalho {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
-        }
-
-
-        .modal-titulo {
-            margin: 0;
-            font-size: 22px;
-        }
-
-
-        .fechar {
-            border: none;
-            background: transparent;
-            font-size: 25px;
-            cursor: pointer;
-            color: #6b7280;
-        }
-
-
-        .detalhes {
-            margin-top: 20px;
-        }
-
-
-        .detalhe {
-            margin-bottom: 13px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-
-        .detalhe strong {
-            color: #374151;
-        }
-
-
-        .participantes {
-            margin-top: 7px;
-            padding-left: 20px;
-        }
-
-
-        .botao-reuniao {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 11px 16px;
-            border-radius: 8px;
-            background: #111827;
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-
-        .botao-reuniao:hover {
-            opacity: 0.9;
-        }
-
-
-        .sem-eventos {
-            padding: 40px;
-            text-align: center;
-            color: #6b7280;
-        }
-
-
-        /* =====================================================
-           RESPONSIVO
-        ===================================================== */
-
-        @media (max-width: 800px) {
-
-            body {
-                padding: 15px;
-            }
-
-
-            .cabecalho {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-
-            .controles {
-                justify-content: center;
-            }
-
-
-            .dia {
-                min-height: 100px;
-                padding: 5px;
-            }
-
-
-            .evento-titulo {
-                font-size: 11px;
-            }
-
-        }
-
-
-    </style>
+</style>
 
 </head>
 
