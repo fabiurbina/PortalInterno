@@ -2952,15 +2952,8 @@ def sincronizar_agenda(request):
 
         if resultado["sucesso"]:
 
-            messages.success(
-                request,
-                (
-                    f"Agenda sincronizada com sucesso. "
-                    f"{len(resultado['reunioes'])} "
-                    f"reuniões encontradas."
-                )
-            )
-
+            pass 
+        
         else:
 
             messages.error(
