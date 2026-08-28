@@ -280,7 +280,7 @@ def extrair_link_reuniao(ics):
     descricao = extrair_campo(
     ics,
     "DESCRIPTION"
-)
+    )
 
     descricao = (
         descricao
@@ -289,6 +289,9 @@ def extrair_link_reuniao(ics):
         .replace("\\;", ";")
         .strip()
     )
+
+    if descricao.upper() in ("REMINDER", "REMINDER:"):
+        descricao = ""
 
     # ========================================================
     # LIMPAR LIXO COMUM DE CONVITES OUTLOOK / TEAMS
