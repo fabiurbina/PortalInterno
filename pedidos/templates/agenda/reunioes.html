@@ -454,6 +454,69 @@
         }
 
     }
+    
+    
+    /* =====================================================
+        CONTROLES DA AGENDA
+        ===================================================== */
+
+        .controles-agenda {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+        AÇÕES
+        ===================================================== */
+
+        .acoes-agenda {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .acoes-agenda form {
+            margin: 0;
+        }
+
+
+        /* =====================================================
+        NAVEGAÇÃO DO CALENDÁRIO
+        ===================================================== */
+
+        .navegacao-calendario {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+
+        /* =====================================================
+        RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .controles-agenda {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .acoes-agenda {
+                justify-content: center;
+            }
+
+            .navegacao-calendario {
+                width: 100%;
+            }
+
+        }
 
 
 </style>
