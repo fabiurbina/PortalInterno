@@ -1437,7 +1437,8 @@
         // Descrição
 
         if (
-            reuniao.descricao
+            reuniao.descricao &&
+            reuniao.descricao.trim().toUpperCase() !== "REMINDER"
         ) {
 
             html += `
