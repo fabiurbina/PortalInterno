@@ -454,69 +454,6 @@
         }
 
     }
-    
-    
-    /* =====================================================
-        CONTROLES DA AGENDA
-        ===================================================== */
-
-        .controles-agenda {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-
-        /* =====================================================
-        AÇÕES
-        ===================================================== */
-
-        .acoes-agenda {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .acoes-agenda form {
-            margin: 0;
-        }
-
-
-        /* =====================================================
-        NAVEGAÇÃO DO CALENDÁRIO
-        ===================================================== */
-
-        .navegacao-calendario {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-
-        /* =====================================================
-        RESPONSIVO
-        ===================================================== */
-
-        @media (max-width: 800px) {
-
-            .controles-agenda {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .acoes-agenda {
-                justify-content: center;
-            }
-
-            .navegacao-calendario {
-                width: 100%;
-            }
-
-        }
 
 
 </style>
@@ -710,18 +647,13 @@
             </div>
 
 
-            <!-- =====================================================
-            CONTROLES DA AGENDA
-        ===================================================== -->
+            <div class="controles">
 
-        <div class="controles-agenda">
-
-            <!-- AÇÕES -->
-            <div class="acoes-agenda">
-
+                <!-- SINCRONIZAR AGENDA -->
                 <form
                     method="POST"
                     action="{% url 'sincronizar_agenda' %}"
+                    style="display: inline; margin: 0;"
                 >
 
                     {% csrf_token %}
@@ -729,7 +661,7 @@
                     <button
                         type="submit"
                         class="botao"
-                        title="Buscar novos convites na Hostinger"
+                        title="Sincronizar agenda com a Hostinger"
                     >
                         🔄 Sincronizar
                     </button>
@@ -737,19 +669,17 @@
                 </form>
 
 
+                <!-- VOLTAR AO PORTAL -->
                 <a
                     href="{% url 'dashboard' %}"
                     class="botao"
+                    style="text-decoration: none;"
                 >
-                    ↩️ Voltar ao Portal
+                    ↩️ Voltar
                 </a>
 
-            </div>
 
-
-            <!-- NAVEGAÇÃO DO CALENDÁRIO -->
-            <div class="navegacao-calendario">
-
+                <!-- MÊS ANTERIOR -->
                 <button
                     class="botao"
                     onclick="mesAnterior()"
@@ -760,6 +690,7 @@
                 </button>
 
 
+                <!-- HOJE -->
                 <button
                     class="botao botao-hoje"
                     onclick="irParaHoje()"
@@ -769,12 +700,14 @@
                 </button>
 
 
+                <!-- MÊS ATUAL -->
                 <div
                     id="mesAtual"
                     class="mes-atual"
                 ></div>
 
 
+                <!-- PRÓXIMO MÊS -->
                 <button
                     class="botao"
                     onclick="mesProximo()"
@@ -786,12 +719,6 @@
 
             </div>
 
-        </div>
-
-
-<!-- =====================================================
-     CALENDÁRIO
-===================================================== -->
 
         <!-- CALENDÁRIO -->
 
