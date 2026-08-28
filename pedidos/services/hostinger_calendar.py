@@ -398,6 +398,106 @@ def formatar_data(data):
     return dt.strftime(
         "%d/%m/%Y %H:%M"
     )
+    
+    
+# ============================================================
+# EXTRAIR LINK DO CORPO DO E-MAIL
+# ============================================================
+
+def extrair_link_email(mensagem):
+
+    try:
+
+        if mensagem.is_multipart():
+
+            partes = mensagem.walk()
+
+            for parte in partes:
+
+                content_type = parte.get_content_type()
+
+                if content_type == "text/html":
+
+                    payload = parte.get_payload(
+                        decode=True
+                    )
+
+                    if not payload:
+                        continue
+
+                    html = payload.decode(
+                        "utf-8",
+                        errors="ignore"
+                    )
+
+                    match = re.search(
+                        r'https?://[^"\s<>]+',
+                        html,
+                        re.IGNORECASE
+                    )
+
+                    if match:
+
+                        link = match.group(0)
+
+                        if any(
+                            dominio in link.lower()
+                            for dominio in [
+                                "teams.live.com",
+                                "teams.microsoft.com",
+                                "meet.google.com",
+                                "zoom.us",
+                                "webex.com"
+                            ]
+                        ):
+
+                            return link.rstrip(
+                                '.,);"\'>'
+                            )
+
+        else:
+
+            payload = mensagem.get_payload(
+                decode=True
+            )
+
+            if payload:
+
+                html = payload.decode(
+                    "utf-8",
+                    errors="ignore"
+                )
+
+                match = re.search(
+                    r'https?://[^"\s<>]+',
+                    html,
+                    re.IGNORECASE
+                )
+
+                if match:
+
+                    link = match.group(0)
+
+                    if any(
+                        dominio in link.lower()
+                        for dominio in [
+                            "teams.live.com",
+                            "teams.microsoft.com",
+                            "meet.google.com",
+                            "zoom.us",
+                            "webex.com"
+                        ]
+                    ):
+
+                        return link.rstrip(
+                            '.,);"\'>'
+                        )
+
+    except Exception:
+
+        pass
+
+    return ""
 
 
 # ============================================================
@@ -496,10 +596,18 @@ def processar_convite(mensagem):
     # --------------------------------------------------------
 
     link_reuniao = (
-        extrair_link_reuniao(
-            ics
-        )
+    extrair_link_reuniao(
+        ics
     )
+    )
+
+    if not link_reuniao:
+
+        link_reuniao = (
+            extrair_link_email(
+                mensagem
+            )
+        )
 
     # --------------------------------------------------------
     # OUTROS DADOS
