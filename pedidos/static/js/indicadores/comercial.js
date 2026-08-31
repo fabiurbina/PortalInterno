@@ -129,13 +129,11 @@ function atualizarKPIs(
 
 
     definirTexto(
-        "comercialKpiPipeline",
-        formatarMoeda(
-            dados.valor_pipeline || 0
-        )
-    );
-
-};
+    "comercialKpiPipeline",
+    formatarMoeda(
+        dados.valor_pipeline || 0
+    )
+);
 
     console.log(
         "TAXA RECEBIDA:",
