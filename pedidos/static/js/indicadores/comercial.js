@@ -103,37 +103,32 @@ function atualizarKPIs(
         dados.total_oportunidades || 0
     );
 
-
     definirTexto(
         "comercialKpiAtivos",
         dados.total_ativos || 0
     );
-
 
     definirTexto(
         "comercialKpiConquistadas",
         dados.total_conquistados || 0
     );
 
-
     definirTexto(
         "comercialKpiSuspensas",
         dados.total_suspensos || 0
     );
-
 
     definirTexto(
         "comercialKpiCanceladas",
         dados.total_cancelados || 0
     );
 
-
     definirTexto(
-    "comercialKpiPipeline",
-    formatarMoeda(
-        dados.valor_pipeline || 0
-    )
-);
+        "comercialKpiPipeline",
+        formatarMoeda(
+            dados.valor_pipeline || 0
+        )
+    );
 
     console.log(
         "TAXA RECEBIDA:",
@@ -152,6 +147,8 @@ function atualizarKPIs(
             }
         ) + "%"
     );
+
+}
 
 
 /* =========================================================
