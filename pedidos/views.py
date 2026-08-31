@@ -1826,7 +1826,7 @@ def criar_acesso_cliente(request):
     
     
 def indicadores_view(request):
-    return render(request, "indicadores.html")
+    return render(request, "indicadores/indicadores.html")
     
     
 def analise_comercial(request):
