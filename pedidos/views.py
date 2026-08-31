@@ -2967,39 +2967,39 @@ def sincronizar_agenda(request):
 
     return redirect("agenda_reunioes")
 
+from threading import Thread
+
+
 @login_required
 def sincronizar_todas_agendas_view(request):
 
     if not request.user.is_staff:
         return redirect("agenda_reunioes")
 
-    try:
-        from .services.hostinger_calendar import sincronizar_todas_agendas
+    if request.method == "POST":
 
-        resultados = sincronizar_todas_agendas()
-
-        sucessos = sum(
-            1 for resultado in resultados
-            if resultado.get("sucesso")
+        from .services.hostinger_calendar import (
+            sincronizar_todas_agendas
         )
 
-        erros = sum(
-            1 for resultado in resultados
-            if not resultado.get("sucesso")
-        )
+        def executar_sincronizacao():
+
+            try:
+                sincronizar_todas_agendas()
+
+            except Exception as e:
+                print(
+                    f"Erro na sincronização geral: {e}"
+                )
+
+        Thread(
+            target=executar_sincronizacao,
+            daemon=True
+        ).start()
 
         messages.success(
             request,
-            f"Sincronização concluída: "
-            f"{sucessos} contas sincronizadas, "
-            f"{erros} com erro."
-        )
-
-    except Exception as e:
-
-        messages.error(
-            request,
-            f"Erro ao sincronizar todas as agendas: {e}"
+            "Sincronização de todas as agendas iniciada em segundo plano."
         )
 
     return redirect("agenda_reunioes")
