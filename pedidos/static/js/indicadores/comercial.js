@@ -13,94 +13,10 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        console.log(
-            "Dashboard Comercial iniciado."
-        );
-
-
-        definirPeriodoInicial();
-
-
         carregarDadosComercial();
 
     }
 );
-
-
-/* =========================================================
-   PERÍODO INICIAL
-========================================================= */
-
-function definirPeriodoInicial() {
-
-    const inicio =
-        document.getElementById(
-            "comercialDataInicio"
-        );
-
-    const fim =
-        document.getElementById(
-            "comercialDataFim"
-        );
-
-
-    if (!inicio || !fim) {
-
-        return;
-    }
-
-
-    const hoje =
-        new Date();
-
-
-    const primeiroMes =
-        new Date(
-            hoje.getFullYear(),
-            hoje.getMonth() - 2,
-            1
-        );
-
-
-    inicio.value =
-        formatarDataInput(
-            primeiroMes
-        );
-
-
-    fim.value =
-        formatarDataInput(
-            hoje
-        );
-
-}
-
-
-/* =========================================================
-   DATA YYYY-MM-DD
-========================================================= */
-
-function formatarDataInput(data) {
-
-    const ano =
-        data.getFullYear();
-
-
-    const mes =
-        String(
-            data.getMonth() + 1
-        ).padStart(2, "0");
-
-
-    const dia =
-        String(
-            data.getDate()
-        ).padStart(2, "0");
-
-
-    return `${ano}-${mes}-${dia}`;
-
-}
 
 
 /* =========================================================
@@ -109,44 +25,11 @@ function formatarDataInput(data) {
 
 async function carregarDadosComercial() {
 
-    const inicio =
-        document.getElementById(
-            "comercialDataInicio"
-        )?.value;
-
-
-    const fim =
-        document.getElementById(
-            "comercialDataFim"
-        )?.value;
-
-
-    if (!inicio || !fim) {
-
-        return;
-    }
-
-
     try {
 
-        mostrarCarregandoComercial();
-
-
-        const url =
-            `/indicadores/comercial/dados/?inicio=${inicio}&fim=${fim}`;
-
-
-        const response =
-            await fetch(url, {
-
-                headers: {
-
-                    "X-Requested-With":
-                        "XMLHttpRequest"
-
-                }
-
-            });
+        const response = await fetch(
+            "/indicadores/comercial/dados/"
+        );
 
 
         if (!response.ok) {
@@ -162,16 +45,7 @@ async function carregarDadosComercial() {
             await response.json();
 
 
-        if (dados.erro) {
-
-            throw new Error(
-                dados.erro
-            );
-
-        }
-
-
-        atualizarDashboardComercial(
+        atualizarDashboard(
             dados
         );
 
@@ -179,13 +53,8 @@ async function carregarDadosComercial() {
     } catch (erro) {
 
         console.error(
-            "Erro no dashboard comercial:",
+            "Erro ao carregar dashboard comercial:",
             erro
-        );
-
-
-        mostrarErroComercial(
-            erro.message
         );
 
     }
@@ -197,7 +66,7 @@ async function carregarDadosComercial() {
    ATUALIZAR DASHBOARD
 ========================================================= */
 
-function atualizarDashboardComercial(
+function atualizarDashboard(
     dados
 ) {
 
@@ -206,40 +75,17 @@ function atualizarDashboardComercial(
     );
 
 
-    atualizarGraficos(
+    criarGraficos(
         dados
     );
 
 
-    atualizarTabelaConquistados(
-        dados.conquistados || []
-    );
-
-
-    atualizarTabelaMaiores(
-        dados.maiores_convertidos || []
-    );
-
-
-    atualizarTabelaPipeline(
-        dados.maiores_pipeline || []
-    );
-
-
-    const atualizado =
-        document.getElementById(
-            "comercialAtualizado"
+    document.getElementById(
+        "comercialAtualizado"
+    ).textContent =
+        new Date().toLocaleString(
+            "pt-BR"
         );
-
-
-    if (atualizado) {
-
-        atualizado.textContent =
-            new Date().toLocaleString(
-                "pt-BR"
-            );
-
-    }
 
 }
 
@@ -266,60 +112,28 @@ function atualizarKPIs(
 
     definirTexto(
         "comercialKpiConquistadas",
-        dados.total_conquistadas || 0
+        dados.total_conquistados || 0
     );
 
 
     definirTexto(
-        "comercialKpiTaxa",
-        formatarPercentual(
-            dados.taxa_conversao
-        )
+        "comercialKpiSuspensas",
+        dados.total_suspensos || 0
+    );
+
+
+    definirTexto(
+        "comercialKpiCanceladas",
+        dados.total_cancelados || 0
     );
 
 
     definirTexto(
         "comercialKpiPipeline",
         formatarMoeda(
-            dados.valor_pipeline
+            dados.valor_pipeline || 0
         )
     );
-
-
-    definirTexto(
-        "comercialKpiConvertido",
-        formatarMoeda(
-            dados.valor_conquistado
-        )
-    );
-
-
-    definirTexto(
-        "comercialKpiPedidos",
-        dados.total_pedidos || 0
-    );
-
-
-    definirTexto(
-        "comercialKpiTicket",
-        formatarMoeda(
-            dados.ticket_medio
-        )
-    );
-
-
-    const clientes =
-        document.getElementById(
-            "comercialQtdClientesConvertidos"
-        );
-
-
-    if (clientes) {
-
-        clientes.textContent =
-            `${dados.clientes_convertidos || 0} clientes`;
-
-    }
 
 }
 
@@ -328,97 +142,76 @@ function atualizarKPIs(
    GRÁFICOS
 ========================================================= */
 
-function atualizarGraficos(
+function criarGraficos(
     dados
 ) {
 
     destruirGraficos();
 
 
-    criarGraficoPipeline(
-        dados
-    );
-
-
-    criarGraficoTemperatura(
-        dados
+    criarGraficoStatus(
+        dados.status || {}
     );
 
 
     criarGraficoSolucao(
-        dados
+        dados.solucao || {}
     );
 
 
-    criarGraficoStatus(
-        dados
+    criarGraficoTemperatura(
+        dados.temperatura || {}
     );
 
 
-    criarGraficoConversao(
-        dados
-    );
-
-
-    criarGraficoDesfecho(
-        dados
+    criarGraficoEvolucao(
+        dados.evolucao_mensal || []
     );
 
 }
 
 
 /* =========================================================
-   PIPELINE
+   STATUS
 ========================================================= */
 
-function criarGraficoPipeline(
+function criarGraficoStatus(
     dados
 ) {
 
     const canvas =
         document.getElementById(
-            "comercialPipeline"
+            "comercialStatus"
         );
 
 
     if (!canvas) {
-
         return;
     }
 
 
-    const etapas =
-        dados.pipeline_por_status || {};
-
-
-    comercialGraficos.pipeline =
+    comercialGraficos.status =
         new Chart(
 
             canvas,
 
             {
 
-                type: "bar",
+                type: "doughnut",
 
                 data: {
 
                     labels:
-                        Object.keys(
-                            etapas
-                        ),
+                        Object.keys(dados),
 
                     datasets: [
 
                         {
 
                             data:
-                                Object.values(
-                                    etapas
-                                ),
+                                Object.values(dados),
 
-                            borderWidth: 0,
-
-                            borderRadius: 4
+                            borderWidth: 0
 
                         }
 
@@ -426,83 +219,27 @@ function criarGraficoPipeline(
 
                 },
 
+                options: {
 
-                options:
-                    opcoesGraficoBase(
-                        true
-                    )
+                    responsive: true,
 
-            }
+                    maintainAspectRatio: false,
 
-        );
+                    cutout: "60%",
 
-}
+                    plugins: {
 
+                        legend: {
 
-/* =========================================================
-   TEMPERATURA
-========================================================= */
+                            display: true,
 
-function criarGraficoTemperatura(
-    dados
-) {
-
-    const canvas =
-        document.getElementById(
-            "comercialTemperatura"
-        );
-
-
-    if (!canvas) {
-
-        return;
-    }
-
-
-    const temperatura =
-        dados.temperatura || {};
-
-
-    comercialGraficos.temperatura =
-        new Chart(
-
-            canvas,
-
-            {
-
-                type: "bar",
-
-                data: {
-
-                    labels:
-                        Object.keys(
-                            temperatura
-                        ),
-
-                    datasets: [
-
-                        {
-
-                            data:
-                                Object.values(
-                                    temperatura
-                                ),
-
-                            borderWidth: 0,
-
-                            borderRadius: 4
+                            position: "bottom"
 
                         }
 
-                    ]
+                    }
 
-                },
-
-
-                options:
-                    opcoesGraficoBase(
-                        true
-                    )
+                }
 
             }
 
@@ -526,13 +263,8 @@ function criarGraficoSolucao(
 
 
     if (!canvas) {
-
         return;
     }
-
-
-    const solucao =
-        dados.solucao || {};
 
 
     comercialGraficos.solucao =
@@ -547,18 +279,14 @@ function criarGraficoSolucao(
                 data: {
 
                     labels:
-                        Object.keys(
-                            solucao
-                        ),
+                        Object.keys(dados),
 
                     datasets: [
 
                         {
 
                             data:
-                                Object.values(
-                                    solucao
-                                ),
+                                Object.values(dados),
 
                             borderWidth: 0
 
@@ -568,14 +296,13 @@ function criarGraficoSolucao(
 
                 },
 
-
                 options: {
 
                     responsive: true,
 
                     maintainAspectRatio: false,
 
-                    cutout: "62%",
+                    cutout: "60%",
 
                     plugins: {
 
@@ -583,21 +310,7 @@ function criarGraficoSolucao(
 
                             display: true,
 
-                            position: "right",
-
-                            labels: {
-
-                                boxWidth: 10,
-
-                                padding: 8,
-
-                                font: {
-
-                                    size: 10
-
-                                }
-
-                            }
+                            position: "right"
 
                         }
 
@@ -613,55 +326,51 @@ function criarGraficoSolucao(
 
 
 /* =========================================================
-   STATUS
+   TEMPERATURA
 ========================================================= */
 
-function criarGraficoStatus(
+function criarGraficoTemperatura(
     dados
 ) {
 
     const canvas =
         document.getElementById(
-            "comercialStatus"
+            "comercialTemperatura"
         );
 
 
     if (!canvas) {
-
         return;
     }
 
 
-    const status =
-        dados.status || {};
-
-
-    comercialGraficos.status =
+    comercialGraficos.temperatura =
         new Chart(
 
             canvas,
 
             {
 
-                type: "doughnut",
+                type: "bar",
 
                 data: {
 
                     labels:
-                        Object.keys(
-                            status
-                        ),
+                        Object.keys(dados),
 
                     datasets: [
 
                         {
 
-                            data:
-                                Object.values(
-                                    status
-                                ),
+                            label:
+                                "Oportunidades",
 
-                            borderWidth: 0
+                            data:
+                                Object.values(dados),
+
+                            borderWidth: 0,
+
+                            borderRadius: 4
 
                         }
 
@@ -669,36 +378,33 @@ function criarGraficoStatus(
 
                 },
 
-
                 options: {
 
                     responsive: true,
 
                     maintainAspectRatio: false,
 
-                    cutout: "62%",
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                precision: 0
+
+                            }
+
+                        }
+
+                    },
 
                     plugins: {
 
                         legend: {
 
-                            display: true,
-
-                            position: "bottom",
-
-                            labels: {
-
-                                boxWidth: 10,
-
-                                padding: 8,
-
-                                font: {
-
-                                    size: 10
-
-                                }
-
-                            }
+                            display: false
 
                         }
 
@@ -714,68 +420,32 @@ function criarGraficoStatus(
 
 
 /* =========================================================
-   CONVERSÃO
-========================================================= */
-
-/* =========================================================
    EVOLUÇÃO DO PIPELINE
-   Pipeline x Conquistado por mês
 ========================================================= */
 
-function criarGraficoConversao(
+function criarGraficoEvolucao(
     dados
 ) {
 
     const canvas =
         document.getElementById(
-            "comercialConversao"
+            "comercialEvolucao"
         );
 
 
     if (!canvas) {
-
-        return;
-    }
-
-
-    const evolucao =
-        dados.evolucao_mensal || [];
-
-
-    if (!evolucao.length) {
-
         return;
     }
 
 
     const labels =
-        evolucao.map(
-            item => {
-
-                const [ano, mes] =
-                    item.mes.split("-");
-
-                const data =
-                    new Date(
-                        Number(ano),
-                        Number(mes) - 1,
-                        1
-                    );
-
-                return data.toLocaleDateString(
-                    "pt-BR",
-                    {
-                        month: "short",
-                        year: "numeric"
-                    }
-                );
-
-            }
+        dados.map(
+            item => item.mes
         );
 
 
-    const pipeline =
-        evolucao.map(
+    const valores =
+        dados.map(
             item =>
                 Number(
                     item.pipeline || 0
@@ -783,16 +453,7 @@ function criarGraficoConversao(
         );
 
 
-    const conquistado =
-        evolucao.map(
-            item =>
-                Number(
-                    item.conquistado || 0
-                )
-        );
-
-
-    comercialGraficos.conversao =
+    comercialGraficos.evolucao =
         new Chart(
 
             canvas,
@@ -809,27 +470,11 @@ function criarGraficoConversao(
 
                         {
 
-                            label: "Pipeline",
+                            label:
+                                "Pipeline",
 
-                            data: pipeline,
-
-                            tension: 0.35,
-
-                            fill: false,
-
-                            pointRadius: 4,
-
-                            pointHoverRadius: 6,
-
-                            borderWidth: 2
-
-                        },
-
-                        {
-
-                            label: "Conquistado",
-
-                            data: conquistado,
+                            data:
+                                valores,
 
                             tension: 0.35,
 
@@ -846,7 +491,6 @@ function criarGraficoConversao(
                     ]
 
                 },
-
 
                 options: {
 
@@ -868,21 +512,7 @@ function criarGraficoConversao(
 
                             display: true,
 
-                            position: "bottom",
-
-                            labels: {
-
-                                boxWidth: 10,
-
-                                padding: 10,
-
-                                font: {
-
-                                    size: 10
-
-                                }
-
-                            }
+                            position: "bottom"
 
                         },
 
@@ -897,9 +527,7 @@ function criarGraficoConversao(
 
                                         return (
 
-                                            contexto.dataset.label +
-
-                                            ": " +
+                                            "Pipeline: " +
 
                                             formatarMoeda(
                                                 contexto.raw
@@ -921,37 +549,18 @@ function criarGraficoConversao(
 
                             beginAtZero: true,
 
-                            grid: {
-
-                                color:
-                                    "rgba(40,50,60,.12)",
-
-                                drawBorder: false
-
-                            },
-
                             ticks: {
 
                                 callback:
                                     function (
-                                        value
+                                        valor
                                     ) {
 
                                         return formatarMoedaCompacta(
-                                            value
+                                            valor
                                         );
 
                                     }
-
-                            }
-
-                        },
-
-                        x: {
-
-                            grid: {
-
-                                display: false
 
                             }
 
@@ -964,429 +573,6 @@ function criarGraficoConversao(
             }
 
         );
-
-}
-
-
-/* =========================================================
-   DESFECHO
-========================================================= */
-
-function criarGraficoDesfecho(
-    dados
-) {
-
-    const canvas =
-        document.getElementById(
-            "comercialDesfecho"
-        );
-
-
-    if (!canvas) {
-
-        return;
-    }
-
-
-    comercialGraficos.desfecho =
-        new Chart(
-
-            canvas,
-
-            {
-
-                type: "bar",
-
-                data: {
-
-                    labels: [
-
-                        "Convertidas",
-
-                        "Não convertidas"
-
-                    ],
-
-                    datasets: [
-
-                        {
-
-                            data: [
-
-                                Number(
-                                    dados.total_conquistadas || 0
-                                ),
-
-                                Math.max(
-
-                                    0,
-
-                                    Number(
-                                        dados.total_oportunidades || 0
-                                    )
-
-                                    -
-
-                                    Number(
-                                        dados.total_conquistadas || 0
-                                    )
-
-                                )
-
-                            ],
-
-                            borderWidth: 0,
-
-                            borderRadius: 4
-
-                        }
-
-                    ]
-
-                },
-
-
-                options:
-                    opcoesGraficoBase(
-                        false
-                    )
-
-            }
-
-        );
-
-}
-
-
-/* =========================================================
-   OPÇÕES DOS GRÁFICOS
-========================================================= */
-
-function opcoesGraficoBase(
-    horizontal
-) {
-
-    return {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        indexAxis:
-            horizontal
-                ? "y"
-                : "x",
-
-        plugins: {
-
-            legend: {
-
-                display: false
-
-            }
-
-        },
-
-        scales: {
-
-            x: {
-
-                beginAtZero: true,
-
-                grid: {
-
-                    color:
-                        "rgba(40,50,60,.12)",
-
-                    drawBorder: false
-
-                }
-
-            },
-
-            y: {
-
-                beginAtZero: true,
-
-                grid: {
-
-                    color:
-                        "rgba(40,50,60,.12)",
-
-                    drawBorder: false
-
-                }
-
-            }
-
-        }
-
-    };
-
-}
-
-
-/* =========================================================
-   TABELA DE CONVERTIDOS
-========================================================= */
-
-function atualizarTabelaConquistados(
-    clientes
-) {
-
-    const tabela =
-        document.getElementById(
-            "comercialTabelaConquistados"
-        );
-
-
-    if (!tabela) {
-
-        return;
-    }
-
-
-    tabela.innerHTML = "";
-
-
-    if (!clientes.length) {
-
-        tabela.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="6"
-                    class="comercial-loading"
-                >
-
-                    Nenhum cliente convertido
-                    no período.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-    }
-
-
-    clientes.forEach(
-
-        cliente => {
-
-            const linha =
-                document.createElement(
-                    "tr"
-                );
-
-
-            const pipeline =
-                Number(
-                    cliente.pipeline || 0
-                );
-
-
-            const convertido =
-                Number(
-                    cliente.valor_conquistado || 0
-                );
-
-
-            const taxa =
-                pipeline > 0
-
-                    ? (
-                        convertido /
-                        pipeline
-                    ) * 100
-
-                    : 0;
-
-
-            linha.innerHTML = `
-
-                <td>
-                    ${escapeHtml(
-                        cliente.cliente || "-"
-                    )}
-                </td>
-
-                <td class="text-right">
-                    ${cliente.oportunidades || 0}
-                </td>
-
-                <td class="text-right">
-                    ${cliente.pedidos || 0}
-                </td>
-
-                <td class="text-right">
-                    ${formatarMoeda(
-                        pipeline
-                    )}
-                </td>
-
-                <td class="text-right comercial-valor-convertido">
-                    ${formatarMoeda(
-                        convertido
-                    )}
-                </td>
-
-                <td class="text-right comercial-taxa-cliente">
-                    ${formatarPercentual(
-                        taxa
-                    )}
-                </td>
-
-            `;
-
-
-            tabela.appendChild(
-                linha
-            );
-
-        }
-
-    );
-
-}
-
-
-/* =========================================================
-   MAIORES CONVERSÕES
-========================================================= */
-
-function atualizarTabelaMaiores(
-    dados
-) {
-
-    const tabela =
-        document.getElementById(
-            "comercialTabelaMaiores"
-        );
-
-
-    if (!tabela) {
-
-        return;
-    }
-
-
-    tabela.innerHTML = "";
-
-
-    dados
-        .slice(0, 8)
-        .forEach(
-
-            item => {
-
-                const linha =
-                    document.createElement(
-                        "tr"
-                    );
-
-
-                linha.innerHTML = `
-
-                    <td>
-                        ${escapeHtml(
-                            item.cliente || "-"
-                        )}
-                    </td>
-
-                    <td class="text-right comercial-valor-convertido">
-                        ${formatarMoeda(
-                            item.valor || 0
-                        )}
-                    </td>
-
-                `;
-
-
-                tabela.appendChild(
-                    linha
-                );
-
-            }
-
-        );
-
-}
-
-
-/* =========================================================
-   MAIORES PIPELINES
-========================================================= */
-
-function atualizarTabelaPipeline(
-    dados
-) {
-
-    const tabela =
-        document.getElementById(
-            "comercialTabelaPipeline"
-        );
-
-
-    if (!tabela) {
-
-        return;
-    }
-
-
-    tabela.innerHTML = "";
-
-
-    dados
-        .slice(0, 8)
-        .forEach(
-
-            item => {
-
-                const linha =
-                    document.createElement(
-                        "tr"
-                    );
-
-
-                linha.innerHTML = `
-
-                    <td>
-                        ${escapeHtml(
-                            item.cliente || "-"
-                        )}
-                    </td>
-
-                    <td class="text-right">
-                        ${formatarMoeda(
-                            item.valor || 0
-                        )}
-                    </td>
-
-                `;
-
-
-                tabela.appendChild(
-                    linha
-                );
-
-            }
-
-        );
-
-}
-
-
-/* =========================================================
-   FILTRO
-========================================================= */
-
-function aplicarFiltroComercial() {
-
-    carregarDadosComercial();
 
 }
 
@@ -1420,93 +606,6 @@ function destruirGraficos() {
 
 
 /* =========================================================
-   LOADING
-========================================================= */
-
-function mostrarCarregandoComercial() {
-
-    const elementos = [
-
-        "comercialKpiTotal",
-
-        "comercialKpiAtivos",
-
-        "comercialKpiConquistadas",
-
-        "comercialKpiTaxa",
-
-        "comercialKpiPipeline",
-
-        "comercialKpiConvertido",
-
-        "comercialKpiPedidos",
-
-        "comercialKpiTicket"
-
-    ];
-
-
-    elementos.forEach(
-
-        id => {
-
-            definirTexto(
-                id,
-                "..."
-            );
-
-        }
-
-    );
-
-}
-
-
-/* =========================================================
-   ERRO
-========================================================= */
-
-function mostrarErroComercial(
-    mensagem
-) {
-
-    console.error(
-        mensagem
-    );
-
-
-    const tabela =
-        document.getElementById(
-            "comercialTabelaConquistados"
-        );
-
-
-    if (tabela) {
-
-        tabela.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="6"
-                    class="comercial-loading"
-                >
-
-                    Não foi possível carregar
-                    os dados comerciais.
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-}
-
-
-/* =========================================================
    UTILITÁRIOS
 ========================================================= */
 
@@ -1516,9 +615,7 @@ function definirTexto(
 ) {
 
     const elemento =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
 
     if (elemento) {
@@ -1549,45 +646,6 @@ function formatarMoeda(
 
         }
     );
-
-}
-
-
-function formatarPercentual(
-    valor
-) {
-
-    return Number(
-        valor || 0
-    ).toLocaleString(
-        "pt-BR",
-        {
-
-            minimumFractionDigits: 2,
-
-            maximumFractionDigits: 2
-
-        }
-    ) + "%";
-
-}
-
-
-function escapeHtml(
-    valor
-) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.textContent =
-        valor;
-
-
-    return div.innerHTML;
 
 }
 
