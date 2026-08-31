@@ -137,6 +137,11 @@ function atualizarKPIs(
 
 };
 
+    console.log(
+        "TAXA RECEBIDA:",
+        dados.taxa_conversao
+    );
+
     definirTexto(
         "comercialKpiTaxa",
         Number(
