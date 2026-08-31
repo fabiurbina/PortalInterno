@@ -3049,14 +3049,23 @@ def indicadores_comercial_dados(request):
 
 
     total_conquistados = sum(
-        1
-        for registro in registros
-        if registro["status"] == "Conquistado"
+    1
+    for registro in registros
+    if registro["status"] == "Conquistado"
+)
+
+    taxa_conversao = (
+        (
+            total_conquistados
+            / total_oportunidades
+        ) * 100
+        if total_oportunidades > 0
+        else 0
     )
-    
+
     print(
-    "STATUS:",
-    [repr(r["status"]) for r in registros]
+        "STATUS:",
+        [repr(r["status"]) for r in registros]
     )
 
     print(
