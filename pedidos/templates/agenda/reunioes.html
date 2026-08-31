@@ -673,6 +673,28 @@
 
                 </form>
 
+                {% if user.is_staff %}
+
+                    <form
+                        method="POST"
+                        action="{% url 'sincronizar_todas_agendas' %}"
+                        style="display: inline; margin: 0;"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="botao"
+                            title="Sincronizar todas as agendas"
+                        >
+                            🔄 Sincronizar TODAS
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
 
                 <!-- VOLTAR AO PORTAL -->
                 <a

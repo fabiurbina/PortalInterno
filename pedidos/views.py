@@ -2967,3 +2967,39 @@ def sincronizar_agenda(request):
 
     return redirect("agenda_reunioes")
 
+@login_required
+def sincronizar_todas_agendas_view(request):
+
+    if not request.user.is_staff:
+        return redirect("agenda_reunioes")
+
+    try:
+        from .services.hostinger_calendar import sincronizar_todas_agendas
+
+        resultados = sincronizar_todas_agendas()
+
+        sucessos = sum(
+            1 for resultado in resultados
+            if resultado.get("sucesso")
+        )
+
+        erros = sum(
+            1 for resultado in resultados
+            if not resultado.get("sucesso")
+        )
+
+        messages.success(
+            request,
+            f"Sincronização concluída: "
+            f"{sucessos} contas sincronizadas, "
+            f"{erros} com erro."
+        )
+
+    except Exception as e:
+
+        messages.error(
+            request,
+            f"Erro ao sincronizar todas as agendas: {e}"
+        )
+
+    return redirect("agenda_reunioes")

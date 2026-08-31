@@ -39,7 +39,8 @@ from .views import (
     exportar_classificacao_cliente_excel,
     agenda_reunioes,
     agenda_conectar,
-    sincronizar_agenda
+    sincronizar_agenda,
+    sincronizar_todas_agendas_view
 )
 
 urlpatterns = [
@@ -274,6 +275,12 @@ urlpatterns = [
     "agenda/sincronizar/",
     sincronizar_agenda,
     name="sincronizar_agenda"
+),
+    
+    path(
+    "agenda/sincronizar-todas/",
+    sincronizar_todas_agendas_view,
+    name="sincronizar_todas_agendas"
 ),
     
     
