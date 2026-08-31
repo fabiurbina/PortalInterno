@@ -114,13 +114,8 @@ function atualizarKPIs(
     );
 
     definirTexto(
-        "comercialKpiSuspensas",
-        dados.total_suspensos || 0
-    );
-
-    definirTexto(
-        "comercialKpiCanceladas",
-        dados.total_cancelados || 0
+    "comercialKpiSuspensasCanceladas",
+    dados.total_suspensas_canceladas || 0
     );
 
     definirTexto(

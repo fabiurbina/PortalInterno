@@ -3106,6 +3106,12 @@ def indicadores_comercial_dados(request):
         for registro in registros
         if registro["status"] == "Cancelado"
     )
+    
+    
+    total_suspensas_canceladas = (
+        total_suspensos
+        + total_cancelados
+    )
 
 
     valor_pipeline = sum(
@@ -3265,5 +3271,8 @@ def indicadores_comercial_dados(request):
             
         "taxa_conversao":
         taxa_conversao,
+        
+        "total_suspensas_canceladas":
+        total_suspensas_canceladas,
 
     })
