@@ -3109,7 +3109,19 @@ def indicadores_comercial_dados(request):
     for registro in registros
     if registro["status"] == "Conquistado"
 )
-    
+    base_absorcao = (
+    valor_pipeline
+    + valor_conquistado
+)
+
+    absorcao_pipeline = (
+        (
+            valor_conquistado
+            / base_absorcao
+        ) * 100
+        if base_absorcao > 0
+        else 0
+    )
     
 
 
@@ -3268,5 +3280,8 @@ def indicadores_comercial_dados(request):
         
         "valor_conquistado": 
         valor_conquistado,
+        
+        "absorcao_pipeline":
+        absorcao_pipeline,
 
     })
