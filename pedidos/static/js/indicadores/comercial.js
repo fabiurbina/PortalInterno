@@ -143,6 +143,20 @@ function atualizarKPIs(
         ) + "%"
     );
 
+    definirTexto(
+    "comercialKpiPipeline",
+    formatarMoeda(
+        dados.valor_pipeline || 0
+    )
+);
+
+    definirTexto(
+        "comercialKpiConquistadoValor",
+        formatarMoeda(
+            dados.valor_conquistado || 0
+        )
+    );
+
 }
 
 

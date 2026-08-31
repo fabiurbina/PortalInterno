@@ -3062,26 +3062,6 @@ def indicadores_comercial_dados(request):
         if total_oportunidades > 0
         else 0
     )
-
-    print(
-        "STATUS:",
-        [repr(r["status"]) for r in registros]
-    )
-
-    print(
-        "TOTAL:",
-        total_oportunidades
-    )
-
-    print(
-        "CONQUISTADOS:",
-        total_conquistados
-    )
-
-    print(
-        "TAXA:",
-        taxa_conversao
-    )
     
     
     taxa_conversao = (
@@ -3115,11 +3095,22 @@ def indicadores_comercial_dados(request):
 
 
     valor_pipeline = sum(
-        float(
+    float(
             registro["valor"] or 0
         )
         for registro in registros
+        if registro["status"] == "Ativo"
     )
+    
+    valor_conquistado = sum(
+    float(
+        registro["valor"] or 0
+    )
+    for registro in registros
+    if registro["status"] == "Conquistado"
+)
+    
+    
 
 
     # =====================================================
@@ -3274,5 +3265,8 @@ def indicadores_comercial_dados(request):
         
         "total_suspensas_canceladas":
         total_suspensas_canceladas,
+        
+        "valor_conquistado": 
+        valor_conquistado,
 
     })
