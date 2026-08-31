@@ -3053,6 +3053,16 @@ def indicadores_comercial_dados(request):
         for registro in registros
         if registro["status"] == "Conquistado"
     )
+    
+    
+    taxa_conversao = (
+    (
+        total_conquistados
+        / total_oportunidades
+        ) * 100
+        if total_oportunidades > 0
+        else 0
+    )
 
 
     total_suspensos = sum(
@@ -3222,6 +3232,9 @@ def indicadores_comercial_dados(request):
             temperatura,
 
         "evolucao_mensal":
-            evolucao_mensal
+            evolucao_mensal,
+            
+        "taxa_conversao":
+        taxa_conversao,
 
     })

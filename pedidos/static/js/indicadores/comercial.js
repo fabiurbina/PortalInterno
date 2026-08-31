@@ -135,7 +135,20 @@ function atualizarKPIs(
         )
     );
 
-}
+};
+
+    definirTexto(
+        "comercialKpiTaxa",
+        Number(
+            dados.taxa_conversao || 0
+        ).toLocaleString(
+            "pt-BR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        ) + "%"
+    );
 
 
 /* =========================================================
