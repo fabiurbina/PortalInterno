@@ -2997,9 +2997,4 @@ def sincronizar_todas_agendas_view(request):
             daemon=True
         ).start()
 
-        messages.success(
-            request,
-            "Sincronização de todas as agendas iniciada em segundo plano."
-        )
-
     return redirect("agenda_reunioes")
