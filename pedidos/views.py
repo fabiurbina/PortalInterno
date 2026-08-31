@@ -3054,6 +3054,26 @@ def indicadores_comercial_dados(request):
         if registro["status"] == "Conquistado"
     )
     
+    print(
+    "STATUS:",
+    [repr(r["status"]) for r in registros]
+    )
+
+    print(
+        "TOTAL:",
+        total_oportunidades
+    )
+
+    print(
+        "CONQUISTADOS:",
+        total_conquistados
+    )
+
+    print(
+        "TAXA:",
+        taxa_conversao
+    )
+    
     
     taxa_conversao = (
     (
