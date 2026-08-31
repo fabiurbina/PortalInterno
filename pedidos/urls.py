@@ -40,7 +40,8 @@ from .views import (
     agenda_reunioes,
     agenda_conectar,
     sincronizar_agenda,
-    sincronizar_todas_agendas_view
+    sincronizar_todas_agendas_view,
+    indicadores_comercial_dados
 )
 
 urlpatterns = [
@@ -283,7 +284,11 @@ urlpatterns = [
     name="sincronizar_todas_agendas"
 ),
     
-    
+    path(
+    "indicadores/comercial/dados/",
+    indicadores_comercial_dados,
+    name="indicadores_comercial_dados"
+),
 
 ]
 

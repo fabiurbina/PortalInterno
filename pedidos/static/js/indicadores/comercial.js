@@ -2,77 +2,399 @@
    DASHBOARD COMERCIAL - VIESANO
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+let comercialGraficos = {};
 
-    console.log("Dashboard Comercial: JS carregado.");
 
-    if (typeof Chart === "undefined") {
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
 
-        console.error("Chart.js não foi carregado.");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        console.log(
+            "Dashboard Comercial iniciado."
+        );
+
+
+        definirPeriodoInicial();
+
+
+        carregarDadosComercial();
+
+    }
+);
+
+
+/* =========================================================
+   PERÍODO INICIAL
+========================================================= */
+
+function definirPeriodoInicial() {
+
+    const inicio =
+        document.getElementById(
+            "comercialDataInicio"
+        );
+
+    const fim =
+        document.getElementById(
+            "comercialDataFim"
+        );
+
+
+    if (!inicio || !fim) {
 
         return;
     }
 
-    console.log("Dashboard Comercial: Chart.js carregado.");
+
+    const hoje =
+        new Date();
 
 
-    /* =====================================================
-       CONFIGURAÇÕES GERAIS
-    ===================================================== */
+    const primeiroMes =
+        new Date(
+            hoje.getFullYear(),
+            hoje.getMonth() - 2,
+            1
+        );
 
-    const baseOptions = {
 
-        responsive: true,
+    inicio.value =
+        formatarDataInput(
+            primeiroMes
+        );
 
-        maintainAspectRatio: false,
 
-        animation: {
-            duration: 700
-        },
+    fim.value =
+        formatarDataInput(
+            hoje
+        );
 
-        plugins: {
+}
 
-            legend: {
-                display: false
-            },
 
-            tooltip: {
+/* =========================================================
+   DATA YYYY-MM-DD
+========================================================= */
 
-                backgroundColor: "rgba(7, 24, 39, 0.95)",
+function formatarDataInput(data) {
 
-                titleColor: "#ffffff",
+    const ano =
+        data.getFullYear();
 
-                bodyColor: "#ffffff",
 
-                padding: 10,
+    const mes =
+        String(
+            data.getMonth() + 1
+        ).padStart(2, "0");
 
-                cornerRadius: 6
-            }
+
+    const dia =
+        String(
+            data.getDate()
+        ).padStart(2, "0");
+
+
+    return `${ano}-${mes}-${dia}`;
+
+}
+
+
+/* =========================================================
+   CARREGAR DADOS
+========================================================= */
+
+async function carregarDadosComercial() {
+
+    const inicio =
+        document.getElementById(
+            "comercialDataInicio"
+        )?.value;
+
+
+    const fim =
+        document.getElementById(
+            "comercialDataFim"
+        )?.value;
+
+
+    if (!inicio || !fim) {
+
+        return;
+    }
+
+
+    try {
+
+        mostrarCarregandoComercial();
+
+
+        const url =
+            `/indicadores/comercial/dados/?inicio=${inicio}&fim=${fim}`;
+
+
+        const response =
+            await fetch(url, {
+
+                headers: {
+
+                    "X-Requested-With":
+                        "XMLHttpRequest"
+
+                }
+
+            });
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Erro HTTP ${response.status}`
+            );
+
         }
-    };
 
 
-    const gridOptions = {
-
-        color: "rgba(40, 50, 60, 0.12)",
-
-        drawBorder: false
-    };
+        const dados =
+            await response.json();
 
 
-    /* =====================================================
-       1. PIPELINE POR ETAPA
-    ===================================================== */
+        if (dados.erro) {
 
-    const pipelineCanvas =
-        document.getElementById("comercialPipeline");
+            throw new Error(
+                dados.erro
+            );
+
+        }
 
 
-    if (pipelineCanvas) {
+        atualizarDashboardComercial(
+            dados
+        );
 
+
+    } catch (erro) {
+
+        console.error(
+            "Erro no dashboard comercial:",
+            erro
+        );
+
+
+        mostrarErroComercial(
+            erro.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ATUALIZAR DASHBOARD
+========================================================= */
+
+function atualizarDashboardComercial(
+    dados
+) {
+
+    atualizarKPIs(
+        dados
+    );
+
+
+    atualizarGraficos(
+        dados
+    );
+
+
+    atualizarTabelaConquistados(
+        dados.conquistados || []
+    );
+
+
+    atualizarTabelaMaiores(
+        dados.maiores_convertidos || []
+    );
+
+
+    atualizarTabelaPipeline(
+        dados.maiores_pipeline || []
+    );
+
+
+    const atualizado =
+        document.getElementById(
+            "comercialAtualizado"
+        );
+
+
+    if (atualizado) {
+
+        atualizado.textContent =
+            new Date().toLocaleString(
+                "pt-BR"
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   KPIs
+========================================================= */
+
+function atualizarKPIs(
+    dados
+) {
+
+    definirTexto(
+        "comercialKpiTotal",
+        dados.total_oportunidades || 0
+    );
+
+
+    definirTexto(
+        "comercialKpiAtivos",
+        dados.total_ativos || 0
+    );
+
+
+    definirTexto(
+        "comercialKpiConquistadas",
+        dados.total_conquistadas || 0
+    );
+
+
+    definirTexto(
+        "comercialKpiTaxa",
+        formatarPercentual(
+            dados.taxa_conversao
+        )
+    );
+
+
+    definirTexto(
+        "comercialKpiPipeline",
+        formatarMoeda(
+            dados.valor_pipeline
+        )
+    );
+
+
+    definirTexto(
+        "comercialKpiConvertido",
+        formatarMoeda(
+            dados.valor_conquistado
+        )
+    );
+
+
+    definirTexto(
+        "comercialKpiPedidos",
+        dados.total_pedidos || 0
+    );
+
+
+    definirTexto(
+        "comercialKpiTicket",
+        formatarMoeda(
+            dados.ticket_medio
+        )
+    );
+
+
+    const clientes =
+        document.getElementById(
+            "comercialQtdClientesConvertidos"
+        );
+
+
+    if (clientes) {
+
+        clientes.textContent =
+            `${dados.clientes_convertidos || 0} clientes`;
+
+    }
+
+}
+
+
+/* =========================================================
+   GRÁFICOS
+========================================================= */
+
+function atualizarGraficos(
+    dados
+) {
+
+    destruirGraficos();
+
+
+    criarGraficoPipeline(
+        dados
+    );
+
+
+    criarGraficoTemperatura(
+        dados
+    );
+
+
+    criarGraficoSolucao(
+        dados
+    );
+
+
+    criarGraficoStatus(
+        dados
+    );
+
+
+    criarGraficoConversao(
+        dados
+    );
+
+
+    criarGraficoDesfecho(
+        dados
+    );
+
+}
+
+
+/* =========================================================
+   PIPELINE
+========================================================= */
+
+function criarGraficoPipeline(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialPipeline"
+        );
+
+
+    if (!canvas) {
+
+        return;
+    }
+
+
+    const etapas =
+        dados.pipeline_por_status || {};
+
+
+    comercialGraficos.pipeline =
         new Chart(
 
-            pipelineCanvas,
+            canvas,
 
             {
 
@@ -80,92 +402,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 data: {
 
-                    labels: [
-
-                        "01 Prospect",
-
-                        "02 Des.PeD",
-
-                        "05 Negociação",
-
-                        "06 Conclusão"
-
-                    ],
+                    labels:
+                        Object.keys(
+                            etapas
+                        ),
 
                     datasets: [
 
                         {
 
-                            data: [
-
-                                8,
-
-                                13,
-
-                                4,
-
-                                7
-
-                            ],
+                            data:
+                                Object.values(
+                                    etapas
+                                ),
 
                             borderWidth: 0,
 
-                            borderRadius: 3
+                            borderRadius: 4
 
                         }
 
                     ]
+
                 },
 
 
-                options: {
+                options:
+                    opcoesGraficoBase(
+                        true
+                    )
 
-                    ...baseOptions,
-
-                    indexAxis: "y",
-
-                    scales: {
-
-                        x: {
-
-                            beginAtZero: true,
-
-                            grid: gridOptions,
-
-                            ticks: {
-
-                                precision: 0
-                            }
-                        },
-
-                        y: {
-
-                            grid: {
-
-                                display: false
-                            }
-                        }
-                    }
-                }
             }
+
         );
 
+}
+
+
+/* =========================================================
+   TEMPERATURA
+========================================================= */
+
+function criarGraficoTemperatura(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialTemperatura"
+        );
+
+
+    if (!canvas) {
+
+        return;
     }
 
 
-    /* =====================================================
-       2. TEMPERATURA
-    ===================================================== */
-
-    const temperaturaCanvas =
-        document.getElementById("comercialTemperatura");
+    const temperatura =
+        dados.temperatura || {};
 
 
-    if (temperaturaCanvas) {
-
+    comercialGraficos.temperatura =
         new Chart(
 
-            temperaturaCanvas,
+            canvas,
 
             {
 
@@ -173,96 +474,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 data: {
 
-                    labels: [
-
-                        "10",
-
-                        "25",
-
-                        "40",
-
-                        "60",
-
-                        "100"
-
-                    ],
+                    labels:
+                        Object.keys(
+                            temperatura
+                        ),
 
                     datasets: [
 
                         {
 
-                            data: [
-
-                                8,
-
-                                3,
-
-                                9,
-
-                                7,
-
-                                5
-
-                            ],
+                            data:
+                                Object.values(
+                                    temperatura
+                                ),
 
                             borderWidth: 0,
 
-                            borderRadius: 3
+                            borderRadius: 4
 
                         }
 
                     ]
+
                 },
 
 
-                options: {
+                options:
+                    opcoesGraficoBase(
+                        true
+                    )
 
-                    ...baseOptions,
-
-                    indexAxis: "y",
-
-                    scales: {
-
-                        x: {
-
-                            beginAtZero: true,
-
-                            grid: gridOptions,
-
-                            ticks: {
-
-                                precision: 0
-                            }
-                        },
-
-                        y: {
-
-                            grid: {
-
-                                display: false
-                            }
-                        }
-                    }
-                }
             }
+
         );
 
+}
+
+
+/* =========================================================
+   SOLUÇÃO
+========================================================= */
+
+function criarGraficoSolucao(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialSolucao"
+        );
+
+
+    if (!canvas) {
+
+        return;
     }
 
 
-    /* =====================================================
-       3. SOLUÇÃO
-    ===================================================== */
-
-    const solucaoCanvas =
-        document.getElementById("comercialSolucao");
+    const solucao =
+        dados.solucao || {};
 
 
-    if (solucaoCanvas) {
-
+    comercialGraficos.solucao =
         new Chart(
 
-            solucaoCanvas,
+            canvas,
 
             {
 
@@ -270,45 +546,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 data: {
 
-                    labels: [
-
-                        "A definir",
-
-                        "Mão de Obra",
-
-                        "Parcial Service",
-
-                        "Full-Service"
-
-                    ],
+                    labels:
+                        Object.keys(
+                            solucao
+                        ),
 
                     datasets: [
 
                         {
 
-                            data: [
-
-                                15,
-
-                                7,
-
-                                6,
-
-                                4
-
-                            ],
+                            data:
+                                Object.values(
+                                    solucao
+                                ),
 
                             borderWidth: 0
 
                         }
 
                     ]
+
                 },
 
 
                 options: {
 
-                    ...baseOptions,
+                    responsive: true,
+
+                    maintainAspectRatio: false,
 
                     cutout: "62%",
 
@@ -324,35 +589,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                 boxWidth: 10,
 
-                                padding: 10,
+                                padding: 8,
 
                                 font: {
 
                                     size: 10
+
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         );
 
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function criarGraficoStatus(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialStatus"
+        );
+
+
+    if (!canvas) {
+
+        return;
     }
 
 
-    /* =====================================================
-       4. STATUS
-    ===================================================== */
-
-    const statusCanvas =
-        document.getElementById("comercialStatus");
+    const status =
+        dados.status || {};
 
 
-    if (statusCanvas) {
-
+    comercialGraficos.status =
         new Chart(
 
-            statusCanvas,
+            canvas,
 
             {
 
@@ -360,37 +647,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 data: {
 
-                    labels: [
-
-                        "Em Aberto",
-
-                        "Concluído"
-
-                    ],
+                    labels:
+                        Object.keys(
+                            status
+                        ),
 
                     datasets: [
 
                         {
 
-                            data: [
-
-                                28,
-
-                                3
-
-                            ],
+                            data:
+                                Object.values(
+                                    status
+                                ),
 
                             borderWidth: 0
 
                         }
 
                     ]
+
                 },
 
 
                 options: {
 
-                    ...baseOptions,
+                    responsive: true,
+
+                    maintainAspectRatio: false,
 
                     cutout: "62%",
 
@@ -406,364 +690,786 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                 boxWidth: 10,
 
-                                padding: 10,
+                                padding: 8,
 
                                 font: {
 
                                     size: 10
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       5. OPORTUNIDADES EM ABERTO POR LEAD
-    ===================================================== */
-
-    const leadsCanvas =
-        document.getElementById("comercialLeads");
-
-
-    if (leadsCanvas) {
-
-        new Chart(
-
-            leadsCanvas,
-
-            {
-
-                type: "bar",
-
-                data: {
-
-                    labels: [
-
-                        "EON ZLIFE INDUSTRIA E COMERCIO DE...",
-
-                        "EXO NUTRITION LTDA",
-
-                        "FITSTAR 3 SUPLEMENTOS NUTRICION...",
-
-                        "RELAXMEDIC IMPORTAÇÃO E EXPORTA...",
-
-                        "M.LABS COM. DISTRIB. E INDUST. DE..."
-
-                    ],
-
-                    datasets: [
-
-                        {
-
-                            data: [
-
-                                100000,
-
-                                94000,
-
-                                50000,
-
-                                50000,
-
-                                41250
-
-                            ],
-
-                            borderWidth: 0,
-
-                            borderRadius: 3
-
-                        }
-
-                    ]
-                },
-
-
-                options: {
-
-                    ...baseOptions,
-
-                    indexAxis: "y",
-
-                    scales: {
-
-                        x: {
-
-                            beginAtZero: true,
-
-                            grid: gridOptions,
-
-                            ticks: {
-
-                                callback: function (value) {
-
-                                    return (
-
-                                        "R$ " +
-
-                                        Number(value)
-                                            .toLocaleString(
-                                                "pt-BR"
-                                            )
-
-                                    );
 
                                 }
+
                             }
-                        },
 
-                        y: {
-
-                            grid: {
-
-                                display: false
-                            }
                         }
+
                     }
+
                 }
+
             }
+
         );
 
-    }
-
-
-    /* =====================================================
-       6. DESFECHO
-    ===================================================== */
-
-    const desfechoCanvas =
-        document.getElementById("comercialDesfecho");
-
-
-    if (desfechoCanvas) {
-
-        new Chart(
-
-            desfechoCanvas,
-
-            {
-
-                type: "bar",
-
-                data: {
-
-                    labels: [
-
-                        "Conquistado",
-
-                        "Suspenso"
-
-                    ],
-
-                    datasets: [
-
-                        {
-
-                            data: [
-
-                                2,
-
-                                1
-
-                            ],
-
-                            borderWidth: 0,
-
-                            borderRadius: 3
-
-                        }
-
-                    ]
-                },
-
-
-                options: {
-
-                    ...baseOptions,
-
-                    scales: {
-
-                        y: {
-
-                            beginAtZero: true,
-
-                            grid: gridOptions,
-
-                            ticks: {
-
-                                precision: 0
-                            }
-                        },
-
-                        x: {
-
-                            grid: {
-
-                                display: false
-                            }
-                        }
-                    }
-                }
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       7. EVOLUÇÃO DO PIPELINE
-    ===================================================== */
-
-    const evolucaoCanvas =
-        document.getElementById("comercialEvolucao");
-
-
-    if (evolucaoCanvas) {
-
-        new Chart(
-
-            evolucaoCanvas,
-
-            {
-
-                type: "line",
-
-                data: {
-
-                    labels: [
-
-                        "jun/2026",
-
-                        "jul/2026",
-
-                        "ago/2026"
-
-                    ],
-
-                    datasets: [
-
-                        {
-
-                            data: [
-
-                                180000,
-
-                                240000,
-
-                                251000
-
-                            ],
-
-                            tension: 0.35,
-
-                            fill: true,
-
-                            pointRadius: 4,
-
-                            pointHoverRadius: 6,
-
-                            borderWidth: 2
-
-                        }
-
-                    ]
-                },
-
-
-                options: {
-
-                    ...baseOptions,
-
-                    scales: {
-
-                        y: {
-
-                            beginAtZero: true,
-
-                            grid: gridOptions,
-
-                            ticks: {
-
-                                callback: function (value) {
-
-                                    return (
-
-                                        "R$ " +
-
-                                        (
-                                            value / 1000
-                                        ).toLocaleString(
-                                            "pt-BR"
-                                        ) +
-
-                                        " Mil"
-
-                                    );
-
-                                }
-                            }
-                        },
-
-                        x: {
-
-                            grid: {
-
-                                display: false
-                            }
-                        }
-                    }
-                }
-            }
-        );
-
-    }
-
-
-    console.log(
-        "Dashboard Comercial: gráficos inicializados."
-    );
-
-});
+}
 
 
 /* =========================================================
-   FILTRO COMERCIAL
+   CONVERSÃO
+========================================================= */
+
+function criarGraficoConversao(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialConversao"
+        );
+
+
+    if (!canvas) {
+
+        return;
+    }
+
+
+    comercialGraficos.conversao =
+        new Chart(
+
+            canvas,
+
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+
+                        "Pipeline não convertido",
+
+                        "Convertido"
+
+                    ],
+
+                    datasets: [
+
+                        {
+
+                            data: [
+
+                                Math.max(
+                                    0,
+                                    Number(
+                                        dados.valor_pipeline || 0
+                                    ) -
+                                    Number(
+                                        dados.valor_conquistado || 0
+                                    )
+                                ),
+
+                                Number(
+                                    dados.valor_conquistado || 0
+                                )
+
+                            ],
+
+                            borderWidth: 0
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "68%",
+
+                    plugins: {
+
+                        legend: {
+
+                            display: true,
+
+                            position: "bottom",
+
+                            labels: {
+
+                                boxWidth: 10,
+
+                                padding: 8,
+
+                                font: {
+
+                                    size: 10
+
+                                }
+
+                            }
+
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (
+                                        contexto
+                                    ) {
+
+                                        return (
+
+                                            " " +
+
+                                            formatarMoeda(
+                                                contexto.raw
+                                            )
+
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   DESFECHO
+========================================================= */
+
+function criarGraficoDesfecho(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialDesfecho"
+        );
+
+
+    if (!canvas) {
+
+        return;
+    }
+
+
+    comercialGraficos.desfecho =
+        new Chart(
+
+            canvas,
+
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: [
+
+                        "Convertidas",
+
+                        "Não convertidas"
+
+                    ],
+
+                    datasets: [
+
+                        {
+
+                            data: [
+
+                                Number(
+                                    dados.total_conquistadas || 0
+                                ),
+
+                                Math.max(
+
+                                    0,
+
+                                    Number(
+                                        dados.total_oportunidades || 0
+                                    )
+
+                                    -
+
+                                    Number(
+                                        dados.total_conquistadas || 0
+                                    )
+
+                                )
+
+                            ],
+
+                            borderWidth: 0,
+
+                            borderRadius: 4
+
+                        }
+
+                    ]
+
+                },
+
+
+                options:
+                    opcoesGraficoBase(
+                        false
+                    )
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   OPÇÕES DOS GRÁFICOS
+========================================================= */
+
+function opcoesGraficoBase(
+    horizontal
+) {
+
+    return {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        indexAxis:
+            horizontal
+                ? "y"
+                : "x",
+
+        plugins: {
+
+            legend: {
+
+                display: false
+
+            }
+
+        },
+
+        scales: {
+
+            x: {
+
+                beginAtZero: true,
+
+                grid: {
+
+                    color:
+                        "rgba(40,50,60,.12)",
+
+                    drawBorder: false
+
+                }
+
+            },
+
+            y: {
+
+                beginAtZero: true,
+
+                grid: {
+
+                    color:
+                        "rgba(40,50,60,.12)",
+
+                    drawBorder: false
+
+                }
+
+            }
+
+        }
+
+    };
+
+}
+
+
+/* =========================================================
+   TABELA DE CONVERTIDOS
+========================================================= */
+
+function atualizarTabelaConquistados(
+    clientes
+) {
+
+    const tabela =
+        document.getElementById(
+            "comercialTabelaConquistados"
+        );
+
+
+    if (!tabela) {
+
+        return;
+    }
+
+
+    tabela.innerHTML = "";
+
+
+    if (!clientes.length) {
+
+        tabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="comercial-loading"
+                >
+
+                    Nenhum cliente convertido
+                    no período.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    clientes.forEach(
+
+        cliente => {
+
+            const linha =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const pipeline =
+                Number(
+                    cliente.pipeline || 0
+                );
+
+
+            const convertido =
+                Number(
+                    cliente.valor_conquistado || 0
+                );
+
+
+            const taxa =
+                pipeline > 0
+
+                    ? (
+                        convertido /
+                        pipeline
+                    ) * 100
+
+                    : 0;
+
+
+            linha.innerHTML = `
+
+                <td>
+                    ${escapeHtml(
+                        cliente.cliente || "-"
+                    )}
+                </td>
+
+                <td class="text-right">
+                    ${cliente.oportunidades || 0}
+                </td>
+
+                <td class="text-right">
+                    ${cliente.pedidos || 0}
+                </td>
+
+                <td class="text-right">
+                    ${formatarMoeda(
+                        pipeline
+                    )}
+                </td>
+
+                <td class="text-right comercial-valor-convertido">
+                    ${formatarMoeda(
+                        convertido
+                    )}
+                </td>
+
+                <td class="text-right comercial-taxa-cliente">
+                    ${formatarPercentual(
+                        taxa
+                    )}
+                </td>
+
+            `;
+
+
+            tabela.appendChild(
+                linha
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   MAIORES CONVERSÕES
+========================================================= */
+
+function atualizarTabelaMaiores(
+    dados
+) {
+
+    const tabela =
+        document.getElementById(
+            "comercialTabelaMaiores"
+        );
+
+
+    if (!tabela) {
+
+        return;
+    }
+
+
+    tabela.innerHTML = "";
+
+
+    dados
+        .slice(0, 8)
+        .forEach(
+
+            item => {
+
+                const linha =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                linha.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(
+                            item.cliente || "-"
+                        )}
+                    </td>
+
+                    <td class="text-right comercial-valor-convertido">
+                        ${formatarMoeda(
+                            item.valor || 0
+                        )}
+                    </td>
+
+                `;
+
+
+                tabela.appendChild(
+                    linha
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   MAIORES PIPELINES
+========================================================= */
+
+function atualizarTabelaPipeline(
+    dados
+) {
+
+    const tabela =
+        document.getElementById(
+            "comercialTabelaPipeline"
+        );
+
+
+    if (!tabela) {
+
+        return;
+    }
+
+
+    tabela.innerHTML = "";
+
+
+    dados
+        .slice(0, 8)
+        .forEach(
+
+            item => {
+
+                const linha =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                linha.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(
+                            item.cliente || "-"
+                        )}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatarMoeda(
+                            item.valor || 0
+                        )}
+                    </td>
+
+                `;
+
+
+                tabela.appendChild(
+                    linha
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   FILTRO
 ========================================================= */
 
 function aplicarFiltroComercial() {
 
-    const dataInicio =
-        document.getElementById(
-            "comercialDataInicio"
-        )?.value;
+    carregarDadosComercial();
+
+}
 
 
-    const dataFim =
-        document.getElementById(
-            "comercialDataFim"
-        )?.value;
+/* =========================================================
+   DESTRUIR GRÁFICOS
+========================================================= */
 
+function destruirGraficos() {
 
-    console.log(
-        "Filtro comercial:",
-        dataInicio,
-        "até",
-        dataFim
+    Object.values(
+        comercialGraficos
+    ).forEach(
+
+        grafico => {
+
+            if (grafico) {
+
+                grafico.destroy();
+
+            }
+
+        }
+
     );
 
 
-    /*
-     * PRÓXIMA ETAPA
-     *
-     * Aqui vamos conectar os filtros
-     * com o Django.
-     *
-     * O Django irá consultar a
-     * vw_ia_comercial.
-     */
+    comercialGraficos = {};
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function mostrarCarregandoComercial() {
+
+    const elementos = [
+
+        "comercialKpiTotal",
+
+        "comercialKpiAtivos",
+
+        "comercialKpiConquistadas",
+
+        "comercialKpiTaxa",
+
+        "comercialKpiPipeline",
+
+        "comercialKpiConvertido",
+
+        "comercialKpiPedidos",
+
+        "comercialKpiTicket"
+
+    ];
+
+
+    elementos.forEach(
+
+        id => {
+
+            definirTexto(
+                id,
+                "..."
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   ERRO
+========================================================= */
+
+function mostrarErroComercial(
+    mensagem
+) {
+
+    console.error(
+        mensagem
+    );
+
+
+    const tabela =
+        document.getElementById(
+            "comercialTabelaConquistados"
+        );
+
+
+    if (tabela) {
+
+        tabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="comercial-loading"
+                >
+
+                    Não foi possível carregar
+                    os dados comerciais.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+function definirTexto(
+    id,
+    valor
+) {
+
+    const elemento =
+        document.getElementById(
+            id
+        );
+
+
+    if (elemento) {
+
+        elemento.textContent =
+            valor;
+
+    }
+
+}
+
+
+function formatarMoeda(
+    valor
+) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+
+            style: "currency",
+
+            currency: "BRL",
+
+            maximumFractionDigits: 0
+
+        }
+    );
+
+}
+
+
+function formatarPercentual(
+    valor
+) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+
+            minimumFractionDigits: 2,
+
+            maximumFractionDigits: 2
+
+        }
+    ) + "%";
+
+}
+
+
+function escapeHtml(
+    valor
+) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        valor;
+
+
+    return div.innerHTML;
+
 }

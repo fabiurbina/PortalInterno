@@ -2998,3 +2998,513 @@ def sincronizar_todas_agendas_view(request):
         ).start()
 
     return redirect("agenda_reunioes")
+
+
+
+from django.http import JsonResponse
+from django.db import connection
+
+
+def indicadores_comercial_dados(request):
+
+    data_inicio = request.GET.get("inicio")
+    data_fim = request.GET.get("fim")
+
+    if not data_inicio or not data_fim:
+
+        return JsonResponse(
+            {
+                "erro": "Informe o período."
+            },
+            status=400
+        )
+
+
+    try:
+
+        ano_inicio, mes_inicio, _ = map(
+            int,
+            data_inicio.split("-")
+        )
+
+        ano_fim, mes_fim, _ = map(
+            int,
+            data_fim.split("-")
+        )
+
+    except ValueError:
+
+        return JsonResponse(
+            {
+                "erro": "Período inválido."
+            },
+            status=400
+        )
+
+
+    periodo_inicio = (
+        ano_inicio * 100
+        + mes_inicio
+    )
+
+
+    periodo_fim = (
+        ano_fim * 100
+        + mes_fim
+    )
+
+
+    sql = """
+
+        SELECT
+
+            codigo_oportunidade,
+            cliente,
+            origem,
+            status,
+            solucao,
+            motivo,
+            valor,
+            temperatura,
+            ano_previsto,
+            mes_previsto,
+            qtd_pedidos,
+            conquistado,
+            valor_conquistado
+
+        FROM vw_ia_comercial
+
+        WHERE
+
+            (
+                ano_previsto * 100
+                + mes_previsto
+            ) BETWEEN %s AND %s
+
+    """
+
+
+    with connection.cursor() as cursor:
+
+        cursor.execute(
+            sql,
+            [
+                periodo_inicio,
+                periodo_fim
+            ]
+        )
+
+
+        colunas = [
+            coluna[0]
+            for coluna in cursor.description
+        ]
+
+
+        registros = [
+
+            dict(
+                zip(
+                    colunas,
+                    linha
+                )
+            )
+
+            for linha in cursor.fetchall()
+
+        ]
+
+
+    # =====================================================
+    # INDICADORES
+    # =====================================================
+
+    total_oportunidades = len(
+        registros
+    )
+
+
+    total_ativos = sum(
+
+        1
+
+        for r in registros
+
+        if r["status"] == "Ativo"
+
+    )
+
+
+    total_conquistadas = sum(
+
+        int(
+            r["conquistado"] or 0
+        )
+
+        for r in registros
+
+    )
+
+
+    valor_pipeline = sum(
+
+        float(
+            r["valor"] or 0
+        )
+
+        for r in registros
+
+    )
+
+
+    valor_conquistado = sum(
+
+        float(
+            r["valor_conquistado"] or 0
+        )
+
+        for r in registros
+
+    )
+
+
+    total_pedidos = sum(
+
+        int(
+            r["qtd_pedidos"] or 0
+        )
+
+        for r in registros
+
+    )
+
+
+    taxa_conversao = (
+
+        (
+            valor_conquistado
+            /
+            valor_pipeline
+        ) * 100
+
+        if valor_pipeline > 0
+
+        else 0
+
+    )
+
+
+    ticket_medio = (
+
+        valor_pipeline
+        /
+        total_oportunidades
+
+        if total_oportunidades > 0
+
+        else 0
+
+    )
+
+
+    # =====================================================
+    # STATUS
+    # =====================================================
+
+    status = {}
+
+
+    for r in registros:
+
+        nome = r["status"] or "Sem status"
+
+
+        status[nome] = status.get(
+                nome,
+                0
+            ) + 1
+
+
+    # =====================================================
+    # TEMPERATURA
+    # =====================================================
+
+    temperatura = {}
+
+
+    for r in registros:
+
+        temp =str(
+                r["temperatura"]
+                or 0
+            )
+
+
+        temperatura[temp] =temperatura.get(
+                temp,
+                0
+            ) + 1
+
+
+    # =====================================================
+    # SOLUÇÃO
+    # =====================================================
+
+    solucao = {}
+
+
+    for r in registros:
+
+        nome =r["solucao"] or "A definir"
+
+
+        solucao[nome] =solucao.get(
+                nome,
+                0
+            ) + 1
+
+
+    # =====================================================
+    # PIPELINE POR STATUS
+    # =====================================================
+
+    pipeline_por_status = {}
+
+
+    for r in registros:
+
+        nome =r["status"] or "Sem status"
+
+        pipeline_por_status[nome] = (
+
+            pipeline_por_status.get(
+                nome,
+                0
+            )
+
+            +
+
+            float(
+                r["valor"] or 0
+            )
+
+        )
+
+
+    # =====================================================
+    # CLIENTES CONVERTIDOS
+    # =====================================================
+
+    clientes = {}
+
+
+    for r in registros:
+
+        cliente =r["cliente"] or "Sem cliente"
+
+
+        if cliente not in clientes:
+
+            clientes[cliente] = {
+
+                "cliente":
+                    cliente,
+
+                "oportunidades":
+                    0,
+
+                "pedidos":
+                    0,
+
+                "pipeline":
+                    0,
+
+                "valor_conquistado":
+                    0
+
+            }
+
+
+        clientes[cliente][
+            "oportunidades"
+        ] += 1
+
+
+        clientes[cliente][
+            "pipeline"
+        ] += float(
+            r["valor"] or 0
+        )
+
+
+        clientes[cliente][
+            "pedidos"
+        ] = max(
+
+            clientes[cliente][
+                "pedidos"
+            ],
+
+            int(
+                r["qtd_pedidos"] or 0
+            )
+
+        )
+
+
+        clientes[cliente][
+            "valor_conquistado"
+        ] += float(
+
+            r["valor_conquistado"]
+            or 0
+
+        )
+
+
+    clientes_convertidos = [
+
+        cliente
+
+        for cliente in clientes.values()
+
+        if cliente[
+            "valor_conquistado"
+        ] > 0
+
+    ]
+
+
+    clientes_convertidos.sort(
+
+        key=lambda x:
+            x["valor_conquistado"],
+
+        reverse=True
+
+    )
+
+
+    # =====================================================
+    # MAIORES CONVERSÕES
+    # =====================================================
+
+    maiores_convertidos = sorted(
+
+        [
+
+            {
+
+                "cliente":
+                    r["cliente"],
+
+                "valor":
+                    float(
+                        r["valor_conquistado"]
+                        or 0
+                    )
+
+            }
+
+            for r in registros
+
+            if float(
+                r["valor_conquistado"]
+                or 0
+            ) > 0
+
+        ],
+
+        key=lambda x:
+            x["valor"],
+
+        reverse=True
+
+    )
+
+
+    # =====================================================
+    # MAIORES PIPELINES
+    # =====================================================
+
+    maiores_pipeline = sorted(
+
+        [
+
+            {
+
+                "cliente":
+                    r["cliente"],
+
+                "valor":
+                    float(
+                        r["valor"] or 0
+                    )
+
+            }
+
+            for r in registros
+
+        ],
+
+        key=lambda x:
+            x["valor"],
+
+        reverse=True
+
+    )
+
+
+    return JsonResponse({
+
+        "total_oportunidades":
+            total_oportunidades,
+
+        "total_ativos":
+            total_ativos,
+
+        "total_conquistadas":
+            total_conquistadas,
+
+        "valor_pipeline":
+            valor_pipeline,
+
+        "valor_conquistado":
+            valor_conquistado,
+
+        "taxa_conversao":
+            taxa_conversao,
+
+        "total_pedidos":
+            total_pedidos,
+
+        "clientes_convertidos":
+            len(
+                clientes_convertidos
+            ),
+
+        "ticket_medio":
+            ticket_medio,
+
+        "status":
+            status,
+
+        "temperatura":
+            temperatura,
+
+        "solucao":
+            solucao,
+
+        "pipeline_por_status":
+            pipeline_por_status,
+
+        "conquistados":
+            clientes_convertidos,
+
+        "maiores_convertidos":
+            maiores_convertidos,
+
+        "maiores_pipeline":
+            maiores_pipeline
+
+    })
