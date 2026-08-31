@@ -1,6 +1,9 @@
 <div class="comercial-dashboard">
 
-    <!-- CABEÇALHO DO DASHBOARD -->
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
     <div class="comercial-topbar">
 
         <div class="comercial-brand">
@@ -8,11 +11,13 @@
             <div class="comercial-brand-mark"></div>
 
             <div>
+
                 <h1>OPORTUNIDADES</h1>
 
                 <div class="comercial-subtitle">
                     Análise Inteligente de Oportunidades Comerciais
                 </div>
+
             </div>
 
         </div>
@@ -25,7 +30,6 @@
                 <input
                     type="date"
                     id="comercialDataInicio"
-                    value="2026-06-01"
                 >
 
                 <span>até</span>
@@ -33,7 +37,6 @@
                 <input
                     type="date"
                     id="comercialDataFim"
-                    value="2026-08-31"
                 >
 
             </div>
@@ -44,7 +47,7 @@
                 class="comercial-filtro-btn"
                 onclick="aplicarFiltroComercial()"
             >
-                ⚙ Filtros
+                ↻ Atualizar
             </button>
 
         </div>
@@ -52,8 +55,12 @@
     </div>
 
 
-    <!-- KPIs -->
+    <!-- =====================================================
+         KPIs
+    ====================================================== -->
+
     <div class="comercial-kpis">
+
 
         <div class="comercial-kpi">
 
@@ -61,11 +68,11 @@
                 class="comercial-kpi-value"
                 id="comercialKpiTotal"
             >
-                32
+                0
             </div>
 
             <div class="comercial-kpi-label">
-                Total de Leads
+                Oportunidades
             </div>
 
         </div>
@@ -77,11 +84,11 @@
                 class="comercial-kpi-value"
                 id="comercialKpiAtivos"
             >
-                28
+                0
             </div>
 
             <div class="comercial-kpi-label">
-                Leads Ativos
+                Oportunidades Ativas
             </div>
 
         </div>
@@ -91,57 +98,25 @@
 
             <div
                 class="comercial-kpi-value"
-                id="comercialKpiNovos"
+                id="comercialKpiConquistadas"
             >
-                30
+                0
             </div>
 
             <div class="comercial-kpi-label">
-                Novos Leads
+                Convertidas
             </div>
 
         </div>
 
 
-        <div class="comercial-kpi">
+        <div class="comercial-kpi comercial-kpi-conversao">
 
             <div
                 class="comercial-kpi-value"
-                id="comercialKpiConcluidos"
+                id="comercialKpiTaxa"
             >
-                3
-            </div>
-
-            <div class="comercial-kpi-label">
-                Concluídos no Período
-            </div>
-
-        </div>
-
-
-        <div class="comercial-kpi">
-
-            <div
-                class="comercial-kpi-value"
-                id="comercialKpiTempo"
-            >
-                43,97
-            </div>
-
-            <div class="comercial-kpi-label">
-                Tempo Negociação
-            </div>
-
-        </div>
-
-
-        <div class="comercial-kpi">
-
-            <div
-                class="comercial-kpi-value"
-                id="comercialKpiConversao"
-            >
-                6,25%
+                0%
             </div>
 
             <div class="comercial-kpi-label">
@@ -155,13 +130,45 @@
 
             <div
                 class="comercial-kpi-value"
-                id="comercialKpiConquistado"
+                id="comercialKpiPipeline"
             >
-                R$ 62 Mil
+                R$ 0
             </div>
 
             <div class="comercial-kpi-label">
-                Valor Conquistado
+                Pipeline
+            </div>
+
+        </div>
+
+
+        <div class="comercial-kpi comercial-kpi-conversao">
+
+            <div
+                class="comercial-kpi-value"
+                id="comercialKpiConvertido"
+            >
+                R$ 0
+            </div>
+
+            <div class="comercial-kpi-label">
+                Valor Convertido
+            </div>
+
+        </div>
+
+
+        <div class="comercial-kpi">
+
+            <div
+                class="comercial-kpi-value"
+                id="comercialKpiPedidos"
+            >
+                0
+            </div>
+
+            <div class="comercial-kpi-label">
+                Pedidos Gerados
             </div>
 
         </div>
@@ -173,7 +180,7 @@
                 class="comercial-kpi-value"
                 id="comercialKpiTicket"
             >
-                R$ 12 Mil
+                R$ 0
             </div>
 
             <div class="comercial-kpi-label">
@@ -185,11 +192,15 @@
     </div>
 
 
-    <!-- PRIMEIRA LINHA DE GRÁFICOS -->
+    <!-- =====================================================
+         GRÁFICOS
+    ====================================================== -->
+
     <div class="comercial-grid">
 
 
-        <!-- PIPELINE -->
+        <!-- PIPELINE POR ETAPA -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
@@ -197,13 +208,18 @@
             </div>
 
             <div class="comercial-chart">
-                <canvas id="comercialPipeline"></canvas>
+
+                <canvas
+                    id="comercialPipeline"
+                ></canvas>
+
             </div>
 
         </section>
 
 
         <!-- TEMPERATURA -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
@@ -211,13 +227,18 @@
             </div>
 
             <div class="comercial-chart">
-                <canvas id="comercialTemperatura"></canvas>
+
+                <canvas
+                    id="comercialTemperatura"
+                ></canvas>
+
             </div>
 
         </section>
 
 
         <!-- SOLUÇÃO -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
@@ -225,13 +246,18 @@
             </div>
 
             <div class="comercial-chart">
-                <canvas id="comercialSolucao"></canvas>
+
+                <canvas
+                    id="comercialSolucao"
+                ></canvas>
+
             </div>
 
         </section>
 
 
         <!-- STATUS -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
@@ -239,45 +265,71 @@
             </div>
 
             <div class="comercial-chart">
-                <canvas id="comercialStatus"></canvas>
+
+                <canvas
+                    id="comercialStatus"
+                ></canvas>
+
             </div>
 
         </section>
 
 
-        <!-- LEADS -->
+        <!-- CONVERSÃO -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
-                Oportunidade em Aberto por Lead
+                Pipeline x Conversão
             </div>
 
             <div class="comercial-chart">
-                <canvas id="comercialLeads"></canvas>
+
+                <canvas
+                    id="comercialConversao"
+                ></canvas>
+
             </div>
 
         </section>
 
 
         <!-- DESFECHO -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
-                Desfecho das Prospecções no Período
+                Resultado Comercial
             </div>
 
             <div class="comercial-chart">
-                <canvas id="comercialDesfecho"></canvas>
+
+                <canvas
+                    id="comercialDesfecho"
+                ></canvas>
+
             </div>
 
         </section>
 
 
-        <!-- TOP CLIENTES -->
+        <!-- =================================================
+             CLIENTES CONVERTIDOS
+        ================================================== -->
+
         <section class="comercial-panel comercial-panel-wide">
 
             <div class="comercial-panel-title">
-                Top Clientes por Valor de Pipeline
+
+                Clientes Convertidos
+
+                <span
+                    class="comercial-panel-badge"
+                    id="comercialQtdClientesConvertidos"
+                >
+                    0 clientes
+                </span>
+
             </div>
 
 
@@ -289,8 +341,6 @@
 
                         <tr>
 
-                            <th>#</th>
-
                             <th>
                                 Cliente
                             </th>
@@ -300,11 +350,19 @@
                             </th>
 
                             <th class="text-right">
-                                Valor Pipeline
+                                Pedidos
                             </th>
 
                             <th class="text-right">
-                                % Pipeline
+                                Pipeline
+                            </th>
+
+                            <th class="text-right">
+                                Convertido
+                            </th>
+
+                            <th class="text-right">
+                                Conversão
                             </th>
 
                         </tr>
@@ -312,139 +370,17 @@
                     </thead>
 
 
-                    <tbody id="comercialTabelaClientes">
+                    <tbody
+                        id="comercialTabelaConquistados"
+                    >
 
                         <tr>
 
-                            <td>1</td>
-
-                            <td>
-                                EON ZLIFE INDUSTRIA E COMERCIO DE SUPLEMENTOS LTDA
-                            </td>
-
-                            <td class="text-right">
-                                4
-                            </td>
-
-                            <td class="text-right">
-                                R$ 100.000
-                            </td>
-
-                            <td class="text-right">
-                                16,13%
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>2</td>
-
-                            <td>
-                                EXO NUTRITION LTDA
-                            </td>
-
-                            <td class="text-right">
-                                3
-                            </td>
-
-                            <td class="text-right">
-                                R$ 94.000
-                            </td>
-
-                            <td class="text-right">
-                                15,16%
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>3</td>
-
-                            <td>
-                                FITSTAR 3 SUPLEMENTOS NUTRICIONAIS LTDA
-                            </td>
-
-                            <td class="text-right">
-                                2
-                            </td>
-
-                            <td class="text-right">
-                                R$ 50.000
-                            </td>
-
-                            <td class="text-right">
-                                8,06%
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>4</td>
-
-                            <td>
-                                RELAXMEDIC IMPORTAÇÃO E EXPORTAÇÃO LTDA
-                            </td>
-
-                            <td class="text-right">
-                                2
-                            </td>
-
-                            <td class="text-right">
-                                R$ 50.000
-                            </td>
-
-                            <td class="text-right">
-                                8,06%
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>5</td>
-
-                            <td>
-                                M.LABS COM. DISTRIB. E INDUST. DE SUPLEMENTOS LTDA
-                            </td>
-
-                            <td class="text-right">
-                                1
-                            </td>
-
-                            <td class="text-right">
-                                R$ 41.250
-                            </td>
-
-                            <td class="text-right">
-                                6,65%
-                            </td>
-
-                        </tr>
-
-
-                        <tr class="comercial-total">
-
-                            <td colspan="2">
-                                Total Geral
-                            </td>
-
-                            <td class="text-right">
-                                32
-                            </td>
-
-                            <td class="text-right">
-                                R$ 620.849
-                            </td>
-
-                            <td class="text-right">
-                                100,00%
+                            <td
+                                colspan="6"
+                                class="comercial-loading"
+                            >
+                                Carregando...
                             </td>
 
                         </tr>
@@ -458,15 +394,113 @@
         </section>
 
 
-        <!-- EVOLUÇÃO -->
+        <!-- =================================================
+             MAIORES OPORTUNIDADES CONVERTIDAS
+        ================================================== -->
+
         <section class="comercial-panel">
 
             <div class="comercial-panel-title">
-                Evolução do Pipeline
+                Maiores Conversões
             </div>
 
-            <div class="comercial-chart">
-                <canvas id="comercialEvolucao"></canvas>
+
+            <div class="comercial-table-container">
+
+                <table class="comercial-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Cliente
+                            </th>
+
+                            <th class="text-right">
+                                Valor
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="comercialTabelaMaiores"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="2"
+                                class="comercial-loading"
+                            >
+                                Carregando...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TOP PIPELINE
+        ================================================== -->
+
+        <section class="comercial-panel">
+
+            <div class="comercial-panel-title">
+                Maiores Oportunidades
+            </div>
+
+
+            <div class="comercial-table-container">
+
+                <table class="comercial-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Cliente
+                            </th>
+
+                            <th class="text-right">
+                                Valor
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="comercialTabelaPipeline"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="2"
+                                class="comercial-loading"
+                            >
+                                Carregando...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
             </div>
 
         </section>
@@ -474,12 +508,16 @@
     </div>
 
 
-    <!-- ATUALIZAÇÃO -->
+    <!-- =====================================================
+         RODAPÉ
+    ====================================================== -->
+
     <div class="comercial-atualizado">
 
-        Dados atualizados em
+        Atualizado em:
+
         <span id="comercialAtualizado">
-            25/08/2026 15:52:31
+            --
         </span>
 
     </div>
