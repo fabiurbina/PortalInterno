@@ -3049,7 +3049,7 @@ def indicadores_comercial_dados(request):
     )
 
     # =====================================================
-    # CONSULTA DIRETA À VIEW OFICIAL
+    # CONSULTA À VIEW OFICIAL
     # =====================================================
 
     sql = """
@@ -3089,141 +3089,183 @@ def indicadores_comercial_dados(request):
         ]
 
     # =====================================================
-    # INDICADORES VINDOS DA VIEW SQL
+    # INDICADORES DO PERÍODO
+    #
+    # A CONVERSÃO É DEFINIDA PELO STATUS DO CRM
+    #
+    # Conquistado = convertido
     # =====================================================
 
-    if registros:
+    total_oportunidades = len(
+        registros
+    )
 
-        primeiro = registros[0]
+    total_conquistadas = sum(
+        1
+        for registro in registros
+        if registro["status"] == "Conquistado"
+    )
+    
+    taxa_conversao = (
+        (
+            total_conquistadas
+            / total_oportunidades
+        ) * 100
+        if total_oportunidades > 0
+        else 0
+    )
 
-        total_oportunidades = int(
-            primeiro["total_oportunidades"] or 0
-        )
+    total_ativos = sum(
+        1
+        for registro in registros
+        if registro["status"] == "Ativo"
+    )
 
-        valor_pipeline = float(
-            primeiro["valor_pipeline"] or 0
-        )
+    total_suspensos = sum(
+        1
+        for registro in registros
+        if registro["status"] == "Suspenso"
+    )
 
-        ticket_medio = float(
-            primeiro["ticket_medio"] or 0
-        )
-
-        maior_oportunidade = float(
-            primeiro["maior_oportunidade"] or 0
-        )
-
-        menor_oportunidade = float(
-            primeiro["menor_oportunidade"] or 0
-        )
-
-        total_ativos = int(
-            primeiro["total_ativos"] or 0
-        )
-
-        total_conquistados = int(
-            primeiro["total_conquistados"] or 0
-        )
-
-        total_suspensos = int(
-            primeiro["total_suspensos"] or 0
-        )
-
-        total_cancelados = int(
-            primeiro["total_cancelados"] or 0
-        )
-
-        total_full_service = int(
-            primeiro["total_full_service"] or 0
-        )
-
-        total_parcial_service = int(
-            primeiro["total_parcial_service"] or 0
-        )
-
-        total_mao_obra = int(
-            primeiro["total_mao_obra"] or 0
-        )
-
-        total_a_definir = int(
-            primeiro["total_a_definir"] or 0
-        )
-
-        temp_100 = int(
-            primeiro["temp_100"] or 0
-        )
-
-        temp_60 = int(
-            primeiro["temp_60"] or 0
-        )
-
-        temp_40 = int(
-            primeiro["temp_40"] or 0
-        )
-
-        temp_25 = int(
-            primeiro["temp_25"] or 0
-        )
-
-        temp_10 = int(
-            primeiro["temp_10"] or 0
-        )
-
-    else:
-
-        total_oportunidades = 0
-        valor_pipeline = 0
-        ticket_medio = 0
-        maior_oportunidade = 0
-        menor_oportunidade = 0
-
-        total_ativos = 0
-        total_conquistados = 0
-        total_suspensos = 0
-        total_cancelados = 0
-
-        total_full_service = 0
-        total_parcial_service = 0
-        total_mao_obra = 0
-        total_a_definir = 0
-
-        temp_100 = 0
-        temp_60 = 0
-        temp_40 = 0
-        temp_25 = 0
-        temp_10 = 0
+    total_cancelados = sum(
+        1
+        for registro in registros
+        if registro["status"] == "Cancelado"
+    )
 
     # =====================================================
-    # CONVERSÃO
+    # VALORES
     # =====================================================
+
+    valor_pipeline = sum(
+        float(
+            registro["valor"] or 0
+        )
+        for registro in registros
+    )
 
     valor_conquistado = sum(
         float(
-            registro["valor_conquistado"] or 0
+            registro["valor"] or 0
         )
         for registro in registros
+        if registro["status"] == "Conquistado"
     )
 
-    valor_na_esteira = sum(
-        float(
-            registro["valor_na_esteira"] or 0
-        )
-        for registro in registros
+    valor_na_esteira = (
+        valor_pipeline
+        - valor_conquistado
     )
 
-    total_pedidos = sum(
-        int(
-            registro["qtd_pedidos"] or 0
-        )
-        for registro in registros
-    )
+    # =====================================================
+    # TAXA DE CONVERSÃO
+    #
+    # QUANTIDADE CONQUISTADA / TOTAL
+    # =====================================================
 
     taxa_conversao = (
         (
-            valor_conquistado
-            / valor_pipeline
+            total_conquistadas
+            / total_oportunidades
         ) * 100
-        if valor_pipeline > 0
+        if total_oportunidades > 0
         else 0
+    )
+
+    # =====================================================
+    # TICKET MÉDIO
+    # =====================================================
+
+    ticket_medio = (
+        valor_pipeline
+        / total_oportunidades
+        if total_oportunidades > 0
+        else 0
+    )
+
+    # =====================================================
+    # MAIOR / MENOR OPORTUNIDADE
+    # =====================================================
+
+    valores = [
+        float(
+            registro["valor"] or 0
+        )
+        for registro in registros
+    ]
+
+    maior_oportunidade = (
+        max(valores)
+        if valores
+        else 0
+    )
+
+    menor_oportunidade = (
+        min(valores)
+        if valores
+        else 0
+    )
+
+    # =====================================================
+    # SOLUÇÃO
+    # =====================================================
+
+    total_full_service = sum(
+        1
+        for registro in registros
+        if registro["solucao"] == "Full-Service"
+    )
+
+    total_parcial_service = sum(
+        1
+        for registro in registros
+        if registro["solucao"] == "Parcial-Service"
+    )
+
+    total_mao_obra = sum(
+        1
+        for registro in registros
+        if registro["solucao"] == "Mão de Obra"
+    )
+
+    total_a_definir = sum(
+        1
+        for registro in registros
+        if registro["solucao"] == "A definir"
+    )
+
+    # =====================================================
+    # TEMPERATURA
+    # =====================================================
+
+    temp_100 = sum(
+        1
+        for registro in registros
+        if registro["temperatura"] == 100
+    )
+
+    temp_60 = sum(
+        1
+        for registro in registros
+        if registro["temperatura"] == 60
+    )
+
+    temp_40 = sum(
+        1
+        for registro in registros
+        if registro["temperatura"] == 40
+    )
+
+    temp_25 = sum(
+        1
+        for registro in registros
+        if registro["temperatura"] == 25
+    )
+
+    temp_10 = sum(
+        1
+        for registro in registros
+        if registro["temperatura"] == 10
     )
 
     # =====================================================
@@ -3240,11 +3282,12 @@ def indicadores_comercial_dados(request):
         )
 
         status[nome] = (
-            status.get(nome, 0) + 1
+            status.get(nome, 0)
+            + 1
         )
 
     # =====================================================
-    # TEMPERATURA
+    # TEMPERATURA PARA GRÁFICO
     # =====================================================
 
     temperatura = {}
@@ -3257,11 +3300,12 @@ def indicadores_comercial_dados(request):
         )
 
         temperatura[temp] = (
-            temperatura.get(temp, 0) + 1
+            temperatura.get(temp, 0)
+            + 1
         )
 
     # =====================================================
-    # SOLUÇÃO
+    # SOLUÇÃO PARA GRÁFICO
     # =====================================================
 
     solucao = {}
@@ -3274,7 +3318,8 @@ def indicadores_comercial_dados(request):
         )
 
         solucao[nome] = (
-            solucao.get(nome, 0) + 1
+            solucao.get(nome, 0)
+            + 1
         )
 
     # =====================================================
@@ -3296,16 +3341,55 @@ def indicadores_comercial_dados(request):
                 registro["valor"] or 0
             )
         )
+        
+    # =====================================================
+    # EVOLUÇÃO MENSAL DO PIPELINE
+    # =====================================================
+
+    evolucao_mensal = {}
+
+    for registro in registros:
+
+        ano = registro["ano_previsto"]
+        mes = registro["mes_previsto"]
+
+        if not ano or not mes:
+            continue
+
+        chave = f"{int(ano):04d}-{int(mes):02d}"
+
+        if chave not in evolucao_mensal:
+
+            evolucao_mensal[chave] = {
+                "mes": chave,
+                "pipeline": 0,
+                "conquistado": 0
+            }
+
+        valor = float(
+            registro["valor"] or 0
+        )
+
+        evolucao_mensal[chave]["pipeline"] += valor
+
+        if registro["status"] == "Conquistado":
+
+            evolucao_mensal[chave]["conquistado"] += valor
+            
+        evolucao_mensal = sorted(
+        evolucao_mensal.values(),
+        key=lambda x: x["mes"]
+    )
 
     # =====================================================
-    # CLIENTES CONVERTIDOS
+    # CLIENTES CONQUISTADOS
     # =====================================================
 
     clientes = {}
 
     for registro in registros:
 
-        if not registro["qtd_pedidos"]:
+        if registro["status"] != "Conquistado":
             continue
 
         cliente = (
@@ -3318,7 +3402,6 @@ def indicadores_comercial_dados(request):
             clientes[cliente] = {
                 "cliente": cliente,
                 "oportunidades": 0,
-                "pedidos": 0,
                 "pipeline": 0,
                 "valor_conquistado": 0
             }
@@ -3329,25 +3412,18 @@ def indicadores_comercial_dados(request):
             registro["valor"] or 0
         )
 
-        clientes[cliente]["pedidos"] = max(
-            clientes[cliente]["pedidos"],
-            int(
-                registro["qtd_pedidos"] or 0
-            )
-        )
-
         clientes[cliente]["valor_conquistado"] += float(
-            registro["valor_conquistado"] or 0
+            registro["valor"] or 0
         )
 
-    clientes_convertidos = sorted(
+    clientes_conquistados = sorted(
         clientes.values(),
         key=lambda x: x["valor_conquistado"],
         reverse=True
     )
 
     # =====================================================
-    # MAIORES CONVERSÕES
+    # MAIORES CONQUISTADOS
     # =====================================================
 
     maiores_convertidos = sorted(
@@ -3355,13 +3431,11 @@ def indicadores_comercial_dados(request):
             {
                 "cliente": registro["cliente"],
                 "valor": float(
-                    registro["valor_conquistado"] or 0
+                    registro["valor"] or 0
                 )
             }
             for registro in registros
-            if float(
-                registro["valor_conquistado"] or 0
-            ) > 0
+            if registro["status"] == "Conquistado"
         ],
         key=lambda x: x["valor"],
         reverse=True
@@ -3386,18 +3460,39 @@ def indicadores_comercial_dados(request):
     )
 
     # =====================================================
-    # RESPOSTA JSON
+    # RESPOSTA
     # =====================================================
 
     return JsonResponse({
 
-        # Indicadores originais da VIEW
+        # Indicadores
 
         "total_oportunidades":
             total_oportunidades,
 
+        "total_ativos":
+            total_ativos,
+
+        "total_conquistados":
+            total_conquistadas,
+
+        "total_suspensos":
+            total_suspensos,
+
+        "total_cancelados":
+            total_cancelados,
+
         "valor_pipeline":
             valor_pipeline,
+
+        "valor_conquistado":
+            valor_conquistado,
+
+        "valor_na_esteira":
+            valor_na_esteira,
+
+        "taxa_conversao":
+            taxa_conversao,
 
         "ticket_medio":
             ticket_medio,
@@ -3408,17 +3503,7 @@ def indicadores_comercial_dados(request):
         "menor_oportunidade":
             menor_oportunidade,
 
-        "total_ativos":
-            total_ativos,
-
-        "total_conquistados":
-            total_conquistados,
-
-        "total_suspensos":
-            total_suspensos,
-
-        "total_cancelados":
-            total_cancelados,
+        # Soluções
 
         "total_full_service":
             total_full_service,
@@ -3431,6 +3516,8 @@ def indicadores_comercial_dados(request):
 
         "total_a_definir":
             total_a_definir,
+
+        # Temperatura
 
         "temp_100":
             temp_100,
@@ -3447,24 +3534,7 @@ def indicadores_comercial_dados(request):
         "temp_10":
             temp_10,
 
-        # Conversão
-
-        "valor_conquistado":
-            valor_conquistado,
-
-        "valor_na_esteira":
-            valor_na_esteira,
-
-        "total_pedidos":
-            total_pedidos,
-
-        "taxa_conversao":
-            taxa_conversao,
-
-        "clientes_convertidos":
-            len(clientes_convertidos),
-
-        # Dados para gráficos
+        # Gráficos
 
         "status":
             status,
@@ -3478,14 +3548,21 @@ def indicadores_comercial_dados(request):
         "pipeline_por_status":
             pipeline_por_status,
 
+        # Conquistados
+
+        "clientes_convertidos":
+            len(clientes_conquistados),
+
         "conquistados":
-            clientes_convertidos,
+            clientes_conquistados,
 
         "maiores_convertidos":
             maiores_convertidos,
 
         "maiores_pipeline":
-            maiores_pipeline
+            maiores_pipeline,
+            
+        "evolucao_mensal":
+        evolucao_mensal,
 
     })
-

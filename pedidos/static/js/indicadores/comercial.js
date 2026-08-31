@@ -717,6 +717,11 @@ function criarGraficoStatus(
    CONVERSÃO
 ========================================================= */
 
+/* =========================================================
+   EVOLUÇÃO DO PIPELINE
+   Pipeline x Conquistado por mês
+========================================================= */
+
 function criarGraficoConversao(
     dados
 ) {
@@ -733,6 +738,60 @@ function criarGraficoConversao(
     }
 
 
+    const evolucao =
+        dados.evolucao_mensal || [];
+
+
+    if (!evolucao.length) {
+
+        return;
+    }
+
+
+    const labels =
+        evolucao.map(
+            item => {
+
+                const [ano, mes] =
+                    item.mes.split("-");
+
+                const data =
+                    new Date(
+                        Number(ano),
+                        Number(mes) - 1,
+                        1
+                    );
+
+                return data.toLocaleDateString(
+                    "pt-BR",
+                    {
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+            }
+        );
+
+
+    const pipeline =
+        evolucao.map(
+            item =>
+                Number(
+                    item.pipeline || 0
+                )
+        );
+
+
+    const conquistado =
+        evolucao.map(
+            item =>
+                Number(
+                    item.conquistado || 0
+                )
+        );
+
+
     comercialGraficos.conversao =
         new Chart(
 
@@ -740,41 +799,47 @@ function criarGraficoConversao(
 
             {
 
-                type: "doughnut",
+                type: "line",
 
                 data: {
 
-                    labels: [
-
-                        "Pipeline não convertido",
-
-                        "Convertido"
-
-                    ],
+                    labels: labels,
 
                     datasets: [
 
                         {
 
-                            data: [
+                            label: "Pipeline",
 
-                                Math.max(
-                                    0,
-                                    Number(
-                                        dados.valor_pipeline || 0
-                                    ) -
-                                    Number(
-                                        dados.valor_conquistado || 0
-                                    )
-                                ),
+                            data: pipeline,
 
-                                Number(
-                                    dados.valor_conquistado || 0
-                                )
+                            tension: 0.35,
 
-                            ],
+                            fill: false,
 
-                            borderWidth: 0
+                            pointRadius: 4,
+
+                            pointHoverRadius: 6,
+
+                            borderWidth: 2
+
+                        },
+
+                        {
+
+                            label: "Conquistado",
+
+                            data: conquistado,
+
+                            tension: 0.35,
+
+                            fill: false,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 6,
+
+                            borderWidth: 2
 
                         }
 
@@ -789,7 +854,13 @@ function criarGraficoConversao(
 
                     maintainAspectRatio: false,
 
-                    cutout: "68%",
+                    interaction: {
+
+                        mode: "index",
+
+                        intersect: false
+
+                    },
 
                     plugins: {
 
@@ -803,7 +874,7 @@ function criarGraficoConversao(
 
                                 boxWidth: 10,
 
-                                padding: 8,
+                                padding: 10,
 
                                 font: {
 
@@ -826,7 +897,9 @@ function criarGraficoConversao(
 
                                         return (
 
-                                            " " +
+                                            contexto.dataset.label +
+
+                                            ": " +
 
                                             formatarMoeda(
                                                 contexto.raw
@@ -835,6 +908,50 @@ function criarGraficoConversao(
                                         );
 
                                     }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            grid: {
+
+                                color:
+                                    "rgba(40,50,60,.12)",
+
+                                drawBorder: false
+
+                            },
+
+                            ticks: {
+
+                                callback:
+                                    function (
+                                        value
+                                    ) {
+
+                                        return formatarMoedaCompacta(
+                                            value
+                                        );
+
+                                    }
+
+                            }
+
+                        },
+
+                        x: {
+
+                            grid: {
+
+                                display: false
 
                             }
 
@@ -1471,5 +1588,54 @@ function escapeHtml(
 
 
     return div.innerHTML;
+
+}
+
+
+function formatarMoedaCompacta(
+    valor
+) {
+
+    const numero =
+        Number(valor || 0);
+
+
+    if (Math.abs(numero) >= 1000000) {
+
+        return (
+            "R$ " +
+            (numero / 1000000)
+                .toLocaleString(
+                    "pt-BR",
+                    {
+                        maximumFractionDigits: 1
+                    }
+                ) +
+            " Mi"
+        );
+
+    }
+
+
+    if (Math.abs(numero) >= 1000) {
+
+        return (
+            "R$ " +
+            (numero / 1000)
+                .toLocaleString(
+                    "pt-BR",
+                    {
+                        maximumFractionDigits: 0
+                    }
+                ) +
+            " Mil"
+        );
+
+    }
+
+
+    return formatarMoeda(
+        numero
+    );
 
 }
