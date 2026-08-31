@@ -3004,27 +3004,12 @@ def sincronizar_todas_agendas_view(request):
 from django.http import JsonResponse
 from django.db import connection
 
+
 def indicadores_comercial_dados(request):
 
     sql = """
-        SELECT
-            codigo_oportunidade,
-            cliente,
-            origem,
-            status,
-            solucao,
-            motivo,
-            valor,
-            temperatura,
-            ano_previsto,
-            mes_previsto
-
-        FROM vw_ia_comercial
-
-        ORDER BY
-            ano_previsto,
-            mes_previsto,
-            codigo_oportunidade
+        SELECT *
+        FROM ViesanoDW.vw_ia_comercial;
     """
 
     with connection.cursor() as cursor:
@@ -3046,6 +3031,7 @@ def indicadores_comercial_dados(request):
             for linha in cursor.fetchall()
         ]
 
+
     # =====================================================
     # INDICADORES BÁSICOS
     # =====================================================
@@ -3054,11 +3040,13 @@ def indicadores_comercial_dados(request):
         registros
     )
 
+
     total_ativos = sum(
         1
         for registro in registros
         if registro["status"] == "Ativo"
     )
+
 
     total_conquistados = sum(
         1
@@ -3066,17 +3054,20 @@ def indicadores_comercial_dados(request):
         if registro["status"] == "Conquistado"
     )
 
+
     total_suspensos = sum(
         1
         for registro in registros
         if registro["status"] == "Suspenso"
     )
 
+
     total_cancelados = sum(
         1
         for registro in registros
         if registro["status"] == "Cancelado"
     )
+
 
     valor_pipeline = sum(
         float(
@@ -3085,11 +3076,13 @@ def indicadores_comercial_dados(request):
         for registro in registros
     )
 
+
     # =====================================================
     # STATUS
     # =====================================================
 
     status = {}
+
 
     for registro in registros:
 
@@ -3103,11 +3096,13 @@ def indicadores_comercial_dados(request):
             + 1
         )
 
+
     # =====================================================
     # SOLUÇÃO
     # =====================================================
 
     solucao = {}
+
 
     for registro in registros:
 
@@ -3121,11 +3116,13 @@ def indicadores_comercial_dados(request):
             + 1
         )
 
+
     # =====================================================
     # TEMPERATURA
     # =====================================================
 
     temperatura = {}
+
 
     for registro in registros:
 
@@ -3139,30 +3136,44 @@ def indicadores_comercial_dados(request):
             + 1
         )
 
+
     # =====================================================
     # EVOLUÇÃO MENSAL
+    #
+    # BASEADA NA DATA REAL DE INCLUSÃO
+    # DA OPORTUNIDADE NO CRM
     # =====================================================
 
     evolucao_mensal = {}
 
+
     for registro in registros:
 
-        ano = registro["ano_previsto"]
-        mes = registro["mes_previsto"]
+        data_inclusao = (
+            registro["DataInclusao"]
+        )
 
-        if not ano or not mes:
+
+        if not data_inclusao:
+
             continue
 
-        chave = (
-            f"{int(ano):04d}-{int(mes):02d}"
+
+        chave = data_inclusao.strftime(
+            "%Y-%m"
         )
+
 
         if chave not in evolucao_mensal:
 
             evolucao_mensal[chave] = {
+
                 "mes": chave,
+
                 "pipeline": 0
+
             }
+
 
         evolucao_mensal[chave][
             "pipeline"
@@ -3170,10 +3181,12 @@ def indicadores_comercial_dados(request):
             registro["valor"] or 0
         )
 
+
     evolucao_mensal = sorted(
         evolucao_mensal.values(),
         key=lambda item: item["mes"]
     )
+
 
     # =====================================================
     # RESPOSTA
