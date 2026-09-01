@@ -3277,10 +3277,17 @@ def indicadores_comercial_dados(request):
         # -----------------------------
 
         data_saida = registro.get(
-            "DataConclusao"
+        "DataConclusao"
         )
 
         if data_saida:
+
+            if isinstance(data_saida, str):
+
+                data_saida = datetime.strptime(
+                    data_saida,
+                    "%Y-%m-%d"
+                )
 
             chave = data_saida.strftime(
                 "%Y-%m"
@@ -3308,7 +3315,7 @@ def indicadores_comercial_dados(request):
     # =====================================================
 
     return JsonResponse({
-
+        
         "total_oportunidades":
             total_oportunidades,
 
