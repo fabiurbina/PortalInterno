@@ -294,7 +294,7 @@ Finalize com uma **conclusão executiva de no máximo três linhas**, respondend
 
 Dados:
 
-{json.dumps(dados, indent=4, ensure_ascii=False)}
+{json.dumps(dados, indent=4, ensure_ascii=False, default=str)}
 
 """
 
