@@ -788,7 +788,7 @@ function criarGraficoFluxoLeads(
 
             {
 
-                type: "line",
+                type: "bar",
 
                 data: {
 
@@ -802,15 +802,9 @@ function criarGraficoFluxoLeads(
 
                             data: entradas,
 
-                            tension: 0.35,
+                            borderWidth: 0,
 
-                            fill: false,
-
-                            pointRadius: 4,
-
-                            pointHoverRadius: 6,
-
-                            borderWidth: 2
+                            borderRadius: 4
 
                         },
 
@@ -820,21 +814,16 @@ function criarGraficoFluxoLeads(
 
                             data: saidas,
 
-                            tension: 0.35,
+                            borderWidth: 0,
 
-                            fill: false,
-
-                            pointRadius: 4,
-
-                            pointHoverRadius: 6,
-
-                            borderWidth: 2
+                            borderRadius: 4
 
                         }
 
                     ]
 
                 },
+
 
                 options: {
 
