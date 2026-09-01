@@ -321,3 +321,27 @@ Dados:
     )
 
     return resposta.choices[0].message.content
+
+
+if __name__ == "__main__":
+    print("=== TESTE DE CONEXÃO COM GROQ ===")
+
+    try:
+        resposta = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[
+                {
+                    "role": "user",
+                    "content": "Responda apenas: TESTE OK"
+                }
+            ],
+            temperature=0
+        )
+
+        print("RESPOSTA DA GROQ:")
+        print(resposta.choices[0].message.content)
+
+    except Exception as e:
+        print("ERRO NA GROQ:")
+        print(type(e).__name__)
+        print(str(e))

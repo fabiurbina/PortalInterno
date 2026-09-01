@@ -55,36 +55,121 @@ from decimal import Decimal
 
 def preparar_dados_comercial(registros):
 
-    dados = []
+    if not registros:
+        return {
+            "resumo": {},
+            "oportunidades_relevantes": [],
+            "clientes_relevantes": []
+        }
+
+    # Indicadores gerais já utilizados na dashboard
+    primeiro = registros[0]
+
+    resumo = {
+        "total_oportunidades": primeiro.get("total_oportunidades", 0),
+        "valor_pipeline": primeiro.get("valor_pipeline", 0),
+        "ticket_medio": primeiro.get("ticket_medio", 0),
+        "maior_oportunidade": primeiro.get("maior_oportunidade", 0),
+        "menor_oportunidade": primeiro.get("menor_oportunidade", 0),
+
+        "total_ativos": primeiro.get("total_ativos", 0),
+        "total_conquistados": primeiro.get("total_conquistados", 0),
+        "total_suspensos": primeiro.get("total_suspensos", 0),
+        "total_cancelados": primeiro.get("total_cancelados", 0),
+
+        "valor_conquistado": primeiro.get("valor_conquistado", 0),
+
+        "temperatura": {
+            "100": primeiro.get("temp_100", 0),
+            "60": primeiro.get("temp_60", 0),
+            "40": primeiro.get("temp_40", 0),
+            "25": primeiro.get("temp_25", 0),
+            "10": primeiro.get("temp_10", 0),
+        },
+
+        "solucoes": {
+            "Full-Service": primeiro.get("total_full_service", 0),
+            "Parcial-Service": primeiro.get("total_parcial_service", 0),
+            "Mão de Obra": primeiro.get("total_mao_obra", 0),
+            "A Definir": primeiro.get("total_a_definir", 0),
+        }
+    }
+
+    # ---------------------------------------------------------
+    # OPORTUNIDADES
+    # Mantemos apenas informações úteis para interpretação
+    # ---------------------------------------------------------
+
+    oportunidades = []
 
     for r in registros:
 
-        dados.append({
-
-            "cliente": r["cliente"],
-
-            "oportunidades": int(r["oportunidades_cliente"]),
-
-            "pipeline": float(r["valor"]),
-
-            "status": r["status"],
-
-            "origem": r["origem"],
-
-            "solucao": r["solucao"],
-
-            "motivo": r["motivo"],
-
-            "temperatura": int(r["temperatura"]),
-
-            "ano_previsto": int(r["ano_previsto"]),
-
-            "mes_previsto": int(r["mes_previsto"]),
-
-            "ranking": int(r["ranking_valor"]),
-
-            "percentual_pipeline": float(r["percentual_pipeline"])
-
+        oportunidades.append({
+            "codigo": r.get("codigo_oportunidade"),
+            "cliente": r.get("cliente"),
+            "origem": r.get("origem"),
+            "status": r.get("status"),
+            "valor": r.get("valor"),
+            "temperatura": r.get("temperatura"),
+            "data_inclusao": str(r.get("DataInclusao")) if r.get("DataInclusao") else None,
+            "data_conclusao": r.get("DataConclusao"),
+            "dias_pipeline": r.get("DiasNoPipeline"),
+            "solucao": r.get("solucao"),
+            "motivo": r.get("motivo"),
+            "qtd_pedidos": r.get("qtd_pedidos"),
+            "valor_conquistado": r.get("valor_conquistado")
         })
 
-    return dados
+    # ---------------------------------------------------------
+    # TOP OPORTUNIDADES
+    # ---------------------------------------------------------
+
+    oportunidades_relevantes = sorted(
+        oportunidades,
+        key=lambda x: (
+            x["valor"] or 0,
+            x["temperatura"] or 0
+        ),
+        reverse=True
+    )[:10]
+
+    # ---------------------------------------------------------
+    # CLIENTES
+    # ---------------------------------------------------------
+
+    clientes = {}
+
+    for r in registros:
+
+        cliente = r.get("cliente")
+
+        if not cliente:
+            continue
+
+        if cliente not in clientes:
+            clientes[cliente] = {
+                "cliente": cliente,
+                "oportunidades": 0,
+                "valor_total": 0,
+                "maior_temperatura": 0
+            }
+
+        clientes[cliente]["oportunidades"] += 1
+        clientes[cliente]["valor_total"] += r.get("valor") or 0
+
+        temperatura = r.get("temperatura") or 0
+
+        if temperatura > clientes[cliente]["maior_temperatura"]:
+            clientes[cliente]["maior_temperatura"] = temperatura
+
+    clientes_relevantes = sorted(
+        clientes.values(),
+        key=lambda x: x["valor_total"],
+        reverse=True
+    )[:10]
+
+    return {
+        "resumo": resumo,
+        "oportunidades_relevantes": oportunidades_relevantes,
+        "clientes_relevantes": clientes_relevantes
+    }
