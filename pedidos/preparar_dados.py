@@ -1,310 +1,175 @@
-from groq import Groq
-from dotenv import load_dotenv
-import os
-import json
+def preparar_dados_producao(registros):
 
+    dados = []
 
-load_dotenv()
+    for r in registros:
 
-client = Groq(
-    api_key=os.getenv("APIGROQ")
-)
+        dados.append({
 
+            "pedido": r["numero_pedido"],
+            "op": r["codigo_op"],
 
-def gerar_relatorio_producao(dados):
-
-    prompt = f"""
-Você é o Diretor Industrial da Viesano Suplementos, especialista em PCP, Engenharia de Produção e Gestão Industrial.
-
-Sua responsabilidade é interpretar os indicadores industriais de forma objetiva, executiva e profissional.
-
-## Regras obrigatórias
-
-- Utilize SOMENTE os dados fornecidos.
-- Nunca invente valores.
-- Nunca suponha informações inexistentes.
-- Sempre compare as Ordens de Produção quando houver mais de uma.
-- Considere que perdas de até 3% são aceitáveis em processos industriais, salvo indicação contrária.
-- Explique os possíveis motivos técnicos para perdas elevadas.
-- Escreva como um Diretor Industrial apresentando um relatório para a diretoria.
-- Utilize Markdown.
-- Utilize títulos H1 (#) para cada seção.
-- Utilize listas quando necessário.
-- Destaque números importantes utilizando **negrito**.
-- Não escreva introduções longas.
-
-Sua resposta DEVE seguir exatamente esta estrutura:
-
-# 📊 Resumo Executivo
-
-Faça um resumo da situação geral da produção.
-
-# 📈 Situação da Produção
-
-Analise:
-
-- quantidade de OPs
-- tempo total
-- tempo médio
-- produtividade
-- eficiência
-
-# 🏭 Comparação entre OPs
-
-Compare o desempenho entre as OPs.
-
-Destaque:
-
-- melhor desempenho
-- pior desempenho
-- diferenças relevantes
-
-# 📉 Análise das Perdas
-
-Explique as perdas de:
-
-- Fracionamento
-- Mistura
-- Envase
-
-Informe quando as perdas estiverem dentro do esperado.
-
-# ⚠️ Gargalos Identificados
-
-Explique quais etapas merecem atenção.
-
-# ✅ Pontos Positivos
-
-Liste os principais pontos positivos observados.
-
-# 💡 Ações Recomendadas
-
-Liste ações práticas para melhorar a produção.
-
-# 🎯 Nota Geral da Produção
-
-Atribua uma nota de **0 a 10**.
-
-Explique em poucas linhas o motivo da nota.
-
-Dados disponíveis:
-
-{json.dumps(dados, indent=4, ensure_ascii=False, default=str)}
-"""
-
-    resposta = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
-        temperature=0.3,
-        messages=[
-            {
-                "role": "system",
-                "content": "Você é um especialista em gestão industrial."
+            "tempo": {
+                "total_min": int(r["tempo_total_min"]),
+                "medio_etapa_min": float(r["tempo_medio_etapa_min"]),
+                "fracionamento_min": int(r["tempo_fracionamento_min"]),
+                "mistura_min": int(r["tempo_mistura_min"]),
+                "qualidade_min": int(r["tempo_qualidade_min"]),
+                "envase_min": int(r["tempo_envase_min"])
             },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
 
-    return resposta.choices[0].message.content
-
-
-def gerar_relatorio_comercial(dados):
-
-    prompt = f"""
-# DIRETORIA COMERCIAL — ANÁLISE EXECUTIVA
-
-Você atua como **Diretor Comercial da Viesano Suplementos**, uma indústria de suplementos alimentares em expansão.
-
-Analise exclusivamente os dados fornecidos pelo ERP Omie e transforme os indicadores em **diagnósticos e decisões comerciais**.
-
-## Regras
-
-- Não invente informações ou faça suposições.
-- Toda conclusão deve estar baseada em indicadores.
-- Explique o motivo de cada conclusão.
-- Se os dados forem insuficientes, informe claramente.
-- Não recomende troca de ERP, implantação de CRM ou dashboard, contratação de vendedores, treinamentos ou mudanças de processo sem evidências.
-- Evite apenas repetir números. Interprete os dados.
-- Priorize oportunidades considerando **valor, temperatura, etapa e tempo no pipeline**.
-
-## Temperatura Comercial
-
-- **100:** Muito alta probabilidade de fechamento.
-- **60:** Boa probabilidade.
-- **40:** Em negociação.
-- **25:** Baixa probabilidade.
-- **10:** Muito baixa probabilidade.
-
-## Análise obrigatória
-
-Avalie:
-
-- Quantidade e valor total do pipeline.
-- Temperatura média e distribuição das oportunidades.
-- Concentração por cliente e valor.
-- Distribuição por etapa.
-- Principais oportunidades de alto valor.
-- Tempo médio e mediano para fechamento.
-- Tempo das oportunidades ainda abertas.
-- Oportunidades que estão há tempo elevado no pipeline.
-- Fluxo de **entrada e saída de prospects**.
-- Quantidade e valor de oportunidades conquistadas e perdidas.
-- Taxa de conversão, quando disponível.
-- Crescimento, redução ou acúmulo do pipeline.
-- Gargalos e sinais de estagnação identificados nos dados.
-
-Ao analisar o tempo de fechamento, compare, quando possível:
-
-**tempo de negociação × valor × temperatura × etapa.**
-
-Ao analisar o fluxo comercial, compare:
-
-**entradas × saídas × conversões × estoque atual do pipeline.**
-
-Não estabeleça padrões ou metas sem evidência suficiente nos dados.
-
-# Resumo Executivo
-
-Máximo de cinco linhas.
-
-Apresente a situação comercial, principais oportunidades, riscos e prioridade imediata.
-
-# Situação do Pipeline
-
-Informe:
-
-- Quantidade de oportunidades.
-- Valor total.
-- Temperatura média.
-- Concentração.
-- Distribuição por etapa.
-- Qualidade do pipeline.
-
-Explique o significado dos indicadores.
-
-# Velocidade Comercial
-
-Analise:
-
-- Tempo médio de fechamento.
-- Tempo mediano.
-- Tempo das oportunidades abertas.
-- Oportunidades com tempo elevado.
-- Relação entre tempo, valor e temperatura.
-
-Identifique possíveis sinais de lentidão ou aceleração comercial.
-
-# Fluxo Comercial
-
-Analise:
-
-- Novas entradas.
-- Oportunidades conquistadas.
-- Oportunidades perdidas.
-- Valor movimentado.
-- Taxa de conversão, quando disponível.
-- Evolução do estoque de oportunidades.
-
-Determine se o pipeline está crescendo, reduzindo ou acumulando oportunidades.
-
-# Clientes Prioritários
-
-Liste somente os clientes que realmente exigem atenção.
-
-Para cada cliente:
-
-- Motivo.
-- Valor.
-- Temperatura.
-- Tempo no pipeline.
-- Etapa.
-- Prioridade.
-
-# Riscos Comerciais
-
-Liste somente riscos comprovados pelos dados.
-
-Para cada risco:
-
-**Evidência → Impacto → Nível de atenção.**
-
-# Oportunidades de Maior Valor
-
-Liste as oportunidades financeiramente mais relevantes.
-
-Considere conjuntamente:
-
-**Valor + Temperatura + Etapa + Tempo no pipeline.**
-
-Explique por que cada oportunidade merece atenção.
-
-# Recomendações
-
-Apresente recomendações objetivas.
-
-Utilize a estrutura:
-
-**Indicador → Diagnóstico → Ação.**
-
-Toda recomendação deve estar vinculada a uma evidência encontrada nos dados.
-
-# Plano de Ação
-
-## Hoje
-
-Prioridades imediatas.
-
-## Esta semana
-
-Negociações e clientes que exigem acompanhamento.
-
-## Este mês
-
-Avaliação da evolução de entradas, saídas, conversão, tempo de fechamento e estoque do pipeline.
-
-# Saúde Comercial
-
-Dê uma nota de **0 a 10**.
-
-Considere:
-
-- Volume.
-- Valor.
-- Temperatura.
-- Conversão.
-- Entradas e saídas.
-- Tempo de fechamento.
-- Estagnação.
-- Concentração.
-
-Explique brevemente os fatores que determinaram a nota.
-
-Finalize com uma **conclusão executiva de no máximo três linhas**, respondendo:
-
-- Qual é a situação do pipeline?
-- Qual é a principal prioridade?
-- Qual é o principal risco?
-
-Dados:
-
-{json.dumps(dados, indent=4, ensure_ascii=False, default=str)}
-"""
-
-    resposta = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
-        temperature=0.3,
-        messages=[
-            {
-                "role": "system",
-                "content": "Você é um Diretor Comercial especialista em CRM, gestão de pipeline, vendas B2B e análise de indicadores comerciais."
+            "mistura": {
+                "previsto": float(r["mistura_prevista"]),
+                "real": float(r["mistura_real"]),
+                "perda": float(r["perda_mistura"]),
+                "perda_pct": float(r["perda_mistura_pct"]),
+                "eficiencia_pct": float(r["eficiencia_mistura_pct"])
             },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
 
-    return resposta.choices[0].message.content
+            "fracionamento": {
+                "previsto": float(r["fracionamento_previsto"]),
+                "real": float(r["fracionamento_real"]),
+                "perda": float(r["perda_fracionamento"]),
+                "perda_pct": float(r["perda_fracionamento_pct"]),
+                "eficiencia_pct": float(r["eficiencia_fracionamento_pct"])
+            },
+
+            "envase": {
+                "previsto": float(r["envase_previsto"]),
+                "real": float(r["envase_real"]),
+                "perda": float(r["perda_envase"]),
+                "perda_pct": float(r["perda_envase_pct"]),
+                "eficiencia_pct": float(r["eficiencia_envase_pct"])
+            },
+
+            "perdas_apontadas": float(r["perdas_apontadas"]),
+
+            "responsavel": r["responsavel"]
+
+        })
+
+    return dados
+
+
+from decimal import Decimal
+
+def preparar_dados_comercial(registros):
+
+    if not registros:
+        return {
+            "resumo": {},
+            "oportunidades_relevantes": [],
+            "clientes_relevantes": []
+        }
+
+    # Indicadores gerais já utilizados na dashboard
+    primeiro = registros[0]
+
+    resumo = {
+        "total_oportunidades": primeiro.get("total_oportunidades", 0),
+        "valor_pipeline": primeiro.get("valor_pipeline", 0),
+        "ticket_medio": primeiro.get("ticket_medio", 0),
+        "maior_oportunidade": primeiro.get("maior_oportunidade", 0),
+        "menor_oportunidade": primeiro.get("menor_oportunidade", 0),
+
+        "total_ativos": primeiro.get("total_ativos", 0),
+        "total_conquistados": primeiro.get("total_conquistados", 0),
+        "total_suspensos": primeiro.get("total_suspensos", 0),
+        "total_cancelados": primeiro.get("total_cancelados", 0),
+
+        "valor_conquistado": primeiro.get("valor_conquistado", 0),
+
+        "temperatura": {
+            "100": primeiro.get("temp_100", 0),
+            "60": primeiro.get("temp_60", 0),
+            "40": primeiro.get("temp_40", 0),
+            "25": primeiro.get("temp_25", 0),
+            "10": primeiro.get("temp_10", 0),
+        },
+
+        "solucoes": {
+            "Full-Service": primeiro.get("total_full_service", 0),
+            "Parcial-Service": primeiro.get("total_parcial_service", 0),
+            "Mão de Obra": primeiro.get("total_mao_obra", 0),
+            "A Definir": primeiro.get("total_a_definir", 0),
+        }
+    }
+
+    # ---------------------------------------------------------
+    # OPORTUNIDADES
+    # Mantemos apenas informações úteis para interpretação
+    # ---------------------------------------------------------
+
+    oportunidades = []
+
+    for r in registros:
+
+        oportunidades.append({
+            "codigo": r.get("codigo_oportunidade"),
+            "cliente": r.get("cliente"),
+            "origem": r.get("origem"),
+            "status": r.get("status"),
+            "valor": r.get("valor"),
+            "temperatura": r.get("temperatura"),
+            "data_inclusao": str(r.get("DataInclusao")) if r.get("DataInclusao") else None,
+            "data_conclusao": r.get("DataConclusao"),
+            "dias_pipeline": r.get("DiasNoPipeline"),
+            "solucao": r.get("solucao"),
+            "motivo": r.get("motivo"),
+            "qtd_pedidos": r.get("qtd_pedidos"),
+            "valor_conquistado": r.get("valor_conquistado")
+        })
+
+    # ---------------------------------------------------------
+    # TOP OPORTUNIDADES
+    # ---------------------------------------------------------
+
+    oportunidades_relevantes = sorted(
+        oportunidades,
+        key=lambda x: (
+            x["valor"] or 0,
+            x["temperatura"] or 0
+        ),
+        reverse=True
+    )[:10]
+
+    # ---------------------------------------------------------
+    # CLIENTES
+    # ---------------------------------------------------------
+
+    clientes = {}
+
+    for r in registros:
+
+        cliente = r.get("cliente")
+
+        if not cliente:
+            continue
+
+        if cliente not in clientes:
+            clientes[cliente] = {
+                "cliente": cliente,
+                "oportunidades": 0,
+                "valor_total": 0,
+                "maior_temperatura": 0
+            }
+
+        clientes[cliente]["oportunidades"] += 1
+        clientes[cliente]["valor_total"] += r.get("valor") or 0
+
+        temperatura = r.get("temperatura") or 0
+
+        if temperatura > clientes[cliente]["maior_temperatura"]:
+            clientes[cliente]["maior_temperatura"] = temperatura
+
+    clientes_relevantes = sorted(
+        clientes.values(),
+        key=lambda x: x["valor_total"],
+        reverse=True
+    )[:10]
+
+    return {
+        "resumo": resumo,
+        "oportunidades_relevantes": oportunidades_relevantes,
+        "clientes_relevantes": clientes_relevantes
+    }

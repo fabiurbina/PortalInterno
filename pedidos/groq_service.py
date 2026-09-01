@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import json
 
+
 load_dotenv()
 
 client = Groq(
@@ -88,15 +89,12 @@ Explique em poucas linhas o motivo da nota.
 
 Dados disponíveis:
 
-{json.dumps(dados, indent=4, ensure_ascii=False)}
+{json.dumps(dados, indent=4, ensure_ascii=False, default=str)}
 """
 
     resposta = client.chat.completions.create(
-
         model="openai/gpt-oss-120b",
-
         temperature=0.3,
-
         messages=[
             {
                 "role": "system",
@@ -107,11 +105,9 @@ Dados disponíveis:
                 "content": prompt
             }
         ]
-
     )
 
     return resposta.choices[0].message.content
-
 
 
 def gerar_relatorio_comercial(dados):
@@ -125,39 +121,39 @@ Analise exclusivamente os dados fornecidos pelo ERP Omie e transforme os indicad
 
 ## Regras
 
-* Não invente informações ou faça suposições.
-* Toda conclusão deve estar baseada em indicadores.
-* Explique o motivo de cada conclusão.
-* Se os dados forem insuficientes, informe claramente.
-* Não recomende troca de ERP, implantação de CRM ou dashboard, contratação de vendedores, treinamentos ou mudanças de processo sem evidências.
-* Evite apenas repetir números. Interprete os dados.
-* Priorize oportunidades considerando **valor, temperatura, etapa e tempo no pipeline**.
+- Não invente informações ou faça suposições.
+- Toda conclusão deve estar baseada em indicadores.
+- Explique o motivo de cada conclusão.
+- Se os dados forem insuficientes, informe claramente.
+- Não recomende troca de ERP, implantação de CRM ou dashboard, contratação de vendedores, treinamentos ou mudanças de processo sem evidências.
+- Evite apenas repetir números. Interprete os dados.
+- Priorize oportunidades considerando **valor, temperatura, etapa e tempo no pipeline**.
 
 ## Temperatura Comercial
 
-* **100:** Muito alta probabilidade de fechamento.
-* **60:** Boa probabilidade.
-* **40:** Em negociação.
-* **25:** Baixa probabilidade.
-* **10:** Muito baixa probabilidade.
+- **100:** Muito alta probabilidade de fechamento.
+- **60:** Boa probabilidade.
+- **40:** Em negociação.
+- **25:** Baixa probabilidade.
+- **10:** Muito baixa probabilidade.
 
 ## Análise obrigatória
 
 Avalie:
 
-* Quantidade e valor total do pipeline.
-* Temperatura média e distribuição das oportunidades.
-* Concentração por cliente e valor.
-* Distribuição por etapa.
-* Principais oportunidades de alto valor.
-* Tempo médio e mediano para fechamento.
-* Tempo das oportunidades ainda abertas.
-* Oportunidades que estão há tempo elevado no pipeline.
-* Fluxo de **entrada e saída de prospects**.
-* Quantidade e valor de oportunidades conquistadas e perdidas.
-* Taxa de conversão, quando disponível.
-* Crescimento, redução ou acúmulo do pipeline.
-* Gargalos e sinais de estagnação identificados nos dados.
+- Quantidade e valor total do pipeline.
+- Temperatura média e distribuição das oportunidades.
+- Concentração por cliente e valor.
+- Distribuição por etapa.
+- Principais oportunidades de alto valor.
+- Tempo médio e mediano para fechamento.
+- Tempo das oportunidades ainda abertas.
+- Oportunidades que estão há tempo elevado no pipeline.
+- Fluxo de **entrada e saída de prospects**.
+- Quantidade e valor de oportunidades conquistadas e perdidas.
+- Taxa de conversão, quando disponível.
+- Crescimento, redução ou acúmulo do pipeline.
+- Gargalos e sinais de estagnação identificados nos dados.
 
 Ao analisar o tempo de fechamento, compare, quando possível:
 
@@ -179,12 +175,12 @@ Apresente a situação comercial, principais oportunidades, riscos e prioridade 
 
 Informe:
 
-* Quantidade de oportunidades.
-* Valor total.
-* Temperatura média.
-* Concentração.
-* Distribuição por etapa.
-* Qualidade do pipeline.
+- Quantidade de oportunidades.
+- Valor total.
+- Temperatura média.
+- Concentração.
+- Distribuição por etapa.
+- Qualidade do pipeline.
 
 Explique o significado dos indicadores.
 
@@ -192,11 +188,11 @@ Explique o significado dos indicadores.
 
 Analise:
 
-* Tempo médio de fechamento.
-* Tempo mediano.
-* Tempo das oportunidades abertas.
-* Oportunidades com tempo elevado.
-* Relação entre tempo, valor e temperatura.
+- Tempo médio de fechamento.
+- Tempo mediano.
+- Tempo das oportunidades abertas.
+- Oportunidades com tempo elevado.
+- Relação entre tempo, valor e temperatura.
 
 Identifique possíveis sinais de lentidão ou aceleração comercial.
 
@@ -204,12 +200,12 @@ Identifique possíveis sinais de lentidão ou aceleração comercial.
 
 Analise:
 
-* Novas entradas.
-* Oportunidades conquistadas.
-* Oportunidades perdidas.
-* Valor movimentado.
-* Taxa de conversão, quando disponível.
-* Evolução do estoque de oportunidades.
+- Novas entradas.
+- Oportunidades conquistadas.
+- Oportunidades perdidas.
+- Valor movimentado.
+- Taxa de conversão, quando disponível.
+- Evolução do estoque de oportunidades.
 
 Determine se o pipeline está crescendo, reduzindo ou acumulando oportunidades.
 
@@ -219,12 +215,12 @@ Liste somente os clientes que realmente exigem atenção.
 
 Para cada cliente:
 
-* Motivo.
-* Valor.
-* Temperatura.
-* Tempo no pipeline.
-* Etapa.
-* Prioridade.
+- Motivo.
+- Valor.
+- Temperatura.
+- Tempo no pipeline.
+- Etapa.
+- Prioridade.
 
 # Riscos Comerciais
 
@@ -274,74 +270,41 @@ Dê uma nota de **0 a 10**.
 
 Considere:
 
-* Volume.
-* Valor.
-* Temperatura.
-* Conversão.
-* Entradas e saídas.
-* Tempo de fechamento.
-* Estagnação.
-* Concentração.
+- Volume.
+- Valor.
+- Temperatura.
+- Conversão.
+- Entradas e saídas.
+- Tempo de fechamento.
+- Estagnação.
+- Concentração.
 
 Explique brevemente os fatores que determinaram a nota.
 
 Finalize com uma **conclusão executiva de no máximo três linhas**, respondendo:
 
-* Qual é a situação do pipeline?
-* Qual é a principal prioridade?
-* Qual é o principal risco?
-
+- Qual é a situação do pipeline?
+- Qual é a principal prioridade?
+- Qual é o principal risco?
 
 Dados:
 
 {json.dumps(dados, indent=4, ensure_ascii=False, default=str)}
-
 """
 
     resposta = client.chat.completions.create(
-
         model="openai/gpt-oss-120b",
-
         temperature=0.3,
-
         messages=[
-
             {
                 "role": "system",
                 "content": "Você é um Diretor Comercial especialista em CRM, gestão de pipeline, vendas B2B e análise de indicadores comerciais."
             },
-
             {
                 "role": "user",
                 "content": prompt
             }
-
         ]
-
     )
 
     return resposta.choices[0].message.content
-
-
-if __name__ == "__main__":
-    print("=== TESTE DE CONEXÃO COM GROQ ===")
-
-    try:
-        resposta = client.chat.completions.create(
-            model="openai/gpt-oss-120b",
-            messages=[
-                {
-                    "role": "user",
-                    "content": "Responda apenas: TESTE OK"
-                }
-            ],
-            temperature=0
-        )
-
-        print("RESPOSTA DA GROQ:")
-        print(resposta.choices[0].message.content)
-
-    except Exception as e:
-        print("ERRO NA GROQ:")
-        print(type(e).__name__)
-        print(str(e))
