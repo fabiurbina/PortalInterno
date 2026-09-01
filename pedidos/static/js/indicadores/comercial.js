@@ -4,6 +4,8 @@
 
 let comercialGraficos = {};
 
+Chart.register(ChartDataLabels);
+
 
 /* =========================================================
    INICIALIZAÇÃO
