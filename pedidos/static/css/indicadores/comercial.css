@@ -368,7 +368,7 @@
 
     position: relative;
 
-    height: 240px;
+    height: 165px;
 
     width: 100%;
 }
@@ -752,4 +752,38 @@
     height: 38px;
 
     background: rgba(255, 255, 255, .2);
+}
+
+/* =========================================================
+   GRÁFICOS FINAIS
+========================================================= */
+
+.comercial-graficos-finais {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    width: 100%;
+
+    margin-top: 8px;
+}
+
+
+.comercial-graficos-finais .comercial-panel {
+
+    width: 100%;
+
+    min-width: 0;
+}
+
+
+.comercial-graficos-finais .comercial-chart {
+
+    height: 210px;
+
+    width: 100%;
 }
