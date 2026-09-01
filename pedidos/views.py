@@ -3234,6 +3234,73 @@ def indicadores_comercial_dados(request):
         evolucao_mensal.values(),
         key=lambda item: item["mes"]
     )
+    
+    
+    # =====================================================
+    # FLUXO DE LEADS
+    #
+    # ENTRADAS = DataInclusao
+    # SAÍDAS = DataConclusao
+    # =====================================================
+
+    fluxo_leads = {}
+
+    for registro in registros:
+
+        # -----------------------------
+        # ENTRADA
+        # -----------------------------
+
+        data_entrada = registro.get(
+            "DataInclusao"
+        )
+
+        if data_entrada:
+
+            chave = data_entrada.strftime(
+                "%Y-%m"
+            )
+
+            if chave not in fluxo_leads:
+
+                fluxo_leads[chave] = {
+                    "mes": chave,
+                    "entradas": 0,
+                    "saidas": 0
+                }
+
+            fluxo_leads[chave]["entradas"] += 1
+
+
+        # -----------------------------
+        # SAÍDA
+        # -----------------------------
+
+        data_saida = registro.get(
+            "DataConclusao"
+        )
+
+        if data_saida:
+
+            chave = data_saida.strftime(
+                "%Y-%m"
+            )
+
+            if chave not in fluxo_leads:
+
+                fluxo_leads[chave] = {
+                    "mes": chave,
+                    "entradas": 0,
+                    "saidas": 0
+                }
+
+            fluxo_leads[chave]["saidas"] += 1
+
+
+    fluxo_leads = sorted(
+        fluxo_leads.values(),
+        key=lambda item: item["mes"]
+    )
 
 
     # =====================================================
@@ -3283,5 +3350,8 @@ def indicadores_comercial_dados(request):
         
         "absorcao_pipeline":
         absorcao_pipeline,
+        
+        "fluxo_leads":
+        fluxo_leads,
 
     })

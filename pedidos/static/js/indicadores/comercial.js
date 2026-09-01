@@ -203,6 +203,10 @@ function criarGraficos(
         dados.evolucao_mensal || []
     );
 
+    criarGraficoFluxoLeads(
+        dados.fluxo_leads || []
+    );
+
 }
 
 
@@ -730,5 +734,164 @@ function formatarMoedaCompacta(
     return formatarMoeda(
         numero
     );
+
+}
+
+/* =========================================================
+   ENTRADAS X SAÍDAS DE LEADS
+========================================================= */
+
+function criarGraficoFluxoLeads(
+    dados
+) {
+
+    const canvas =
+        document.getElementById(
+            "comercialFluxoLeads"
+        );
+
+
+    if (!canvas) {
+
+        return;
+    }
+
+
+    const labels =
+        dados.map(
+            item => item.mes
+        );
+
+
+    const entradas =
+        dados.map(
+            item =>
+                Number(
+                    item.entradas || 0
+                )
+        );
+
+
+    const saidas =
+        dados.map(
+            item =>
+                Number(
+                    item.saidas || 0
+                )
+        );
+
+
+    comercialGraficos.fluxoLeads =
+        new Chart(
+
+            canvas,
+
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            label: "Entradas",
+
+                            data: entradas,
+
+                            tension: 0.35,
+
+                            fill: false,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 6,
+
+                            borderWidth: 2
+
+                        },
+
+                        {
+
+                            label: "Saídas",
+
+                            data: saidas,
+
+                            tension: 0.35,
+
+                            fill: false,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 6,
+
+                            borderWidth: 2
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+
+                        mode: "index",
+
+                        intersect: false
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            display: true,
+
+                            position: "bottom"
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                precision: 0
+
+                            }
+
+                        },
+
+                        x: {
+
+                            grid: {
+
+                                display: false
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
 
 }
