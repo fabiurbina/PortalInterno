@@ -3308,6 +3308,30 @@ def indicadores_comercial_dados(request):
         fluxo_leads.values(),
         key=lambda item: item["mes"]
     )
+    
+    
+     # =====================================================
+    # TEMPO MÉDIO DE NEGOCIAÇÃO
+    #
+    # CONSIDERA APENAS OPORTUNIDADES CONCLUÍDAS
+    # =====================================================
+
+    tempos_negociacao = [
+        registro["DiasNoPipeline"]
+        for registro in registros
+        if registro.get("DiasNoPipeline") is not None
+        and registro.get("DataConclusao") is not None
+    ]
+
+    tempo_medio_negociacao = (
+        round(
+            sum(tempos_negociacao)
+            / len(tempos_negociacao)
+        )
+        if tempos_negociacao
+        else 0
+    )
+    
 
 
     # =====================================================
@@ -3360,5 +3384,8 @@ def indicadores_comercial_dados(request):
         
         "fluxo_leads":
         fluxo_leads,
+        
+        "tempo_medio_negociacao":
+        tempo_medio_negociacao,
 
     })

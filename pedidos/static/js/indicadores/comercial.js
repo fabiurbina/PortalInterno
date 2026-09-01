@@ -170,6 +170,11 @@ function atualizarKPIs(
     ) + "%"
 );
 
+definirTexto(
+    "comercialKpiTempoMedioNegociacao",
+    `${dados.tempo_medio_negociacao || 0} dias`
+);
+
 }
 
 
