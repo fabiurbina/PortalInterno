@@ -788,3 +788,26 @@
 
     height: 240px;
 }
+
+.btn-clientes-ativos {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    padding: 7px 13px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #d9dde5;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-clientes-ativos:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
