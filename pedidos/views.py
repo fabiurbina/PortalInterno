@@ -3396,7 +3396,12 @@ def indicadores_comercial_dados(request):
     
     
 def financeiro_dre(request):
-    
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden(
+            "Você precisa estar logado para acessar este relatório."
+        )
+
     if not (
         request.user.is_superuser
         or request.user.email.lower() == "aline.andrade@viesano.com.br"
@@ -3424,8 +3429,10 @@ def financeiro_dre(request):
         # Define qual data utilizar
         if status == "PAGO":
             data_item = item.get("dDtPagamento")
+
         elif status == "A VENCER":
             data_item = item.get("dDtPrevisao")
+
         else:
             data_item = item.get("dDtPagamento") or item.get("dDtPrevisao")
 
@@ -3441,7 +3448,6 @@ def financeiro_dre(request):
 
         dados_filtrados.append(item)
 
-    # Totais
     total_despesas = sum(
         (item.get("nValorTitulo") or 0)
         for item in dados_filtrados
