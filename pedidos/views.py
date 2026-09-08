@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .omie_service import (listar_ops, consultar_produto,consultar_op,listar_locais_estoque,
 consultar_pedido, extrair_numero_pedido, 
 listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings, 
-buscar_cliente_cnpj,consultar_estrutura, buscar_fin_dre)
+buscar_cliente_cnpj,consultar_estrutura)
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
@@ -36,7 +36,8 @@ from .mysql_service import (
     salvar_ordem_chao_fabrica,
     consulta_inspecoes,
     buscar_lote_validade,
-    BuscarclassificacaoCliente
+    BuscarclassificacaoCliente,
+    buscar_fin_dre
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
