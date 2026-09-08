@@ -7,7 +7,7 @@ listar_lotes,listar_quarentena, listar_entradas_com_fornecedor, settings,
 buscar_cliente_cnpj,consultar_estrutura)
 from django.contrib import messages
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse  
 from django.core.paginator import Paginator
@@ -3396,6 +3396,14 @@ def indicadores_comercial_dados(request):
     
     
 def financeiro_dre(request):
+    
+    if not (
+        request.user.is_superuser
+        or request.user.email.lower() == "aline.andrade@viesano.com.br"
+    ):
+        return HttpResponseForbidden(
+            "Você não tem permissão para acessar este relatório."
+        )
 
     dados = buscar_fin_dre()
 
