@@ -3395,20 +3395,22 @@ def indicadores_comercial_dados(request):
     
     
     
+@login_required
 def financeiro_dre(request):
 
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden(
-            "Você precisa estar logado para acessar este relatório."
-        )
+    usuario = request.user
 
     if not (
-        request.user.is_superuser
-        or request.user.email.lower() == "aline.andrade@viesano.com.br"
+        usuario.is_superuser
+        or usuario.email.lower() in [
+            "fabio.soares@viesano.com.br",
+            "aline.andrade@viesano.com.br",
+        ]
     ):
         return HttpResponseForbidden(
             "Você não tem permissão para acessar este relatório."
         )
+
 
     dados = buscar_fin_dre()
 
