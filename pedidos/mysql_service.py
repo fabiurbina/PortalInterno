@@ -1173,3 +1173,25 @@ def BuscarclassificacaoCliente():
     finally:
 
         conexao.close()
+        
+        
+def buscar_fin_dre():
+
+    sql = """
+        SELECT * FROM ViesanoDW.vw_relatorio_fin_DRE;
+    """
+
+    conexao = conectar()
+
+    try:
+
+        with conexao.cursor() as cursor:
+
+            cursor.execute(sql)
+
+            return cursor.fetchall()
+
+    finally:
+
+        conexao.close()
+        

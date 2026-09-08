@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Financeiro - DRE</title>
+</head>
+
+<body>
+
+    <h1>Financeiro - DRE</h1>
+
+    <p>Total de registros: {{ dados|length }}</p>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>DRE</th>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Emissão</th>
+                <th>Previsão</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Pagamento</th>
+                <th>Valor Pago</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for item in dados %}
+
+            <tr>
+                <td>{{ item.descricaoDRE }}</td>
+                <td>{{ item.cCodCateg }}</td>
+                <td>{{ item.descricao }}</td>
+                <td>{{ item.dDtEmissao }}</td>
+                <td>{{ item.dDtPrevisao }}</td>
+                <td>{{ item.razao_social }}</td>
+                <td>{{ item.nValorTitulo }}</td>
+                <td>{{ item.cStatus }}</td>
+                <td>{{ item.dDtPagamento }}</td>
+                <td>{{ item.nValPago }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</body>
+</html>
