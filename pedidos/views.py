@@ -3403,4 +3403,4 @@ def financeiro_dre(request):
         "dados": dados,
     }
 
-    return render(request, "financeiro_dre.html", contexto)
+    return render(request, "relatorios/financeiro_dre.html", contexto)
