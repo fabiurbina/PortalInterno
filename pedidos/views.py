@@ -3399,8 +3399,70 @@ def financeiro_dre(request):
 
     dados = buscar_fin_dre()
 
+    data_inicio = request.GET.get("data_inicio")
+    data_fim = request.GET.get("data_fim")
+    status_filtro = request.GET.get("status", "")
+
+    dados_filtrados = []
+
+    for item in dados:
+
+        status = item.get("cStatus")
+
+        # Filtro de status
+        if status_filtro and status != status_filtro:
+            continue
+
+        # Define qual data utilizar
+        if status == "PAGO":
+            data_item = item.get("dDtPagamento")
+        elif status == "A VENCER":
+            data_item = item.get("dDtPrevisao")
+        else:
+            data_item = item.get("dDtPagamento") or item.get("dDtPrevisao")
+
+        # Filtro de data inicial
+        if data_inicio and data_item:
+            if str(data_item) < data_inicio:
+                continue
+
+        # Filtro de data final
+        if data_fim and data_item:
+            if str(data_item) > data_fim:
+                continue
+
+        dados_filtrados.append(item)
+
+    # Totais
+    total_despesas = sum(
+        (item.get("nValorTitulo") or 0)
+        for item in dados_filtrados
+    )
+
+    total_pago = sum(
+        (item.get("nValPago") or 0)
+        for item in dados_filtrados
+        if item.get("cStatus") == "PAGO"
+    )
+
+    total_a_vencer = sum(
+        (item.get("nValorTitulo") or 0)
+        for item in dados_filtrados
+        if item.get("cStatus") == "A VENCER"
+    )
+
     contexto = {
-        "dados": dados,
+        "dados": dados_filtrados,
+        "data_inicio": data_inicio or "",
+        "data_fim": data_fim or "",
+        "status_filtro": status_filtro,
+        "total_despesas": total_despesas,
+        "total_pago": total_pago,
+        "total_a_vencer": total_a_vencer,
     }
 
-    return render(request, "relatorios/financeiro_dre.html", contexto)
+    return render(
+        request,
+        "relatorios/financeiro_dre.html",
+        contexto
+    )
