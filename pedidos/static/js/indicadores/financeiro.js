@@ -274,9 +274,9 @@ function criarGraficoParetoFinanceiro(dados) {
     destruirGraficoFinanceiro("pareto");
 
 
-    // =====================================================
-    // ORDENA DO MAIOR PARA O MENOR
-    // =====================================================
+    /* =====================================================
+       ORDENA DO MAIOR PARA O MENOR
+    ===================================================== */
 
     const dadosOrdenados = [...dados]
         .sort(
@@ -286,47 +286,46 @@ function criarGraficoParetoFinanceiro(dados) {
         );
 
 
-    // =====================================================
-    // TOP 5
-    // =====================================================
+    /* =====================================================
+       TOP 5 + OUTRAS
+    ===================================================== */
 
-    const top5 = dadosOrdenados.slice(0, 5);
+    const top5 =
+        dadosOrdenados.slice(0, 5);
 
-    const restantes = dadosOrdenados.slice(5);
-
-
-    // =====================================================
-    // TOTAL DAS OUTRAS DESPESAS
-    // =====================================================
-
-    const valorOutras = restantes.reduce(
-        (total, item) =>
-            total + Number(item.valor || 0),
-        0
-    );
+    const restantes =
+        dadosOrdenados.slice(5);
 
 
-    // =====================================================
-    // MONTA DADOS DO GRÁFICO
-    // =====================================================
+    const valorOutras =
+        restantes.reduce(
+            (total, item) =>
+                total +
+                Number(item.valor || 0),
+            0
+        );
 
-    const categorias = [
+
+    const categoriasOriginais = [
         ...top5.map(
-            item => item.categoria || "Sem Categoria"
+            item =>
+                item.categoria ||
+                "Sem Categoria"
         )
     ];
 
 
     const valores = [
         ...top5.map(
-            item => Number(item.valor || 0)
+            item =>
+                Number(item.valor || 0)
         )
     ];
 
 
     if (valorOutras > 0) {
 
-        categorias.push(
+        categoriasOriginais.push(
             "Outras Despesas"
         );
 
@@ -337,180 +336,357 @@ function criarGraficoParetoFinanceiro(dados) {
     }
 
 
-    // =====================================================
-    // PERCENTUAL INDIVIDUAL
-    // =====================================================
+    /* =====================================================
+       PERCENTUAL DE PARTICIPAÇÃO
+    ===================================================== */
 
-    const total = valores.reduce(
-        (soma, valor) => soma + valor,
-        0
+    const total =
+        valores.reduce(
+            (soma, valor) =>
+                soma + valor,
+            0
+        );
+
+
+    const percentuais =
+        valores.map(
+            valor =>
+                total > 0
+                    ? (valor / total) * 100
+                    : 0
+        );
+
+
+    /* =====================================================
+       NOMES CURTOS PARA O EIXO
+    ===================================================== */
+
+    const categorias = categoriasOriginais.map(
+        categoria => {
+
+            const nome =
+                String(categoria);
+
+
+            if (
+                nome ===
+                "Máquinas e Equipamentos"
+            ) {
+
+                return [
+                    "Máquinas e",
+                    "Equipamentos"
+                ];
+
+            }
+
+
+            if (
+                nome ===
+                "Adiantamento a Fornecedores"
+            ) {
+
+                return [
+                    "Adiantamentos",
+                    "Fornecedores"
+                ];
+
+            }
+
+
+            if (
+                nome ===
+                "Serviço Tomado"
+            ) {
+
+                return [
+                    "Serviço",
+                    "Tomado"
+                ];
+
+            }
+
+
+            if (
+                nome ===
+                "Materiais de Escritório"
+            ) {
+
+                return [
+                    "Materiais de",
+                    "Escritório"
+                ];
+
+            }
+
+
+            if (
+                nome ===
+                "Manutenção de Máquinas"
+            ) {
+
+                return [
+                    "Manutenção de",
+                    "Máquinas"
+                ];
+
+            }
+
+
+            if (
+                nome ===
+                "Outras Despesas"
+            ) {
+
+                return [
+                    "Outras",
+                    "Despesas"
+                ];
+
+            }
+
+
+            return nome;
+
+        }
     );
 
 
-    const percentuais = valores.map(
-        valor =>
-            total > 0
-                ? (valor / total) * 100
-                : 0
-    );
+    /* =====================================================
+       GRÁFICO
+    ===================================================== */
 
+    financeiroGraficos.pareto =
+        new Chart(
+            canvas,
+            {
 
-    financeiroGraficos.pareto = new Chart(canvas, {
+                type: "bar",
 
-        type: "bar",
+                data: {
 
-        data: {
+                    labels: categorias,
 
-            labels: categorias,
+                    datasets: [
 
-            datasets: [
+                        {
 
-                {
+                            label:
+                                "Participação nas Despesas",
 
-                    label: "Participação nas Despesas",
+                            data:
+                                percentuais,
 
-                    data: percentuais,
+                            borderWidth: 0,
 
-                    borderWidth: 0,
+                            borderRadius: 5,
 
-                    borderRadius: 5,
+                            barPercentage: 0.72,
 
-                    barPercentage: 0.65,
+                            categoryPercentage: 0.72,
 
-                    categoryPercentage: 0.75
+                            backgroundColor:
+                                "#82bde4"
 
-                }
+                        }
 
-            ]
-
-        },
-
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-
-            plugins: {
-
-                legend: {
-
-                    display: false
+                    ]
 
                 },
 
 
-                datalabels: {
+                options: {
 
-                    display: true,
+                    responsive: true,
 
-                    anchor: "end",
+                    maintainAspectRatio: false,
 
-                    align: "top",
 
-                    offset: 3,
+                    plugins: {
 
-                    font: {
+                        legend: {
 
-                        size: 10,
+                            display: false
 
-                        weight: "600"
+                        },
+
+
+                        /* =================================
+                           VALOR DIRETO NAS COLUNAS
+                        ================================= */
+
+                        datalabels: {
+
+                            display: true,
+
+                            anchor: "end",
+
+                            align: "top",
+
+                            offset: 2,
+
+                            clamp: true,
+
+                            font: {
+
+                                size: 10,
+
+                                weight: "600"
+
+                            },
+
+                            formatter:
+                                function(valor) {
+
+                                    return (
+                                        Number(valor)
+                                            .toLocaleString(
+                                                "pt-BR",
+                                                {
+                                                    minimumFractionDigits: 1,
+                                                    maximumFractionDigits: 1
+                                                }
+                                            )
+                                        +
+                                        "%"
+                                    );
+
+                                }
+
+                        },
+
+
+                        /* =================================
+                           TOOLTIP
+                        ================================= */
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                title:
+                                    function(contextos) {
+
+                                        const indice =
+                                            contextos[0]
+                                                .dataIndex;
+
+                                        return categoriasOriginais[
+                                            indice
+                                        ];
+
+                                    },
+
+
+                                label:
+                                    function(contexto) {
+
+                                        const indice =
+                                            contexto.dataIndex;
+
+                                        const valor =
+                                            valores[indice] || 0;
+
+                                        const percentual =
+                                            percentuais[indice] || 0;
+
+
+                                        return (
+                                            " "
+                                            +
+                                            percentual
+                                                .toLocaleString(
+                                                    "pt-BR",
+                                                    {
+                                                        minimumFractionDigits: 1,
+                                                        maximumFractionDigits: 1
+                                                    }
+                                                )
+                                            +
+                                            "%  |  "
+                                            +
+                                            formatarMoedaGerencialFinanceiro(
+                                                valor
+                                            )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
 
                     },
 
-                    formatter: function(valor) {
 
-                        return (
-                            Number(valor).toLocaleString(
-                                "pt-BR",
-                                {
-                                    minimumFractionDigits: 1,
-                                    maximumFractionDigits: 1
+                    scales: {
+
+                        x: {
+
+                            grid: {
+
+                                display: false
+
+                            },
+
+                            ticks: {
+
+                                autoSkip: false,
+
+                                maxRotation: 0,
+
+                                minRotation: 0,
+
+                                padding: 8,
+
+                                font: {
+
+                                    size: 9
+
                                 }
-                            ) +
-                            "%"
-                        );
 
-                    }
+                            }
 
-                },
+                        },
 
 
-                tooltip: {
+                        y: {
 
-                    callbacks: {
+                            beginAtZero: true,
 
-                        label: function(contexto) {
+                            max: 100,
 
-                            const percentual =
-                                Number(
-                                    contexto.raw || 0
-                                ).toLocaleString(
-                                    "pt-BR",
-                                    {
-                                        minimumFractionDigits: 1,
-                                        maximumFractionDigits: 1
+                            border: {
+
+                                display: false
+
+                            },
+
+                            grid: {
+
+                                color:
+                                    "rgba(100, 110, 120, 0.12)"
+
+                            },
+
+                            ticks: {
+
+                                stepSize: 20,
+
+                                font: {
+
+                                    size: 9
+
+                                },
+
+                                callback:
+                                    function(valor) {
+
+                                        return valor + "%";
+
                                     }
-                                );
 
-                            const valor =
-                                valores[
-                                    contexto.dataIndex
-                                ] || 0;
-
-                            return (
-                                percentual +
-                                "%  |  " +
-                                formatarMoedaFinanceiro(
-                                    valor
-                                )
-                            );
-
-                        }
-
-                    }
-
-                }
-
-            },
-
-
-            scales: {
-
-                x: {
-
-                    ticks: {
-
-                        autoSkip: false,
-
-                        maxRotation: 30,
-
-                        minRotation: 30,
-
-                        font: {
-
-                            size: 9
-
-                        }
-
-                    }
-
-                },
-
-
-                y: {
-
-                    beginAtZero: true,
-
-                    max: 100,
-
-                    ticks: {
-
-                        callback: function(valor) {
-
-                            return valor + "%";
+                            }
 
                         }
 
@@ -519,10 +695,7 @@ function criarGraficoParetoFinanceiro(dados) {
                 }
 
             }
-
-        }
-
-    });
+        );
 
 }
 
