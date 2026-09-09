@@ -1,5 +1,5 @@
 /* =========================================================
-   DASHBOARD FINANCEIRO
+   DASHBOARD FINANCEIRO - VIESANO
    PADRÃO VISUAL DO DASHBOARD COMERCIAL
 ========================================================= */
 
@@ -248,6 +248,15 @@
 }
 
 
+.financeiro-select option {
+
+    background: #0b2038;
+
+    color: white;
+
+}
+
+
 .financeiro-filtro-btn {
 
     border:
@@ -350,6 +359,10 @@
     color: #dffcff;
 
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 
 }
 
@@ -485,6 +498,13 @@
 }
 
 
+.financeiro-chart-evolucao {
+
+    height: 260px;
+
+}
+
+
 /* =========================================================
    ATUALIZAÇÃO
 ========================================================= */
@@ -518,12 +538,54 @@
 }
 
 
+@media (max-width: 1100px) {
+
+    .financeiro-topbar {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .financeiro-filtros {
+
+        width: 100%;
+
+        justify-content: flex-start;
+
+    }
+
+}
+
+
 @media (max-width: 1000px) {
 
     .financeiro-grid {
 
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .financeiro-kpis {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+
+    .financeiro-grid {
+
+        grid-template-columns:
+            1fr;
 
     }
 
@@ -545,9 +607,9 @@
 
         width: 100%;
 
-        flex-wrap: wrap;
+        flex-direction: column;
 
-        justify-content: flex-start;
+        align-items: stretch;
 
     }
 
@@ -557,6 +619,13 @@
         width: 100%;
 
         justify-content: space-between;
+
+    }
+
+
+    .financeiro-select {
+
+        width: 100%;
 
     }
 
@@ -576,15 +645,19 @@
     }
 
 
-    .financeiro-grid {
+    .financeiro-graficos-finais
+    .financeiro-chart {
 
-        grid-template-columns:
-            1fr;
+        height: 230px;
 
     }
 
+}
 
-    .financeiro-graficos-finais {
+
+@media (max-width: 500px) {
+
+    .financeiro-kpis {
 
         grid-template-columns:
             1fr;
