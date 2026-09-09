@@ -307,19 +307,17 @@
 
         <div class="indicadores-nav">
 
-            <a
-                href="{% url 'dashboard' %}"
-                class="indicador-nav-item ativo"
-            >
+            <button type="button"
+                    class="indicador-nav-item ativo"
+                    id="btn-comercial">
                 📊 Comercial
-            </a>
+            </button>
 
-            <a
-                href="{% url 'dashboard_financeiro' %}"
-                class="indicador-nav-item"
-            >
+            <button type="button"
+                    class="indicador-nav-item"
+                    id="btn-financeiro">
                 💰 Financeiro
-            </a>
+            </button>
 
         </div>
 
@@ -341,7 +339,9 @@
              POWER BI
         ========================= -->
 
-       {% include "indicadores/comercial/dashboard.html" %}
+       <div id="quadro-indicador">
+            {% include "indicadores/comercial/dashboard.html" %}
+        </div>
 
 
 
@@ -671,6 +671,44 @@
 <script src="{% static 'js/indicadores/comercial.js' %}"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.getElementById("btn-financeiro").addEventListener("click", function () {
+
+    const quadro = document.getElementById("quadro-indicador");
+
+    quadro.innerHTML = `
+        <div style="padding: 40px; text-align: center;">
+            Carregando Financeiro...
+        </div>
+    `;
+
+    fetch("{% url 'dashboard_financeiro' %}")
+        .then(response => response.text())
+        .then(html => {
+            quadro.innerHTML = html;
+        })
+        .catch(error => {
+            console.error(error);
+
+            quadro.innerHTML = `
+                <div style="padding: 40px; text-align: center;">
+                    Erro ao carregar o dashboard financeiro.
+                </div>
+            `;
+        });
+
+    document.getElementById("btn-comercial").classList.remove("ativo");
+    document.getElementById("btn-financeiro").classList.add("ativo");
+});
+
+
+document.getElementById("btn-comercial").addEventListener("click", function () {
+
+    location.reload();
+
+});
+</script>
 
 </body>
 
