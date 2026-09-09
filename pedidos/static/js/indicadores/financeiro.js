@@ -714,12 +714,14 @@ function criarGraficoStatusFinanceiro(dados) {
 
                 {
                     data: valores,
-                    borderWidth: 3
+
+                    borderWidth: 1
                 }
 
             ]
 
         },
+
 
         options: {
 
@@ -727,9 +729,14 @@ function criarGraficoStatusFinanceiro(dados) {
 
             maintainAspectRatio: false,
 
-            cutout: "65%",
+            cutout: "60%",
+
 
             plugins: {
+
+                /* =========================================
+                   LEGENDA
+                ========================================= */
 
                 legend: {
 
@@ -739,66 +746,57 @@ function criarGraficoStatusFinanceiro(dados) {
 
                     labels: {
 
-                        usePointStyle: true,
+                        usePointStyle: false,
 
-                        padding: 12,
+                        padding: 10,
 
                         font: {
+
                             size: 10
+
                         }
 
                     }
 
                 },
 
+
+                /* =========================================
+                   VALORES FIXOS NAS FATIAS
+                ========================================= */
+
                 datalabels: {
-                    display: false
+
+                    display: true,
+
+                    color: "#ffffff",
+
+                    font: {
+
+                        size: 10,
+
+                        weight: "600"
+
+                    },
+
+                    formatter: function(valor) {
+
+                        return formatarMoedaGerencialFinanceiro(
+                            valor
+                        );
+
+                    }
+
                 },
+
+
+                /* =========================================
+                   SEM TOOLTIP
+                ========================================= */
 
                 tooltip: {
 
-                    callbacks: {
-
-                        label: function(contexto) {
-
-                            const valor =
-                                Number(
-                                    contexto.raw || 0
-                                );
-
-                            const total =
-                                valores.reduce(
-                                    (a, b) => a + b,
-                                    0
-                                );
-
-                            const percentual =
-                                total > 0
-                                    ? (
-                                        valor / total
-                                    ) * 100
-                                    : 0;
-
-                            return (
-                                contexto.label +
-                                ": " +
-                                formatarMoedaFinanceiro(
-                                    valor
-                                ) +
-                                " (" +
-                                percentual.toLocaleString(
-                                    "pt-BR",
-                                    {
-                                        minimumFractionDigits: 1,
-                                        maximumFractionDigits: 1
-                                    }
-                                ) +
-                                "%)"
-                            );
-
-                        }
-
-                    }
+                    enabled: false
 
                 }
 

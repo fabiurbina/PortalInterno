@@ -4200,9 +4200,9 @@ def indicadores_financeiro_dados(request):
     }
 
 
-    # =========================================================
-    # STATUS
-    # =========================================================
+# =========================================================
+# STATUS — SOMENTE PAGO E A VENCER
+# =========================================================
 
     status = defaultdict(float)
 
@@ -4211,11 +4211,21 @@ def indicadores_financeiro_dados(request):
 
         situacao = str(
             item.get("cStatus") or ""
-        ).upper()
+        ).strip().upper()
 
-        status[situacao] += float(
-            item.get("nValorTitulo") or 0
-        )
+
+        if situacao == "PAGO":
+
+            status["PAGO"] += float(
+                item.get("nValPago") or 0
+            )
+
+
+        elif situacao == "A VENCER":
+
+            status["A VENCER"] += float(
+                item.get("nValorTitulo") or 0
+            )
 
 
     # =========================================================
