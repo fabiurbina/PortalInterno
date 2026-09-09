@@ -3398,7 +3398,14 @@ def indicadores_comercial_dados(request):
 @login_required
 def financeiro_dre(request):
 
+    from decimal import Decimal
+    from datetime import date
+
     usuario = request.user
+
+    # ==========================================================
+    # CONTROLE DE ACESSO
+    # ==========================================================
 
     if not (
         usuario.is_superuser
@@ -3410,6 +3417,10 @@ def financeiro_dre(request):
         return HttpResponseForbidden(
             "Você não tem permissão para acessar este relatório."
         )
+
+    # ==========================================================
+    # DADOS
+    # ==========================================================
 
     dados = buscar_fin_dre()
 
@@ -3441,11 +3452,40 @@ def financeiro_dre(request):
         "sla", ""
     )
 
-    dados_filtrados = []
+    # ==========================================================
+    # FUNÇÃO PARA VALORES
+    # ==========================================================
+
+    def valor_decimal(valor):
+
+        if valor is None:
+            return Decimal("0")
+
+        try:
+            return Decimal(str(valor))
+        except:
+            return Decimal("0")
+
+    # ==========================================================
+    # FORMATAÇÃO DE DINHEIRO
+    # ==========================================================
+
+    def dinheiro(valor):
+
+        valor = valor_decimal(valor)
+
+        return (
+            f"R$ {valor:,.2f}"
+            .replace(",", "X")
+            .replace(".", ",")
+            .replace("X", ".")
+        )
 
     # ==========================================================
     # PROCESSAMENTO
     # ==========================================================
+
+    dados_filtrados = []
 
     for item in dados:
 
@@ -3474,8 +3514,6 @@ def financeiro_dre(request):
             status == "A VENCER"
             and data_vencimento
         ):
-            from datetime import date
-
             prazo = (
                 data_vencimento - date.today()
             ).days
@@ -3501,8 +3539,7 @@ def financeiro_dre(request):
                 continue
 
         # ======================================================
-        # FILTRO DATA DE VENCIMENTO
-        # dDtPrevisao
+        # FILTRO VENCIMENTO
         # ======================================================
 
         if data_vencimento_inicio:
@@ -3522,8 +3559,7 @@ def financeiro_dre(request):
                 continue
 
         # ======================================================
-        # FILTRO DATA DE PAGAMENTO
-        # dDtPagamento
+        # FILTRO PAGAMENTO
         # ======================================================
 
         if data_pagamento_inicio:
@@ -3543,29 +3579,26 @@ def financeiro_dre(request):
                 continue
 
         # ======================================================
+        # VALORES FORMATADOS
+        # ======================================================
+
+        item["valor_titulo_formatado"] = dinheiro(
+            item.get("nValorTitulo")
+        )
+
+        item["valor_pago_formatado"] = dinheiro(
+            item.get("nValPago")
+        )
+
+        # ======================================================
         # ADICIONA
         # ======================================================
 
         dados_filtrados.append(item)
 
+    # ==========================================================
     # TOTAIS
     # ==========================================================
-
-    from decimal import Decimal
-
-
-    def valor_decimal(valor):
-        if valor is None:
-            return Decimal("0")
-
-        if isinstance(valor, Decimal):
-            return valor
-
-        try:
-            return Decimal(str(valor))
-        except:
-            return Decimal("0")
-
 
     total_despesas = sum(
         (
@@ -3574,7 +3607,6 @@ def financeiro_dre(request):
         ),
         Decimal("0")
     )
-
 
     total_pago = sum(
         (
@@ -3585,7 +3617,6 @@ def financeiro_dre(request):
         Decimal("0")
     )
 
-
     total_a_vencer = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
@@ -3594,7 +3625,6 @@ def financeiro_dre(request):
         ),
         Decimal("0")
     )
-
 
     total_dentro_prazo = sum(
         (
@@ -3605,7 +3635,6 @@ def financeiro_dre(request):
         Decimal("0")
     )
 
-
     total_fora_prazo = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
@@ -3613,6 +3642,74 @@ def financeiro_dre(request):
             if item.get("StatusPagamento") == "Fora do Prazo"
         ),
         Decimal("0")
+    )
+
+    # ==========================================================
+    # INDICADOR DE PONTUALIDADE
+    # ==========================================================
+
+    pagamentos_realizados = sum(
+        1
+        for item in dados_filtrados
+        if item.get("cStatus") == "PAGO"
+    )
+
+    pagamentos_dentro_prazo = sum(
+        1
+        for item in dados_filtrados
+        if (
+            item.get("cStatus") == "PAGO"
+            and item.get("StatusPagamento") == "Dentro do Prazo"
+        )
+    )
+
+    pagamentos_fora_prazo = sum(
+        1
+        for item in dados_filtrados
+        if (
+            item.get("cStatus") == "PAGO"
+            and item.get("StatusPagamento") == "Fora do Prazo"
+        )
+    )
+
+    if pagamentos_realizados > 0:
+
+        percentual_pontualidade = (
+            pagamentos_dentro_prazo
+            / pagamentos_realizados
+        ) * 100
+
+    else:
+
+        percentual_pontualidade = Decimal("0")
+
+    percentual_pontualidade_formatado = (
+        f"{percentual_pontualidade:.2f}".replace(".", ",")
+        + "%"
+    )
+
+    # ==========================================================
+    # VALORES DOS CARDS FORMATADOS
+    # ==========================================================
+
+    total_despesas_formatado = dinheiro(
+        total_despesas
+    )
+
+    total_pago_formatado = dinheiro(
+        total_pago
+    )
+
+    total_a_vencer_formatado = dinheiro(
+        total_a_vencer
+    )
+
+    total_dentro_prazo_formatado = dinheiro(
+        total_dentro_prazo
+    )
+
+    total_fora_prazo_formatado = dinheiro(
+        total_fora_prazo
     )
 
     # ==========================================================
@@ -3634,11 +3731,17 @@ def financeiro_dre(request):
         "sla_filtro": sla_filtro,
 
         # Cards
-        "total_despesas": total_despesas,
-        "total_pago": total_pago,
-        "total_a_vencer": total_a_vencer,
-        "total_dentro_prazo": total_dentro_prazo,
-        "total_fora_prazo": total_fora_prazo,
+        "total_despesas": total_despesas_formatado,
+        "total_pago": total_pago_formatado,
+        "total_a_vencer": total_a_vencer_formatado,
+        "total_dentro_prazo": total_dentro_prazo_formatado,
+        "total_fora_prazo": total_fora_prazo_formatado,
+
+        # Indicador
+        "pagamentos_realizados": pagamentos_realizados,
+        "pagamentos_dentro_prazo": pagamentos_dentro_prazo,
+        "pagamentos_fora_prazo": pagamentos_fora_prazo,
+        "percentual_pontualidade": percentual_pontualidade_formatado,
     }
 
     return render(

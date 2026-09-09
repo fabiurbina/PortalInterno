@@ -40,14 +40,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
 
         .cabecalho h1 {
             margin: 0;
             color: #174f35;
-            font-size: 26px;
+            font-size: 25px;
         }
 
 
@@ -55,15 +55,15 @@
             text-decoration: none;
             background: #174f35;
             color: white;
-            padding: 9px 18px;
+            padding: 9px 17px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
         }
 
 
         .btn-voltar:hover {
-            opacity: 0.9;
+            opacity: .9;
         }
 
 
@@ -73,33 +73,34 @@
 
         .cards-resumo {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
         }
 
 
         .card-resumo {
             background: white;
             border: 1px solid #e1e8e4;
-            border-radius: 12px;
-            padding: 16px 18px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 11px;
+            padding: 14px 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
             min-width: 0;
         }
 
 
         .card-resumo .titulo {
-            font-size: 11px;
+            font-size: 10px;
             color: #6c7771;
             font-weight: bold;
-            margin-bottom: 9px;
-            letter-spacing: .4px;
+            margin-bottom: 8px;
+            letter-spacing: .35px;
+            white-space: nowrap;
         }
 
 
         .card-resumo .valor {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             text-align: right;
             white-space: nowrap;
@@ -156,6 +157,33 @@
         }
 
 
+        .card-pontualidade {
+            border-left: 4px solid #2878a7;
+        }
+
+
+        .card-pontualidade .valor {
+            color: #2878a7;
+        }
+
+
+        .pontualidade-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 10px;
+            color: #6c7771;
+        }
+
+
+        .pontualidade-percentual {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2878a7;
+        }
+
+
         /* ==========================================================
            FILTROS
         ========================================================== */
@@ -163,22 +191,23 @@
         .filtros {
             background: white;
             border: 1px solid #e1e8e4;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-radius: 11px;
+            padding: 15px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
         }
 
 
         .filtros h3 {
-            margin: 0 0 14px 0;
+            margin: 0 0 13px 0;
             color: #174f35;
-            font-size: 16px;
+            font-size: 15px;
         }
 
 
         .filtros-grid {
             display: grid;
+
             grid-template-columns:
                 1fr
                 1fr
@@ -188,7 +217,8 @@
                 1fr
                 auto;
 
-            gap: 10px;
+            gap: 9px;
+
             align-items: end;
         }
 
@@ -201,9 +231,9 @@
 
 
         .campo label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: #4d5a53;
         }
 
@@ -211,12 +241,12 @@
         .campo input,
         .campo select {
             width: 100%;
-            height: 38px;
-            padding: 0 9px;
+            height: 37px;
+            padding: 0 8px;
             border: 1px solid #ccd7d1;
             border-radius: 7px;
             background: white;
-            font-size: 12px;
+            font-size: 11px;
             color: #26332d;
         }
 
@@ -229,20 +259,20 @@
 
 
         .btn-filtrar {
-            height: 38px;
-            padding: 0 18px;
+            height: 37px;
+            padding: 0 17px;
             border: none;
             border-radius: 7px;
             background: #174f35;
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             cursor: pointer;
         }
 
 
         .btn-filtrar:hover {
-            opacity: 0.9;
+            opacity: .9;
         }
 
 
@@ -250,13 +280,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 36px;
-            padding: 0 16px;
+            height: 34px;
+            padding: 0 15px;
             border-radius: 7px;
             border: 1px solid #ccd7d1;
             color: #4d5a53;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
             background: white;
         }
 
@@ -269,14 +299,14 @@
             width: 100%;
             background: white;
             border: 1px solid #e1e8e4;
-            border-radius: 12px;
+            border-radius: 11px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
         }
 
 
         .tabela-topo {
-            padding: 14px 16px;
+            padding: 13px 15px;
             border-bottom: 1px solid #e5ebe7;
             display: flex;
             justify-content: space-between;
@@ -287,12 +317,12 @@
         .tabela-topo h3 {
             margin: 0;
             color: #174f35;
-            font-size: 16px;
+            font-size: 15px;
         }
 
 
         .contador {
-            font-size: 11px;
+            font-size: 10px;
             color: #6c7771;
         }
 
@@ -340,7 +370,7 @@
 
         #tabelaFinanceiro th:nth-child(6),
         #tabelaFinanceiro td:nth-child(6) {
-            width: 21%;
+            width: 20%;
         }
 
 
@@ -364,7 +394,7 @@
 
         #tabelaFinanceiro th:nth-child(10),
         #tabelaFinanceiro td:nth-child(10) {
-            width: 4%;
+            width: 5%;
         }
 
 
@@ -377,9 +407,9 @@
         th {
             background: #f4f7f6;
             color: #4d5a53;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
-            padding: 10px 7px;
+            padding: 9px 6px;
             text-align: left;
             white-space: nowrap;
             cursor: pointer;
@@ -393,16 +423,16 @@
 
 
         th .seta {
-            margin-left: 3px;
-            font-size: 9px;
+            margin-left: 2px;
+            font-size: 8px;
             color: #174f35;
         }
 
 
         td {
-            padding: 11px 7px;
+            padding: 10px 6px;
             border-top: 1px solid #edf1ef;
-            font-size: 11px;
+            font-size: 10px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -452,9 +482,9 @@
 
         .status {
             display: inline-block;
-            padding: 5px 8px;
+            padding: 4px 7px;
             border-radius: 20px;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: bold;
             white-space: nowrap;
         }
@@ -484,9 +514,9 @@
 
         .sla {
             display: inline-block;
-            padding: 5px 8px;
+            padding: 4px 7px;
             border-radius: 20px;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: bold;
             white-space: nowrap;
         }
@@ -526,21 +556,20 @@
            RESPONSIVO
         ========================================================== */
 
-        @media (max-width: 1400px) {
+        @media (max-width: 1500px) {
 
             .cards-resumo {
                 grid-template-columns: repeat(3, 1fr);
             }
 
-
             .filtros-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
 
         }
 
 
-        @media (max-width: 850px) {
+        @media (max-width: 900px) {
 
             .container {
                 width: calc(100% - 20px);
@@ -549,12 +578,12 @@
 
 
             .cards-resumo {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
 
             .filtros-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
 
@@ -562,6 +591,20 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .cards-resumo {
+                grid-template-columns: 1fr;
+            }
+
+
+            .filtros-grid {
+                grid-template-columns: 1fr;
             }
 
 
@@ -604,44 +647,111 @@
          CARDS
     ========================================================== -->
 
-   <div class="cards-resumo">
+    <div class="cards-resumo">
 
-    <div class="card-resumo card-total">
-        <div class="titulo">TOTAL DESPESAS</div>
-        <div class="valor moeda">
-            {{ total_despesas|floatformat:2 }}
+
+        <!-- TOTAL DESPESAS -->
+
+        <div class="card-resumo card-total">
+
+            <div class="titulo">
+                TOTAL DESPESAS
+            </div>
+
+            <div class="valor">
+                {{ total_despesas }}
+            </div>
+
         </div>
-    </div>
 
-    <div class="card-resumo card-pago">
-        <div class="titulo">TOTAL PAGO</div>
-        <div class="valor moeda">
-            {{ total_pago|floatformat:2 }}
+
+        <!-- TOTAL PAGO -->
+
+        <div class="card-resumo card-pago">
+
+            <div class="titulo">
+                TOTAL PAGO
+            </div>
+
+            <div class="valor">
+                {{ total_pago }}
+            </div>
+
         </div>
-    </div>
 
-    <div class="card-resumo card-vencer">
-        <div class="titulo">A VENCER</div>
-        <div class="valor moeda">
-            {{ total_a_vencer|floatformat:2 }}
+
+        <!-- A VENCER -->
+
+        <div class="card-resumo card-vencer">
+
+            <div class="titulo">
+                A VENCER
+            </div>
+
+            <div class="valor">
+                {{ total_a_vencer }}
+            </div>
+
         </div>
-    </div>
 
-    <div class="card-resumo card-sla-ok">
-        <div class="titulo">DENTRO DO PRAZO</div>
-        <div class="valor moeda">
-            {{ total_dentro_prazo|floatformat:2 }}
+
+        <!-- DENTRO DO PRAZO -->
+
+        <div class="card-resumo card-sla-ok">
+
+            <div class="titulo">
+                DENTRO DO PRAZO
+            </div>
+
+            <div class="valor">
+                {{ total_dentro_prazo }}
+            </div>
+
         </div>
-    </div>
 
-    <div class="card-resumo card-sla-atraso">
-        <div class="titulo">FORA DO PRAZO</div>
-        <div class="valor moeda">
-            {{ total_fora_prazo|floatformat:2 }}
+
+        <!-- FORA DO PRAZO -->
+
+        <div class="card-resumo card-sla-atraso">
+
+            <div class="titulo">
+                FORA DO PRAZO
+            </div>
+
+            <div class="valor">
+                {{ total_fora_prazo }}
+            </div>
+
         </div>
-    </div>
 
-</div>
+
+        <!-- INDICADOR DE PONTUALIDADE -->
+
+        <div class="card-resumo card-pontualidade">
+
+            <div class="titulo">
+                PAGAMENTOS DENTRO DO PRAZO
+            </div>
+
+            <div class="valor percentual-pontualidade">
+                {{ percentual_pontualidade }}
+            </div>
+
+            <div class="pontualidade-info">
+
+                <span>
+                    {{ pagamentos_dentro_prazo }}
+                    de
+                    {{ pagamentos_realizados }}
+                    pagamentos
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </div>
 
 
     <!-- ==========================================================
@@ -808,7 +918,7 @@
                 </div>
 
 
-                <!-- BOTÃO -->
+                <!-- FILTRAR -->
 
                 <button
                     type="submit"
@@ -823,9 +933,11 @@
         </form>
 
 
+        <!-- LIMPAR -->
+
         {% if data_vencimento_inicio or data_vencimento_fim or data_pagamento_inicio or data_pagamento_fim or status_filtro or sla_filtro %}
 
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 9px;">
 
                 <a
                     href="{% url 'financeiro_dre' %}"
@@ -872,72 +984,60 @@
 
                 <tr>
 
-
                     <th>
                         DRE
                         <span class="seta"></span>
                     </th>
-
 
                     <th>
                         Categoria
                         <span class="seta"></span>
                     </th>
 
-
                     <th>
                         Emissão
                         <span class="seta"></span>
                     </th>
-
 
                     <th>
                         Vencimento
                         <span class="seta"></span>
                     </th>
 
-
                     <th>
                         Pagamento
                         <span class="seta"></span>
                     </th>
-
 
                     <th>
                         Cliente / Fornecedor
                         <span class="seta"></span>
                     </th>
 
-
                     <th>
                         Valor Título
                         <span class="seta"></span>
                     </th>
-
 
                     <th>
                         Valor Pago
                         <span class="seta"></span>
                     </th>
 
-
                     <th>
                         Status
                         <span class="seta"></span>
                     </th>
-
 
                     <th>
                         Prazo
                         <span class="seta"></span>
                     </th>
 
-
                     <th>
                         SLA
                         <span class="seta"></span>
                     </th>
-
 
                 </tr>
 
@@ -955,14 +1055,18 @@
 
                     <!-- DRE -->
 
-                    <td title="{{ item.descricaoDRE|default:'-' }}">
+                    <td
+                        title="{{ item.descricaoDRE|default:'-' }}"
+                    >
                         {{ item.descricaoDRE|default:"-" }}
                     </td>
 
 
                     <!-- CATEGORIA -->
 
-                    <td title="{{ item.descricao|default:'-' }}">
+                    <td
+                        title="{{ item.descricao|default:'-' }}"
+                    >
                         {{ item.descricao|default:"-" }}
                     </td>
 
@@ -996,28 +1100,24 @@
 
                     <!-- CLIENTE / FORNECEDOR -->
 
-                    <td title="{{ item.razao_social|default:'-' }}">
+                    <td
+                        title="{{ item.razao_social|default:'-' }}"
+                    >
                         {{ item.razao_social|default:"-" }}
                     </td>
 
 
                     <!-- VALOR TÍTULO -->
 
-                    <td
-                        class="valor moeda"
-                        data-valor="{{ item.nValorTitulo|default:0 }}"
-                    >
-                        R$ 0,00
+                    <td class="valor">
+                        {{ item.valor_titulo_formatado }}
                     </td>
 
 
                     <!-- VALOR PAGO -->
 
-                    <td
-                        class="valor moeda"
-                        data-valor="{{ item.nValPago|default:0 }}"
-                    >
-                        R$ 0,00
+                    <td class="valor">
+                        {{ item.valor_pago_formatado }}
                     </td>
 
 
@@ -1025,20 +1125,17 @@
 
                     <td>
 
-
                         {% if item.cStatus == "PAGO" %}
 
                             <span class="status status-pago">
                                 PAGO
                             </span>
 
-
                         {% elif item.cStatus == "A VENCER" %}
 
                             <span class="status status-vencer">
                                 A VENCER
                             </span>
-
 
                         {% else %}
 
@@ -1047,7 +1144,6 @@
                             </span>
 
                         {% endif %}
-
 
                     </td>
 
@@ -1063,19 +1159,15 @@
                         {% endif %}"
                     >
 
-
                         {% if item.Prazo is not None %}
-
 
                             {% if item.Prazo < 0 %}
 
                                 {{ item.Prazo }} dias
 
-
                             {% elif item.Prazo == 0 %}
 
                                 Hoje
-
 
                             {% else %}
 
@@ -1083,13 +1175,11 @@
 
                             {% endif %}
 
-
                         {% else %}
 
                             -
 
                         {% endif %}
-
 
                     </td>
 
@@ -1098,20 +1188,17 @@
 
                     <td>
 
-
                         {% if item.StatusPagamento == "Dentro do Prazo" %}
 
                             <span class="sla sla-ok">
                                 DENTRO DO PRAZO
                             </span>
 
-
                         {% elif item.StatusPagamento == "Fora do Prazo" %}
 
                             <span class="sla sla-atraso">
                                 FORA DO PRAZO
                             </span>
-
 
                         {% else %}
 
@@ -1120,7 +1207,6 @@
                             </span>
 
                         {% endif %}
-
 
                     </td>
 
@@ -1156,190 +1242,74 @@
 </div>
 
 
+<!-- ==========================================================
+     ORDENAÇÃO DAS COLUNAS
+========================================================== -->
+
 <script>
 
+const tabela = document.getElementById(
+    "tabelaFinanceiro"
+);
 
 
-    /* ==========================================================
-       ORDENAÇÃO DA TABELA
-    ========================================================== */
+if (tabela) {
 
-    const tabela = document.getElementById(
-        "tabelaFinanceiro"
-    );
+    const headers = tabela.querySelectorAll("th");
 
 
-    if (tabela) {
+    headers.forEach(function(header, coluna) {
 
+        let ascendente = true;
 
-        const headers = tabela.querySelectorAll("th");
 
+        header.addEventListener(
+            "click",
+            function() {
 
-        headers.forEach(function(header, coluna) {
+                const tbody = tabela.querySelector(
+                    "tbody"
+                );
 
 
-            let ascendente = true;
+                const linhas = Array.from(
+                    tbody.querySelectorAll("tr")
+                );
 
 
-            header.addEventListener(
-                "click",
-                function() {
+                linhas.sort(function(a, b) {
 
+                    const celulaA =
+                        a.children[coluna];
 
-                    const tbody = tabela.querySelector(
-                        "tbody"
-                    );
+                    const celulaB =
+                        b.children[coluna];
 
 
-                    const linhas = Array.from(
-                        tbody.querySelectorAll("tr")
-                    );
+                    /* ======================================
+                       DATAS
+                    ====================================== */
 
-
-                    linhas.sort(function(a, b) {
-
-
-                        const celulaA =
-                            a.children[coluna];
-
-
-                        const celulaB =
-                            b.children[coluna];
-
-
-                        /* ==============================
-                           DATAS
-                        ============================== */
-
-                        if (
-                            celulaA.dataset.sort !== undefined &&
-                            celulaB.dataset.sort !== undefined
-                        ) {
-
-
-                            let valorA =
-                                celulaA.dataset.sort;
-
-
-                            let valorB =
-                                celulaB.dataset.sort;
-
-
-                            if (valorA === "") {
-                                return 1;
-                            }
-
-
-                            if (valorB === "") {
-                                return -1;
-                            }
-
-
-                            if (valorA < valorB) {
-                                return ascendente ? -1 : 1;
-                            }
-
-
-                            if (valorA > valorB) {
-                                return ascendente ? 1 : -1;
-                            }
-
-
-                            return 0;
-
-                        }
-
-
-                        /* ==============================
-                           MOEDA
-                        ============================== */
-
-                        if (
-                            celulaA.classList.contains("valor") &&
-                            celulaB.classList.contains("valor")
-                        ) {
-
-
-                            let valorA = Number(
-                                celulaA.getAttribute(
-                                    "data-valor"
-                                ) || 0
-                            );
-
-
-                            let valorB = Number(
-                                celulaB.getAttribute(
-                                    "data-valor"
-                                ) || 0
-                            );
-
-
-                            if (valorA < valorB) {
-                                return ascendente ? -1 : 1;
-                            }
-
-
-                            if (valorA > valorB) {
-                                return ascendente ? 1 : -1;
-                            }
-
-
-                            return 0;
-
-                        }
-
-
-                        /* ==============================
-                           PRAZO
-                        ============================== */
-
-                        if (
-                            celulaA.classList.contains("prazo") &&
-                            celulaB.classList.contains("prazo")
-                        ) {
-
-
-                            let valorA =
-                                parseInt(
-                                    celulaA.innerText
-                                ) || 0;
-
-
-                            let valorB =
-                                parseInt(
-                                    celulaB.innerText
-                                ) || 0;
-
-
-                            if (valorA < valorB) {
-                                return ascendente ? -1 : 1;
-                            }
-
-
-                            if (valorA > valorB) {
-                                return ascendente ? 1 : -1;
-                            }
-
-
-                            return 0;
-
-                        }
-
-
-                        /* ==============================
-                           TEXTO
-                        ============================== */
+                    if (
+                        celulaA.dataset.sort !== undefined &&
+                        celulaB.dataset.sort !== undefined
+                    ) {
 
                         let valorA =
-                            celulaA.innerText
-                                .trim()
-                                .toLowerCase();
-
+                            celulaA.dataset.sort;
 
                         let valorB =
-                            celulaB.innerText
-                                .trim()
-                                .toLowerCase();
+                            celulaB.dataset.sort;
+
+
+                        if (!valorA) {
+                            return 1;
+                        }
+
+
+                        if (!valorB) {
+                            return -1;
+                        }
 
 
                         if (valorA < valorB) {
@@ -1354,60 +1324,118 @@
 
                         return 0;
 
-                    });
+                    }
 
 
-                    /* ==============================
-                       REORGANIZA
-                    ============================== */
+                    /* ======================================
+                       PRAZO
+                    ====================================== */
 
-                    linhas.forEach(function(linha) {
+                    if (
+                        celulaA.classList.contains("prazo") &&
+                        celulaB.classList.contains("prazo")
+                    ) {
 
-                        tbody.appendChild(linha);
-
-                    });
-
-
-                    /* ==============================
-                       SETAS
-                    ============================== */
-
-                    headers.forEach(function(h) {
-
-                        const seta =
-                            h.querySelector(".seta");
+                        const valorA =
+                            parseInt(
+                                celulaA.innerText
+                            ) || 0;
 
 
-                        if (seta) {
-                            seta.textContent = "";
+                        const valorB =
+                            parseInt(
+                                celulaB.innerText
+                            ) || 0;
+
+
+                        if (valorA < valorB) {
+                            return ascendente ? -1 : 1;
                         }
 
-                    });
+
+                        if (valorA > valorB) {
+                            return ascendente ? 1 : -1;
+                        }
 
 
-                    const seta =
-                        header.querySelector(".seta");
-
-
-                    if (seta) {
-
-                        seta.textContent =
-                            ascendente
-                                ? " ▲"
-                                : " ▼";
+                        return 0;
 
                     }
 
 
-                    ascendente = !ascendente;
+                    /* ======================================
+                       TEXTO
+                    ====================================== */
+
+                    const valorA =
+                        celulaA.innerText
+                            .trim()
+                            .toLowerCase();
+
+
+                    const valorB =
+                        celulaB.innerText
+                            .trim()
+                            .toLowerCase();
+
+
+                    if (valorA < valorB) {
+                        return ascendente ? -1 : 1;
+                    }
+
+
+                    if (valorA > valorB) {
+                        return ascendente ? 1 : -1;
+                    }
+
+
+                    return 0;
+
+                });
+
+
+                linhas.forEach(function(linha) {
+
+                    tbody.appendChild(linha);
+
+                });
+
+
+                headers.forEach(function(h) {
+
+                    const seta =
+                        h.querySelector(".seta");
+
+
+                    if (seta) {
+                        seta.textContent = "";
+                    }
+
+                });
+
+
+                const seta =
+                    header.querySelector(".seta");
+
+
+                if (seta) {
+
+                    seta.textContent =
+                        ascendente
+                            ? " ▲"
+                            : " ▼";
 
                 }
-            );
 
-        }
 
-    }
+                ascendente = !ascendente;
 
+            }
+        );
+
+    });
+
+}
 
 </script>
 
