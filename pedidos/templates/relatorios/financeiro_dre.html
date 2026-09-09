@@ -256,20 +256,21 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1450px;
+            table-layout: fixed;
         }
 
         th {
             background: #f4f7f6;
             color: #4d5a53;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            padding: 13px 12px;
+            padding: 10px 7px;
             text-align: left;
             white-space: nowrap;
             cursor: pointer;
             user-select: none;
         }
+        
 
         th:hover {
             background: #e8efeb;
@@ -282,11 +283,13 @@
         }
 
         td {
-            padding: 13px 12px;
-            border-top: 1px solid #edf1ef;
-            font-size: 13px;
-            white-space: nowrap;
-        }
+        padding: 10px 7px;
+        border-top: 1px solid #edf1ef;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
         tbody tr:hover {
             background: #f8faf9;
@@ -308,6 +311,60 @@
 
         .prazo-ok {
             color: #198754;
+        }
+        #tabelaFinanceiro th:nth-child(1),
+        #tabelaFinanceiro td:nth-child(1) {
+            width: 7%;
+        }
+
+        #tabelaFinanceiro th:nth-child(2),
+        #tabelaFinanceiro td:nth-child(2) {
+            width: 14%;
+        }
+
+        #tabelaFinanceiro th:nth-child(3),
+        #tabelaFinanceiro td:nth-child(3) {
+            width: 7%;
+        }
+
+        #tabelaFinanceiro th:nth-child(4),
+        #tabelaFinanceiro td:nth-child(4) {
+            width: 8%;
+        }
+
+        #tabelaFinanceiro th:nth-child(5),
+        #tabelaFinanceiro td:nth-child(5) {
+            width: 8%;
+        }
+
+        #tabelaFinanceiro th:nth-child(6),
+        #tabelaFinanceiro td:nth-child(6) {
+            width: 19%;
+        }
+
+        #tabelaFinanceiro th:nth-child(7),
+        #tabelaFinanceiro td:nth-child(7) {
+            width: 9%;
+        }
+
+        #tabelaFinanceiro th:nth-child(8),
+        #tabelaFinanceiro td:nth-child(8) {
+            width: 9%;
+        }
+
+        #tabelaFinanceiro th:nth-child(9),
+        #tabelaFinanceiro td:nth-child(9) {
+            width: 7%;
+        }
+
+        #tabelaFinanceiro th:nth-child(10),
+        #tabelaFinanceiro td:nth-child(10) {
+            width: 5%;
+        }
+
+        #tabelaFinanceiro th:nth-child(11),
+        #tabelaFinanceiro td:nth-child(11) {
+            width: 7%;
         }
 
         /* ==========================================================
@@ -446,86 +503,42 @@
 
     <div class="cards-resumo">
 
-        <div class="card-resumo card-total">
-
-            <div class="titulo">
-                TOTAL DESPESAS
-            </div>
-
-            <div
-                class="valor moeda"
-                data-valor="{{ total_despesas }}"
-            >
-                R$ 0,00
-            </div>
-
+    <div class="card-resumo card-total">
+        <div class="titulo">TOTAL DESPESAS</div>
+        <div class="valor">
+            R$ {{ total_despesas|floatformat:2 }}
         </div>
-
-
-        <div class="card-resumo card-pago">
-
-            <div class="titulo">
-                TOTAL PAGO
-            </div>
-
-            <div
-                class="valor moeda"
-                data-valor="{{ total_pago }}"
-            >
-                R$ 0,00
-            </div>
-
-        </div>
-
-
-        <div class="card-resumo card-vencer">
-
-            <div class="titulo">
-                A VENCER
-            </div>
-
-            <div
-                class="valor moeda"
-                data-valor="{{ total_a_vencer }}"
-            >
-                R$ 0,00
-            </div>
-
-        </div>
-
-
-        <div class="card-resumo card-sla-ok">
-
-            <div class="titulo">
-                DENTRO DO PRAZO
-            </div>
-
-            <div
-                class="valor moeda"
-                data-valor="{{ total_dentro_prazo }}"
-            >
-                R$ 0,00
-            </div>
-
-        </div>
-
-
-        <div class="card-resumo card-sla-atraso">
-
-            <div class="titulo">
-                FORA DO PRAZO
-            </div>
-
-            <div
-                class="valor moeda"
-                data-valor="{{ total_fora_prazo }}"
-            >
-                R$ 0,00
-            </div>
-
-        </div>
-
     </div>
+
+    <div class="card-resumo card-pago">
+        <div class="titulo">TOTAL PAGO</div>
+        <div class="valor">
+            R$ {{ total_pago|floatformat:2 }}
+        </div>
+    </div>
+
+    <div class="card-resumo card-vencer">
+        <div class="titulo">A VENCER</div>
+        <div class="valor">
+            R$ {{ total_a_vencer|floatformat:2 }}
+        </div>
+    </div>
+
+    <div class="card-resumo card-sla-ok">
+        <div class="titulo">DENTRO DO PRAZO</div>
+        <div class="valor">
+            R$ {{ total_dentro_prazo|floatformat:2 }}
+        </div>
+    </div>
+
+    <div class="card-resumo card-sla-atraso">
+        <div class="titulo">FORA DO PRAZO</div>
+        <div class="valor">
+            R$ {{ total_fora_prazo|floatformat:2 }}
+        </div>
+    </div>
+
+</div>
 
 
     <!-- ==========================================================
@@ -845,19 +858,13 @@
                     </td>
 
 
-                    <td
-                        class="valor moeda"
-                        data-valor="{{ item.nValorTitulo|default:0 }}"
-                    >
-                        R$ 0,00
+                    <td class="valor">
+                        R$ {{ item.nValorTitulo|floatformat:2 }}
                     </td>
 
 
-                    <td
-                        class="valor moeda"
-                        data-valor="{{ item.nValPago|default:0 }}"
-                    >
-                        R$ 0,00
+                    <td class="valor">
+                        R$ {{ item.nValPago|floatformat:2 }}
                     </td>
 
 
@@ -969,40 +976,6 @@
 
 
 <script>
-
-    /* ==========================================================
-       FORMATAÇÃO DE MOEDA
-    ========================================================== */
-
-    document.querySelectorAll(".moeda").forEach(function(element) {
-
-        let valor = element.dataset.valor;
-
-        if (!valor) {
-            valor = "0";
-        }
-
-        valor = String(valor)
-            .replace("R$", "")
-            .replace(/\s/g, "")
-            .replace(/\./g, "")
-            .replace(",", ".");
-
-        let numero = parseFloat(valor);
-
-        if (isNaN(numero)) {
-            numero = 0;
-        }
-
-        element.textContent = numero.toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        );
-
-    });
 
 
     /* ==========================================================

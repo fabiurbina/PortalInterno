@@ -3548,37 +3548,71 @@ def financeiro_dre(request):
 
         dados_filtrados.append(item)
 
-    # ==========================================================
     # TOTAIS
     # ==========================================================
 
+    from decimal import Decimal
+
+
+    def valor_decimal(valor):
+        if valor is None:
+            return Decimal("0")
+
+        if isinstance(valor, Decimal):
+            return valor
+
+        try:
+            return Decimal(str(valor))
+        except:
+            return Decimal("0")
+
+
     total_despesas = sum(
-        (item.get("nValorTitulo") or 0)
-        for item in dados_filtrados
+        (
+            valor_decimal(item.get("nValorTitulo"))
+            for item in dados_filtrados
+        ),
+        Decimal("0")
     )
+
 
     total_pago = sum(
-        (item.get("nValPago") or 0)
-        for item in dados_filtrados
-        if item.get("cStatus") == "PAGO"
+        (
+            valor_decimal(item.get("nValPago"))
+            for item in dados_filtrados
+            if item.get("cStatus") == "PAGO"
+        ),
+        Decimal("0")
     )
+
 
     total_a_vencer = sum(
-        (item.get("nValorTitulo") or 0)
-        for item in dados_filtrados
-        if item.get("cStatus") == "A VENCER"
+        (
+            valor_decimal(item.get("nValorTitulo"))
+            for item in dados_filtrados
+            if item.get("cStatus") == "A VENCER"
+        ),
+        Decimal("0")
     )
+
 
     total_dentro_prazo = sum(
-        (item.get("nValorTitulo") or 0)
-        for item in dados_filtrados
-        if item.get("StatusPagamento") == "Dentro do Prazo"
+        (
+            valor_decimal(item.get("nValorTitulo"))
+            for item in dados_filtrados
+            if item.get("StatusPagamento") == "Dentro do Prazo"
+        ),
+        Decimal("0")
     )
 
+
     total_fora_prazo = sum(
-        (item.get("nValorTitulo") or 0)
-        for item in dados_filtrados
-        if item.get("StatusPagamento") == "Fora do Prazo"
+        (
+            valor_decimal(item.get("nValorTitulo"))
+            for item in dados_filtrados
+            if item.get("StatusPagamento") == "Fora do Prazo"
+        ),
+        Decimal("0")
     )
 
     # ==========================================================
