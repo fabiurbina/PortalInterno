@@ -16,6 +16,7 @@ function inicializarDashboardFinanceiro() {
     }
 
     carregarDadosFinanceiro();
+
 }
 
 
@@ -29,30 +30,36 @@ async function carregarDadosFinanceiro() {
 
         const parametros = new URLSearchParams();
 
+
         const vencimentoInicio =
             document.getElementById(
                 "financeiroDataVencimentoInicio"
             )?.value;
+
 
         const vencimentoFim =
             document.getElementById(
                 "financeiroDataVencimentoFim"
             )?.value;
 
+
         const pagamentoInicio =
             document.getElementById(
                 "financeiroDataPagamentoInicio"
             )?.value;
+
 
         const pagamentoFim =
             document.getElementById(
                 "financeiroDataPagamentoFim"
             )?.value;
 
+
         const status =
             document.getElementById(
                 "financeiroStatus"
             )?.value;
+
 
         const sla =
             document.getElementById(
@@ -61,56 +68,77 @@ async function carregarDadosFinanceiro() {
 
 
         if (vencimentoInicio) {
+
             parametros.append(
                 "data_vencimento_inicio",
                 vencimentoInicio
             );
+
         }
 
+
         if (vencimentoFim) {
+
             parametros.append(
                 "data_vencimento_fim",
                 vencimentoFim
             );
+
         }
 
+
         if (pagamentoInicio) {
+
             parametros.append(
                 "data_pagamento_inicio",
                 pagamentoInicio
             );
+
         }
 
+
         if (pagamentoFim) {
+
             parametros.append(
                 "data_pagamento_fim",
                 pagamentoFim
             );
+
         }
 
+
         if (status) {
+
             parametros.append(
                 "status",
                 status
             );
+
         }
 
+
         if (sla) {
+
             parametros.append(
                 "sla",
                 sla
             );
+
         }
 
 
         let url =
             "/indicadores/financeiro/dados/";
 
+
         const queryString =
             parametros.toString();
 
+
         if (queryString) {
+
             url += "?" + queryString;
+
         }
 
 
@@ -152,9 +180,8 @@ async function carregarDadosFinanceiro() {
    ATUALIZAR DASHBOARD
 ========================================================= */
 
-function atualizarDashboardFinanceiro(
-    dados
-) {
+function atualizarDashboardFinanceiro(dados) {
+
 
     /* =====================================================
        KPIs
@@ -167,12 +194,14 @@ function atualizarDashboardFinanceiro(
         )
     );
 
+
     definirTextoFinanceiro(
         "financeiroKpiTotalPago",
         formatarMoedaFinanceiro(
             dados.total_pago
         )
     );
+
 
     definirTextoFinanceiro(
         "financeiroKpiAVencer",
@@ -181,12 +210,14 @@ function atualizarDashboardFinanceiro(
         )
     );
 
+
     definirTextoFinanceiro(
         "financeiroKpiDentroPrazo",
         formatarMoedaFinanceiro(
             dados.total_dentro_prazo
         )
     );
+
 
     definirTextoFinanceiro(
         "financeiroKpiForaPrazo",
@@ -195,12 +226,14 @@ function atualizarDashboardFinanceiro(
         )
     );
 
+
     definirTextoFinanceiro(
         "financeiroKpiPagamentosRealizados",
         formatarNumeroFinanceiro(
             dados.pagamentos_realizados
         )
     );
+
 
     definirTextoFinanceiro(
         "financeiroKpiPontualidade",
@@ -211,13 +244,14 @@ function atualizarDashboardFinanceiro(
 
 
     /* =====================================================
-       DATA ATUALIZAÇÃO
+       DATA DE ATUALIZAÇÃO
     ===================================================== */
 
     const atualizado =
         document.getElementById(
             "financeiroAtualizado"
         );
+
 
     if (atualizado) {
 
@@ -237,17 +271,21 @@ function atualizarDashboardFinanceiro(
         dados.pareto || []
     );
 
+
     criarGraficoTop5Financeiro(
         dados.top5_fornecedores || {}
     );
+
 
     criarGraficoStatusFinanceiro(
         dados.status || {}
     );
 
+
     criarGraficoSlaFinanceiro(
         dados.sla || {}
     );
+
 
     criarGraficoEvolucaoFinanceiro(
         dados.evolucao || {},
@@ -258,28 +296,34 @@ function atualizarDashboardFinanceiro(
 
 
 /* =========================================================
-   CURVA 80/20
+   CONCENTRAÇÃO DAS DESPESAS
+   TOP 5 + OUTRAS DESPESAS
 ========================================================= */
 
 function criarGraficoParetoFinanceiro(dados) {
 
-    const canvas = document.getElementById(
-        "financeiroPareto"
-    );
+    const canvas =
+        document.getElementById(
+            "financeiroPareto"
+        );
+
 
     if (!canvas) {
         return;
     }
 
-    destruirGraficoFinanceiro("pareto");
+
+    destruirGraficoFinanceiro(
+        "pareto"
+    );
 
 
     /* =====================================================
-       ORDENA DO MAIOR PARA O MENOR
+       ORDENA MAIOR → MENOR
     ===================================================== */
 
-    const dadosOrdenados = [...dados]
-        .sort(
+    const dadosOrdenados =
+        [...dados].sort(
             (a, b) =>
                 Number(b.valor || 0) -
                 Number(a.valor || 0)
@@ -287,40 +331,52 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
     /* =====================================================
-       TOP 5 + OUTRAS DESPESAS
+       TOP 5
     ===================================================== */
 
     const top5 =
-        dadosOrdenados.slice(0, 5);
+        dadosOrdenados.slice(
+            0,
+            5
+        );
+
 
     const restantes =
-        dadosOrdenados.slice(5);
+        dadosOrdenados.slice(
+            5
+        );
 
+
+    /* =====================================================
+       OUTRAS DESPESAS
+    ===================================================== */
 
     const valorOutras =
         restantes.reduce(
             (total, item) =>
                 total +
-                Number(item.valor || 0),
+                Number(
+                    item.valor || 0
+                ),
             0
         );
 
 
-    const categorias = [
-        ...top5.map(
+    const categorias =
+        top5.map(
             item =>
                 item.categoria ||
                 "Sem Categoria"
-        )
-    ];
+        );
 
 
-    const valores = [
-        ...top5.map(
+    const valores =
+        top5.map(
             item =>
-                Number(item.valor || 0)
-        )
-    ];
+                Number(
+                    item.valor || 0
+                )
+        );
 
 
     if (valorOutras > 0) {
@@ -328,6 +384,7 @@ function criarGraficoParetoFinanceiro(dados) {
         categorias.push(
             "Outras Despesas"
         );
+
 
         valores.push(
             valorOutras
@@ -352,7 +409,10 @@ function criarGraficoParetoFinanceiro(dados) {
         valores.map(
             valor =>
                 total > 0
-                    ? (valor / total) * 100
+                    ? (
+                        valor /
+                        total
+                    ) * 100
                     : 0
         );
 
@@ -382,16 +442,16 @@ function criarGraficoParetoFinanceiro(dados) {
                             data:
                                 percentuais,
 
+                            backgroundColor:
+                                "#82bde4",
+
                             borderWidth: 0,
 
                             borderRadius: 5,
 
                             barPercentage: 0.65,
 
-                            categoryPercentage: 0.75,
-
-                            backgroundColor:
-                                "#82bde4"
+                            categoryPercentage: 0.72
 
                         }
 
@@ -409,6 +469,23 @@ function criarGraficoParetoFinanceiro(dados) {
                     maintainAspectRatio: false,
 
 
+                    layout: {
+
+                        padding: {
+
+                            left: 4,
+
+                            right: 25,
+
+                            top: 8,
+
+                            bottom: 2
+
+                        }
+
+                    },
+
+
                     plugins: {
 
                         legend: {
@@ -417,10 +494,6 @@ function criarGraficoParetoFinanceiro(dados) {
 
                         },
 
-
-                        /* =================================
-                           PERCENTUAL NA BARRA
-                        ================================= */
 
                         datalabels: {
 
@@ -465,10 +538,6 @@ function criarGraficoParetoFinanceiro(dados) {
                         },
 
 
-                        /* =================================
-                           TOOLTIP
-                        ================================= */
-
                         tooltip: {
 
                             callbacks: {
@@ -479,15 +548,11 @@ function criarGraficoParetoFinanceiro(dados) {
                                         const indice =
                                             contexto.dataIndex;
 
-                                        const valor =
-                                            valores[indice] || 0;
-
-                                        const percentual =
-                                            percentuais[indice] || 0;
-
 
                                         return (
-                                            percentual.toLocaleString(
+                                            percentuais[
+                                                indice
+                                            ].toLocaleString(
                                                 "pt-BR",
                                                 {
                                                     minimumFractionDigits: 1,
@@ -498,7 +563,9 @@ function criarGraficoParetoFinanceiro(dados) {
                                             "%  |  "
                                             +
                                             formatarMoedaGerencialFinanceiro(
-                                                valor
+                                                valores[
+                                                    indice
+                                                ]
                                             )
                                         );
 
@@ -513,10 +580,6 @@ function criarGraficoParetoFinanceiro(dados) {
 
                     scales: {
 
-                        /* =================================
-                           CATEGORIAS
-                        ================================= */
-
                         y: {
 
                             grid: {
@@ -525,11 +588,12 @@ function criarGraficoParetoFinanceiro(dados) {
 
                             },
 
+
                             ticks: {
 
                                 autoSkip: false,
 
-                                padding: 8,
+                                padding: 7,
 
                                 font: {
 
@@ -541,10 +605,6 @@ function criarGraficoParetoFinanceiro(dados) {
 
                         },
 
-
-                        /* =================================
-                           PERCENTUAL
-                        ================================= */
 
                         x: {
 
@@ -558,12 +618,14 @@ function criarGraficoParetoFinanceiro(dados) {
 
                             },
 
+
                             grid: {
 
                                 color:
-                                    "rgba(100, 110, 120, 0.12)"
+                                    "rgba(100,110,120,.12)"
 
                             },
+
 
                             ticks: {
 
@@ -575,10 +637,14 @@ function criarGraficoParetoFinanceiro(dados) {
 
                                 },
 
+
                                 callback:
                                     function(valor) {
 
-                                        return valor + "%";
+                                        return (
+                                            valor +
+                                            "%"
+                                        );
 
                                     }
 
@@ -602,278 +668,406 @@ function criarGraficoParetoFinanceiro(dados) {
 
 function criarGraficoTop5Financeiro(dados) {
 
-    const canvas = document.getElementById(
-        "financeiroTop5Fornecedores"
-    );
+    const canvas =
+        document.getElementById(
+            "financeiroTop5Fornecedores"
+        );
+
 
     if (!canvas) {
         return;
     }
 
-    destruirGraficoFinanceiro("top5");
+
+    destruirGraficoFinanceiro(
+        "top5"
+    );
 
 
-    const fornecedores = (dados.labels || [])
-        .map((nome, index) => ({
-            nome: nome,
-            valor: Number(
-                dados.values?.[index] || 0
+    const fornecedores =
+        (dados.labels || [])
+            .map(
+                (nome, index) => ({
+
+                    nome: nome,
+
+                    valor:
+                        Number(
+                            dados.values?.[index] ||
+                            0
+                        )
+
+                })
             )
-        }))
-        .filter(item => {
+            .filter(
+                item => {
 
-            const nome = item.nome
-                .toLowerCase()
-                .trim();
+                    const nome =
+                        item.nome
+                            .toLowerCase()
+                            .trim();
 
-            return !nome.includes(
-                "andre machado"
+
+                    return !nome.includes(
+                        "andre machado"
+                    );
+
+                }
+            )
+            .sort(
+                (a, b) =>
+                    b.valor -
+                    a.valor
+            )
+            .slice(
+                0,
+                5
             );
 
-        })
-        .sort(
-            (a, b) => b.valor - a.valor
-        )
-        .slice(0, 5);
 
+    financeiroGraficos.top5 =
+        new Chart(
+            canvas,
+            {
 
-    financeiroGraficos.top5 = new Chart(canvas, {
+                type: "bar",
 
-        type: "bar",
+                data: {
 
-        data: {
+                    labels:
+                        fornecedores.map(
+                            item =>
+                                item.nome
+                        ),
 
-            labels: fornecedores.map(
-                item => item.nome
-            ),
+                    datasets: [
 
-            datasets: [
+                        {
 
-                {
+                            label:
+                                "Valor",
 
-                    label: "Valor",
+                            data:
+                                fornecedores.map(
+                                    item =>
+                                        item.valor
+                                ),
 
-                    data: fornecedores.map(
-                        item => item.valor
-                    ),
+                            backgroundColor:
+                                "#82bde4",
 
-                    borderWidth: 0,
+                            borderWidth: 0,
 
-                    borderRadius: 5,
+                            borderRadius: 4,
 
-                    barPercentage: 0.65
+                            barPercentage: 0.65,
 
-                }
-
-            ]
-
-        },
-
-
-        options: {
-
-            indexAxis: "y",
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-
-            plugins: {
-
-                legend: {
-                    display: false
-                },
-
-
-                datalabels: {
-                    display: false
-                },
-
-
-                tooltip: {
-
-                    callbacks: {
-
-                        label: function(contexto) {
-
-                            return formatarMoedaFinanceiro(
-                                contexto.raw
-                            );
+                            categoryPercentage: 0.75
 
                         }
 
-                    }
-
-                }
-
-            },
-
-
-            scales: {
-
-                x: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        callback: function(valor) {
-
-                            return formatarMoedaGerencialFinanceiro(
-                                valor
-                            );
-
-                        }
-
-                    }
+                    ]
 
                 },
 
 
-                y: {
+                options: {
 
-                    ticks: {
+                    indexAxis: "y",
 
-                        font: {
-                            size: 9
-                        }
+                    responsive: true,
 
-                    }
-
-                }
-
-            }
-
-        }
-
-    });
-
-}
-
-function criarGraficoStatusFinanceiro(dados) {
-
-    const canvas = document.getElementById(
-        "financeiroGraficoStatus"
-    );
-
-    if (!canvas) {
-        return;
-    }
-
-    destruirGraficoFinanceiro("status");
+                    maintainAspectRatio: false,
 
 
-    const labels = Object.keys(dados);
+                    layout: {
 
-    const valores = Object.values(dados).map(
-        valor => Number(valor || 0)
-    );
+                        padding: {
 
+                            left: 0,
 
-    financeiroGraficos.status = new Chart(canvas, {
+                            right: 20,
 
-        type: "doughnut",
+                            top: 5,
 
-        data: {
-
-            labels: labels,
-
-            datasets: [
-
-                {
-                    data: valores,
-
-                    borderWidth: 1
-                }
-
-            ]
-
-        },
-
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            cutout: "60%",
-
-
-            plugins: {
-
-                /* =========================================
-                   LEGENDA
-                ========================================= */
-
-                legend: {
-
-                    display: true,
-
-                    position: "bottom",
-
-                    labels: {
-
-                        usePointStyle: false,
-
-                        padding: 10,
-
-                        font: {
-
-                            size: 10
+                            bottom: 2
 
                         }
-
-                    }
-
-                },
-
-
-                /* =========================================
-                   VALORES FIXOS NAS FATIAS
-                ========================================= */
-
-                datalabels: {
-
-                    display: true,
-
-                    color: "#18202a",
-
-                    font: {
-
-                        size: 10,
-
-                        weight: "600"
 
                     },
 
-                    formatter: function(valor) {
 
-                        return formatarMoedaGerencialFinanceiro(
-                            valor
-                        );
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        },
+
+
+                        datalabels: {
+
+                            display: false
+
+                        },
+
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function(contexto) {
+
+                                        return formatarMoedaGerencialFinanceiro(
+                                            contexto.raw
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        y: {
+
+                            grid: {
+
+                                display: false
+
+                            },
+
+
+                            ticks: {
+
+                                autoSkip: false,
+
+                                padding: 6,
+
+                                font: {
+
+                                    size: 9
+
+                                }
+
+                            }
+
+                        },
+
+
+                        x: {
+
+                            beginAtZero: true,
+
+                            border: {
+
+                                display: false
+
+                            },
+
+
+                            ticks: {
+
+                                font: {
+
+                                    size: 9
+
+                                },
+
+
+                                callback:
+                                    function(valor) {
+
+                                        return formatarMoedaCompactaFinanceiro(
+                                            valor
+                                        );
+
+                                    }
+
+                            }
+
+                        }
 
                     }
-
-                },
-
-
-                /* =========================================
-                   SEM TOOLTIP
-                ========================================= */
-
-                tooltip: {
-
-                    enabled: false
 
                 }
 
             }
+        );
+
+}
+
+
+/* =========================================================
+   SITUAÇÃO FINANCEIRA
+   SOMENTE PAGO + A VENCER
+========================================================= */
+
+function criarGraficoStatusFinanceiro(dados) {
+
+    const canvas =
+        document.getElementById(
+            "financeiroGraficoStatus"
+        );
+
+
+    if (!canvas) {
+        return;
+    }
+
+
+    destruirGraficoFinanceiro(
+        "status"
+    );
+
+
+    const ordemStatus = [
+        "PAGO",
+        "A VENCER"
+    ];
+
+
+    const labels = [];
+
+    const valores = [];
+
+
+    ordemStatus.forEach(
+        status => {
+
+            if (
+                dados[status] !== undefined
+            ) {
+
+                labels.push(
+                    status
+                );
+
+
+                valores.push(
+                    Number(
+                        dados[status] || 0
+                    )
+                );
+
+            }
 
         }
+    );
 
-    });
+
+    financeiroGraficos.status =
+        new Chart(
+            canvas,
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            data: valores,
+
+                            borderWidth: 1
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "60%",
+
+
+                    layout: {
+
+                        padding: 4
+
+                    },
+
+
+                    plugins: {
+
+                        legend: {
+
+                            display: true,
+
+                            position: "bottom",
+
+                            labels: {
+
+                                padding: 10,
+
+                                boxWidth: 28,
+
+                                font: {
+
+                                    size: 9
+
+                                }
+
+                            }
+
+                        },
+
+
+                        datalabels: {
+
+                            display: true,
+
+                            color: "#18202a",
+
+                            font: {
+
+                                size: 10,
+
+                                weight: "600"
+
+                            },
+
+
+                            formatter:
+                                function(valor) {
+
+                                    return formatarMoedaGerencialFinanceiro(
+                                        valor
+                                    );
+
+                                }
+
+                        },
+
+
+                        tooltip: {
+
+                            enabled: false
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
 
 }
 
@@ -882,22 +1076,43 @@ function criarGraficoStatusFinanceiro(dados) {
    SLA
 ========================================================= */
 
-function criarGraficoSlaFinanceiro(
-    dados
-) {
+function criarGraficoSlaFinanceiro(dados) {
 
     const canvas =
         document.getElementById(
             "financeiroSla"
         );
 
+
     if (!canvas) {
         return;
     }
 
+
     destruirGraficoFinanceiro(
         "sla"
     );
+
+
+    const labels = [
+        "Dentro do Prazo",
+        "Fora do Prazo"
+    ];
+
+
+    const valores = [
+
+        Number(
+            dados["Dentro do Prazo"] ||
+            0
+        ),
+
+        Number(
+            dados["Fora do Prazo"] ||
+            0
+        )
+
+    ];
 
 
     financeiroGraficos.sla =
@@ -909,19 +1124,13 @@ function criarGraficoSlaFinanceiro(
 
                 data: {
 
-                    labels:
-                        Object.keys(
-                            dados
-                        ),
+                    labels: labels,
 
                     datasets: [
 
                         {
 
-                            data:
-                                Object.values(
-                                    dados
-                                ),
+                            data: valores,
 
                             borderWidth: 1
 
@@ -947,7 +1156,381 @@ function criarGraficoSlaFinanceiro(
 
                             display: true,
 
-                            position: "bottom"
+                            position: "bottom",
+
+                            labels: {
+
+                                padding: 10,
+
+                                boxWidth: 28,
+
+                                font: {
+
+                                    size: 9
+
+                                }
+
+                            }
+
+                        },
+
+
+                        datalabels: {
+
+                            display: true,
+
+                            color: "#18202a",
+
+                            font: {
+
+                                size: 10,
+
+                                weight: "600"
+
+                            },
+
+
+                            formatter:
+                                function(valor) {
+
+                                    return formatarMoedaGerencialFinanceiro(
+                                        valor
+                                    );
+
+                                }
+
+                        },
+
+
+                        tooltip: {
+
+                            enabled: false
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   EVOLUÇÃO E PROJEÇÃO
+   COLUNAS
+========================================================= */
+
+function criarGraficoEvolucaoFinanceiro(
+    evolucao,
+    projecao
+) {
+
+    const canvas =
+        document.getElementById(
+            "financeiroEvolucao"
+        );
+
+
+    if (!canvas) {
+        return;
+    }
+
+
+    destruirGraficoFinanceiro(
+        "evolucao"
+    );
+
+
+    const labelsHistorico =
+        evolucao.labels || [];
+
+
+    const despesas =
+        (evolucao.despesas || [])
+            .map(
+                valor =>
+                    Number(valor || 0)
+            );
+
+
+    const pago =
+        (evolucao.pago || [])
+            .map(
+                valor =>
+                    Number(valor || 0)
+            );
+
+
+    const aVencer =
+        (evolucao.a_vencer || [])
+            .map(
+                valor =>
+                    Number(valor || 0)
+            );
+
+
+    const labelsProjecao =
+        projecao.labels || [];
+
+
+    const valoresProjecao =
+        (projecao.valores || [])
+            .map(
+                valor =>
+                    Number(valor || 0)
+            );
+
+
+    /* =====================================================
+       TODOS OS MESES
+    ===================================================== */
+
+    const labels = [
+
+        ...labelsHistorico,
+
+        ...labelsProjecao
+
+    ];
+
+
+    /* =====================================================
+       PAGAMENTOS REALIZADOS
+    ===================================================== */
+
+    const dadosPago = [
+
+        ...pago,
+
+        ...new Array(
+            labelsProjecao.length
+        ).fill(null)
+
+    ];
+
+
+    /* =====================================================
+       PREVISÃO
+    ===================================================== */
+
+    const dadosPrevisao = [
+
+        ...new Array(
+            Math.max(
+                labelsHistorico.length,
+                0
+            )
+        ).fill(null),
+
+        ...valoresProjecao
+
+    ];
+
+
+    /* =====================================================
+       FORMATAÇÃO DOS MESES
+    ===================================================== */
+
+    const labelsFormatados =
+        labels.map(
+            label => {
+
+                if (
+                    typeof label !== "string"
+                ) {
+
+                    return label;
+
+                }
+
+
+                const partes =
+                    label.split("-");
+
+
+                if (
+                    partes.length === 2
+                ) {
+
+                    return (
+                        partes[1] +
+                        "/" +
+                        partes[0].slice(2)
+                    );
+
+                }
+
+
+                return label;
+
+            }
+        );
+
+
+    financeiroGraficos.evolucao =
+        new Chart(
+            canvas,
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: labelsFormatados,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Pagamentos Realizados",
+
+                            data:
+                                dadosPago,
+
+                            backgroundColor:
+                                "#2196e0",
+
+                            borderWidth: 0,
+
+                            borderRadius: 4,
+
+                            barPercentage: 0.55,
+
+                            categoryPercentage: 0.75
+
+                        },
+
+
+                        {
+
+                            label:
+                                "Previsão de Pagamentos",
+
+                            data:
+                                dadosPrevisao,
+
+                            backgroundColor:
+                                "#ff7b19",
+
+                            borderWidth: 0,
+
+                            borderRadius: 4,
+
+                            barPercentage: 0.55,
+
+                            categoryPercentage: 0.75
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+
+                    layout: {
+
+                        padding: {
+
+                            top: 8,
+
+                            right: 8,
+
+                            left: 8,
+
+                            bottom: 2
+
+                        }
+
+                    },
+
+
+                    interaction: {
+
+                        mode: "index",
+
+                        intersect: false
+
+                    },
+
+
+                    plugins: {
+
+                        legend: {
+
+                            display: true,
+
+                            position: "bottom",
+
+                            labels: {
+
+                                padding: 12,
+
+                                boxWidth: 14,
+
+                                font: {
+
+                                    size: 10
+
+                                }
+
+                            }
+
+                        },
+
+
+                        datalabels: {
+
+                            display:
+                                function(contexto) {
+
+                                    return (
+                                        contexto.raw !== null &&
+                                        Number(
+                                            contexto.raw || 0
+                                        ) > 0
+                                    );
+
+                                },
+
+
+                            anchor: "end",
+
+                            align: "top",
+
+                            offset: 2,
+
+                            clamp: true,
+
+                            color: "#18202a",
+
+                            font: {
+
+                                size: 8,
+
+                                weight: "600"
+
+                            },
+
+
+                            formatter:
+                                function(valor) {
+
+                                    return formatarMoedaGerencialFinanceiro(
+                                        valor
+                                    );
+
+                                }
 
                         },
 
@@ -957,18 +1540,88 @@ function criarGraficoSlaFinanceiro(
                             callbacks: {
 
                                 label:
-                                    function (
-                                        contexto
-                                    ) {
+                                    function(contexto) {
 
                                         return (
-                                            contexto.label
+                                            contexto.dataset.label
                                             +
                                             ": "
                                             +
-                                            formatarMoedaFinanceiro(
+                                            formatarMoedaGerencialFinanceiro(
                                                 contexto.raw
                                             )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            grid: {
+
+                                display: false
+
+                            },
+
+
+                            ticks: {
+
+                                autoSkip: true,
+
+                                maxTicksLimit: 9,
+
+                                font: {
+
+                                    size: 9
+
+                                }
+
+                            }
+
+                        },
+
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            border: {
+
+                                display: false
+
+                            },
+
+
+                            grid: {
+
+                                color:
+                                    "rgba(100,110,120,.12)"
+
+                            },
+
+
+                            ticks: {
+
+                                font: {
+
+                                    size: 9
+
+                                },
+
+
+                                callback:
+                                    function(valor) {
+
+                                        return formatarMoedaCompactaFinanceiro(
+                                            valor
                                         );
 
                                     }
@@ -988,272 +1641,10 @@ function criarGraficoSlaFinanceiro(
 
 
 /* =========================================================
-   EVOLUÇÃO + PROJEÇÃO
-========================================================= */
-
-function criarGraficoEvolucaoFinanceiro(evolucao, projecao) {
-
-    const canvas = document.getElementById(
-        "financeiroEvolucao"
-    );
-
-    if (!canvas) {
-        return;
-    }
-
-    destruirGraficoFinanceiro("evolucao");
-
-
-    const labels = evolucao.labels || [];
-
-    const pago = (evolucao.pago || []).map(
-        valor => Number(valor || 0)
-    );
-
-    const previsao = (
-        evolucao.previsao ||
-        evolucao.a_vencer ||
-        []
-    ).map(
-        valor => Number(valor || 0)
-    );
-
-
-    /*
-    =========================================================
-    AJUSTA TAMANHO DAS SÉRIES
-    =========================================================
-    */
-
-    const tamanho = labels.length;
-
-    const dadosPago = [
-        ...pago,
-        ...new Array(
-            Math.max(tamanho - pago.length, 0)
-        ).fill(null)
-    ].slice(0, tamanho);
-
-
-    const dadosPrevisao = [
-        ...previsao,
-        ...new Array(
-            Math.max(tamanho - previsao.length, 0)
-        ).fill(null)
-    ].slice(0, tamanho);
-
-
-    /*
-    =========================================================
-    GRÁFICO
-    =========================================================
-    */
-
-    financeiroGraficos.evolucao = new Chart(canvas, {
-
-        type: "bar",
-
-        data: {
-
-            labels: labels,
-
-            datasets: [
-
-                {
-                    label: "Pagamentos Realizados",
-
-                    data: dadosPago,
-
-                    borderWidth: 0,
-
-                    borderRadius: 5,
-
-                    barPercentage: 0.72,
-
-                    categoryPercentage: 0.72,
-
-                    backgroundColor: "#1687e8"
-                },
-
-                {
-                    label: "Previsão de Pagamentos",
-
-                    data: dadosPrevisao,
-
-                    borderWidth: 0,
-
-                    borderRadius: 5,
-
-                    barPercentage: 0.72,
-
-                    categoryPercentage: 0.72,
-
-                    backgroundColor: "#ff7a1a"
-                }
-
-            ]
-
-        },
-
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-
-            interaction: {
-
-                mode: "index",
-
-                intersect: false
-
-            },
-
-
-            plugins: {
-
-                legend: {
-
-                    display: true,
-
-                    position: "bottom",
-
-                    labels: {
-
-                        usePointStyle: true,
-
-                        padding: 15
-
-                    }
-
-                },
-
-
-                /*
-                =================================================
-                VALORES ARREDONDADOS NAS COLUNAS
-                =================================================
-                */
-
-                datalabels: {
-
-                    display: function(context) {
-
-                        return Number(
-                            context.dataset.data[
-                                context.dataIndex
-                            ] || 0
-                        ) > 0;
-
-                    },
-
-                    anchor: "end",
-
-                    align: "top",
-
-                    offset: 3,
-
-                    clamp: true,
-
-                    font: {
-
-                        size: 10,
-
-                        weight: "600"
-
-                    },
-
-                    formatter: function(valor) {
-
-                        return formatarMoedaGerencialFinanceiro(
-                            valor
-                        );
-
-                    }
-
-                },
-
-
-                tooltip: {
-
-                    callbacks: {
-
-                        label: function(contexto) {
-
-                            return (
-                                contexto.dataset.label +
-                                ": " +
-                                formatarMoedaFinanceiro(
-                                    contexto.raw
-                                )
-                            );
-
-                        }
-
-                    }
-
-                }
-
-            },
-
-
-            scales: {
-
-                x: {
-
-                    stacked: false,
-
-                    ticks: {
-
-                        autoSkip: true,
-
-                        maxTicksLimit: 12,
-
-                        maxRotation: 35,
-
-                        minRotation: 0
-
-                    }
-
-                },
-
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        callback: function(valor) {
-
-                            return formatarMoedaGerencialFinanceiro(
-                                valor
-                            );
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
    DESTRUIR GRÁFICO
 ========================================================= */
 
-function destruirGraficoFinanceiro(
-    nome
-) {
+function destruirGraficoFinanceiro(nome) {
 
     if (
         financeiroGraficos[nome]
@@ -1269,25 +1660,57 @@ function destruirGraficoFinanceiro(
 
 
 /* =========================================================
-   FORMATAÇÃO
+   FORMATAÇÃO — MOEDA COMPLETA
+========================================================= */
+
+function formatarMoedaFinanceiro(valor) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+
+            style: "currency",
+
+            currency: "BRL"
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FORMATAÇÃO — MOEDA GERENCIAL
 ========================================================= */
 
 function formatarMoedaGerencialFinanceiro(valor) {
 
-    const numero = Number(valor || 0);
+    const numero =
+        Number(
+            valor || 0
+        );
 
-    const absoluto = Math.abs(numero);
+
+    const absoluto =
+        Math.abs(numero);
 
 
-    if (absoluto >= 1000000) {
+    if (
+        absoluto >= 1000000
+    ) {
 
         return (
             "R$ " +
-            (numero / 1000000).toLocaleString(
+            (
+                numero / 1000000
+            ).toLocaleString(
                 "pt-BR",
                 {
-                    minimumFractionDigits: 1,
+
                     maximumFractionDigits: 1
+
                 }
             ) +
             " mi"
@@ -1296,15 +1719,20 @@ function formatarMoedaGerencialFinanceiro(valor) {
     }
 
 
-    if (absoluto >= 1000) {
+    if (
+        absoluto >= 1000
+    ) {
 
         return (
             "R$ " +
-            (numero / 1000).toLocaleString(
+            (
+                numero / 1000
+            ).toLocaleString(
                 "pt-BR",
                 {
-                    minimumFractionDigits: 0,
+
                     maximumFractionDigits: 0
+
                 }
             ) +
             " mil"
@@ -1318,89 +1746,96 @@ function formatarMoedaGerencialFinanceiro(valor) {
         numero.toLocaleString(
             "pt-BR",
             {
+
                 maximumFractionDigits: 0
+
             }
         )
     );
 
 }
 
-function formatarMoedaFinanceiro(
-    valor
-) {
 
-    return Number(
-        valor || 0
-    ).toLocaleString(
-        "pt-BR",
-        {
-            style: "currency",
-            currency: "BRL"
-        }
-    );
+/* =========================================================
+   FORMATAÇÃO — EIXO MONETÁRIO
+========================================================= */
 
-}
-
-
-function formatarMoedaCompactaFinanceiro(
-    valor
-) {
+function formatarMoedaCompactaFinanceiro(valor) {
 
     const numero =
         Number(
             valor || 0
         );
 
+
+    const absoluto =
+        Math.abs(numero);
+
+
     if (
-        Math.abs(numero) >= 1000000
+        absoluto >= 1000000
     ) {
 
         return (
-            "R$ "
-            +
-            (numero / 1000000)
-                .toLocaleString(
-                    "pt-BR",
-                    {
-                        maximumFractionDigits: 1
-                    }
-                )
-            +
+            "R$ " +
+            (
+                numero / 1000000
+            ).toLocaleString(
+                "pt-BR",
+                {
+
+                    maximumFractionDigits: 1
+
+                }
+            ) +
             " mi"
         );
 
     }
 
+
     if (
-        Math.abs(numero) >= 1000
+        absoluto >= 1000
     ) {
 
         return (
-            "R$ "
-            +
-            (numero / 1000)
-                .toLocaleString(
-                    "pt-BR",
-                    {
-                        maximumFractionDigits: 1
-                    }
-                )
-            +
+            "R$ " +
+            (
+                numero / 1000
+            ).toLocaleString(
+                "pt-BR",
+                {
+
+                    maximumFractionDigits: 0
+
+                }
+            ) +
             " mil"
         );
 
     }
 
-    return formatarMoedaFinanceiro(
-        numero
+
+    return (
+        "R$ " +
+        numero.toLocaleString(
+            "pt-BR",
+            {
+
+                maximumFractionDigits: 0
+
+            }
+        )
     );
 
 }
 
 
-function formatarNumeroFinanceiro(
-    valor
-) {
+/* =========================================================
+   NÚMERO
+========================================================= */
+
+function formatarNumeroFinanceiro(valor) {
 
     return Number(
         valor || 0
@@ -1411,9 +1846,11 @@ function formatarNumeroFinanceiro(
 }
 
 
-function formatarPercentualFinanceiro(
-    valor
-) {
+/* =========================================================
+   PERCENTUAL
+========================================================= */
+
+function formatarPercentualFinanceiro(valor) {
 
     return (
         Number(
@@ -1421,8 +1858,11 @@ function formatarPercentualFinanceiro(
         ).toLocaleString(
             "pt-BR",
             {
+
                 minimumFractionDigits: 2,
+
                 maximumFractionDigits: 2
+
             }
         )
         +
@@ -1446,6 +1886,7 @@ function definirTextoFinanceiro(
             id
         );
 
+
     if (elemento) {
 
         elemento.textContent =
@@ -1462,7 +1903,7 @@ function definirTextoFinanceiro(
 
 document.addEventListener(
     "click",
-    function (evento) {
+    function(evento) {
 
         if (
             evento.target &&
