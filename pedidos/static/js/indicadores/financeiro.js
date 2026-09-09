@@ -9,14 +9,14 @@ let financeiroGraficos = {};
    INICIALIZAÇÃO
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+function inicializarDashboardFinanceiro() {
 
-        carregarDadosFinanceiro();
-
+    if (!document.getElementById("financeiroDre")) {
+        return;
     }
-);
+
+    carregarDadosFinanceiro();
+}
 
 
 /* =========================================================
@@ -67,14 +67,12 @@ async function carregarDadosFinanceiro() {
             );
         }
 
-
         if (dataVencimentoFim) {
             parametros.append(
                 "data_vencimento_fim",
                 dataVencimentoFim
             );
         }
-
 
         if (dataPagamentoInicio) {
             parametros.append(
@@ -83,7 +81,6 @@ async function carregarDadosFinanceiro() {
             );
         }
 
-
         if (dataPagamentoFim) {
             parametros.append(
                 "data_pagamento_fim",
@@ -91,14 +88,12 @@ async function carregarDadosFinanceiro() {
             );
         }
 
-
         if (status) {
             parametros.append(
                 "status",
                 status
             );
         }
-
 
         if (sla) {
             parametros.append(
@@ -109,15 +104,13 @@ async function carregarDadosFinanceiro() {
 
 
         let url =
-            "/indicadores/financeiro/dados/"
+            "/indicadores/financeiro/dados/";
 
         const queryString =
             parametros.toString();
 
         if (queryString) {
-
             url += "?" + queryString;
-
         }
 
 
@@ -134,29 +127,11 @@ async function carregarDadosFinanceiro() {
         }
 
 
-        const html =
-            await response.text();
-
-
-        const parser =
-            new DOMParser();
-
-        const documento =
-            parser.parseFromString(
-                html,
-                "text/html"
-            );
-
-
         const dados =
-            extrairDadosFinanceiro(
-                documento
-            );
+            await response.json();
 
 
-        atualizarDashboardFinanceiro(
-            dados
-        );
+        atualizarDashboardFinanceiro(dados);
 
 
     } catch (erro) {
@@ -172,127 +147,65 @@ async function carregarDadosFinanceiro() {
 
 
 /* =========================================================
-   EXTRAIR DADOS DA VIEW
-========================================================= */
-
-function extrairDadosFinanceiro(documento) {
-
-    return {
-
-        total_despesas:
-            obterTexto(
-                documento,
-                "financeiroKpiTotalDespesas"
-            ),
-
-        total_pago:
-            obterTexto(
-                documento,
-                "financeiroKpiTotalPago"
-            ),
-
-        total_a_vencer:
-            obterTexto(
-                documento,
-                "financeiroKpiAVencer"
-            ),
-
-        total_dentro_prazo:
-            obterTexto(
-                documento,
-                "financeiroKpiDentroPrazo"
-            ),
-
-        total_fora_prazo:
-            obterTexto(
-                documento,
-                "financeiroKpiForaPrazo"
-            ),
-
-        pagamentos_realizados:
-            obterTexto(
-                documento,
-                "financeiroKpiPagamentosRealizados"
-            ),
-
-        percentual_pontualidade:
-            obterTexto(
-                documento,
-                "financeiroKpiPontualidade"
-            ),
-
-        prazo_medio:
-            obterTexto(
-                documento,
-                "financeiroKpiPrazoMedio"
-            )
-
-    };
-
-}
-
-
-/* =========================================================
    ATUALIZAR DASHBOARD
 ========================================================= */
 
-function atualizarDashboardFinanceiro(
-    dados
-) {
+function atualizarDashboardFinanceiro(dados) {
+
+
+    /* =====================================================
+       KPIs
+    ===================================================== */
 
     definirTexto(
         "financeiroKpiTotalDespesas",
-        dados.total_despesas
+        formatarMoeda(dados.total_despesas)
     );
-
 
     definirTexto(
         "financeiroKpiTotalPago",
-        dados.total_pago
+        formatarMoeda(dados.total_pago)
     );
-
 
     definirTexto(
         "financeiroKpiAVencer",
-        dados.total_a_vencer
+        formatarMoeda(dados.total_a_vencer)
     );
-
 
     definirTexto(
         "financeiroKpiDentroPrazo",
-        dados.total_dentro_prazo
+        formatarMoeda(dados.total_dentro_prazo)
     );
-
 
     definirTexto(
         "financeiroKpiForaPrazo",
-        dados.total_fora_prazo
+        formatarMoeda(dados.total_fora_prazo)
     );
-
 
     definirTexto(
         "financeiroKpiPagamentosRealizados",
-        dados.pagamentos_realizados
+        formatarNumero(dados.pagamentos_realizados)
     );
-
 
     definirTexto(
         "financeiroKpiPontualidade",
-        dados.percentual_pontualidade
+        formatarPercentual(dados.percentual_pontualidade)
     );
-
 
     definirTexto(
         "financeiroKpiPrazoMedio",
-        dados.prazo_medio
+        "—"
     );
 
+
+    /* =====================================================
+       DATA DE ATUALIZAÇÃO
+    ===================================================== */
 
     const atualizado =
         document.getElementById(
             "financeiroAtualizado"
         );
-
 
     if (atualizado) {
 
@@ -303,42 +216,609 @@ function atualizarDashboardFinanceiro(
 
     }
 
+
+    /* =====================================================
+       GRÁFICOS
+    ===================================================== */
+
+    criarGraficoDre(dados);
+
+    criarGraficoCategoria(dados);
+
+    criarGraficoStatus(dados);
+
+    criarGraficoSla(dados);
+
+    criarGraficoEvolucao(dados);
+
 }
 
 
 /* =========================================================
-   UTILITÁRIOS
+   GRÁFICO - DRE
 ========================================================= */
 
-function obterTexto(
-    documento,
-    id
-) {
+function criarGraficoDre(dados) {
 
-    const elemento =
-        documento.getElementById(id);
+    const canvas =
+        document.getElementById(
+            "financeiroDre"
+        );
 
-
-    if (!elemento) {
-
-        return "--";
-
+    if (!canvas) {
+        return;
     }
 
+    destruirGrafico("dre");
 
-    return elemento.textContent.trim();
+
+    financeiroGraficos.dre =
+        new Chart(canvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels:
+                    Object.keys(
+                        dados.despesas_dre || {}
+                    ),
+
+                datasets: [
+
+                    {
+
+                        label: "Despesas",
+
+                        data:
+                            Object.values(
+                                dados.despesas_dre || {}
+                            ),
+
+                        borderWidth: 1
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function (context) {
+
+                                return formatarMoeda(
+                                    context.raw
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: function (value) {
+
+                                return formatarMoeda(
+                                    value
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
 
 }
 
 
-function definirTexto(
-    id,
-    valor
-) {
+/* =========================================================
+   GRÁFICO - CATEGORIA
+========================================================= */
+
+function criarGraficoCategoria(dados) {
+
+    const canvas =
+        document.getElementById(
+            "financeiroCategoria"
+        );
+
+    if (!canvas) {
+        return;
+    }
+
+    destruirGrafico("categoria");
+
+
+    financeiroGraficos.categoria =
+        new Chart(canvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels:
+                    Object.keys(
+                        dados.despesas_categoria || {}
+                    ),
+
+                datasets: [
+
+                    {
+
+                        label: "Despesas",
+
+                        data:
+                            Object.values(
+                                dados.despesas_categoria || {}
+                            ),
+
+                        borderWidth: 1
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                indexAxis: "y",
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function (context) {
+
+                                return formatarMoeda(
+                                    context.raw
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: function (value) {
+
+                                return formatarMoeda(
+                                    value
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   GRÁFICO - STATUS
+========================================================= */
+
+function criarGraficoStatus(dados) {
+
+    const canvas =
+        document.getElementById(
+            "financeiroGraficoStatus"
+        );
+
+    if (!canvas) {
+        return;
+    }
+
+    destruirGrafico("status");
+
+
+    financeiroGraficos.status =
+        new Chart(canvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels:
+                    Object.keys(
+                        dados.status || {}
+                    ),
+
+                datasets: [
+
+                    {
+
+                        data:
+                            Object.values(
+                                dados.status || {}
+                            ),
+
+                        borderWidth: 1
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        position: "bottom"
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function (context) {
+
+                                return (
+                                    context.label +
+                                    ": " +
+                                    formatarMoeda(
+                                        context.raw
+                                    )
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   GRÁFICO - SLA
+========================================================= */
+
+function criarGraficoSla(dados) {
+
+    const canvas =
+        document.getElementById(
+            "financeiroSla"
+        );
+
+    if (!canvas) {
+        return;
+    }
+
+    destruirGrafico("sla");
+
+
+    financeiroGraficos.sla =
+        new Chart(canvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels:
+                    Object.keys(
+                        dados.sla || {}
+                    ),
+
+                datasets: [
+
+                    {
+
+                        data:
+                            Object.values(
+                                dados.sla || {}
+                            ),
+
+                        borderWidth: 1
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        position: "bottom"
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function (context) {
+
+                                return (
+                                    context.label +
+                                    ": " +
+                                    formatarMoeda(
+                                        context.raw
+                                    )
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   GRÁFICO - EVOLUÇÃO
+========================================================= */
+
+function criarGraficoEvolucao(dados) {
+
+    const canvas =
+        document.getElementById(
+            "financeiroEvolucao"
+        );
+
+    if (!canvas) {
+        return;
+    }
+
+    destruirGrafico("evolucao");
+
+
+    financeiroGraficos.evolucao =
+        new Chart(canvas, {
+
+            type: "line",
+
+            data: {
+
+                labels:
+                    dados.evolucao?.labels || [],
+
+                datasets: [
+
+                    {
+
+                        label: "Despesas",
+
+                        data:
+                            dados.evolucao?.despesas || [],
+
+                        borderWidth: 2,
+
+                        tension: 0.3
+
+                    },
+
+                    {
+
+                        label: "Pago",
+
+                        data:
+                            dados.evolucao?.pago || [],
+
+                        borderWidth: 2,
+
+                        tension: 0.3
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function (context) {
+
+                                return (
+                                    context.dataset.label +
+                                    ": " +
+                                    formatarMoeda(
+                                        context.raw
+                                    )
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: function (value) {
+
+                                return formatarMoeda(
+                                    value
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   DESTRUIR GRÁFICO
+========================================================= */
+
+function destruirGrafico(nome) {
+
+    if (
+        financeiroGraficos[nome]
+    ) {
+
+        financeiroGraficos[nome].destroy();
+
+        delete financeiroGraficos[nome];
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMATAÇÃO
+========================================================= */
+
+function formatarMoeda(valor) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
+
+}
+
+
+function formatarNumero(valor) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR"
+    );
+
+}
+
+
+function formatarPercentual(valor) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    ) + "%";
+
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+function definirTexto(id, valor) {
 
     const elemento =
         document.getElementById(id);
-
 
     if (elemento) {
 
