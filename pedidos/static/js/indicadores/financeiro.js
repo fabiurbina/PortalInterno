@@ -287,24 +287,71 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
     // =====================================================
-    // MOSTRA SOMENTE AS 8 PRINCIPAIS CATEGORIAS
+    // TOP 5
     // =====================================================
 
-    const principais = dadosOrdenados.slice(0, 8);
+    const top5 = dadosOrdenados.slice(0, 5);
+
+    const restantes = dadosOrdenados.slice(5);
 
 
-    const labels = principais.map(
-        item => item.categoria || "Sem Categoria"
+    // =====================================================
+    // TOTAL DAS OUTRAS DESPESAS
+    // =====================================================
+
+    const valorOutras = restantes.reduce(
+        (total, item) =>
+            total + Number(item.valor || 0),
+        0
     );
 
 
-    const valores = principais.map(
-        item => Number(item.valor || 0)
+    // =====================================================
+    // MONTA DADOS DO GRÁFICO
+    // =====================================================
+
+    const categorias = [
+        ...top5.map(
+            item => item.categoria || "Sem Categoria"
+        )
+    ];
+
+
+    const valores = [
+        ...top5.map(
+            item => Number(item.valor || 0)
+        )
+    ];
+
+
+    if (valorOutras > 0) {
+
+        categorias.push(
+            "Outras Despesas"
+        );
+
+        valores.push(
+            valorOutras
+        );
+
+    }
+
+
+    // =====================================================
+    // PERCENTUAL INDIVIDUAL
+    // =====================================================
+
+    const total = valores.reduce(
+        (soma, valor) => soma + valor,
+        0
     );
 
 
-    const acumulado = principais.map(
-        item => Number(item.acumulado || 0)
+    const percentuais = valores.map(
+        valor =>
+            total > 0
+                ? (valor / total) * 100
+                : 0
     );
 
 
@@ -314,15 +361,15 @@ function criarGraficoParetoFinanceiro(dados) {
 
         data: {
 
-            labels: labels,
+            labels: categorias,
 
             datasets: [
 
                 {
 
-                    label: "Despesas",
+                    label: "Participação nas Despesas",
 
-                    data: valores,
+                    data: percentuais,
 
                     borderWidth: 0,
 
@@ -330,29 +377,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
                     barPercentage: 0.65,
 
-                    categoryPercentage: 0.75,
-
-                    yAxisID: "y"
-
-                },
-
-                {
-
-                    type: "line",
-
-                    label: "% Acumulado",
-
-                    data: acumulado,
-
-                    borderWidth: 2,
-
-                    tension: 0.25,
-
-                    pointRadius: 3,
-
-                    pointHoverRadius: 5,
-
-                    yAxisID: "yPercent"
+                    categoryPercentage: 0.75
 
                 }
 
@@ -368,39 +393,47 @@ function criarGraficoParetoFinanceiro(dados) {
             maintainAspectRatio: false,
 
 
-            interaction: {
-
-                mode: "index",
-
-                intersect: false
-
-            },
-
-
             plugins: {
 
                 legend: {
 
-                    display: true,
-
-                    position: "bottom",
-
-                    labels: {
-
-                        usePointStyle: true,
-
-                        padding: 12
-
-                    }
+                    display: false
 
                 },
 
 
-                // NÃO MOSTRA NÚMEROS SOBRE AS BARRAS
-
                 datalabels: {
 
-                    display: false
+                    display: true,
+
+                    anchor: "end",
+
+                    align: "top",
+
+                    offset: 3,
+
+                    font: {
+
+                        size: 10,
+
+                        weight: "600"
+
+                    },
+
+                    formatter: function(valor) {
+
+                        return (
+                            Number(valor).toLocaleString(
+                                "pt-BR",
+                                {
+                                    minimumFractionDigits: 1,
+                                    maximumFractionDigits: 1
+                                }
+                            ) +
+                            "%"
+                        );
+
+                    }
 
                 },
 
@@ -411,32 +444,27 @@ function criarGraficoParetoFinanceiro(dados) {
 
                         label: function(contexto) {
 
-                            if (
-                                contexto.dataset
-                                    .yAxisID === "yPercent"
-                            ) {
-
-                                return (
-                                    "% Acumulado: " +
-                                    Number(
-                                        contexto.raw || 0
-                                    ).toLocaleString(
-                                        "pt-BR",
-                                        {
-                                            minimumFractionDigits: 1,
-                                            maximumFractionDigits: 1
-                                        }
-                                    ) +
-                                    "%"
+                            const percentual =
+                                Number(
+                                    contexto.raw || 0
+                                ).toLocaleString(
+                                    "pt-BR",
+                                    {
+                                        minimumFractionDigits: 1,
+                                        maximumFractionDigits: 1
+                                    }
                                 );
 
-                            }
-
+                            const valor =
+                                valores[
+                                    contexto.dataIndex
+                                ] || 0;
 
                             return (
-                                "Despesa: " +
+                                percentual +
+                                "%  |  " +
                                 formatarMoedaFinanceiro(
-                                    contexto.raw
+                                    valor
                                 )
                             );
 
@@ -457,9 +485,9 @@ function criarGraficoParetoFinanceiro(dados) {
 
                         autoSkip: false,
 
-                        maxRotation: 35,
+                        maxRotation: 30,
 
-                        minRotation: 35,
+                        minRotation: 30,
 
                         font: {
 
@@ -476,34 +504,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
                     beginAtZero: true,
 
-                    ticks: {
-
-                        callback: function(valor) {
-
-                            return formatarMoedaGerencialFinanceiro(
-                                valor
-                            );
-
-                        }
-
-                    }
-
-                },
-
-
-                yPercent: {
-
-                    beginAtZero: true,
-
                     max: 100,
-
-                    position: "right",
-
-                    grid: {
-
-                        drawOnChartArea: false
-
-                    },
 
                     ticks: {
 
