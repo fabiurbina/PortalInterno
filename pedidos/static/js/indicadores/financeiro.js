@@ -27,95 +27,10 @@ async function carregarDadosFinanceiro() {
 
     try {
 
-        const parametros = new URLSearchParams();
-
-        const vencimentoInicio =
-            document.getElementById(
-                "financeiroDataVencimentoInicio"
-            )?.value;
-
-        const vencimentoFim =
-            document.getElementById(
-                "financeiroDataVencimentoFim"
-            )?.value;
-
-        const pagamentoInicio =
-            document.getElementById(
-                "financeiroDataPagamentoInicio"
-            )?.value;
-
-        const pagamentoFim =
-            document.getElementById(
-                "financeiroDataPagamentoFim"
-            )?.value;
-
-        const status =
-            document.getElementById(
-                "financeiroStatus"
-            )?.value;
-
-        const sla =
-            document.getElementById(
-                "financeiroSla"
-            )?.value;
-
-
-        if (vencimentoInicio) {
-            parametros.append(
-                "data_vencimento_inicio",
-                vencimentoInicio
-            );
-        }
-
-        if (vencimentoFim) {
-            parametros.append(
-                "data_vencimento_fim",
-                vencimentoFim
-            );
-        }
-
-        if (pagamentoInicio) {
-            parametros.append(
-                "data_pagamento_inicio",
-                pagamentoInicio
-            );
-        }
-
-        if (pagamentoFim) {
-            parametros.append(
-                "data_pagamento_fim",
-                pagamentoFim
-            );
-        }
-
-        if (status) {
-            parametros.append(
-                "status",
-                status
-            );
-        }
-
-        if (sla) {
-            parametros.append(
-                "sla",
-                sla
-            );
-        }
-
-
-        let url =
-            "/indicadores/financeiro/dados/";
-
-        const queryString =
-            parametros.toString();
-
-        if (queryString) {
-            url += "?" + queryString;
-        }
-
-
         const response =
-            await fetch(url);
+            await fetch(
+                "/indicadores/financeiro/dados/"
+            );
 
 
         if (!response.ok) {
@@ -1454,25 +1369,3 @@ function definirTextoFinanceiro(
     }
 
 }
-
-
-/* =========================================================
-   FILTROS
-========================================================= */
-
-document.addEventListener(
-    "click",
-    function (evento) {
-
-        if (
-            evento.target &&
-            evento.target.id ===
-                "financeiroAplicarFiltros"
-        ) {
-
-            carregarDadosFinanceiro();
-
-        }
-
-    }
-);
