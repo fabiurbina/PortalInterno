@@ -287,7 +287,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
     /* =====================================================
-       TOP 5 + OUTRAS
+       TOP 5 + OUTRAS DESPESAS
     ===================================================== */
 
     const top5 =
@@ -306,7 +306,7 @@ function criarGraficoParetoFinanceiro(dados) {
         );
 
 
-    const categoriasOriginais = [
+    const categorias = [
         ...top5.map(
             item =>
                 item.categoria ||
@@ -325,7 +325,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
     if (valorOutras > 0) {
 
-        categoriasOriginais.push(
+        categorias.push(
             "Outras Despesas"
         );
 
@@ -337,7 +337,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
     /* =====================================================
-       PERCENTUAL DE PARTICIPAÇÃO
+       PERCENTUAL INDIVIDUAL
     ===================================================== */
 
     const total =
@@ -358,102 +358,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
     /* =====================================================
-       NOMES CURTOS PARA O EIXO
-    ===================================================== */
-
-    const categorias = categoriasOriginais.map(
-        categoria => {
-
-            const nome =
-                String(categoria);
-
-
-            if (
-                nome ===
-                "Máquinas e Equipamentos"
-            ) {
-
-                return [
-                    "Máquinas e",
-                    "Equipamentos"
-                ];
-
-            }
-
-
-            if (
-                nome ===
-                "Adiantamento a Fornecedores"
-            ) {
-
-                return [
-                    "Adiantamentos",
-                    "Fornecedores"
-                ];
-
-            }
-
-
-            if (
-                nome ===
-                "Serviço Tomado"
-            ) {
-
-                return [
-                    "Serviço",
-                    "Tomado"
-                ];
-
-            }
-
-
-            if (
-                nome ===
-                "Materiais de Escritório"
-            ) {
-
-                return [
-                    "Materiais de",
-                    "Escritório"
-                ];
-
-            }
-
-
-            if (
-                nome ===
-                "Manutenção de Máquinas"
-            ) {
-
-                return [
-                    "Manutenção de",
-                    "Máquinas"
-                ];
-
-            }
-
-
-            if (
-                nome ===
-                "Outras Despesas"
-            ) {
-
-                return [
-                    "Outras",
-                    "Despesas"
-                ];
-
-            }
-
-
-            return nome;
-
-        }
-    );
-
-
-    /* =====================================================
-       GRÁFICO
+       GRÁFICO HORIZONTAL
     ===================================================== */
 
     financeiroGraficos.pareto =
@@ -481,9 +386,9 @@ function criarGraficoParetoFinanceiro(dados) {
 
                             borderRadius: 5,
 
-                            barPercentage: 0.72,
+                            barPercentage: 0.65,
 
-                            categoryPercentage: 0.72,
+                            categoryPercentage: 0.75,
 
                             backgroundColor:
                                 "#82bde4"
@@ -496,6 +401,8 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
                 options: {
+
+                    indexAxis: "y",
 
                     responsive: true,
 
@@ -512,7 +419,7 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
                         /* =================================
-                           VALOR DIRETO NAS COLUNAS
+                           PERCENTUAL NA BARRA
                         ================================= */
 
                         datalabels: {
@@ -521,11 +428,13 @@ function criarGraficoParetoFinanceiro(dados) {
 
                             anchor: "end",
 
-                            align: "top",
+                            align: "right",
 
-                            offset: 2,
+                            offset: 4,
 
                             clamp: true,
+
+                            color: "#18202a",
 
                             font: {
 
@@ -564,20 +473,6 @@ function criarGraficoParetoFinanceiro(dados) {
 
                             callbacks: {
 
-                                title:
-                                    function(contextos) {
-
-                                        const indice =
-                                            contextos[0]
-                                                .dataIndex;
-
-                                        return categoriasOriginais[
-                                            indice
-                                        ];
-
-                                    },
-
-
                                 label:
                                     function(contexto) {
 
@@ -592,16 +487,13 @@ function criarGraficoParetoFinanceiro(dados) {
 
 
                                         return (
-                                            " "
-                                            +
-                                            percentual
-                                                .toLocaleString(
-                                                    "pt-BR",
-                                                    {
-                                                        minimumFractionDigits: 1,
-                                                        maximumFractionDigits: 1
-                                                    }
-                                                )
+                                            percentual.toLocaleString(
+                                                "pt-BR",
+                                                {
+                                                    minimumFractionDigits: 1,
+                                                    maximumFractionDigits: 1
+                                                }
+                                            )
                                             +
                                             "%  |  "
                                             +
@@ -621,7 +513,11 @@ function criarGraficoParetoFinanceiro(dados) {
 
                     scales: {
 
-                        x: {
+                        /* =================================
+                           CATEGORIAS
+                        ================================= */
+
+                        y: {
 
                             grid: {
 
@@ -633,15 +529,11 @@ function criarGraficoParetoFinanceiro(dados) {
 
                                 autoSkip: false,
 
-                                maxRotation: 0,
-
-                                minRotation: 0,
-
                                 padding: 8,
 
                                 font: {
 
-                                    size: 9
+                                    size: 10
 
                                 }
 
@@ -650,7 +542,11 @@ function criarGraficoParetoFinanceiro(dados) {
                         },
 
 
-                        y: {
+                        /* =================================
+                           PERCENTUAL
+                        ================================= */
+
+                        x: {
 
                             beginAtZero: true,
 
