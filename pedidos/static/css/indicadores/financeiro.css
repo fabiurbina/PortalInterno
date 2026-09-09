@@ -4,6 +4,8 @@
 
 .financeiro-dashboard {
 
+    min-height: 574px;
+
     background:
         linear-gradient(
             135deg,
