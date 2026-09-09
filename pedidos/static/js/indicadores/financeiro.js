@@ -109,7 +109,7 @@ async function carregarDadosFinanceiro() {
 
 
         let url =
-            "/indicadores/financeiro/";
+            "/indicadores/financeiro/dados/"
 
         const queryString =
             parametros.toString();

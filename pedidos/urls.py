@@ -42,6 +42,7 @@ from .views import (
     sincronizar_agenda,
     sincronizar_todas_agendas_view,
     indicadores_comercial_dados,
+    indicadores_financeiro_dados,
     financeiro_dre,
     dashboard_financeiro
 )
@@ -290,6 +291,12 @@ urlpatterns = [
     "indicadores/comercial/dados/",
     indicadores_comercial_dados,
     name="indicadores_comercial_dados"
+),
+    
+    path(
+    "indicadores/financeiro/dados/",
+    indicadores_financeiro_dados,
+    name="indicadores_financeiro_dados"
 ),
     
     path(
