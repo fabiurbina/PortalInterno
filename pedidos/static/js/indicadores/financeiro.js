@@ -1,456 +1,372 @@
-document.addEventListener("DOMContentLoaded", function () {
+/* =========================================================
+   DASHBOARD FINANCEIRO - VIESANO
+========================================================= */
 
-    // ==========================================================
-    // DADOS VINDOS DO DJANGO
-    // ==========================================================
-
-    const dreLabels = window.financeiroData.dreLabels;
-    const dreValues = window.financeiroData.dreValues;
-
-    const categoriaLabels = window.financeiroData.categoriaLabels;
-    const categoriaValues = window.financeiroData.categoriaValues;
-
-    const statusLabels = window.financeiroData.statusLabels;
-    const statusValues = window.financeiroData.statusValues;
-
-    const slaLabels = window.financeiroData.slaLabels;
-    const slaValues = window.financeiroData.slaValues;
-
-    const evolucaoLabels = window.financeiroData.evolucaoLabels;
-    const evolucaoDespesas = window.financeiroData.evolucaoDespesas;
-    const evolucaoPago = window.financeiroData.evolucaoPago;
+let financeiroGraficos = {};
 
 
-    // ==========================================================
-    // FORMATAÇÃO MONETÁRIA
-    // ==========================================================
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
 
-    function formatarMoeda(valor) {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-        return new Intl.NumberFormat(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        ).format(valor);
+        carregarDadosFinanceiro();
 
     }
+);
 
 
-    // ==========================================================
-    // EVOLUÇÃO FINANCEIRA
-    // ==========================================================
+/* =========================================================
+   CARREGAR DADOS
+========================================================= */
 
-    const elementoEvolucao =
-        document.getElementById("graficoEvolucao");
+async function carregarDadosFinanceiro() {
 
-    if (elementoEvolucao) {
+    try {
 
-        new Chart(
-            elementoEvolucao,
-            {
+        const parametros = new URLSearchParams();
 
-                type: "line",
+        const dataVencimentoInicio =
+            document.getElementById(
+                "financeiroDataVencimentoInicio"
+            )?.value;
 
-                data: {
+        const dataVencimentoFim =
+            document.getElementById(
+                "financeiroDataVencimentoFim"
+            )?.value;
 
-                    labels: evolucaoLabels,
+        const dataPagamentoInicio =
+            document.getElementById(
+                "financeiroDataPagamentoInicio"
+            )?.value;
 
-                    datasets: [
+        const dataPagamentoFim =
+            document.getElementById(
+                "financeiroDataPagamentoFim"
+            )?.value;
 
-                        {
-                            label: "Despesas",
-                            data: evolucaoDespesas,
-                            tension: 0.3,
-                            borderWidth: 2,
-                            fill: false
-                        },
+        const status =
+            document.getElementById(
+                "financeiroStatus"
+            )?.value;
 
-                        {
-                            label: "Pago",
-                            data: evolucaoPago,
-                            tension: 0.3,
-                            borderWidth: 2,
-                            fill: false
-                        }
+        const sla =
+            document.getElementById(
+                "financeiroSla"
+            )?.value;
 
-                    ]
 
-                },
+        if (dataVencimentoInicio) {
+            parametros.append(
+                "data_vencimento_inicio",
+                dataVencimentoInicio
+            );
+        }
 
-                options: {
 
-                    responsive: true,
+        if (dataVencimentoFim) {
+            parametros.append(
+                "data_vencimento_fim",
+                dataVencimentoFim
+            );
+        }
 
-                    maintainAspectRatio: false,
 
-                    interaction: {
-                        mode: "index",
-                        intersect: false
-                    },
+        if (dataPagamentoInicio) {
+            parametros.append(
+                "data_pagamento_inicio",
+                dataPagamentoInicio
+            );
+        }
 
-                    plugins: {
 
-                        tooltip: {
+        if (dataPagamentoFim) {
+            parametros.append(
+                "data_pagamento_fim",
+                dataPagamentoFim
+            );
+        }
 
-                            callbacks: {
 
-                                label: function (context) {
+        if (status) {
+            parametros.append(
+                "status",
+                status
+            );
+        }
 
-                                    return (
-                                        context.dataset.label
-                                        + ": "
-                                        + formatarMoeda(
-                                            context.raw
-                                        )
-                                    );
 
-                                }
+        if (sla) {
+            parametros.append(
+                "sla",
+                sla
+            );
+        }
 
-                            }
 
-                        }
+        let url =
+            "/indicadores/financeiro/";
 
-                    },
+        const queryString =
+            parametros.toString();
 
-                    scales: {
+        if (queryString) {
 
-                        y: {
+            url += "?" + queryString;
 
-                            ticks: {
+        }
 
-                                callback: function (value) {
 
-                                    return formatarMoeda(value);
+        const response =
+            await fetch(url);
 
-                                }
 
-                            }
+        if (!response.ok) {
 
-                        }
+            throw new Error(
+                `Erro HTTP ${response.status}`
+            );
 
-                    }
+        }
 
-                }
 
-            }
+        const html =
+            await response.text();
+
+
+        const parser =
+            new DOMParser();
+
+        const documento =
+            parser.parseFromString(
+                html,
+                "text/html"
+            );
+
+
+        const dados =
+            extrairDadosFinanceiro(
+                documento
+            );
+
+
+        atualizarDashboardFinanceiro(
+            dados
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar dashboard financeiro:",
+            erro
         );
 
     }
 
+}
 
-    // ==========================================================
-    // STATUS FINANCEIRO
-    // ==========================================================
 
-    const elementoStatus =
-        document.getElementById("graficoStatus");
+/* =========================================================
+   EXTRAIR DADOS DA VIEW
+========================================================= */
 
-    if (elementoStatus) {
+function extrairDadosFinanceiro(documento) {
 
-        new Chart(
-            elementoStatus,
-            {
+    return {
 
-                type: "doughnut",
+        total_despesas:
+            obterTexto(
+                documento,
+                "financeiroKpiTotalDespesas"
+            ),
 
-                data: {
+        total_pago:
+            obterTexto(
+                documento,
+                "financeiroKpiTotalPago"
+            ),
 
-                    labels: statusLabels,
+        total_a_vencer:
+            obterTexto(
+                documento,
+                "financeiroKpiAVencer"
+            ),
 
-                    datasets: [
+        total_dentro_prazo:
+            obterTexto(
+                documento,
+                "financeiroKpiDentroPrazo"
+            ),
 
-                        {
-                            data: statusValues,
-                            borderWidth: 0
-                        }
+        total_fora_prazo:
+            obterTexto(
+                documento,
+                "financeiroKpiForaPrazo"
+            ),
 
-                    ]
+        pagamentos_realizados:
+            obterTexto(
+                documento,
+                "financeiroKpiPagamentosRealizados"
+            ),
 
-                },
+        percentual_pontualidade:
+            obterTexto(
+                documento,
+                "financeiroKpiPontualidade"
+            ),
 
-                options: {
+        prazo_medio:
+            obterTexto(
+                documento,
+                "financeiroKpiPrazoMedio"
+            )
 
-                    responsive: true,
+    };
 
-                    maintainAspectRatio: false,
+}
 
-                    plugins: {
 
-                        tooltip: {
+/* =========================================================
+   ATUALIZAR DASHBOARD
+========================================================= */
 
-                            callbacks: {
+function atualizarDashboardFinanceiro(
+    dados
+) {
 
-                                label: function (context) {
+    definirTexto(
+        "financeiroKpiTotalDespesas",
+        dados.total_despesas
+    );
 
-                                    return (
-                                        context.label
-                                        + ": "
-                                        + formatarMoeda(
-                                            context.raw
-                                        )
-                                    );
 
-                                }
+    definirTexto(
+        "financeiroKpiTotalPago",
+        dados.total_pago
+    );
 
-                            }
 
-                        }
+    definirTexto(
+        "financeiroKpiAVencer",
+        dados.total_a_vencer
+    );
 
-                    }
 
-                }
+    definirTexto(
+        "financeiroKpiDentroPrazo",
+        dados.total_dentro_prazo
+    );
 
-            }
+
+    definirTexto(
+        "financeiroKpiForaPrazo",
+        dados.total_fora_prazo
+    );
+
+
+    definirTexto(
+        "financeiroKpiPagamentosRealizados",
+        dados.pagamentos_realizados
+    );
+
+
+    definirTexto(
+        "financeiroKpiPontualidade",
+        dados.percentual_pontualidade
+    );
+
+
+    definirTexto(
+        "financeiroKpiPrazoMedio",
+        dados.prazo_medio
+    );
+
+
+    const atualizado =
+        document.getElementById(
+            "financeiroAtualizado"
         );
+
+
+    if (atualizado) {
+
+        atualizado.textContent =
+            new Date().toLocaleString(
+                "pt-BR"
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+function obterTexto(
+    documento,
+    id
+) {
+
+    const elemento =
+        documento.getElementById(id);
+
+
+    if (!elemento) {
+
+        return "--";
 
     }
 
 
-    // ==========================================================
-    // SLA
-    // ==========================================================
+    return elemento.textContent.trim();
 
-    const elementoSLA =
-        document.getElementById("graficoSLA");
+}
 
-    if (elementoSLA) {
 
-        new Chart(
-            elementoSLA,
-            {
+function definirTexto(
+    id,
+    valor
+) {
 
-                type: "doughnut",
+    const elemento =
+        document.getElementById(id);
 
-                data: {
 
-                    labels: slaLabels,
+    if (elemento) {
 
-                    datasets: [
-
-                        {
-                            data: slaValues,
-                            borderWidth: 0
-                        }
-
-                    ]
-
-                },
-
-                options: {
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    plugins: {
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label: function (context) {
-
-                                    return (
-                                        context.label
-                                        + ": "
-                                        + formatarMoeda(
-                                            context.raw
-                                        )
-                                    );
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-        );
+        elemento.textContent =
+            valor;
 
     }
 
+}
 
-    // ==========================================================
-    // DESPESAS POR DRE
-    // ==========================================================
 
-    const elementoDRE =
-        document.getElementById("graficoDRE");
+/* =========================================================
+   FILTROS
+========================================================= */
 
-    if (elementoDRE) {
+document.addEventListener(
+    "click",
+    function (evento) {
 
-        new Chart(
-            elementoDRE,
-            {
+        if (
+            evento.target &&
+            evento.target.id ===
+                "financeiroAplicarFiltros"
+        ) {
 
-                type: "bar",
+            carregarDadosFinanceiro();
 
-                data: {
-
-                    labels: dreLabels,
-
-                    datasets: [
-
-                        {
-                            label: "Despesas",
-                            data: dreValues,
-                            borderWidth: 0
-                        }
-
-                    ]
-
-                },
-
-                options: {
-
-                    indexAxis: "y",
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    plugins: {
-
-                        legend: {
-                            display: false
-                        },
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label: function (context) {
-
-                                    return formatarMoeda(
-                                        context.raw
-                                    );
-
-                                }
-
-                            }
-
-                        }
-
-                    },
-
-                    scales: {
-
-                        x: {
-
-                            ticks: {
-
-                                callback: function (value) {
-
-                                    return formatarMoeda(value);
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-        );
+        }
 
     }
-
-
-    // ==========================================================
-    // DESPESAS POR CATEGORIA
-    // ==========================================================
-
-    const elementoCategoria =
-        document.getElementById("graficoCategoria");
-
-    if (elementoCategoria) {
-
-        new Chart(
-            elementoCategoria,
-            {
-
-                type: "bar",
-
-                data: {
-
-                    labels: categoriaLabels,
-
-                    datasets: [
-
-                        {
-                            label: "Despesas",
-                            data: categoriaValues,
-                            borderWidth: 0
-                        }
-
-                    ]
-
-                },
-
-                options: {
-
-                    indexAxis: "y",
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    plugins: {
-
-                        legend: {
-                            display: false
-                        },
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label: function (context) {
-
-                                    return formatarMoeda(
-                                        context.raw
-                                    );
-
-                                }
-
-                            }
-
-                        }
-
-                    },
-
-                    scales: {
-
-                        x: {
-
-                            ticks: {
-
-                                callback: function (value) {
-
-                                    return formatarMoeda(value);
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-        );
-
-    }
-
-});
+);

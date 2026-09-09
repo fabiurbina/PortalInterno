@@ -1,0 +1,351 @@
+<div class="financeiro-dashboard">
+
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
+    <div class="financeiro-topbar">
+
+        <div class="financeiro-brand">
+
+            <div class="financeiro-brand-mark"></div>
+
+            <div>
+                <h1>FINANCEIRO</h1>
+
+                <div class="financeiro-subtitle">
+                    Indicadores Financeiros
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FILTROS -->
+
+        <div class="financeiro-filtros">
+
+            <div class="financeiro-data-box">
+                <span>Vencimento</span>
+
+                <input
+                    type="date"
+                    id="financeiroDataVencimentoInicio"
+                >
+
+                <span>até</span>
+
+                <input
+                    type="date"
+                    id="financeiroDataVencimentoFim"
+                >
+            </div>
+
+            <div class="financeiro-data-box">
+                <span>Pagamento</span>
+
+                <input
+                    type="date"
+                    id="financeiroDataPagamentoInicio"
+                >
+
+                <span>até</span>
+
+                <input
+                    type="date"
+                    id="financeiroDataPagamentoFim"
+                >
+            </div>
+
+            <select
+                id="financeiroStatus"
+                class="financeiro-select"
+            >
+                <option value="">Todos os Status</option>
+                <option value="PAGO">Pago</option>
+                <option value="A VENCER">A Vencer</option>
+            </select>
+
+            <select
+                id="financeiroSla"
+                class="financeiro-select"
+            >
+                <option value="">Todos os SLAs</option>
+                <option value="Dentro do Prazo">
+                    Dentro do Prazo
+                </option>
+                <option value="Fora do Prazo">
+                    Fora do Prazo
+                </option>
+            </select>
+
+            <button
+                type="button"
+                id="financeiroAplicarFiltros"
+                class="financeiro-filtro-btn"
+            >
+                Filtrar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KPIs
+    ====================================================== -->
+
+    <div class="financeiro-kpis">
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiTotalDespesas"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Total Despesas
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiTotalPago"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Total Pago
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiAVencer"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="financeiro-kpi-label">
+                A Vencer
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiDentroPrazo"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Dentro do Prazo
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiForaPrazo"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Fora do Prazo
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiPagamentosRealizados"
+            >
+                0
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Pagamentos Realizados
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiPontualidade"
+            >
+                0,00%
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Pontualidade
+            </div>
+
+        </div>
+
+
+        <div class="financeiro-kpi">
+
+            <div
+                class="financeiro-kpi-value"
+                id="financeiroKpiPrazoMedio"
+            >
+                0 dias
+            </div>
+
+            <div class="financeiro-kpi-label">
+                Prazo Médio
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         GRÁFICOS
+    ====================================================== -->
+
+    <div class="financeiro-grid">
+
+        <!-- DRE -->
+
+        <section class="financeiro-panel">
+
+            <div class="financeiro-panel-title">
+                Despesas por DRE
+            </div>
+
+            <div class="financeiro-chart">
+
+                <canvas
+                    id="financeiroDre"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+        <!-- CATEGORIA -->
+
+        <section class="financeiro-panel">
+
+            <div class="financeiro-panel-title">
+                Despesas por Categoria
+            </div>
+
+            <div class="financeiro-chart">
+
+                <canvas
+                    id="financeiroCategoria"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATUS -->
+
+        <section class="financeiro-panel">
+
+            <div class="financeiro-panel-title">
+                Situação Financeira
+            </div>
+
+            <div class="financeiro-chart">
+
+                <canvas
+                    id="financeiroStatus"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         GRÁFICOS FINAIS
+    ====================================================== -->
+
+    <div class="financeiro-graficos-finais">
+
+        <section class="financeiro-panel">
+
+            <div class="financeiro-panel-title">
+                Pagamentos por Prazo
+            </div>
+
+            <div class="financeiro-chart">
+
+                <canvas
+                    id="financeiroSla"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+        <section class="financeiro-panel">
+
+            <div class="financeiro-panel-title">
+                Evolução Financeira
+            </div>
+
+            <div class="financeiro-chart">
+
+                <canvas
+                    id="financeiroEvolucao"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         ATUALIZAÇÃO
+    ====================================================== -->
+
+    <div class="financeiro-atualizado">
+
+        Dados carregados em:
+
+        <span id="financeiroAtualizado">
+            --
+        </span>
+
+    </div>
+
+</div>
