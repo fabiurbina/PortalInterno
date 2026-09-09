@@ -43,8 +43,7 @@ from .views import (
     sincronizar_todas_agendas_view,
     indicadores_comercial_dados,
     indicadores_financeiro_dados,
-    financeiro_dre,
-    dashboard_financeiro
+    financeiro_dre
 )
 
 urlpatterns = [
@@ -303,12 +302,7 @@ urlpatterns = [
     "relatorios/financeiro/dre/",
     financeiro_dre,
     name="financeiro_dre"
-),
-    path(
-        "indicadores/financeiro/",
-        dashboard_financeiro,
-        name="dashboard_financeiro"
-    ),
+)
 ]
 
 
