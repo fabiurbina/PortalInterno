@@ -3751,108 +3751,121 @@ def financeiro_dre(request):
     )
     
     
-@login_required
+from collections import defaultdict
+from datetime import date, datetime
+from django.http import JsonResponse, HttpResponseForbidden
+
+
 def indicadores_financeiro_dados(request):
 
-    from decimal import Decimal
-    from datetime import date
-    from django.http import JsonResponse, HttpResponseForbidden
+    # =========================================================
+    # ACESSO
+    # =========================================================
 
-    usuario = request.user
-
-    # ==========================================================
-    # PERMISSÃO
-    # ==========================================================
-
-    if not (
-        usuario.is_superuser
-        or usuario.email.lower() in [
-            "fabio.soares@viesano.com.br",
-            "aline.andrade@viesano.com.br",
-            "andre.machado@viesano.com.br",
-        ]
-    ):
+    if not request.user.is_authenticated:
         return HttpResponseForbidden(
-            "Você não tem permissão para acessar este relatório."
+            "Você precisa estar logado para acessar este relatório."
         )
 
-    # ==========================================================
+    email_usuario = (
+        request.user.email or ""
+    ).lower().strip()
+
+    emails_permitidos = [
+        "fabio.soares@viesano.com.br",
+        "aline.andrade@viesano.com.br",
+        "andre.machado@viesano.com.br",
+    ]
+
+    if not (
+        request.user.is_superuser
+        or email_usuario in emails_permitidos
+    ):
+        return HttpResponseForbidden(
+            "Você não possui permissão para acessar este relatório."
+        )
+
+
+    # =========================================================
     # DADOS
-    # ==========================================================
+    # =========================================================
 
     dados = buscar_fin_dre()
 
-    # ==========================================================
+
+    # =========================================================
     # FILTROS
-    # ==========================================================
+    # =========================================================
 
     data_vencimento_inicio = request.GET.get(
-        "data_vencimento_inicio", ""
+        "data_vencimento_inicio"
     )
 
     data_vencimento_fim = request.GET.get(
-        "data_vencimento_fim", ""
+        "data_vencimento_fim"
     )
 
     data_pagamento_inicio = request.GET.get(
-        "data_pagamento_inicio", ""
+        "data_pagamento_inicio"
     )
 
     data_pagamento_fim = request.GET.get(
-        "data_pagamento_fim", ""
+        "data_pagamento_fim"
     )
 
-    status_filtro = request.GET.get(
-        "status",
-        ""
+    filtro_status = request.GET.get(
+        "status"
     )
 
-    sla_filtro = request.GET.get(
-        "sla",
-        ""
+    filtro_sla = request.GET.get(
+        "sla"
     )
 
-    # ==========================================================
-    # FUNÇÕES AUXILIARES
-    # ==========================================================
 
-    def valor_decimal(valor):
+    # =========================================================
+    # CONVERSÃO DAS DATAS DOS FILTROS
+    # =========================================================
 
-        if valor is None:
-            return Decimal("0")
+    def converter_data(valor):
 
-        if isinstance(valor, Decimal):
-            return valor
+        if not valor:
+            return None
 
         try:
-            return Decimal(str(valor))
+            return datetime.strptime(
+                valor,
+                "%Y-%m-%d"
+            ).date()
 
         except Exception:
-            return Decimal("0")
+            return None
 
-    def numero(valor):
 
-        return float(
-            valor_decimal(valor)
-        )
+    vencimento_inicio = converter_data(
+        data_vencimento_inicio
+    )
 
-    # ==========================================================
-    # FILTRAR DADOS
-    # ==========================================================
+    vencimento_fim = converter_data(
+        data_vencimento_fim
+    )
 
-    dados_filtrados = []
+    pagamento_inicio = converter_data(
+        data_pagamento_inicio
+    )
 
-    for item_original in dados:
+    pagamento_fim = converter_data(
+        data_pagamento_fim
+    )
 
-        item = item_original.copy()
 
-        status = item.get(
-            "cStatus"
-        )
+    # =========================================================
+    # FILTRAGEM
+    # =========================================================
 
-        status_sla = item.get(
-            "StatusPagamento"
-        )
+    filtrados = []
+
+
+    for item in dados:
 
         data_vencimento = item.get(
             "dDtPrevisao"
@@ -3862,513 +3875,451 @@ def indicadores_financeiro_dados(request):
             "dDtPagamento"
         )
 
-        # ------------------------------------------------------
+        status = str(
+            item.get("cStatus") or ""
+        ).strip().upper()
+
+
+        # -----------------------------------------------------
+        # FILTRO VENCIMENTO
+        # -----------------------------------------------------
+
+        if (
+            vencimento_inicio
+            and (
+                not data_vencimento
+                or data_vencimento < vencimento_inicio
+            )
+        ):
+            continue
+
+
+        if (
+            vencimento_fim
+            and (
+                not data_vencimento
+                or data_vencimento > vencimento_fim
+            )
+        ):
+            continue
+
+
+        # -----------------------------------------------------
+        # FILTRO PAGAMENTO
+        # -----------------------------------------------------
+
+        if pagamento_inicio:
+
+            if (
+                not data_pagamento
+                or data_pagamento < pagamento_inicio
+            ):
+                continue
+
+
+        if pagamento_fim:
+
+            if (
+                not data_pagamento
+                or data_pagamento > pagamento_fim
+            ):
+                continue
+
+
+        # -----------------------------------------------------
+        # FILTRO STATUS
+        # -----------------------------------------------------
+
+        if filtro_status:
+
+            if status != filtro_status.upper():
+                continue
+
+
+        # -----------------------------------------------------
+        # SLA
+        # -----------------------------------------------------
+
+        status_pagamento = (
+            item.get("StatusPagamento")
+            or "Sem Validação"
+        )
+
+
+        if filtro_sla:
+
+            if status_pagamento != filtro_sla:
+                continue
+
+
+        # -----------------------------------------------------
         # PRAZO
-        # ------------------------------------------------------
+        # -----------------------------------------------------
 
         prazo = None
 
-        if (
-            status == "PAGO"
-            and data_vencimento
-            and data_pagamento
-        ):
 
-            prazo = (
+        if status == "PAGO":
+
+            if (
                 data_vencimento
-                - data_pagamento
-            ).days
+                and data_pagamento
+            ):
 
-        elif (
-            status == "A VENCER"
-            and data_vencimento
-        ):
+                prazo = (
+                    data_vencimento
+                    - data_pagamento
+                ).days
 
-            prazo = (
-                data_vencimento
-                - date.today()
-            ).days
+
+        elif status == "A VENCER":
+
+            if data_vencimento:
+
+                prazo = (
+                    data_vencimento
+                    - date.today()
+                ).days
+
 
         item["Prazo"] = prazo
 
-        # ------------------------------------------------------
-        # FILTRO STATUS
-        # ------------------------------------------------------
 
-        if (
-            status_filtro
-            and status != status_filtro
-        ):
-            continue
-
-        # ------------------------------------------------------
-        # FILTRO SLA
-        # ------------------------------------------------------
-
-        if (
-            sla_filtro
-            and status_sla != sla_filtro
-        ):
-            continue
-
-        # ------------------------------------------------------
-        # FILTRO VENCIMENTO INÍCIO
-        # ------------------------------------------------------
-
-        if data_vencimento_inicio:
-
-            if not data_vencimento:
-                continue
-
-            if (
-                str(data_vencimento)
-                < data_vencimento_inicio
-            ):
-                continue
-
-        # ------------------------------------------------------
-        # FILTRO VENCIMENTO FIM
-        # ------------------------------------------------------
-
-        if data_vencimento_fim:
-
-            if not data_vencimento:
-                continue
-
-            if (
-                str(data_vencimento)
-                > data_vencimento_fim
-            ):
-                continue
-
-        # ------------------------------------------------------
-        # FILTRO PAGAMENTO INÍCIO
-        # ------------------------------------------------------
-
-        if data_pagamento_inicio:
-
-            if not data_pagamento:
-                continue
-
-            if (
-                str(data_pagamento)
-                < data_pagamento_inicio
-            ):
-                continue
-
-        # ------------------------------------------------------
-        # FILTRO PAGAMENTO FIM
-        # ------------------------------------------------------
-
-        if data_pagamento_fim:
-
-            if not data_pagamento:
-                continue
-
-            if (
-                str(data_pagamento)
-                > data_pagamento_fim
-            ):
-                continue
-
-        dados_filtrados.append(
+        filtrados.append(
             item
         )
 
-    # ==========================================================
-    # TOTAIS
-    # ==========================================================
+
+    # =========================================================
+    # KPIs
+    # =========================================================
 
     total_despesas = sum(
-        (
-            valor_decimal(
-                item.get("nValorTitulo")
-            )
-            for item in dados_filtrados
-        ),
-        Decimal("0"),
+        float(item.get("nValorTitulo") or 0)
+        for item in filtrados
     )
+
 
     total_pago = sum(
-        (
-            valor_decimal(
-                item.get("nValPago")
-            )
-            for item in dados_filtrados
-            if item.get("cStatus") == "PAGO"
-        ),
-        Decimal("0"),
+        float(item.get("nValPago") or 0)
+        for item in filtrados
+        if str(
+            item.get("cStatus") or ""
+        ).upper() == "PAGO"
     )
+
 
     total_a_vencer = sum(
-        (
-            valor_decimal(
-                item.get("nValorTitulo")
-            )
-            for item in dados_filtrados
-            if item.get("cStatus") == "A VENCER"
-        ),
-        Decimal("0"),
+        float(item.get("nValorTitulo") or 0)
+        for item in filtrados
+        if str(
+            item.get("cStatus") or ""
+        ).upper() == "A VENCER"
     )
+
 
     total_dentro_prazo = sum(
-        (
-            valor_decimal(
-                item.get("nValorTitulo")
-            )
-            for item in dados_filtrados
-            if item.get("StatusPagamento")
-            == "Dentro do Prazo"
-        ),
-        Decimal("0"),
+        float(item.get("nValorTitulo") or 0)
+        for item in filtrados
+        if item.get("StatusPagamento")
+        == "Dentro do Prazo"
     )
+
 
     total_fora_prazo = sum(
-        (
-            valor_decimal(
-                item.get("nValorTitulo")
-            )
-            for item in dados_filtrados
-            if item.get("StatusPagamento")
-            == "Fora do Prazo"
-        ),
-        Decimal("0"),
+        float(item.get("nValorTitulo") or 0)
+        for item in filtrados
+        if item.get("StatusPagamento")
+        == "Fora do Prazo"
     )
 
-    # ==========================================================
-    # PAGAMENTOS
-    # ==========================================================
 
     pagamentos_realizados = sum(
         1
-        for item in dados_filtrados
-        if item.get("cStatus") == "PAGO"
+        for item in filtrados
+        if str(
+            item.get("cStatus") or ""
+        ).upper() == "PAGO"
     )
+
 
     pagamentos_dentro_prazo = sum(
         1
-        for item in dados_filtrados
+        for item in filtrados
         if (
-            item.get("cStatus") == "PAGO"
-            and item.get("StatusPagamento")
+            str(
+                item.get("cStatus") or ""
+            ).upper() == "PAGO"
+            and
+            item.get("StatusPagamento")
             == "Dentro do Prazo"
         )
     )
 
+
     pagamentos_fora_prazo = sum(
         1
-        for item in dados_filtrados
+        for item in filtrados
         if (
-            item.get("cStatus") == "PAGO"
-            and item.get("StatusPagamento")
+            str(
+                item.get("cStatus") or ""
+            ).upper() == "PAGO"
+            and
+            item.get("StatusPagamento")
             == "Fora do Prazo"
         )
     )
 
-    # ==========================================================
-    # PONTUALIDADE
-    # ==========================================================
+
+    percentual_pontualidade = 0
+
 
     if pagamentos_realizados > 0:
 
         percentual_pontualidade = (
-            Decimal(
-                pagamentos_dentro_prazo
-            )
-            / Decimal(
-                pagamentos_realizados
-            )
-        ) * Decimal("100")
+            pagamentos_dentro_prazo
+            / pagamentos_realizados
+        ) * 100
 
-    else:
 
-        percentual_pontualidade = Decimal("0")
+    # =========================================================
+    # CURVA 80/20
+    # =========================================================
 
-    # ==========================================================
-    # DESPESAS POR DRE
-    # ==========================================================
+    categorias = defaultdict(float)
 
-    despesas_dre = {}
 
-    for item in dados_filtrados:
-
-        dre = (
-            item.get("descricaoDRE")
-            or "Sem DRE"
-        )
-
-        valor = valor_decimal(
-            item.get("nValorTitulo")
-        )
-
-        despesas_dre[dre] = (
-            despesas_dre.get(
-                dre,
-                Decimal("0")
-            )
-            + valor
-        )
-
-    despesas_dre = dict(
-        sorted(
-            despesas_dre.items(),
-            key=lambda x: x[1],
-            reverse=True,
-        )
-    )
-
-    # ==========================================================
-    # DESPESAS POR CATEGORIA
-    # ==========================================================
-
-    despesas_categoria = {}
-
-    for item in dados_filtrados:
+    for item in filtrados:
 
         categoria = (
             item.get("descricao")
             or "Sem Categoria"
         )
 
-        valor = valor_decimal(
-            item.get("nValorTitulo")
+        categorias[categoria] += float(
+            item.get("nValorTitulo") or 0
         )
 
-        despesas_categoria[categoria] = (
-            despesas_categoria.get(
-                categoria,
-                Decimal("0")
-            )
-            + valor
-        )
 
-    despesas_categoria = dict(
-        sorted(
-            despesas_categoria.items(),
-            key=lambda x: x[1],
-            reverse=True,
-        )
+    categorias_ordenadas = sorted(
+        categorias.items(),
+        key=lambda x: x[1],
+        reverse=True
     )
 
-    # ==========================================================
-    # CURVA 80/20
-    # ==========================================================
 
-    pareto_categorias = []
+    pareto = []
 
-    acumulado = Decimal("0")
+    acumulado_valor = 0
 
-    for categoria, valor in despesas_categoria.items():
 
-        acumulado += valor
+    for categoria, valor in categorias_ordenadas:
 
-        percentual_acumulado = (
-            acumulado / total_despesas * 100
+        acumulado_valor += valor
+
+
+        percentual = (
+            (valor / total_despesas) * 100
             if total_despesas > 0
-            else Decimal("0")
+            else 0
         )
 
-        percentual_categoria = (
-            valor / total_despesas * 100
+
+        acumulado = (
+            (acumulado_valor / total_despesas) * 100
             if total_despesas > 0
-            else Decimal("0")
+            else 0
         )
 
-        pareto_categorias.append(
-            {
-                "categoria": categoria,
-                "valor": numero(valor),
-                "percentual": numero(
-                    percentual_categoria
-                ),
-                "acumulado": numero(
-                    percentual_acumulado
-                ),
-            }
-        )
 
-    # ==========================================================
+        pareto.append({
+
+            "categoria": categoria,
+
+            "valor": round(
+                valor,
+                2
+            ),
+
+            "percentual": round(
+                percentual,
+                2
+            ),
+
+            "acumulado": round(
+                acumulado,
+                2
+            )
+
+        })
+
+
+    # =========================================================
     # TOP 5 FORNECEDORES
-    # ==========================================================
+    # =========================================================
 
-    fornecedores = {}
+    fornecedores = defaultdict(float)
 
-    for item in dados_filtrados:
+
+    for item in filtrados:
 
         fornecedor = (
             item.get("razao_social")
             or "Sem Fornecedor"
         )
 
-        valor = valor_decimal(
-            item.get("nValorTitulo")
+        fornecedores[fornecedor] += float(
+            item.get("nValorTitulo") or 0
         )
 
-        fornecedores[fornecedor] = (
-            fornecedores.get(
-                fornecedor,
-                Decimal("0")
-            )
-            + valor
-        )
 
-    fornecedores = sorted(
+    fornecedores_ordenados = sorted(
         fornecedores.items(),
         key=lambda x: x[1],
-        reverse=True,
+        reverse=True
     )[:5]
+
 
     top5_fornecedores = {
 
         "labels": [
             fornecedor
-            for fornecedor, valor in fornecedores
+            for fornecedor, valor
+            in fornecedores_ordenados
         ],
 
         "values": [
-            numero(valor)
-            for fornecedor, valor in fornecedores
-        ],
+            round(
+                valor,
+                2
+            )
+            for fornecedor, valor
+            in fornecedores_ordenados
+        ]
+
     }
 
-    # ==========================================================
+
+    # =========================================================
     # STATUS
-    # ==========================================================
+    # =========================================================
 
-    status_valores = {
+    status = defaultdict(float)
 
-        "PAGO": numero(
-            total_pago
-        ),
 
-        "A VENCER": numero(
-            total_a_vencer
-        ),
-    }
+    for item in filtrados:
 
-    # ==========================================================
+        situacao = str(
+            item.get("cStatus") or ""
+        ).upper()
+
+        status[situacao] += float(
+            item.get("nValorTitulo") or 0
+        )
+
+
+    # =========================================================
     # SLA
-    # ==========================================================
+    # =========================================================
 
-    sla_valores = {
+    sla = defaultdict(float)
 
-        "Dentro do Prazo": numero(
-            total_dentro_prazo
-        ),
 
-        "Fora do Prazo": numero(
-            total_fora_prazo
-        ),
-    }
+    for item in filtrados:
 
-    # ==========================================================
-    # EVOLUÇÃO MENSAL
+        status_sla = (
+            item.get("StatusPagamento")
+            or "Sem Validação"
+        )
+
+        sla[status_sla] += float(
+            item.get("nValorTitulo") or 0
+        )
+
+
+    # =========================================================
+    # EVOLUÇÃO DOS PAGAMENTOS
     #
-    # DESPESAS  = mês do vencimento
-    # PAGO       = mês do pagamento
-    # A VENCER   = mês do vencimento
-    # ==========================================================
+    # PAGO:
+    #   dDtPagamento + nValPago
+    #
+    # PREVISÃO:
+    #   dDtPrevisao + nValorTitulo
+    #   somente A VENCER
+    # =========================================================
 
-    evolucao_mensal = {}
+    pagamentos_por_mes = defaultdict(float)
 
-    hoje = date.today()
+    previsao_por_mes = defaultdict(float)
 
-    for item in dados_filtrados:
 
-        valor_titulo = valor_decimal(
-            item.get("nValorTitulo")
-        )
+    for item in filtrados:
 
-        valor_pago = valor_decimal(
-            item.get("nValPago")
-        )
+        status_item = str(
+            item.get("cStatus") or ""
+        ).strip().upper()
 
-        # ------------------------------------------------------
-        # DESPESA PELO VENCIMENTO
-        # ------------------------------------------------------
 
-        data_vencimento = item.get(
-            "dDtPrevisao"
-        )
+        # -----------------------------------------------------
+        # PAGAMENTOS REALIZADOS
+        # -----------------------------------------------------
 
-        if data_vencimento:
+        if (
+            status_item == "PAGO"
+            and item.get("dDtPagamento")
+        ):
 
-            chave = data_vencimento.strftime(
+            data_pagamento = item[
+                "dDtPagamento"
+            ]
+
+            mes = data_pagamento.strftime(
                 "%Y-%m"
             )
 
-            if chave not in evolucao_mensal:
-
-                evolucao_mensal[chave] = {
-                    "despesas": Decimal("0"),
-                    "pago": Decimal("0"),
-                    "a_vencer": Decimal("0"),
-                }
-
-            evolucao_mensal[chave][
-                "despesas"
-            ] += valor_titulo
-
-            if (
-                item.get("cStatus")
-                == "A VENCER"
-            ):
-
-                evolucao_mensal[chave][
-                    "a_vencer"
-                ] += valor_titulo
-
-        # ------------------------------------------------------
-        # PAGO PELO MÊS REAL DO PAGAMENTO
-        # ------------------------------------------------------
-
-        data_pagamento = item.get(
-            "dDtPagamento"
-        )
-
-        if (
-            item.get("cStatus") == "PAGO"
-            and data_pagamento
-        ):
-
-            chave_pagamento = (
-                data_pagamento.strftime(
-                    "%Y-%m"
-                )
+            pagamentos_por_mes[mes] += float(
+                item.get("nValPago") or 0
             )
 
-            if (
-                chave_pagamento
-                not in evolucao_mensal
-            ):
 
-                evolucao_mensal[
-                    chave_pagamento
-                ] = {
+        # -----------------------------------------------------
+        # PREVISÃO
+        # -----------------------------------------------------
 
-                    "despesas": Decimal("0"),
-                    "pago": Decimal("0"),
-                    "a_vencer": Decimal("0"),
-                }
+        elif (
+            status_item == "A VENCER"
+            and item.get("dDtPrevisao")
+        ):
 
-            evolucao_mensal[
-                chave_pagamento
-            ][
-                "pago"
-            ] += valor_pago
+            data_vencimento = item[
+                "dDtPrevisao"
+            ]
 
-    # ==========================================================
-    # ORDENAÇÃO DOS MESES
-    # ==========================================================
+            mes = data_vencimento.strftime(
+                "%Y-%m"
+            )
 
-    meses = sorted(
-        evolucao_mensal.keys()
+            previsao_por_mes[mes] += float(
+                item.get("nValorTitulo") or 0
+            )
+
+
+    # =========================================================
+    # MESES
+    # =========================================================
+
+    todos_os_meses = sorted(
+        set(
+            list(
+                pagamentos_por_mes.keys()
+            )
+            +
+            list(
+                previsao_por_mes.keys()
+            )
+        )
     )
 
-    evolucao_labels = []
-    evolucao_despesas = []
-    evolucao_pago = []
-    evolucao_a_vencer = []
 
     nomes_meses = [
 
@@ -4383,281 +4334,127 @@ def indicadores_financeiro_dados(request):
         "Set",
         "Out",
         "Nov",
-        "Dez",
+        "Dez"
+
     ]
 
-    for mes in meses:
+
+    labels = []
+
+
+    for mes in todos_os_meses:
 
         ano, numero_mes = mes.split("-")
 
-        label = (
-            nomes_meses[
-                int(numero_mes) - 1
-            ]
-            + "/"
-            + ano
+        numero_mes = int(
+            numero_mes
         )
 
-        evolucao_labels.append(
-            label
+        labels.append(
+            f"{nomes_meses[numero_mes - 1]}/{ano}"
         )
 
-        evolucao_despesas.append(
-            numero(
-                evolucao_mensal[
-                    mes
-                ]["despesas"]
-            )
+
+    pago = [
+
+        round(
+            pagamentos_por_mes.get(
+                mes,
+                0
+            ),
+            2
         )
 
-        evolucao_pago.append(
-            numero(
-                evolucao_mensal[
-                    mes
-                ]["pago"]
-            )
-        )
+        for mes in todos_os_meses
 
-        evolucao_a_vencer.append(
-            numero(
-                evolucao_mensal[
-                    mes
-                ]["a_vencer"]
-            )
-        )
-
-    # ==========================================================
-    # PROJEÇÃO - PRÓXIMOS 3 MESES
-    #
-    # Base:
-    # média das despesas dos 3 últimos meses completos
-    # ==========================================================
-
-    ano_atual = hoje.year
-    mes_atual = hoje.month
-
-    meses_historicos = []
-
-    for chave in sorted(
-        evolucao_mensal.keys(),
-        reverse=True
-    ):
-
-        ano, mes = map(
-            int,
-            chave.split("-")
-        )
-
-        # somente meses anteriores ao atual
-        if (
-            ano < ano_atual
-            or (
-                ano == ano_atual
-                and mes < mes_atual
-            )
-        ):
-
-            meses_historicos.append(
-                chave
-            )
-
-        if len(
-            meses_historicos
-        ) == 3:
-
-            break
-
-    valores_historicos = [
-
-        evolucao_mensal[
-            mes
-        ]["despesas"]
-
-        for mes in meses_historicos
     ]
 
-    if valores_historicos:
 
-        media_historica = (
-            sum(
-                valores_historicos,
-                Decimal("0")
-            )
-            / Decimal(
-                len(
-                    valores_historicos
-                )
-            )
+    previsao = [
+
+        round(
+            previsao_por_mes.get(
+                mes,
+                0
+            ),
+            2
         )
 
-    else:
+        for mes in todos_os_meses
 
-        media_historica = Decimal("0")
-
-    # ==========================================================
-    # PRÓXIMOS 3 MESES
-    # ==========================================================
-
-    projecao_labels = []
-    projecao_valores = []
-
-    meses_nomes = [
-
-        "Jan",
-        "Fev",
-        "Mar",
-        "Abr",
-        "Mai",
-        "Jun",
-        "Jul",
-        "Ago",
-        "Set",
-        "Out",
-        "Nov",
-        "Dez",
     ]
 
-    ano_projecao = ano_atual
-    mes_projecao = mes_atual
 
-    for _ in range(3):
+    evolucao = {
 
-        mes_projecao += 1
+        "labels": labels,
 
-        if mes_projecao > 12:
+        "pago": pago,
 
-            mes_projecao = 1
-            ano_projecao += 1
+        "previsao": previsao
 
-        projecao_labels.append(
+    }
 
-            meses_nomes[
-                mes_projecao - 1
-            ]
-            + "/"
-            + str(ano_projecao)
-        )
 
-        projecao_valores.append(
-            numero(
-                media_historica
-            )
-        )
+    # =========================================================
+    # JSON
+    # =========================================================
 
-    # ==========================================================
-    # RETORNO JSON
-    # ==========================================================
+    return JsonResponse({
 
-    return JsonResponse(
+        "total_despesas": round(
+            total_despesas,
+            2
+        ),
 
-        {
+        "total_pago": round(
+            total_pago,
+            2
+        ),
 
-            # --------------------------------------------------
-            # KPIs
-            # --------------------------------------------------
+        "total_a_vencer": round(
+            total_a_vencer,
+            2
+        ),
 
-            "total_despesas":
-                numero(
-                    total_despesas
-                ),
+        "total_dentro_prazo": round(
+            total_dentro_prazo,
+            2
+        ),
 
-            "total_pago":
-                numero(
-                    total_pago
-                ),
+        "total_fora_prazo": round(
+            total_fora_prazo,
+            2
+        ),
 
-            "total_a_vencer":
-                numero(
-                    total_a_vencer
-                ),
+        "pagamentos_realizados":
+            pagamentos_realizados,
 
-            "total_dentro_prazo":
-                numero(
-                    total_dentro_prazo
-                ),
+        "pagamentos_dentro_prazo":
+            pagamentos_dentro_prazo,
 
-            "total_fora_prazo":
-                numero(
-                    total_fora_prazo
-                ),
+        "pagamentos_fora_prazo":
+            pagamentos_fora_prazo,
 
-            "pagamentos_realizados":
-                pagamentos_realizados,
+        "percentual_pontualidade":
+            round(
+                percentual_pontualidade,
+                2
+            ),
 
-            "pagamentos_dentro_prazo":
-                pagamentos_dentro_prazo,
+        "pareto": pareto,
 
-            "pagamentos_fora_prazo":
-                pagamentos_fora_prazo,
+        "top5_fornecedores":
+            top5_fornecedores,
 
-            "percentual_pontualidade":
-                numero(
-                    percentual_pontualidade
-                ),
+        "status": dict(
+            status
+        ),
 
-            # --------------------------------------------------
-            # CURVA 80/20
-            # --------------------------------------------------
+        "sla": dict(
+            sla
+        ),
 
-            "pareto": pareto_categorias,
+        "evolucao": evolucao
 
-            # --------------------------------------------------
-            # TOP 5
-            # --------------------------------------------------
-
-            "top5_fornecedores":
-                top5_fornecedores,
-
-            # --------------------------------------------------
-            # STATUS
-            # --------------------------------------------------
-
-            "status":
-                status_valores,
-
-            # --------------------------------------------------
-            # SLA
-            # --------------------------------------------------
-
-            "sla":
-                sla_valores,
-
-            # --------------------------------------------------
-            # EVOLUÇÃO
-            # --------------------------------------------------
-
-            "evolucao": {
-
-                "labels":
-                    evolucao_labels,
-
-                "despesas":
-                    evolucao_despesas,
-
-                "pago":
-                    evolucao_pago,
-
-                "a_vencer":
-                    evolucao_a_vencer,
-            },
-
-            # --------------------------------------------------
-            # PROJEÇÃO
-            # --------------------------------------------------
-
-            "projecao": {
-
-                "labels":
-                    projecao_labels,
-
-                "valores":
-                    projecao_valores,
-
-                "media_historica":
-                    numero(
-                        media_historica
-                    ),
-            },
-        }
-
-    )
+    })
