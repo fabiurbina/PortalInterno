@@ -1,12 +1,17 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Financeiro / DRE</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -20,11 +25,13 @@
 
         .container {
             width: 95%;
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 30px auto;
         }
 
-        /* CABEÇALHO */
+        /* ==========================================================
+           CABEÇALHO
+        ========================================================== */
 
         .cabecalho {
             display: flex;
@@ -52,11 +59,13 @@
             opacity: 0.9;
         }
 
-        /* CARDS */
+        /* ==========================================================
+           CARDS
+        ========================================================== */
 
         .cards-resumo {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 18px;
             margin-bottom: 25px;
         }
@@ -64,25 +73,67 @@
         .card-resumo {
             background: white;
             border: 1px solid #e1e8e4;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
         }
 
         .card-resumo .titulo {
-            font-size: 13px;
+            font-size: 12px;
             color: #6c7771;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            letter-spacing: .4px;
         }
 
         .card-resumo .valor {
-            font-size: 25px;
+            font-size: 24px;
             font-weight: bold;
+        }
+
+        .card-total {
+            border-left: 5px solid #174f35;
+        }
+
+        .card-total .valor {
             color: #174f35;
         }
 
-        /* FILTROS */
+        .card-pago {
+            border-left: 5px solid #198754;
+        }
+
+        .card-pago .valor {
+            color: #198754;
+        }
+
+        .card-vencer {
+            border-left: 5px solid #d99a16;
+        }
+
+        .card-vencer .valor {
+            color: #b77c00;
+        }
+
+        .card-sla-ok {
+            border-left: 5px solid #24966a;
+        }
+
+        .card-sla-ok .valor {
+            color: #24966a;
+        }
+
+        .card-sla-atraso {
+            border-left: 5px solid #d9363e;
+        }
+
+        .card-sla-atraso .valor {
+            color: #d9363e;
+        }
+
+        /* ==========================================================
+           FILTROS
+        ========================================================== */
 
         .filtros {
             background: white;
@@ -90,7 +141,7 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .filtros h3 {
@@ -102,8 +153,14 @@
 
         .filtros-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
+            grid-template-columns:
+                repeat(4, minmax(150px, 1fr))
+                minmax(150px, 1fr)
+                minmax(150px, 1fr)
+                auto;
+
             gap: 15px;
+
             align-items: end;
         }
 
@@ -127,6 +184,7 @@
             border-radius: 7px;
             background: white;
             font-size: 14px;
+            color: #26332d;
         }
 
         .campo input:focus,
@@ -164,19 +222,24 @@
             background: white;
         }
 
-        /* TABELA */
+        /* ==========================================================
+           TABELA
+        ========================================================== */
 
         .tabela-container {
             background: white;
             border: 1px solid #e1e8e4;
             border-radius: 12px;
             overflow-x: auto;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .tabela-topo {
             padding: 18px 20px;
             border-bottom: 1px solid #e5ebe7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .tabela-topo h3 {
@@ -185,20 +248,37 @@
             font-size: 18px;
         }
 
+        .contador {
+            font-size: 13px;
+            color: #6c7771;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1100px;
+            min-width: 1450px;
         }
 
         th {
             background: #f4f7f6;
             color: #4d5a53;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             padding: 13px 12px;
             text-align: left;
             white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background: #e8efeb;
+        }
+
+        th .seta {
+            margin-left: 5px;
+            font-size: 10px;
+            color: #174f35;
         }
 
         td {
@@ -217,7 +297,22 @@
             font-weight: bold;
         }
 
-        /* STATUS */
+        .prazo {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .prazo-atrasado {
+            color: #d9363e;
+        }
+
+        .prazo-ok {
+            color: #198754;
+        }
+
+        /* ==========================================================
+           STATUS
+        ========================================================== */
 
         .status {
             display: inline-block;
@@ -242,7 +337,36 @@
             color: #56635c;
         }
 
-        /* SEM DADOS */
+        /* ==========================================================
+           SLA
+        ========================================================== */
+
+        .sla {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .sla-ok {
+            background: #dff5e9;
+            color: #17633d;
+        }
+
+        .sla-atraso {
+            background: #ffe1e1;
+            color: #b4232d;
+        }
+
+        .sla-sem {
+            background: #edf0ef;
+            color: #56635c;
+        }
+
+        /* ==========================================================
+           SEM DADOS
+        ========================================================== */
 
         .sem-dados {
             text-align: center;
@@ -250,9 +374,23 @@
             color: #7a847f;
         }
 
-        /* RESPONSIVO */
+        /* ==========================================================
+           RESPONSIVO
+        ========================================================== */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1400px) {
+
+            .cards-resumo {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .filtros-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+        }
+
+        @media (max-width: 800px) {
 
             .cards-resumo {
                 grid-template-columns: 1fr;
@@ -272,54 +410,127 @@
             .btn-limpar {
                 width: 100%;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <!-- CABEÇALHO -->
+    <!-- ==========================================================
+         CABEÇALHO
+    ========================================================== -->
 
     <div class="cabecalho">
+
         <h1>💰 Financeiro / DRE</h1>
 
-        <a href="{% url 'relatorios_diversos' %}" class="btn-voltar">
+        <a
+            href="{% url 'relatorios_diversos' %}"
+            class="btn-voltar"
+        >
             ← Voltar
         </a>
+
     </div>
 
 
-    <!-- CARDS -->
+    <!-- ==========================================================
+         CARDS
+    ========================================================== -->
 
     <div class="cards-resumo">
 
-        <div class="card-resumo">
-            <div class="titulo">TOTAL DESPESAS</div>
-            <div class="valor">
-                R$ {{ total_despesas|floatformat:2 }}
+        <div class="card-resumo card-total">
+
+            <div class="titulo">
+                TOTAL DESPESAS
             </div>
+
+            <div
+                class="valor moeda"
+                data-valor="{{ total_despesas }}"
+            >
+                R$ 0,00
+            </div>
+
         </div>
 
-        <div class="card-resumo">
-            <div class="titulo">TOTAL PAGO</div>
-            <div class="valor">
-                R$ {{ total_pago|floatformat:2 }}
+
+        <div class="card-resumo card-pago">
+
+            <div class="titulo">
+                TOTAL PAGO
             </div>
+
+            <div
+                class="valor moeda"
+                data-valor="{{ total_pago }}"
+            >
+                R$ 0,00
+            </div>
+
         </div>
 
-        <div class="card-resumo">
-            <div class="titulo">A VENCER</div>
-            <div class="valor">
-                R$ {{ total_a_vencer|floatformat:2 }}
+
+        <div class="card-resumo card-vencer">
+
+            <div class="titulo">
+                A VENCER
             </div>
+
+            <div
+                class="valor moeda"
+                data-valor="{{ total_a_vencer }}"
+            >
+                R$ 0,00
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo card-sla-ok">
+
+            <div class="titulo">
+                DENTRO DO PRAZO
+            </div>
+
+            <div
+                class="valor moeda"
+                data-valor="{{ total_dentro_prazo }}"
+            >
+                R$ 0,00
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo card-sla-atraso">
+
+            <div class="titulo">
+                FORA DO PRAZO
+            </div>
+
+            <div
+                class="valor moeda"
+                data-valor="{{ total_fora_prazo }}"
+            >
+                R$ 0,00
+            </div>
+
         </div>
 
     </div>
 
 
-    <!-- FILTROS -->
+    <!-- ==========================================================
+         FILTROS
+    ========================================================== -->
 
     <div class="filtros">
 
@@ -329,61 +540,156 @@
 
             <div class="filtros-grid">
 
+                <!-- VENCIMENTO -->
+
                 <div class="campo">
-                    <label for="data_inicio">
-                        Data inicial
+
+                    <label for="data_vencimento_inicio">
+                        Vencimento de
                     </label>
 
                     <input
                         type="date"
-                        id="data_inicio"
-                        name="data_inicio"
-                        value="{{ data_inicio }}"
+                        id="data_vencimento_inicio"
+                        name="data_vencimento_inicio"
+                        value="{{ data_vencimento_inicio }}"
                     >
+
                 </div>
 
 
                 <div class="campo">
-                    <label for="data_fim">
-                        Data final
+
+                    <label for="data_vencimento_fim">
+                        Vencimento até
                     </label>
 
                     <input
                         type="date"
-                        id="data_fim"
-                        name="data_fim"
-                        value="{{ data_fim }}"
+                        id="data_vencimento_fim"
+                        name="data_vencimento_fim"
+                        value="{{ data_vencimento_fim }}"
                     >
+
+                </div>
+
+
+                <!-- PAGAMENTO -->
+
+                <div class="campo">
+
+                    <label for="data_pagamento_inicio">
+                        Pagamento de
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_pagamento_inicio"
+                        name="data_pagamento_inicio"
+                        value="{{ data_pagamento_inicio }}"
+                    >
+
                 </div>
 
 
                 <div class="campo">
+
+                    <label for="data_pagamento_fim">
+                        Pagamento até
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_pagamento_fim"
+                        name="data_pagamento_fim"
+                        value="{{ data_pagamento_fim }}"
+                    >
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="campo">
+
                     <label for="status">
-                        Status
+                        Status Financeiro
                     </label>
 
-                    <select id="status" name="status">
+                    <select
+                        id="status"
+                        name="status"
+                    >
 
-                        <option value=""
-                            {% if status_filtro == "" %}selected{% endif %}>
+                        <option
+                            value=""
+                            {% if status_filtro == "" %}selected{% endif %}
+                        >
                             Todos
                         </option>
 
-                        <option value="PAGO"
-                            {% if status_filtro == "PAGO" %}selected{% endif %}>
+                        <option
+                            value="PAGO"
+                            {% if status_filtro == "PAGO" %}selected{% endif %}
+                        >
                             Pago
                         </option>
 
-                        <option value="A VENCER"
-                            {% if status_filtro == "A VENCER" %}selected{% endif %}>
+                        <option
+                            value="A VENCER"
+                            {% if status_filtro == "A VENCER" %}selected{% endif %}
+                        >
                             A vencer
                         </option>
 
                     </select>
+
                 </div>
 
 
-                <button type="submit" class="btn-filtrar">
+                <!-- SLA -->
+
+                <div class="campo">
+
+                    <label for="sla">
+                        SLA
+                    </label>
+
+                    <select
+                        id="sla"
+                        name="sla"
+                    >
+
+                        <option
+                            value=""
+                            {% if sla_filtro == "" %}selected{% endif %}
+                        >
+                            Todos
+                        </option>
+
+                        <option
+                            value="Dentro do Prazo"
+                            {% if sla_filtro == "Dentro do Prazo" %}selected{% endif %}
+                        >
+                            Dentro do Prazo
+                        </option>
+
+                        <option
+                            value="Fora do Prazo"
+                            {% if sla_filtro == "Fora do Prazo" %}selected{% endif %}
+                        >
+                            Fora do Prazo
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn-filtrar"
+                >
                     Filtrar
                 </button>
 
@@ -391,12 +697,18 @@
 
         </form>
 
-        {% if data_inicio or data_fim or status_filtro %}
+
+        {% if data_vencimento_inicio or data_vencimento_fim or data_pagamento_inicio or data_pagamento_fim or status_filtro or sla_filtro %}
 
             <div style="margin-top: 12px;">
-                <a href="{% url 'financeiro_dre' %}" class="btn-limpar">
+
+                <a
+                    href="{% url 'financeiro_dre' %}"
+                    class="btn-limpar"
+                >
                     Limpar filtros
                 </a>
+
             </div>
 
         {% endif %}
@@ -404,34 +716,92 @@
     </div>
 
 
-    <!-- TABELA -->
+    <!-- ==========================================================
+         TABELA
+    ========================================================== -->
 
     <div class="tabela-container">
 
         <div class="tabela-topo">
+
             <h3>
                 Lançamentos financeiros
-                ({{ dados|length }})
             </h3>
+
+            <div class="contador">
+                {{ dados|length }} lançamento(s)
+            </div>
+
         </div>
 
 
         {% if dados %}
 
-        <table>
+        <table id="tabelaFinanceiro">
 
             <thead>
+
                 <tr>
-                    <th>DRE</th>
-                    <th>Categoria</th>
-                    <th>Emissão</th>
-                    <th>Previsão</th>
-                    <th>Pagamento</th>
-                    <th>Cliente / Fornecedor</th>
-                    <th>Valor</th>
-                    <th>Status</th>
+
+                    <th data-coluna="0">
+                        DRE
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="1">
+                        Categoria
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="2">
+                        Emissão
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="3">
+                        Vencimento
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="4">
+                        Pagamento
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="5">
+                        Cliente / Fornecedor
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="6">
+                        Valor Título
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="7">
+                        Valor Pago
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="8">
+                        Status
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="9">
+                        Prazo
+                        <span class="seta"></span>
+                    </th>
+
+                    <th data-coluna="10">
+                        SLA
+                        <span class="seta"></span>
+                    </th>
+
                 </tr>
+
             </thead>
+
 
             <tbody>
 
@@ -443,29 +813,53 @@
                         {{ item.descricaoDRE|default:"-" }}
                     </td>
 
+
                     <td>
                         {{ item.descricao|default:"-" }}
                     </td>
 
-                    <td>
+
+                    <td
+                        data-sort="{{ item.dDtEmissao|date:'Y-m-d' }}"
+                    >
                         {{ item.dDtEmissao|date:"d/m/Y"|default:"-" }}
                     </td>
 
-                    <td>
+
+                    <td
+                        data-sort="{{ item.dDtPrevisao|date:'Y-m-d' }}"
+                    >
                         {{ item.dDtPrevisao|date:"d/m/Y"|default:"-" }}
                     </td>
 
-                    <td>
+
+                    <td
+                        data-sort="{{ item.dDtPagamento|date:'Y-m-d' }}"
+                    >
                         {{ item.dDtPagamento|date:"d/m/Y"|default:"-" }}
                     </td>
+
 
                     <td>
                         {{ item.razao_social|default:"-" }}
                     </td>
 
-                    <td class="valor">
-                        R$ {{ item.nValorTitulo|floatformat:2 }}
+
+                    <td
+                        class="valor moeda"
+                        data-valor="{{ item.nValorTitulo|default:0 }}"
+                    >
+                        R$ 0,00
                     </td>
+
+
+                    <td
+                        class="valor moeda"
+                        data-valor="{{ item.nValPago|default:0 }}"
+                    >
+                        R$ 0,00
+                    </td>
+
 
                     <td>
 
@@ -491,6 +885,65 @@
 
                     </td>
 
+
+                    <td
+                        class="prazo
+                        {% if item.Prazo < 0 %}
+                            prazo-atrasado
+                        {% elif item.Prazo is not None %}
+                            prazo-ok
+                        {% endif %}"
+                    >
+
+                        {% if item.Prazo is not None %}
+
+                            {% if item.Prazo < 0 %}
+
+                                {{ item.Prazo|stringformat:"d" }} dias
+
+                            {% elif item.Prazo == 0 %}
+
+                                Hoje
+
+                            {% else %}
+
+                                {{ item.Prazo }} dias
+
+                            {% endif %}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if item.StatusPagamento == "Dentro do Prazo" %}
+
+                            <span class="sla sla-ok">
+                                DENTRO DO PRAZO
+                            </span>
+
+                        {% elif item.StatusPagamento == "Fora do Prazo" %}
+
+                            <span class="sla sla-atraso">
+                                FORA DO PRAZO
+                            </span>
+
+                        {% else %}
+
+                            <span class="sla sla-sem">
+                                -
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
                 </tr>
 
             {% endfor %}
@@ -499,10 +952,13 @@
 
         </table>
 
+
         {% else %}
 
             <div class="sem-dados">
+
                 Nenhum lançamento encontrado para os filtros selecionados.
+
             </div>
 
         {% endif %}
@@ -511,5 +967,206 @@
 
 </div>
 
+
+<script>
+
+    /* ==========================================================
+       FORMATAÇÃO DE MOEDA
+    ========================================================== */
+
+    document.querySelectorAll(".moeda").forEach(function(element) {
+
+        let valor = element.dataset.valor;
+
+        if (!valor) {
+            valor = "0";
+        }
+
+        valor = String(valor)
+            .replace("R$", "")
+            .replace(/\s/g, "")
+            .replace(/\./g, "")
+            .replace(",", ".");
+
+        let numero = parseFloat(valor);
+
+        if (isNaN(numero)) {
+            numero = 0;
+        }
+
+        element.textContent = numero.toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+
+    });
+
+
+    /* ==========================================================
+       ORDENAÇÃO DA TABELA
+    ========================================================== */
+
+    const tabela = document.getElementById(
+        "tabelaFinanceiro"
+    );
+
+    if (tabela) {
+
+        const headers = tabela.querySelectorAll("th");
+
+        headers.forEach(function(header, coluna) {
+
+            let ascendente = true;
+
+            header.addEventListener(
+                "click",
+                function() {
+
+                    const tbody = tabela.querySelector(
+                        "tbody"
+                    );
+
+                    const linhas = Array.from(
+                        tbody.querySelectorAll("tr")
+                    );
+
+                    linhas.sort(function(a, b) {
+
+                        const celulaA =
+                            a.children[coluna];
+
+                        const celulaB =
+                            b.children[coluna];
+
+                        let valorA =
+                            celulaA.dataset.sort ||
+                            celulaA.innerText.trim();
+
+                        let valorB =
+                            celulaB.dataset.sort ||
+                            celulaB.innerText.trim();
+
+
+                        /* ==============================
+                           MOEDA
+                        ============================== */
+
+                        if (
+                            celulaA.classList.contains("valor") &&
+                            celulaB.classList.contains("valor")
+                        ) {
+
+                            valorA = parseFloat(
+                                celulaA.dataset.valor || 0
+                            );
+
+                            valorB = parseFloat(
+                                celulaB.dataset.valor || 0
+                            );
+
+                        }
+
+
+                        /* ==============================
+                           PRAZO
+                        ============================== */
+
+                        if (
+                            celulaA.classList.contains("prazo") &&
+                            celulaB.classList.contains("prazo")
+                        ) {
+
+                            valorA =
+                                parseInt(
+                                    celulaA.innerText
+                                ) || 0;
+
+                            valorB =
+                                parseInt(
+                                    celulaB.innerText
+                                ) || 0;
+
+                        }
+
+
+                        valorA = String(
+                            valorA
+                        ).toLowerCase();
+
+                        valorB = String(
+                            valorB
+                        ).toLowerCase();
+
+
+                        if (valorA < valorB) {
+
+                            return ascendente
+                                ? -1
+                                : 1;
+
+                        }
+
+                        if (valorA > valorB) {
+
+                            return ascendente
+                                ? 1
+                                : -1;
+
+                        }
+
+                        return 0;
+
+                    });
+
+
+                    linhas.forEach(function(linha) {
+
+                        tbody.appendChild(linha);
+
+                    });
+
+
+                    headers.forEach(function(h) {
+
+                        const seta =
+                            h.querySelector(".seta");
+
+                        if (seta) {
+                            seta.textContent = "";
+                        }
+
+                    });
+
+
+                    const seta =
+                        header.querySelector(".seta");
+
+                    if (seta) {
+
+                        seta.textContent =
+                            ascendente
+                                ? " ▲"
+                                : " ▼";
+
+                    }
+
+
+                    ascendente = !ascendente;
+
+                }
+            );
+
+        }
+
+    }
+
+</script>
+
+
 </body>
+
 </html>
+```

@@ -3411,44 +3411,146 @@ def financeiro_dre(request):
             "Você não tem permissão para acessar este relatório."
         )
 
-
     dados = buscar_fin_dre()
 
-    data_inicio = request.GET.get("data_inicio")
-    data_fim = request.GET.get("data_fim")
-    status_filtro = request.GET.get("status", "")
+    # ==========================================================
+    # FILTROS
+    # ==========================================================
+
+    data_vencimento_inicio = request.GET.get(
+        "data_vencimento_inicio", ""
+    )
+
+    data_vencimento_fim = request.GET.get(
+        "data_vencimento_fim", ""
+    )
+
+    data_pagamento_inicio = request.GET.get(
+        "data_pagamento_inicio", ""
+    )
+
+    data_pagamento_fim = request.GET.get(
+        "data_pagamento_fim", ""
+    )
+
+    status_filtro = request.GET.get(
+        "status", ""
+    )
+
+    sla_filtro = request.GET.get(
+        "sla", ""
+    )
 
     dados_filtrados = []
+
+    # ==========================================================
+    # PROCESSAMENTO
+    # ==========================================================
 
     for item in dados:
 
         status = item.get("cStatus")
+        status_sla = item.get("StatusPagamento")
 
-        # Filtro de status
-        if status_filtro and status != status_filtro:
-            continue
+        data_vencimento = item.get("dDtPrevisao")
+        data_pagamento = item.get("dDtPagamento")
 
-        # Define qual data utilizar
-        if status == "PAGO":
-            data_item = item.get("dDtPagamento")
+        # ======================================================
+        # PRAZO
+        # ======================================================
 
-        elif status == "A VENCER":
-            data_item = item.get("dDtPrevisao")
+        prazo = None
 
-        else:
-            data_item = item.get("dDtPagamento") or item.get("dDtPrevisao")
+        if (
+            status == "PAGO"
+            and data_vencimento
+            and data_pagamento
+        ):
+            prazo = (
+                data_vencimento - data_pagamento
+            ).days
 
-        # Filtro de data inicial
-        if data_inicio and data_item:
-            if str(data_item) < data_inicio:
+        elif (
+            status == "A VENCER"
+            and data_vencimento
+        ):
+            from datetime import date
+
+            prazo = (
+                data_vencimento - date.today()
+            ).days
+
+        item["Prazo"] = prazo
+
+        # ======================================================
+        # FILTRO STATUS
+        # ======================================================
+
+        if status_filtro:
+
+            if status != status_filtro:
                 continue
 
-        # Filtro de data final
-        if data_fim and data_item:
-            if str(data_item) > data_fim:
+        # ======================================================
+        # FILTRO SLA
+        # ======================================================
+
+        if sla_filtro:
+
+            if status_sla != sla_filtro:
                 continue
+
+        # ======================================================
+        # FILTRO DATA DE VENCIMENTO
+        # dDtPrevisao
+        # ======================================================
+
+        if data_vencimento_inicio:
+
+            if not data_vencimento:
+                continue
+
+            if str(data_vencimento) < data_vencimento_inicio:
+                continue
+
+        if data_vencimento_fim:
+
+            if not data_vencimento:
+                continue
+
+            if str(data_vencimento) > data_vencimento_fim:
+                continue
+
+        # ======================================================
+        # FILTRO DATA DE PAGAMENTO
+        # dDtPagamento
+        # ======================================================
+
+        if data_pagamento_inicio:
+
+            if not data_pagamento:
+                continue
+
+            if str(data_pagamento) < data_pagamento_inicio:
+                continue
+
+        if data_pagamento_fim:
+
+            if not data_pagamento:
+                continue
+
+            if str(data_pagamento) > data_pagamento_fim:
+                continue
+
+        # ======================================================
+        # ADICIONA
+        # ======================================================
 
         dados_filtrados.append(item)
+
+    # ==========================================================
+    # TOTAIS
+    # ==========================================================
 
     total_despesas = sum(
         (item.get("nValorTitulo") or 0)
@@ -3467,14 +3569,42 @@ def financeiro_dre(request):
         if item.get("cStatus") == "A VENCER"
     )
 
+    total_dentro_prazo = sum(
+        (item.get("nValorTitulo") or 0)
+        for item in dados_filtrados
+        if item.get("StatusPagamento") == "Dentro do Prazo"
+    )
+
+    total_fora_prazo = sum(
+        (item.get("nValorTitulo") or 0)
+        for item in dados_filtrados
+        if item.get("StatusPagamento") == "Fora do Prazo"
+    )
+
+    # ==========================================================
+    # CONTEXTO
+    # ==========================================================
+
     contexto = {
+
         "dados": dados_filtrados,
-        "data_inicio": data_inicio or "",
-        "data_fim": data_fim or "",
+
+        # Filtros
+        "data_vencimento_inicio": data_vencimento_inicio,
+        "data_vencimento_fim": data_vencimento_fim,
+
+        "data_pagamento_inicio": data_pagamento_inicio,
+        "data_pagamento_fim": data_pagamento_fim,
+
         "status_filtro": status_filtro,
+        "sla_filtro": sla_filtro,
+
+        # Cards
         "total_despesas": total_despesas,
         "total_pago": total_pago,
         "total_a_vencer": total_a_vencer,
+        "total_dentro_prazo": total_dentro_prazo,
+        "total_fora_prazo": total_fora_prazo,
     }
 
     return render(
