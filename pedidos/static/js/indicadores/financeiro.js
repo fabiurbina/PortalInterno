@@ -531,117 +531,106 @@ function criarGraficoParetoFinanceiro(dados) {
    TOP 5 FORNECEDORES
 ========================================================= */
 
-function criarGraficoTop5Financeiro(
-    dados
-) {
+function criarGraficoTop5Financeiro(dados) {
 
-    const canvas =
-        document.getElementById(
-            "financeiroTop5Fornecedores"
-        );
+    const canvas = document.getElementById(
+        "financeiroTop5Fornecedores"
+    );
 
     if (!canvas) {
         return;
     }
 
-    destruirGraficoFinanceiro(
-        "top5"
-    );
+    destruirGraficoFinanceiro("top5");
 
 
-    financeiroGraficos.top5 =
-        new Chart(
-            canvas,
-            {
+    const fornecedores = (dados.labels || [])
+        .map((nome, index) => ({
+            nome: nome,
+            valor: Number(
+                dados.values?.[index] || 0
+            )
+        }))
+        .filter(item => {
 
-                type: "bar",
+            const nome = item.nome
+                .toLowerCase()
+                .trim();
 
-                data: {
+            return !nome.includes(
+                "andre machado"
+            );
 
-                    labels:
-                        dados.labels || [],
+        })
+        .sort(
+            (a, b) => b.valor - a.valor
+        )
+        .slice(0, 5);
 
-                    datasets: [
 
-                        {
+    financeiroGraficos.top5 = new Chart(canvas, {
 
-                            label:
-                                "Valor",
+        type: "bar",
 
-                            data:
-                                dados.values || [],
+        data: {
 
-                            borderWidth: 0,
+            labels: fornecedores.map(
+                item => item.nome
+            ),
 
-                            borderRadius: 4
+            datasets: [
 
-                        }
+                {
 
-                    ]
+                    label: "Valor",
 
+                    data: fornecedores.map(
+                        item => item.valor
+                    ),
+
+                    borderWidth: 0,
+
+                    borderRadius: 5,
+
+                    barPercentage: 0.65
+
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            indexAxis: "y",
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+
+            plugins: {
+
+                legend: {
+                    display: false
                 },
 
 
-                options: {
-
-                    indexAxis: "y",
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
+                datalabels: {
+                    display: false
+                },
 
 
-                    plugins: {
+                tooltip: {
 
-                        legend: {
+                    callbacks: {
 
-                            display: false
+                        label: function(contexto) {
 
-                        },
-
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label:
-                                    function (
-                                        contexto
-                                    ) {
-
-                                        return formatarMoedaFinanceiro(
-                                            contexto.raw
-                                        );
-
-                                    }
-
-                            }
-
-                        }
-
-                    },
-
-
-                    scales: {
-
-                        x: {
-
-                            beginAtZero: true,
-
-                            ticks: {
-
-                                callback:
-                                    function (
-                                        valor
-                                    ) {
-
-                                        return formatarMoedaCompactaFinanceiro(
-                                            valor
-                                        );
-
-                                    }
-
-                            }
+                            return formatarMoedaFinanceiro(
+                                contexto.raw
+                            );
 
                         }
 
@@ -649,108 +638,163 @@ function criarGraficoTop5Financeiro(
 
                 }
 
+            },
+
+
+            scales: {
+
+                x: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        callback: function(valor) {
+
+                            return formatarMoedaGerencialFinanceiro(
+                                valor
+                            );
+
+                        }
+
+                    }
+
+                },
+
+
+                y: {
+
+                    ticks: {
+
+                        font: {
+                            size: 9
+                        }
+
+                    }
+
+                }
+
             }
-        );
+
+        }
+
+    });
 
 }
 
+function criarGraficoStatusFinanceiro(dados) {
 
-/* =========================================================
-   SITUAÇÃO FINANCEIRA
-========================================================= */
-
-function criarGraficoStatusFinanceiro(
-    dados
-) {
-
-    const canvas =
-        document.getElementById(
-            "financeiroGraficoStatus"
-        );
+    const canvas = document.getElementById(
+        "financeiroGraficoStatus"
+    );
 
     if (!canvas) {
         return;
     }
 
-    destruirGraficoFinanceiro(
-        "status"
+    destruirGraficoFinanceiro("status");
+
+
+    const labels = Object.keys(dados);
+
+    const valores = Object.values(dados).map(
+        valor => Number(valor || 0)
     );
 
 
-    financeiroGraficos.status =
-        new Chart(
-            canvas,
-            {
+    financeiroGraficos.status = new Chart(canvas, {
 
-                type: "doughnut",
+        type: "doughnut",
 
-                data: {
+        data: {
 
-                    labels:
-                        Object.keys(
-                            dados
-                        ),
+            labels: labels,
 
-                    datasets: [
+            datasets: [
 
-                        {
+                {
+                    data: valores,
+                    borderWidth: 3
+                }
 
-                            data:
-                                Object.values(
-                                    dados
-                                ),
+            ]
 
-                            borderWidth: 1
+        },
 
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            cutout: "65%",
+
+            plugins: {
+
+                legend: {
+
+                    display: true,
+
+                    position: "bottom",
+
+                    labels: {
+
+                        usePointStyle: true,
+
+                        padding: 12,
+
+                        font: {
+                            size: 10
                         }
 
-                    ]
+                    }
 
                 },
 
+                datalabels: {
+                    display: false
+                },
 
-                options: {
+                tooltip: {
 
-                    responsive: true,
+                    callbacks: {
 
-                    maintainAspectRatio: false,
+                        label: function(contexto) {
 
-                    cutout: "60%",
+                            const valor =
+                                Number(
+                                    contexto.raw || 0
+                                );
 
+                            const total =
+                                valores.reduce(
+                                    (a, b) => a + b,
+                                    0
+                                );
 
-                    plugins: {
+                            const percentual =
+                                total > 0
+                                    ? (
+                                        valor / total
+                                    ) * 100
+                                    : 0;
 
-                        legend: {
-
-                            display: true,
-
-                            position: "bottom"
-
-                        },
-
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label:
-                                    function (
-                                        contexto
-                                    ) {
-
-                                        return (
-                                            contexto.label
-                                            +
-                                            ": "
-                                            +
-                                            formatarMoedaFinanceiro(
-                                                contexto.raw
-                                            )
-                                        );
-
+                            return (
+                                contexto.label +
+                                ": " +
+                                formatarMoedaFinanceiro(
+                                    valor
+                                ) +
+                                " (" +
+                                percentual.toLocaleString(
+                                    "pt-BR",
+                                    {
+                                        minimumFractionDigits: 1,
+                                        maximumFractionDigits: 1
                                     }
-
-                            }
+                                ) +
+                                "%)"
+                            );
 
                         }
 
@@ -759,7 +803,10 @@ function criarGraficoStatusFinanceiro(
                 }
 
             }
-        );
+
+        }
+
+    });
 
 }
 
