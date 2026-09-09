@@ -261,220 +261,255 @@ function atualizarDashboardFinanceiro(
    CURVA 80/20
 ========================================================= */
 
-function criarGraficoParetoFinanceiro(
-    dados
-) {
+function criarGraficoParetoFinanceiro(dados) {
 
-    const canvas =
-        document.getElementById(
-            "financeiroPareto"
-        );
+    const canvas = document.getElementById(
+        "financeiroPareto"
+    );
 
     if (!canvas) {
         return;
     }
 
-    destruirGraficoFinanceiro(
-        "pareto"
+    destruirGraficoFinanceiro("pareto");
+
+
+    // =====================================================
+    // ORDENA DO MAIOR PARA O MENOR
+    // =====================================================
+
+    const dadosOrdenados = [...dados]
+        .sort(
+            (a, b) =>
+                Number(b.valor || 0) -
+                Number(a.valor || 0)
+        );
+
+
+    // =====================================================
+    // MOSTRA SOMENTE AS 8 PRINCIPAIS CATEGORIAS
+    // =====================================================
+
+    const principais = dadosOrdenados.slice(0, 8);
+
+
+    const labels = principais.map(
+        item => item.categoria || "Sem Categoria"
     );
 
 
-    const labels =
-        dados.map(
-            item => item.categoria
-        );
-
-    const valores =
-        dados.map(
-            item => Number(
-                item.valor || 0
-            )
-        );
-
-    const acumulado =
-        dados.map(
-            item => Number(
-                item.acumulado || 0
-            )
-        );
+    const valores = principais.map(
+        item => Number(item.valor || 0)
+    );
 
 
-    financeiroGraficos.pareto =
-        new Chart(
-            canvas,
-            {
+    const acumulado = principais.map(
+        item => Number(item.acumulado || 0)
+    );
 
-                data: {
 
-                    labels: labels,
+    financeiroGraficos.pareto = new Chart(canvas, {
 
-                    datasets: [
+        type: "bar",
 
-                        {
+        data: {
 
-                            type: "bar",
+            labels: labels,
 
-                            label: "Despesa",
+            datasets: [
 
-                            data: valores,
+                {
 
-                            borderWidth: 0,
+                    label: "Despesas",
 
-                            yAxisID: "y"
+                    data: valores,
 
-                        },
+                    borderWidth: 0,
 
-                        {
+                    borderRadius: 5,
 
-                            type: "line",
+                    barPercentage: 0.65,
 
-                            label: "% Acumulado",
+                    categoryPercentage: 0.75,
 
-                            data: acumulado,
+                    yAxisID: "y"
 
-                            borderWidth: 2,
+                },
 
-                            tension: 0.25,
+                {
 
-                            pointRadius: 3,
+                    type: "line",
 
-                            yAxisID: "yPercent"
+                    label: "% Acumulado",
 
-                        }
+                    data: acumulado,
 
-                    ]
+                    borderWidth: 2,
+
+                    tension: 0.25,
+
+                    pointRadius: 3,
+
+                    pointHoverRadius: 5,
+
+                    yAxisID: "yPercent"
+
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+
+            interaction: {
+
+                mode: "index",
+
+                intersect: false
+
+            },
+
+
+            plugins: {
+
+                legend: {
+
+                    display: true,
+
+                    position: "bottom",
+
+                    labels: {
+
+                        usePointStyle: true,
+
+                        padding: 12
+
+                    }
 
                 },
 
 
-                options: {
+                // NÃO MOSTRA NÚMEROS SOBRE AS BARRAS
 
-                    responsive: true,
+                datalabels: {
 
-                    maintainAspectRatio: false,
+                    display: false
 
-                    interaction: {
-
-                        mode: "index",
-
-                        intersect: false
-
-                    },
+                },
 
 
-                    plugins: {
+                tooltip: {
 
-                        legend: {
+                    callbacks: {
 
-                            display: true,
+                        label: function(contexto) {
 
-                            position: "bottom"
+                            if (
+                                contexto.dataset
+                                    .yAxisID === "yPercent"
+                            ) {
 
-                        },
-
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label:
-                                    function (
-                                        contexto
-                                    ) {
-
-                                        if (
-                                            contexto.dataset
-                                                .yAxisID
-                                                === "yPercent"
-                                        ) {
-
-                                            return (
-                                                "% Acumulado: "
-                                                +
-                                                Number(
-                                                    contexto.raw
-                                                    || 0
-                                                ).toLocaleString(
-                                                    "pt-BR",
-                                                    {
-                                                        minimumFractionDigits: 1,
-                                                        maximumFractionDigits: 1
-                                                    }
-                                                )
-                                                +
-                                                "%"
-                                            );
-
+                                return (
+                                    "% Acumulado: " +
+                                    Number(
+                                        contexto.raw || 0
+                                    ).toLocaleString(
+                                        "pt-BR",
+                                        {
+                                            minimumFractionDigits: 1,
+                                            maximumFractionDigits: 1
                                         }
-
-
-                                        return (
-                                            "Despesa: "
-                                            +
-                                            formatarMoedaFinanceiro(
-                                                contexto.raw
-                                            )
-                                        );
-
-                                    }
+                                    ) +
+                                    "%"
+                                );
 
                             }
+
+
+                            return (
+                                "Despesa: " +
+                                formatarMoedaFinanceiro(
+                                    contexto.raw
+                                )
+                            );
 
                         }
 
+                    }
+
+                }
+
+            },
+
+
+            scales: {
+
+                x: {
+
+                    ticks: {
+
+                        autoSkip: false,
+
+                        maxRotation: 35,
+
+                        minRotation: 35,
+
+                        font: {
+
+                            size: 9
+
+                        }
+
+                    }
+
+                },
+
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        callback: function(valor) {
+
+                            return formatarMoedaGerencialFinanceiro(
+                                valor
+                            );
+
+                        }
+
+                    }
+
+                },
+
+
+                yPercent: {
+
+                    beginAtZero: true,
+
+                    max: 100,
+
+                    position: "right",
+
+                    grid: {
+
+                        drawOnChartArea: false
+
                     },
 
+                    ticks: {
 
-                    scales: {
+                        callback: function(valor) {
 
-                        y: {
-
-                            beginAtZero: true,
-
-                            ticks: {
-
-                                callback:
-                                    function (
-                                        valor
-                                    ) {
-
-                                        return formatarMoedaCompactaFinanceiro(
-                                            valor
-                                        );
-
-                                    }
-
-                            }
-
-                        },
-
-
-                        yPercent: {
-
-                            beginAtZero: true,
-
-                            max: 100,
-
-                            position: "right",
-
-                            grid: {
-
-                                drawOnChartArea: false
-
-                            },
-
-                            ticks: {
-
-                                callback:
-                                    function (
-                                        valor
-                                    ) {
-
-                                        return valor + "%";
-
-                                    }
-
-                            }
+                            return valor + "%";
 
                         }
 
@@ -483,7 +518,10 @@ function criarGraficoParetoFinanceiro(
                 }
 
             }
-        );
+
+        }
+
+    });
 
 }
 
