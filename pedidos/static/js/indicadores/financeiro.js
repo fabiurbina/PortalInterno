@@ -769,7 +769,7 @@ function criarGraficoStatusFinanceiro(dados) {
 
                     display: true,
 
-                    color: "#ffffff",
+                    color: "#18202a",
 
                     font: {
 
