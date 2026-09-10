@@ -3972,27 +3972,11 @@ def indicadores_financeiro_dados(request):
         )
 
     # =========================================================
-    # KPIs
-    # =========================================================
-
-    # ---------------------------------------------------------
-    # TOTAL DESPESAS
-    #
-    # Mantém nValorTitulo.
-    # Aqui queremos o valor total dos títulos.
-    # ---------------------------------------------------------
-
-    total_despesas = sum(
-        float(item.get("nValorTitulo") or 0)
-        for item in filtrados
-    )
-
-    # ---------------------------------------------------------
     # TOTAL PAGO
     #
-    # Somente pagamentos realizados.
-    # Usa nValPago.
-    # ---------------------------------------------------------
+    # PAGO = valor efetivamente pago
+    # Usa nValPago
+    # =========================================================
 
     total_pago = sum(
         float(item.get("nValPago") or 0)
@@ -4002,12 +3986,12 @@ def indicadores_financeiro_dados(request):
         ).strip().upper() == "PAGO"
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # A VENCER
     #
-    # Não existe pagamento ainda.
-    # Usa nValorTitulo.
-    # ---------------------------------------------------------
+    # A VENCER = valor previsto
+    # Usa nValorTitulo
+    # =========================================================
 
     total_a_vencer = sum(
         float(item.get("nValorTitulo") or 0)
@@ -4017,13 +4001,25 @@ def indicadores_financeiro_dados(request):
         ).strip().upper() == "A VENCER"
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
+    # TOTAL FINANCEIRO
+    #
+    # Total Pago + A Vencer
+    #
+    # Não considera ATRASADO.
+    # =========================================================
+
+    total_despesas = (
+        total_pago
+        + total_a_vencer
+    )
+
+    # =========================================================
     # DENTRO DO PRAZO
     #
-    # IMPORTANTE:
     # Somente PAGO.
-    # Usa o valor efetivamente pago.
-    # ---------------------------------------------------------
+    # Usa nValPago.
+    # =========================================================
 
     total_dentro_prazo = sum(
         float(item.get("nValPago") or 0)
@@ -4038,13 +4034,12 @@ def indicadores_financeiro_dados(request):
         )
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # FORA DO PRAZO
     #
-    # IMPORTANTE:
     # Somente PAGO.
-    # Usa o valor efetivamente pago.
-    # ---------------------------------------------------------
+    # Usa nValPago.
+    # =========================================================
 
     total_fora_prazo = sum(
         float(item.get("nValPago") or 0)
@@ -4059,9 +4054,9 @@ def indicadores_financeiro_dados(request):
         )
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # PAGAMENTOS REALIZADOS
-    # ---------------------------------------------------------
+    # =========================================================
 
     pagamentos_realizados = sum(
         1
@@ -4071,9 +4066,9 @@ def indicadores_financeiro_dados(request):
         ).strip().upper() == "PAGO"
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # PAGAMENTOS DENTRO DO PRAZO
-    # ---------------------------------------------------------
+    # =========================================================
 
     pagamentos_dentro_prazo = sum(
         1
@@ -4088,9 +4083,9 @@ def indicadores_financeiro_dados(request):
         )
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # PAGAMENTOS FORA DO PRAZO
-    # ---------------------------------------------------------
+    # =========================================================
 
     pagamentos_fora_prazo = sum(
         1
@@ -4105,9 +4100,9 @@ def indicadores_financeiro_dados(request):
         )
     )
 
-    # ---------------------------------------------------------
+    # =========================================================
     # PONTUALIDADE
-    # ---------------------------------------------------------
+    # =========================================================
 
     percentual_pontualidade = 0
 
@@ -4225,7 +4220,14 @@ def indicadores_financeiro_dados(request):
     }
 
     # =========================================================
-    # STATUS — SOMENTE PAGO E A VENCER
+    # STATUS
+    #
+    # SOMENTE:
+    # PAGO
+    # A VENCER
+    #
+    # PAGO      = nValPago
+    # A VENCER  = nValorTitulo
     # =========================================================
 
     status = defaultdict(float)
@@ -4251,13 +4253,13 @@ def indicadores_financeiro_dados(request):
     # =========================================================
     # SLA
     #
-    # Somente pagamentos realizados.
+    # SOMENTE PAGO
     #
     # Dentro do Prazo = nValPago
     # Fora do Prazo   = nValPago
     #
-    # A VENCER não entra aqui porque ainda não possui
-    # data de pagamento.
+    # A VENCER não entra.
+    # ATRASADO não entra.
     # =========================================================
 
     sla = defaultdict(float)
@@ -4368,7 +4370,6 @@ def indicadores_financeiro_dados(request):
     )
 
     nomes_meses = [
-
         "Jan",
         "Fev",
         "Mar",
@@ -4381,7 +4382,6 @@ def indicadores_financeiro_dados(request):
         "Out",
         "Nov",
         "Dez"
-
     ]
 
     labels = []
@@ -4482,19 +4482,19 @@ def indicadores_financeiro_dados(request):
                 2
             ),
 
-        "pareto": pareto,
+        "pareto":
+            pareto,
 
         "top5_fornecedores":
             top5_fornecedores,
 
-        "status": dict(
-            status
-        ),
+        "status":
+            dict(status),
 
-        "sla": dict(
-            sla
-        ),
+        "sla":
+            dict(sla),
 
-        "evolucao": evolucao
+        "evolucao":
+            evolucao
 
     })
