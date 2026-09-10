@@ -1,6 +1,8 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_not_required
 from django.urls import reverse_lazy
+
 from .views import (
     dashboard,
     home,
@@ -43,266 +45,323 @@ from .views import (
     sincronizar_todas_agendas_view,
     indicadores_comercial_dados,
     indicadores_financeiro_dados,
-    financeiro_dre
+    financeiro_dre,
 )
 
+
 urlpatterns = [
-    path('', dashboard, name='dashboard'),
 
-    path('op/', home, name='home'),
+    # ========================================================
+    # 🔓 ROTAS PÚBLICAS
+    # ========================================================
 
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
+    path(
+        "login/",
+        login_not_required(login_view),
+        name="login",
+    ),
+
     path(
         "esqueci-senha/",
-        password_reset_view,
+        login_not_required(password_reset_view),
         name="password_reset",
     ),
 
     path(
         "esqueci-senha/enviado/",
-        auth_views.PasswordResetDoneView.as_view(
-            template_name="password_reset_done.html",
+        login_not_required(
+            auth_views.PasswordResetDoneView.as_view(
+                template_name="password_reset_done.html",
+            )
         ),
         name="password_reset_done",
     ),
 
+
+    # ========================================================
+    # 🔒 TODAS AS ROTAS ABAIXO SÃO PROTEGIDAS
+    # PELO LoginRequiredMiddleware
+    # ========================================================
+
     path(
-        'ficha/<int:codigo_op>/',
+        "",
+        dashboard,
+        name="dashboard",
+    ),
+
+    path(
+        "op/",
+        home,
+        name="home",
+    ),
+
+    path(
+        "logout/",
+        logout_view,
+        name="logout",
+    ),
+
+    path(
+        "ficha/<int:codigo_op>/",
         ficha_op,
-        name='ficha_op'
+        name="ficha_op",
     ),
 
     path(
-        'salvar-conferencia/',
+        "salvar-conferencia/",
         salvar_conferencia,
-        name='salvar_conferencia'
+        name="salvar_conferencia",
     ),
 
     path(
-        'salvar-observacao/',
+        "salvar-observacao/",
         salvar_observacao,
-        name='salvar_observacao'
+        name="salvar_observacao",
     ),
-    
+
     path(
-    'salvar-apontamento/',
-    salvar_apontamento_view,
-    name='salvar_apontamento'
-),
+        "salvar-apontamento/",
+        salvar_apontamento_view,
+        name="salvar_apontamento",
+    ),
+
     path(
-    'qualidade/',
-    qualidade_home,
-    name='qualidade_home'
-),
-    
+        "qualidade/",
+        qualidade_home,
+        name="qualidade_home",
+    ),
+
     path(
-    "qualidade/inspecao/<int:cod_prod>/",   
-    qualidade_inspecao,
-    name="qualidade_inspecao",
-),
-    
+        "qualidade/inspecao/<int:cod_prod>/",
+        qualidade_inspecao,
+        name="qualidade_inspecao",
+    ),
+
     path(
-    'estoque/',
-    estoque_home,
-    name='estoque_home'
-),
-    
+        "estoque/",
+        estoque_home,
+        name="estoque_home",
+    ),
+
     path(
-    'logistica/<int:codigo_op>/',
-    ficha_logistica,
-    name='ficha_logistica'
-),
-    
+        "logistica/<int:codigo_op>/",
+        ficha_logistica,
+        name="ficha_logistica",
+    ),
+
     path(
-    "pedidos/",
-    pedidos,
-    name="pedidos"
-),
-    
+        "pedidos/",
+        pedidos,
+        name="pedidos",
+    ),
+
     path(
-    "relatorios/mrp/",
-    relatorio_mrp_view,
-    name="relatorio_mrp"
-),
-    
+        "relatorios/mrp/",
+        relatorio_mrp_view,
+        name="relatorio_mrp",
+    ),
+
     path(
-    "relatorios/mrp/exportar/",
-    exportar_mrp_excel,
-    name="exportar_mrp_excel"
-),
-    
+        "relatorios/mrp/exportar/",
+        exportar_mrp_excel,
+        name="exportar_mrp_excel",
+    ),
+
     path(
-    "qualidade/salvar/",
-    salvar_inspecao,
-    name="salvar_inspecao",
-    
-),
-    
-    path("teste-socket/", teste_socket, name="teste_socket"),
-    
-    
+        "qualidade/salvar/",
+        salvar_inspecao,
+        name="salvar_inspecao",
+    ),
+
     path(
-    "portal/clientes/",
-    criar_acesso_cliente,
-    name="criar_acesso_cliente",
-    
-    
-),
-    
+        "teste-socket/",
+        teste_socket,
+        name="teste_socket",
+    ),
+
     path(
-    "alterar-senha/",
+        "portal/clientes/",
+        criar_acesso_cliente,
+        name="criar_acesso_cliente",
+    ),
+
+    path(
+        "alterar-senha/",
         auth_views.PasswordChangeView.as_view(
             template_name="alterar_senha.html",
             success_url=reverse_lazy("dashboard"),
         ),
         name="password_change",
     ),
-    
+
+    # ========================================================
+    # INDICADORES
+    # ========================================================
+
     path(
-    "indicadores/",
-    indicadores_view,
-    name="indicadores"
-),
+        "indicadores/",
+        indicadores_view,
+        name="indicadores",
+    ),
+
     path(
-    "analise-comercial/",
-    analise_comercial,
-    name="analise_comercial"
-),
-    
+        "analise-comercial/",
+        analise_comercial,
+        name="analise_comercial",
+    ),
+
     path(
         "analise-producao/",
         analise_producao,
-        name="analise_producao"
+        name="analise_producao",
     ),
-    
-        path(
-        
-        "relatorios/",
-            relatorios_diversos,
-        name="relatorios_diversos"),
 
-        
-        path(
+    # ========================================================
+    # RELATÓRIOS
+    # ========================================================
+
+    path(
+        "relatorios/",
+        relatorios_diversos,
+        name="relatorios_diversos",
+    ),
+
+    path(
         "relatorios/posicao-estoque/",
-            posicao_estoque_view,
-        name="posicao_estoque"
+        posicao_estoque_view,
+        name="posicao_estoque",
     ),
 
     path(
         "relatorios/posicao-estoque/excel/",
-            exportar_posicao_estoque_excel,
-        name="exportar_posicao_estoque_excel"
+        exportar_posicao_estoque_excel,
+        name="exportar_posicao_estoque_excel",
     ),
-
 
     path(
         "relatorios/previsao-demanda/",
         previsao_demanda,
-        name="previsao_demanda"
+        name="previsao_demanda",
     ),
-    
-    
+
     path(
-    "relatorios/previsao-demanda/exportar/",
-    exportar_previsao_demanda_excel,
-    name="exportar_previsao_demanda_excel",
+        "relatorios/previsao-demanda/exportar/",
+        exportar_previsao_demanda_excel,
+        name="exportar_previsao_demanda_excel",
     ),
-    
-    
+
     path(
-    "relatorios/chao-fabrica/",
-    chao_fabrica,
-    name="chao_fabrica"
-        ),
-    
-    
+        "relatorios/chao-fabrica/",
+        chao_fabrica,
+        name="chao_fabrica",
+    ),
+
     path(
-    "relatorios/chao-fabrica/atualizar-ordem/",
-    atualizar_ordem_chao_fabrica,
-    name="atualizar_ordem_chao_fabrica"
-),
-    
-    
-    
+        "relatorios/chao-fabrica/atualizar-ordem/",
+        atualizar_ordem_chao_fabrica,
+        name="atualizar_ordem_chao_fabrica",
+    ),
+
+    # ========================================================
+    # QUALIDADE
+    # ========================================================
+
     path(
-    "qualidade/controle/",
-    qualidade_controle,
-    name="qualidade_controle"
-),
-    
+        "qualidade/controle/",
+        qualidade_controle,
+        name="qualidade_controle",
+    ),
+
     path(
-    "qualidade/controle-peso/",
-    controle_peso,
-    name="controle_peso"
-),
-    
-     path(
+        "qualidade/controle-peso/",
+        controle_peso,
+        name="controle_peso",
+    ),
+
+    # ========================================================
+    # LOTE / VALIDADE
+    # ========================================================
+
+    path(
         "relatorio/lote-validade/",
         relatorio_lote_validade,
-        name="relatorio_lote_validade"
+        name="relatorio_lote_validade",
     ),
-     
-     path(
-    "relatorio/lote-validade/exportar/",
-        exportar_lote_validade_excel,
-    name="exportar_lote_validade_excel"
-    
-),
-     
-     path(
-    "relatorios/classificacao-cliente/",
-        relatorio_classificacao_cliente,
-    name="relatorio_classificacao_cliente"
-),
-     
-     path(
-    "relatorios/classificacao-cliente/exportar/",
-    exportar_classificacao_cliente_excel,
-    name="exportar_classificacao_cliente_excel"
-),
 
-    
+    path(
+        "relatorio/lote-validade/exportar/",
+        exportar_lote_validade_excel,
+        name="exportar_lote_validade_excel",
+    ),
+
+    # ========================================================
+    # CLASSIFICAÇÃO DE CLIENTES
+    # ========================================================
+
+    path(
+        "relatorios/classificacao-cliente/",
+        relatorio_classificacao_cliente,
+        name="relatorio_classificacao_cliente",
+    ),
+
+    path(
+        "relatorios/classificacao-cliente/exportar/",
+        exportar_classificacao_cliente_excel,
+        name="exportar_classificacao_cliente_excel",
+    ),
+
+    # ========================================================
+    # AGENDA
+    # ========================================================
+
     path(
         "agenda/reunioes/",
         agenda_reunioes,
-        name="agenda_reunioes"
+        name="agenda_reunioes",
     ),
+
     path(
         "agenda/conectar/",
         agenda_conectar,
-        name="agenda_conectar"
+        name="agenda_conectar",
     ),
-    
-    path(
-    "agenda/sincronizar/",
-    sincronizar_agenda,
-    name="sincronizar_agenda"
-),
-    
-    path(
-    "agenda/sincronizar-todas/",
-    sincronizar_todas_agendas_view,
-    name="sincronizar_todas_agendas"
-),
-    
-    path(
-    "indicadores/comercial/dados/",
-    indicadores_comercial_dados,
-    name="indicadores_comercial_dados"
-),
-    
-    path(
-    "indicadores/financeiro/dados/",
-    indicadores_financeiro_dados,
-    name="indicadores_financeiro_dados"
-),
-    
-    path(
-    "relatorios/financeiro/dre/",
-    financeiro_dre,
-    name="financeiro_dre"
-)
-]
 
+    path(
+        "agenda/sincronizar/",
+        sincronizar_agenda,
+        name="sincronizar_agenda",
+    ),
+
+    path(
+        "agenda/sincronizar-todas/",
+        sincronizar_todas_agendas_view,
+        name="sincronizar_todas_agendas",
+    ),
+
+    # ========================================================
+    # DADOS DOS INDICADORES
+    # ========================================================
+
+    path(
+        "indicadores/comercial/dados/",
+        indicadores_comercial_dados,
+        name="indicadores_comercial_dados",
+    ),
+
+    path(
+        "indicadores/financeiro/dados/",
+        indicadores_financeiro_dados,
+        name="indicadores_financeiro_dados",
+    ),
+
+    # ========================================================
+    # FINANCEIRO
+    # ========================================================
+
+    path(
+        "relatorios/financeiro/dre/",
+        financeiro_dre,
+        name="financeiro_dre",
+    ),
+]
 
