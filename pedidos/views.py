@@ -3820,7 +3820,7 @@ def indicadores_financeiro_dados(request):
     )
 
     # =========================================================
-    # CONVERSÃO DAS DATAS DOS FILTROS
+    # CONVERSÃO DAS DATAS
     # =========================================================
 
     def converter_data(valor):
@@ -3829,12 +3829,14 @@ def indicadores_financeiro_dados(request):
             return None
 
         try:
+
             return datetime.strptime(
                 valor,
                 "%Y-%m-%d"
             ).date()
 
         except Exception:
+
             return None
 
     vencimento_inicio = converter_data(
@@ -3974,39 +3976,50 @@ def indicadores_financeiro_dados(request):
     # =========================================================
     # TOTAL PAGO
     #
-    # PAGO = valor efetivamente pago
-    # Usa nValPago
+    # Somente o valor efetivamente pago.
     # =========================================================
 
     total_pago = sum(
-        float(item.get("nValPago") or 0)
+
+        float(
+            item.get("nValPago") or 0
+        )
+
         for item in filtrados
+
         if str(
             item.get("cStatus") or ""
         ).strip().upper() == "PAGO"
+
     )
 
     # =========================================================
     # A VENCER
     #
-    # A VENCER = valor previsto
-    # Usa nValorTitulo
+    # Como ainda não existe pagamento,
+    # usamos o valor do título.
     # =========================================================
 
     total_a_vencer = sum(
-        float(item.get("nValorTitulo") or 0)
+
+        float(
+            item.get("nValorTitulo") or 0
+        )
+
         for item in filtrados
+
         if str(
             item.get("cStatus") or ""
         ).strip().upper() == "A VENCER"
+
     )
 
     # =========================================================
     # TOTAL FINANCEIRO
     #
-    # Total Pago + A Vencer
+    # Pago + A Vencer
     #
-    # Não considera ATRASADO.
+    # ATRASADO não entra.
     # =========================================================
 
     total_despesas = (
@@ -4018,40 +4031,60 @@ def indicadores_financeiro_dados(request):
     # DENTRO DO PRAZO
     #
     # Somente PAGO.
-    # Usa nValPago.
+    # Usa o valor efetivamente pago.
     # =========================================================
 
     total_dentro_prazo = sum(
-        float(item.get("nValPago") or 0)
+
+        float(
+            item.get("nValPago") or 0
+        )
+
         for item in filtrados
+
         if (
+
             str(
                 item.get("cStatus") or ""
             ).strip().upper() == "PAGO"
+
             and
+
             item.get("StatusPagamento")
             == "Dentro do Prazo"
+
         )
+
     )
 
     # =========================================================
     # FORA DO PRAZO
     #
     # Somente PAGO.
-    # Usa nValPago.
+    # Usa o valor efetivamente pago.
     # =========================================================
 
     total_fora_prazo = sum(
-        float(item.get("nValPago") or 0)
+
+        float(
+            item.get("nValPago") or 0
+        )
+
         for item in filtrados
+
         if (
+
             str(
                 item.get("cStatus") or ""
             ).strip().upper() == "PAGO"
+
             and
+
             item.get("StatusPagamento")
             == "Fora do Prazo"
+
         )
+
     )
 
     # =========================================================
@@ -4059,11 +4092,15 @@ def indicadores_financeiro_dados(request):
     # =========================================================
 
     pagamentos_realizados = sum(
+
         1
+
         for item in filtrados
+
         if str(
             item.get("cStatus") or ""
         ).strip().upper() == "PAGO"
+
     )
 
     # =========================================================
@@ -4071,16 +4108,24 @@ def indicadores_financeiro_dados(request):
     # =========================================================
 
     pagamentos_dentro_prazo = sum(
+
         1
+
         for item in filtrados
+
         if (
+
             str(
                 item.get("cStatus") or ""
             ).strip().upper() == "PAGO"
+
             and
+
             item.get("StatusPagamento")
             == "Dentro do Prazo"
+
         )
+
     )
 
     # =========================================================
@@ -4088,16 +4133,24 @@ def indicadores_financeiro_dados(request):
     # =========================================================
 
     pagamentos_fora_prazo = sum(
+
         1
+
         for item in filtrados
+
         if (
+
             str(
                 item.get("cStatus") or ""
             ).strip().upper() == "PAGO"
+
             and
+
             item.get("StatusPagamento")
             == "Fora do Prazo"
+
         )
+
     )
 
     # =========================================================
@@ -4109,17 +4162,30 @@ def indicadores_financeiro_dados(request):
     if pagamentos_realizados > 0:
 
         percentual_pontualidade = (
+
             pagamentos_dentro_prazo
-            / pagamentos_realizados
+            /
+            pagamentos_realizados
+
         ) * 100
 
     # =========================================================
     # CURVA 80/20
+    #
+    # SOMENTE PAGAMENTOS REALIZADOS
+    # Usa nValPago.
     # =========================================================
 
     categorias = defaultdict(float)
 
     for item in filtrados:
+
+        status_item = str(
+            item.get("cStatus") or ""
+        ).strip().upper()
+
+        if status_item != "PAGO":
+            continue
 
         categoria = (
             item.get("descricao")
@@ -4127,13 +4193,17 @@ def indicadores_financeiro_dados(request):
         )
 
         categorias[categoria] += float(
-            item.get("nValorTitulo") or 0
+            item.get("nValPago") or 0
         )
 
     categorias_ordenadas = sorted(
+
         categorias.items(),
+
         key=lambda x: x[1],
+
         reverse=True
+
     )
 
     pareto = []
@@ -4145,15 +4215,23 @@ def indicadores_financeiro_dados(request):
         acumulado_valor += valor
 
         percentual = (
-            (valor / total_despesas) * 100
-            if total_despesas > 0
+
+            (valor / total_pago) * 100
+
+            if total_pago > 0
+
             else 0
+
         )
 
         acumulado = (
-            (acumulado_valor / total_despesas) * 100
-            if total_despesas > 0
+
+            (acumulado_valor / total_pago) * 100
+
+            if total_pago > 0
+
             else 0
+
         )
 
         pareto.append({
@@ -4179,11 +4257,21 @@ def indicadores_financeiro_dados(request):
 
     # =========================================================
     # TOP 5 FORNECEDORES
+    #
+    # SOMENTE PAGAMENTOS REALIZADOS
+    # Usa nValPago.
     # =========================================================
 
     fornecedores = defaultdict(float)
 
     for item in filtrados:
+
+        status_item = str(
+            item.get("cStatus") or ""
+        ).strip().upper()
+
+        if status_item != "PAGO":
+            continue
 
         fornecedor = (
             item.get("razao_social")
@@ -4191,30 +4279,42 @@ def indicadores_financeiro_dados(request):
         )
 
         fornecedores[fornecedor] += float(
-            item.get("nValorTitulo") or 0
+            item.get("nValPago") or 0
         )
 
     fornecedores_ordenados = sorted(
+
         fornecedores.items(),
+
         key=lambda x: x[1],
+
         reverse=True
+
     )[:5]
 
     top5_fornecedores = {
 
         "labels": [
+
             fornecedor
+
             for fornecedor, valor
+
             in fornecedores_ordenados
+
         ],
 
         "values": [
+
             round(
                 valor,
                 2
             )
+
             for fornecedor, valor
+
             in fornecedores_ordenados
+
         ]
 
     }
@@ -4226,8 +4326,8 @@ def indicadores_financeiro_dados(request):
     # PAGO
     # A VENCER
     #
-    # PAGO      = nValPago
-    # A VENCER  = nValorTitulo
+    # PAGO     = nValPago
+    # A VENCER = nValorTitulo
     # =========================================================
 
     status = defaultdict(float)
@@ -4253,13 +4353,10 @@ def indicadores_financeiro_dados(request):
     # =========================================================
     # SLA
     #
-    # SOMENTE PAGO
+    # SOMENTE PAGAMENTOS REALIZADOS
     #
     # Dentro do Prazo = nValPago
     # Fora do Prazo   = nValPago
-    #
-    # A VENCER não entra.
-    # ATRASADO não entra.
     # =========================================================
 
     sla = defaultdict(float)
@@ -4270,13 +4367,13 @@ def indicadores_financeiro_dados(request):
             item.get("cStatus") or ""
         ).strip().upper()
 
+        if status_item != "PAGO":
+            continue
+
         status_sla = (
             item.get("StatusPagamento")
             or "Sem Validação"
         )
-
-        if status_item != "PAGO":
-            continue
 
         if status_sla == "Dentro do Prazo":
 
@@ -4293,12 +4390,12 @@ def indicadores_financeiro_dados(request):
     # =========================================================
     # EVOLUÇÃO DOS PAGAMENTOS
     #
-    # PAGO:
-    #   dDtPagamento + nValPago
+    # REALIZADO:
+    # dDtPagamento + nValPago
     #
     # PREVISÃO:
-    #   dDtPrevisao + nValorTitulo
-    #   somente A VENCER
+    # dDtPrevisao + nValorTitulo
+    # somente A VENCER
     # =========================================================
 
     pagamentos_por_mes = defaultdict(float)
@@ -4316,8 +4413,13 @@ def indicadores_financeiro_dados(request):
         # -----------------------------------------------------
 
         if (
+
             status_item == "PAGO"
-            and item.get("dDtPagamento")
+
+            and
+
+            item.get("dDtPagamento")
+
         ):
 
             data_pagamento = item[
@@ -4337,8 +4439,13 @@ def indicadores_financeiro_dados(request):
         # -----------------------------------------------------
 
         elif (
+
             status_item == "A VENCER"
-            and item.get("dDtPrevisao")
+
+            and
+
+            item.get("dDtPrevisao")
+
         ):
 
             data_vencimento = item[
@@ -4358,18 +4465,25 @@ def indicadores_financeiro_dados(request):
     # =========================================================
 
     todos_os_meses = sorted(
+
         set(
+
             list(
                 pagamentos_por_mes.keys()
             )
+
             +
+
             list(
                 previsao_por_mes.keys()
             )
+
         )
+
     )
 
     nomes_meses = [
+
         "Jan",
         "Fev",
         "Mar",
@@ -4382,6 +4496,7 @@ def indicadores_financeiro_dados(request):
         "Out",
         "Nov",
         "Dez"
+
     ]
 
     labels = []
@@ -4395,17 +4510,22 @@ def indicadores_financeiro_dados(request):
         )
 
         labels.append(
+
             f"{nomes_meses[numero_mes - 1]}/{ano}"
+
         )
 
     pago = [
 
         round(
+
             pagamentos_por_mes.get(
                 mes,
                 0
             ),
+
             2
+
         )
 
         for mes in todos_os_meses
@@ -4415,11 +4535,14 @@ def indicadores_financeiro_dados(request):
     previsao = [
 
         round(
+
             previsao_por_mes.get(
                 mes,
                 0
             ),
+
             2
+
         )
 
         for mes in todos_os_meses
