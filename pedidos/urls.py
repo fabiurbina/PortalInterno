@@ -1,6 +1,6 @@
 from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
-
+from django.contrib.auth.decorators import login_not_required
 
 from .views import (
     dashboard,
@@ -54,24 +54,28 @@ urlpatterns = [
     # 🔓 ROTAS PÚBLICAS
     # ========================================================
 
+
+
     path(
         "login/",
-        login_view,
+        login_not_required(login_view),
         name="login",
     ),
 
     path(
-    'esqueci-senha/',
-    password_reset_view,
-    name='password_reset'
+        "esqueci-senha/",
+        login_not_required(password_reset_view),
+        name="password_reset",
     ),
 
     path(
-        'esqueci-senha/enviado/',
-        auth_views.PasswordResetDoneView.as_view(
-            template_name="password_reset_done.html"
+        "esqueci-senha/enviado/",
+        login_not_required(
+            auth_views.PasswordResetDoneView.as_view(
+                template_name="password_reset_done.html"
+            )
         ),
-        name='password_reset_done'
+        name="password_reset_done",
     ),
 
 
