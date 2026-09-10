@@ -61,9 +61,9 @@ urlpatterns = [
     ),
 
     path(
-        "esqueci-senha/",
-        login_view(password_reset_view),
-        name="password_reset",
+        'esqueci-senha/',
+        password_reset_view,
+        name='password_reset'
     ),
 
     path(
