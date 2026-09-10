@@ -1,4 +1,3 @@
-
 """
 Django settings for portal project.
 
@@ -38,8 +37,6 @@ load_dotenv(
 # SEGURANÇA
 # ============================================================
 
-# IMPORTANTE:
-# A SECRET_KEY NÃO deve ficar exposta no código.
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 if not SECRET_KEY:
@@ -48,7 +45,7 @@ if not SECRET_KEY:
     )
 
 
-# Produção
+# PRODUÇÃO
 DEBUG = False
 
 
@@ -98,12 +95,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 
     # ========================================================
-    # 🔐 PROTEÇÃO GLOBAL DE AUTENTICAÇÃO
-    #
-    # Toda view será protegida automaticamente.
-    #
-    # Views públicas precisam ser explicitamente marcadas
-    # com login_not_required().
+    # PROTEÇÃO GLOBAL DE AUTENTICAÇÃO
     # ========================================================
     "django.contrib.auth.middleware.LoginRequiredMiddleware",
 
@@ -114,7 +106,7 @@ MIDDLEWARE = [
 
 
 # ============================================================
-# HTTPS / PROXY
+# HTTPS / RAILWAY
 # ============================================================
 
 SECURE_PROXY_SSL_HEADER = (
@@ -122,12 +114,11 @@ SECURE_PROXY_SSL_HEADER = (
     "https",
 )
 
-
 SECURE_SSL_REDIRECT = True
 
 
 # ============================================================
-# COOKIES
+# COOKIES DE SEGURANÇA
 # ============================================================
 
 SESSION_COOKIE_SECURE = True
@@ -135,7 +126,6 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Lax"
 
 
@@ -150,15 +140,17 @@ SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 
 
+# ============================================================
 # HSTS
-# Como o sistema já utiliza HTTPS, podemos habilitar.
+# ============================================================
+
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = False
 
 
 # ============================================================
-# SESSÃO
+# CONFIGURAÇÃO DE SESSÃO
 # ============================================================
 
 # Sessão expira ao fechar o navegador
@@ -169,7 +161,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 8
 
 
 # ============================================================
-# URL DE LOGIN
+# AUTENTICAÇÃO
 # ============================================================
 
 LOGIN_URL = "/login/"
@@ -180,7 +172,7 @@ LOGOUT_REDIRECT_URL = "/login/"
 
 
 # ============================================================
-# URLs
+# URLS
 # ============================================================
 
 ROOT_URLCONF = "portal.urls"
@@ -201,9 +193,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
-
                 "django.contrib.auth.context_processors.auth",
-
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -253,19 +243,16 @@ AUTH_PASSWORD_VALIDATORS = [
             "django.contrib.auth.password_validation."
             "UserAttributeSimilarityValidator",
     },
-
     {
         "NAME":
             "django.contrib.auth.password_validation."
             "MinimumLengthValidator",
     },
-
     {
         "NAME":
             "django.contrib.auth.password_validation."
             "CommonPasswordValidator",
     },
-
     {
         "NAME":
             "django.contrib.auth.password_validation."
@@ -324,9 +311,6 @@ DEFAULT_AUTO_FIELD = (
 # OMIE
 # ============================================================
 
-# IMPORTANTE:
-# Não deixar App Key e App Secret diretamente no código.
-
 OMIE_APP_KEY = os.getenv("OMIE_APP_KEY")
 
 OMIE_APP_SECRET = os.getenv("OMIE_APP_SECRET")
@@ -335,12 +319,10 @@ OMIE_API_URL_ESTOQUE = (
     "https://app.omie.com.br/api/v1/estoque/consulta/"
 )
 
-
 if not OMIE_APP_KEY:
     raise RuntimeError(
         "OMIE_APP_KEY não foi configurada."
     )
-
 
 if not OMIE_APP_SECRET:
     raise RuntimeError(
@@ -389,4 +371,3 @@ EMAIL_HOST_PASSWORD = os.getenv(
 DEFAULT_FROM_EMAIL = (
     "naoresponda@viesano.com.br"
 )
-

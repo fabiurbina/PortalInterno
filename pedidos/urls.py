@@ -1,7 +1,6 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_not_required
-from django.urls import reverse_lazy
 
 from .views import (
     dashboard,
@@ -79,8 +78,10 @@ urlpatterns = [
 
 
     # ========================================================
-    # 🔒 TODAS AS ROTAS ABAIXO SÃO PROTEGIDAS
-    # PELO LoginRequiredMiddleware
+    # 🔒 ROTAS PROTEGIDAS
+    #
+    # O LoginRequiredMiddleware protege automaticamente
+    # todas estas rotas.
     # ========================================================
 
     path(
@@ -194,6 +195,7 @@ urlpatterns = [
         name="password_change",
     ),
 
+
     # ========================================================
     # INDICADORES
     # ========================================================
@@ -215,6 +217,7 @@ urlpatterns = [
         analise_producao,
         name="analise_producao",
     ),
+
 
     # ========================================================
     # RELATÓRIOS
@@ -262,6 +265,7 @@ urlpatterns = [
         name="atualizar_ordem_chao_fabrica",
     ),
 
+
     # ========================================================
     # QUALIDADE
     # ========================================================
@@ -277,6 +281,7 @@ urlpatterns = [
         controle_peso,
         name="controle_peso",
     ),
+
 
     # ========================================================
     # LOTE / VALIDADE
@@ -294,6 +299,7 @@ urlpatterns = [
         name="exportar_lote_validade_excel",
     ),
 
+
     # ========================================================
     # CLASSIFICAÇÃO DE CLIENTES
     # ========================================================
@@ -309,6 +315,7 @@ urlpatterns = [
         exportar_classificacao_cliente_excel,
         name="exportar_classificacao_cliente_excel",
     ),
+
 
     # ========================================================
     # AGENDA
@@ -338,6 +345,7 @@ urlpatterns = [
         name="sincronizar_todas_agendas",
     ),
 
+
     # ========================================================
     # DADOS DOS INDICADORES
     # ========================================================
@@ -354,6 +362,7 @@ urlpatterns = [
         name="indicadores_financeiro_dados",
     ),
 
+
     # ========================================================
     # FINANCEIRO
     # ========================================================
@@ -364,4 +373,3 @@ urlpatterns = [
         name="financeiro_dre",
     ),
 ]
-
