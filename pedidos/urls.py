@@ -61,19 +61,17 @@ urlpatterns = [
     ),
 
     path(
-        'esqueci-senha/',
-        password_reset_view,
-        name='password_reset'
+    'esqueci-senha/',
+    password_reset_view,
+    name='password_reset'
     ),
 
     path(
-        "esqueci-senha/enviado/",
-        login_view(
-            auth_views.PasswordResetDoneView.as_view(
-                template_name="password_reset_done.html",
-            )
+        'esqueci-senha/enviado/',
+        auth_views.PasswordResetDoneView.as_view(
+            template_name="password_reset_done.html"
         ),
-        name="password_reset_done",
+        name='password_reset_done'
     ),
 
 
