@@ -348,51 +348,6 @@
             {% include "indicadores/comercial/dashboard.html" %}
         </div>
 
-    <script>
-
-    document.getElementById("btn-financeiro").addEventListener("click", function () {
-
-        const quadro = document.getElementById("quadro-indicador");
-
-        quadro.innerHTML = `
-            {% include "indicadores/financeiro/dashboard.html" %}
-        `;
-
-        document
-            .getElementById("btn-comercial")
-            .classList.remove("ativo");
-
-        document
-            .getElementById("btn-financeiro")
-            .classList.add("ativo");
-
-        inicializarDashboardFinanceiro();
-
-    });
-
-
-    document.getElementById("btn-comercial").addEventListener("click", function () {
-
-        const quadro = document.getElementById("quadro-indicador");
-
-        quadro.innerHTML = `
-            {% include "indicadores/comercial/dashboard.html" %}
-        `;
-
-        document
-            .getElementById("btn-financeiro")
-            .classList.remove("ativo");
-
-        document
-            .getElementById("btn-comercial")
-            .classList.add("ativo");
-
-        carregarDadosComercial();
-
-    });
-
-    </script>
-
 
 
         <!-- =========================
@@ -708,6 +663,38 @@
         }
 
     </script>
+
+
+    <script>
+        document.getElementById("btn-financeiro").addEventListener("click", function () {
+
+            const quadro = document.getElementById("quadro-indicador");
+
+            quadro.innerHTML = `
+                {% include "indicadores/financeiro/dashboard.html" %}
+            `;
+
+            document.getElementById("btn-comercial").classList.remove("ativo");
+            document.getElementById("btn-financeiro").classList.add("ativo");
+
+            inicializarDashboardFinanceiro();
+        });
+
+
+        document.getElementById("btn-comercial").addEventListener("click", function () {
+
+            const quadro = document.getElementById("quadro-indicador");
+
+            quadro.innerHTML = `
+                {% include "indicadores/comercial/dashboard.html" %}
+            `;
+
+            document.getElementById("btn-financeiro").classList.remove("ativo");
+            document.getElementById("btn-comercial").classList.add("ativo");
+
+            carregarDadosComercial();
+        });
+        </script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
