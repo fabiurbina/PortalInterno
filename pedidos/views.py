@@ -39,7 +39,8 @@ from .mysql_service import (
     BuscarclassificacaoCliente,
     buscar_fin_dre,
     consultar_monitor_carga,
-    consultar_acessos_portal
+    consultar_acessos_portal,
+    consultar_pedidos
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -4635,5 +4636,18 @@ def monitor_carga_view(request):
         {
             "dados": dados,
             "acessos": acessos,
+        }
+    )
+    
+    
+def pedidos_view(request):
+
+    dados = consultar_pedidos()
+
+    return render(
+        request,
+        "indicadores/comercial/pedidos.html",
+        {
+            "dados": dados,
         }
     )

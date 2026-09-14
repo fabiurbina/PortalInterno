@@ -1240,3 +1240,20 @@ def consultar_acessos_portal():
 
     finally:
         conexao.close()
+        
+        
+def consultar_pedidos():
+
+    conexao = conectar()
+
+    try:
+        with conexao.cursor() as cursor:
+
+            cursor.execute("""
+                 SELECT * from vw_resumo_Comercial_dash
+            """)
+
+            return cursor.fetchall()
+
+    finally:
+        conexao.close()

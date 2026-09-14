@@ -1,0 +1,578 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resultado dos Pedidos</title>
+
+    <link rel="stylesheet" href="{% static 'css/indicadores/pedidos.css' %}">
+
+</head>
+
+<body>
+
+<div class="pedidos-dashboard">
+
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
+    <header class="dashboard-header">
+
+        <div class="header-info">
+
+            <div class="header-icon">
+                📦
+            </div>
+
+            <div>
+
+                <h1>Resultado dos Pedidos</h1>
+
+                <p>
+                    Acompanhe a evolução dos pedidos e do faturamento comercial.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="header-status">
+
+            <span class="status-dot"></span>
+
+            Dados atualizados
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CARDS PRINCIPAIS
+    ====================================================== -->
+
+    <section class="cards-grid">
+
+
+        <!-- PEDIDOS -->
+
+        <article class="metric-card">
+
+            <div class="metric-top">
+
+                <span class="metric-label">
+                    Pedidos
+                </span>
+
+                <span class="metric-icon">
+                    📦
+                </span>
+
+            </div>
+
+            <div
+                class="metric-value"
+                id="totalPedidos"
+            >
+                0
+            </div>
+
+            <div class="metric-description">
+                Pedidos considerados no período
+            </div>
+
+        </article>
+
+
+        <!-- VALOR PEDIDOS -->
+
+        <article class="metric-card">
+
+            <div class="metric-top">
+
+                <span class="metric-label">
+                    Valor dos pedidos
+                </span>
+
+                <span class="metric-icon">
+                    💰
+                </span>
+
+            </div>
+
+            <div
+                class="metric-value"
+                id="valorPedidos"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="metric-description">
+                Valor total dos pedidos
+            </div>
+
+        </article>
+
+
+        <!-- FATURADOS -->
+
+        <article class="metric-card">
+
+            <div class="metric-top">
+
+                <span class="metric-label">
+                    Faturados
+                </span>
+
+                <span class="metric-icon">
+                    🧾
+                </span>
+
+            </div>
+
+            <div
+                class="metric-value"
+                id="totalFaturados"
+            >
+                0
+            </div>
+
+            <div class="metric-description">
+                Pedidos faturados
+            </div>
+
+        </article>
+
+
+        <!-- FATURAMENTO -->
+
+        <article class="metric-card">
+
+            <div class="metric-top">
+
+                <span class="metric-label">
+                    Faturamento
+                </span>
+
+                <span class="metric-icon">
+                    💵
+                </span>
+
+            </div>
+
+            <div
+                class="metric-value"
+                id="valorFaturado"
+            >
+                R$ 0,00
+            </div>
+
+            <div class="metric-description">
+                Valor efetivamente faturado
+            </div>
+
+        </article>
+
+
+        <!-- CANCELADOS -->
+
+        <article class="metric-card">
+
+            <div class="metric-top">
+
+                <span class="metric-label">
+                    Cancelados
+                </span>
+
+                <span class="metric-icon">
+                    ❌
+                </span>
+
+            </div>
+
+            <div
+                class="metric-value"
+                id="totalCancelados"
+            >
+                0
+            </div>
+
+            <div class="metric-description">
+                Pedidos cancelados
+            </div>
+
+        </article>
+
+
+        <!-- A FATURAR -->
+
+        <article class="metric-card">
+
+            <div class="metric-top">
+
+                <span class="metric-label">
+                    A faturar
+                </span>
+
+                <span class="metric-icon">
+                    ⏳
+                </span>
+
+            </div>
+
+            <div
+                class="metric-value"
+                id="totalAFaturar"
+            >
+                0
+            </div>
+
+            <div class="metric-description">
+                Pedidos ainda não faturados
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         GRÁFICOS
+    ====================================================== -->
+
+    <section class="charts-grid">
+
+
+        <!-- PEDIDOS -->
+
+        <article class="chart-card">
+
+            <div class="chart-header">
+
+                <div>
+
+                    <h2>
+                        Evolução dos pedidos
+                    </h2>
+
+                    <p>
+                        Quantidade de pedidos pela data de inclusão
+                    </p>
+
+                </div>
+
+                <span class="chart-icon">
+                    📈
+                </span>
+
+            </div>
+
+            <div class="chart-area">
+
+                <canvas id="pedidosChart"></canvas>
+
+            </div>
+
+        </article>
+
+
+        <!-- FATURAMENTO -->
+
+        <article class="chart-card">
+
+            <div class="chart-header">
+
+                <div>
+
+                    <h2>
+                        Faturamento realizado
+                    </h2>
+
+                    <p>
+                        Valor faturado pela data de faturamento
+                    </p>
+
+                </div>
+
+                <span class="chart-icon">
+                    💰
+                </span>
+
+            </div>
+
+            <div class="chart-area">
+
+                <canvas id="faturamentoChart"></canvas>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         RESUMO
+    ====================================================== -->
+
+    <section class="bottom-grid">
+
+
+        <!-- SITUAÇÃO -->
+
+        <article class="summary-card">
+
+            <div class="summary-header">
+
+                <div>
+
+                    <h2>
+                        Situação dos pedidos
+                    </h2>
+
+                    <p>
+                        Distribuição dos pedidos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="status-list">
+
+
+                <div class="status-row">
+
+                    <div class="status-name">
+
+                        <span class="status-indicator faturado"></span>
+
+                        Faturados
+
+                    </div>
+
+                    <strong id="statusFaturados">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="status-progress">
+
+                    <div
+                        id="progressFaturados"
+                        class="progress-fill faturado"
+                    ></div>
+
+                </div>
+
+
+                <div class="status-row">
+
+                    <div class="status-name">
+
+                        <span class="status-indicator aberto"></span>
+
+                        A faturar
+
+                    </div>
+
+                    <strong id="statusAFaturar">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="status-progress">
+
+                    <div
+                        id="progressAFaturar"
+                        class="progress-fill aberto"
+                    ></div>
+
+                </div>
+
+
+                <div class="status-row">
+
+                    <div class="status-name">
+
+                        <span class="status-indicator cancelado"></span>
+
+                        Cancelados
+
+                    </div>
+
+                    <strong id="statusCancelados">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="status-progress">
+
+                    <div
+                        id="progressCancelados"
+                        class="progress-fill cancelado"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- VISÃO COMERCIAL -->
+
+        <article class="summary-card">
+
+            <div class="summary-header">
+
+                <div>
+
+                    <h2>
+                        Visão comercial
+                    </h2>
+
+                    <p>
+                        Relação entre pedidos e faturamento
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="conversion-grid">
+
+
+                <div class="conversion-box">
+
+                    <span>
+                        Conversão em quantidade
+                    </span>
+
+                    <strong id="conversaoQuantidade">
+                        0%
+                    </strong>
+
+                    <small>
+                        Pedidos faturados
+                    </small>
+
+                </div>
+
+
+                <div class="conversion-box">
+
+                    <span>
+                        Conversão em valor
+                    </span>
+
+                    <strong id="conversaoValor">
+                        0%
+                    </strong>
+
+                    <small>
+                        Faturamento / valor dos pedidos
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="open-value">
+
+                <div>
+
+                    <span>
+                        Valor ainda não faturado
+                    </span>
+
+                    <strong id="valorAberto">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <div class="value-progress">
+
+                    <div
+                        id="progressValor"
+                        class="value-progress-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         SEM DADOS
+    ====================================================== -->
+
+    <section
+        class="empty-state"
+        id="emptyState"
+    >
+
+        <div class="empty-icon">
+            📊
+        </div>
+
+        <h2>
+            Nenhum pedido encontrado
+        </h2>
+
+        <p>
+            Não existem pedidos para o período selecionado.
+        </p>
+
+    </section>
+
+
+</div>
+
+
+<!-- =====================================================
+     DADOS DJANGO
+====================================================== -->
+
+{{ dados|json_script:"dados-pedidos" }}
+
+
+<!-- =====================================================
+     CHART.JS
+====================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- =====================================================
+     JAVASCRIPT DO DASHBOARD
+====================================================== -->
+
+<script src="{% static 'js/indicadores/pedidos.js' %}"></script>
+
+
+</body>
+
+</html>

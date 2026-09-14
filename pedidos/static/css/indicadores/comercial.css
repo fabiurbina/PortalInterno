@@ -811,3 +811,13 @@
     color: #ffffff;
     transform: translateY(-1px);
 }
+
+.btn-pedidos {
+    background: #2563eb;
+    color: #fff;
+}
+
+.btn-pedidos:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}

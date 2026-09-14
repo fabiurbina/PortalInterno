@@ -45,7 +45,8 @@ from .views import (
     indicadores_comercial_dados,
     indicadores_financeiro_dados,
     financeiro_dre,
-    monitor_carga_view
+    monitor_carga_view,
+    comercial_pedidos
 )
 
 
@@ -380,5 +381,11 @@ urlpatterns = [
         "relatorios/monitor-carga/",
         monitor_carga_view,
         name="monitor_carga"
-    )
+    ),
+        
+        path(
+    "indicadores/comercial/pedidos/",
+        comercial_pedidos,
+    name="comercial_pedidos"
+),
 ]
