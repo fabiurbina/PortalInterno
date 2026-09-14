@@ -45,6 +45,8 @@ from .views import (
     indicadores_comercial_dados,
     indicadores_financeiro_dados,
     financeiro_dre,
+    monitor_carga_view,
+    acessos_portal_view
 )
 
 
@@ -374,4 +376,16 @@ urlpatterns = [
         financeiro_dre,
         name="financeiro_dre",
     ),
+    
+        path(
+        "relatorios/monitor-carga/",
+        monitor_carga_view,
+        name="monitor_carga"
+    ),
+
+    path(
+        "relatorios/acessos-portal/",
+        acessos_portal_view,
+        name="acessos_portal"
+),
 ]

@@ -37,7 +37,9 @@ from .mysql_service import (
     consulta_inspecoes,
     buscar_lote_validade,
     BuscarclassificacaoCliente,
-    buscar_fin_dre
+    buscar_fin_dre,
+    consultar_monitor_carga,
+    consultar_acessos_portal
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -4621,3 +4623,26 @@ def indicadores_financeiro_dados(request):
             evolucao
 
     })
+    
+def monitor_carga_view(request):
+    dados = consultar_monitor_carga()
+
+    return render(
+        request,
+        "relatorios/monitor_carga.html",
+        {
+            "dados": dados
+        }
+    )
+
+
+def acessos_portal_view(request):
+    acessos = consultar_acessos_portal()
+
+    return render(
+        request,
+        "relatorios/acessos_portal.html",
+        {
+            "acessos": acessos
+        }
+    )

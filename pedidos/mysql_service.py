@@ -1195,3 +1195,47 @@ def buscar_fin_dre():
 
         conexao.close()
         
+
+
+def consultar_monitor_carga():
+
+    conexao = conectar()
+
+    try:
+        with conexao.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT
+                    Pedido,
+                    qtd,
+                    ultima_carga
+                FROM vw_monitor_carga
+                ORDER BY ultima_carga DESC
+            """)
+
+            return cursor.fetchall()
+
+    finally:
+        conexao.close()
+
+
+def consultar_acessos_portal():
+
+    conexao = conectar()
+
+    try:
+        with conexao.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT
+                    UlitmoAcesso,
+                    username,
+                    email
+                FROM vw_acessos_portal
+                ORDER BY UlitmoAcesso DESC
+            """)
+
+            return cursor.fetchall()
+
+    finally:
+        conexao.close()

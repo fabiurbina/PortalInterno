@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Monitor do DW</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+
+        .pagina {
+            width: 100%;
+            padding: 28px 35px 40px;
+        }
+
+
+        /* ================================
+           CABEÇALHO
+        ================================= */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+
+        .titulo-area h1 {
+            margin: 0;
+
+            font-size: 27px;
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .titulo-area p {
+            margin: 6px 0 0;
+
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+            border: 1px solid #d8e1dc;
+
+            color: #174f35;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-voltar:hover {
+            background: #174f35;
+            color: #ffffff;
+            border-color: #174f35;
+        }
+
+
+        /* ================================
+           CARDS RESUMO
+        ================================= */
+
+        .cards-resumo {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .card-resumo {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            padding: 18px 20px;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+
+            transition: transform .2s ease,
+                        box-shadow .2s ease;
+        }
+
+
+        .card-resumo:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 16px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .card-label {
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            color: #7a8580;
+
+            margin-bottom: 7px;
+        }
+
+
+        .card-valor {
+            font-size: 25px;
+
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .card-subtitulo {
+            margin-top: 4px;
+
+            font-size: 11px;
+
+            color: #8a9690;
+        }
+
+
+        /* ================================
+           STATUS GERAL
+        ================================= */
+
+        .status-geral {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: #eaf7ef;
+
+            color: #21804a;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .status-ponto {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
+
+        /* ================================
+           TABELA
+        ================================= */
+
+        .tabela-container {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .tabela-topo {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 17px 20px;
+
+            border-bottom: 1px solid #e7ece9;
+        }
+
+
+        .tabela-titulo {
+            margin: 0;
+
+            color: #263c31;
+
+            font-size: 15px;
+
+            font-weight: 700;
+        }
+
+
+        .badge-registros {
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #eaf5ee;
+
+            color: #217447;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+
+        .tabela-scroll {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 700px;
+        }
+
+
+        thead th {
+            padding: 13px 16px;
+
+            background: #f5f8f6;
+
+            border-bottom: 1px solid #dfe7e2;
+
+            color: #64736b;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+
+        tbody td {
+            padding: 14px 16px;
+
+            border-bottom: 1px solid #edf1ef;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr {
+            transition: background .15s ease;
+        }
+
+
+        tbody tr:hover {
+            background: #f7fbf8;
+        }
+
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        .nome-objeto {
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .quantidade {
+            font-weight: 600;
+
+            text-align: right;
+        }
+
+
+        .data {
+            color: #59655f;
+
+            font-size: 12px;
+        }
+
+
+        /* ================================
+           STATUS
+        ================================= */
+
+        .status {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .status-ponto-tabela {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
+
+        .status-ok {
+            background: #eaf7ef;
+
+            color: #21804a;
+        }
+
+
+        /* ================================
+           SEM REGISTROS
+        ================================= */
+
+        .sem-registros {
+            padding: 55px 20px !important;
+
+            text-align: center;
+
+            color: #8b9791;
+
+            font-size: 13px;
+        }
+
+
+        .sem-registros-icon {
+            font-size: 32px;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* ================================
+           RESPONSIVO
+        ================================= */
+
+        @media (max-width: 900px) {
+
+            .cards-resumo {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .pagina {
+                padding: 20px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .cabecalho {
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+
+            .cards-resumo {
+                grid-template-columns: 1fr;
+            }
+
+
+            .pagina {
+                padding: 18px 15px 30px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="pagina">
+
+
+    <!-- CABEÇALHO -->
+
+    <div class="cabecalho">
+
+        <div class="titulo-area">
+
+            <h1>
+                🖥️ Monitor do DW
+            </h1>
+
+            <p>
+                Monitoramento das atualizações do Data Warehouse
+            </p>
+
+        </div>
+
+
+        <a href="{% url 'relatorios_diversos' %}"
+           class="btn-voltar">
+
+            ← Voltar
+
+        </a>
+
+    </div>
+
+
+    <!-- CARDS RESUMO -->
+
+    <div class="cards-resumo">
+
+
+        <!-- OBJETOS -->
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Objetos monitorados
+            </div>
+
+            <div class="card-valor">
+                {{ dados|length }}
+            </div>
+
+            <div class="card-subtitulo">
+                Bases e tabelas acompanhadas
+            </div>
+
+        </div>
+
+
+        <!-- ÚLTIMA CARGA -->
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Última atualização
+            </div>
+
+            {% if dados %}
+
+                <div class="card-valor"
+                     style="font-size: 20px;">
+
+                    {{ dados.0.ultima_carga|date:"d/m/Y H:i:s" }}
+
+                </div>
+
+                <div class="card-subtitulo">
+                    Atualização mais recente
+                </div>
+
+            {% else %}
+
+                <div class="card-valor">
+                    —
+                </div>
+
+                <div class="card-subtitulo">
+                    Nenhuma carga encontrada
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Status do DW
+            </div>
+
+            {% if dados %}
+
+                <div style="margin-top: 5px;">
+
+                    <span class="status-geral">
+
+                        <span class="status-ponto"></span>
+
+                        Dados disponíveis
+
+                    </span>
+
+                </div>
+
+                <div class="card-subtitulo">
+                    Monitoramento operacional
+                </div>
+
+            {% else %}
+
+                <div style="margin-top: 5px;">
+
+                    <span class="status"
+                          style="background:#fdecec;color:#c43d3d;">
+
+                        <span class="status-ponto-tabela"></span>
+
+                        Sem dados
+
+                    </span>
+
+                </div>
+
+                <div class="card-subtitulo">
+                    Verifique a conexão com o DW
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+    <!-- TABELA -->
+
+    <div class="tabela-container">
+
+
+        <div class="tabela-topo">
+
+            <h2 class="tabela-titulo">
+                Últimas cargas
+            </h2>
+
+
+            <span class="badge-registros">
+
+                {{ dados|length }} registros
+
+            </span>
+
+        </div>
+
+
+        <div class="tabela-scroll">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Objeto
+                        </th>
+
+                        <th>
+                            Quantidade
+                        </th>
+
+                        <th>
+                            Última carga
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in dados %}
+
+                    <tr>
+
+                        <td class="nome-objeto">
+                            {{ item.Pedido }}
+                        </td>
+
+
+                        <td class="quantidade">
+                            {{ item.qtd }}
+                        </td>
+
+
+                        <td class="data">
+                            {{ item.ultima_carga|date:"d/m/Y H:i:s" }}
+                        </td>
+
+
+                        <td>
+
+                            <span class="status status-ok">
+
+                                <span class="status-ponto-tabela"></span>
+
+                                Atualizado
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4"
+                            class="sem-registros">
+
+                            <div class="sem-registros-icon">
+                                📊
+                            </div>
+
+                            Nenhum registro encontrado.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
