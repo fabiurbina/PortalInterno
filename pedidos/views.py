@@ -4625,24 +4625,15 @@ def indicadores_financeiro_dados(request):
     })
     
 def monitor_carga_view(request):
+
     dados = consultar_monitor_carga()
+    acessos = consultar_acessos_portal()
 
     return render(
         request,
         "relatorios/monitor_carga.html",
         {
-            "dados": dados
-        }
-    )
-
-
-def acessos_portal_view(request):
-    acessos = consultar_acessos_portal()
-
-    return render(
-        request,
-        "relatorios/acessos_portal.html",
-        {
-            "acessos": acessos
+            "dados": dados,
+            "acessos": acessos,
         }
     )

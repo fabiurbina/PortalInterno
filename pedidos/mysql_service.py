@@ -1227,12 +1227,13 @@ def consultar_acessos_portal():
         with conexao.cursor() as cursor:
 
             cursor.execute("""
-                SELECT
+                 SELECT
                     UlitmoAcesso,
                     username,
-                    email
+                    email,
+                    DATEDIFF(CURDATE(), UlitmoAcesso) AS dias_sem_acesso
                 FROM vw_acessos_portal
-                ORDER BY UlitmoAcesso DESC
+                ORDER BY dias_sem_acesso DESC
             """)
 
             return cursor.fetchall()
