@@ -891,3 +891,79 @@ function criarGraficoFluxoLeads(
         );
 
 }
+
+/* =========================================================
+   MODAL - RESULTADO DOS PEDIDOS
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const botao = document.getElementById("btnResultadoPedidos");
+    const modal = document.getElementById("modalPedidos");
+    const fechar = document.getElementById("fecharModalPedidos");
+    const overlay = document.querySelector(".modal-pedidos-overlay");
+    const iframe = document.getElementById("iframePedidos");
+
+
+    if (!botao || !modal || !fechar || !overlay || !iframe) {
+        return;
+    }
+
+
+    function abrirModal() {
+
+        const url = botao.getAttribute("href");
+
+        iframe.src = url;
+
+        modal.classList.add("ativo");
+
+        document.documentElement.style.overflow = "hidden";
+    }
+
+
+    function fecharModal() {
+
+        modal.classList.remove("ativo");
+
+        iframe.src = "";
+
+        document.documentElement.style.overflow = "";
+    }
+
+
+    botao.addEventListener("click", function (event) {
+
+        event.preventDefault();
+
+        abrirModal();
+
+    });
+
+
+    fechar.addEventListener("click", function () {
+
+        fecharModal();
+
+    });
+
+
+    overlay.addEventListener("click", function () {
+
+        fecharModal();
+
+    });
+
+
+    document.addEventListener("keydown", function (event) {
+
+        if (
+            event.key === "Escape" &&
+            modal.classList.contains("ativo")
+        ) {
+            fecharModal();
+        }
+
+    });
+
+});

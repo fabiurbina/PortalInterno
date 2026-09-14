@@ -828,3 +828,196 @@ body {
     }
 
 }
+
+/* =========================================================
+   BOTÃO RESULTADO DOS PEDIDOS
+========================================================= */
+
+.btn-pedidos {
+    background: rgba(18, 196, 192, 0.10);
+    color: #d9dde5;
+    border-color: rgba(18, 196, 192, 0.30);
+}
+
+.btn-pedidos:hover {
+    background: rgba(18, 196, 192, 0.18);
+    border-color: #12c4c0;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MODAL - RESULTADO DOS PEDIDOS
+========================================================= */
+
+.modal-pedidos {
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+}
+
+.modal-pedidos.ativo {
+    display: flex;
+}
+
+
+.modal-pedidos-overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(2, 12, 24, 0.78);
+
+    backdrop-filter: blur(4px);
+}
+
+
+.modal-pedidos-container {
+    position: relative;
+    z-index: 1;
+
+    width: min(1400px, 96vw);
+    height: min(850px, 92vh);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #061526 0%,
+            #0b2038 55%,
+            #061525 100%
+        );
+
+    border: 1px solid rgba(82, 188, 202, .35);
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, .55);
+}
+
+
+.modal-pedidos-header {
+    min-height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 9px 13px;
+
+    border-bottom:
+        1px solid
+        rgba(82, 188, 202, .20);
+}
+
+
+.modal-pedidos-header h2 {
+    margin: 0;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+
+.modal-pedidos-header span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: #91a9bb;
+}
+
+
+.modal-pedidos-close {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .16);
+
+    border-radius: 6px;
+
+    background:
+        rgba(255, 255, 255, .06);
+
+    color: #b7cedb;
+
+    font-size: 22px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.modal-pedidos-close:hover {
+    background:
+        rgba(18, 196, 192, .16);
+
+    border-color:
+        #12c4c0;
+
+    color: #ffffff;
+}
+
+
+.modal-pedidos-content {
+    flex: 1;
+
+    min-height: 0;
+
+    background: #061526;
+}
+
+
+.modal-pedidos-content iframe {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border: 0;
+
+    background: #061526;
+}
+
+
+@media (max-width: 700px) {
+
+    .modal-pedidos {
+        padding: 8px;
+    }
+
+    .modal-pedidos-container {
+        width: 100%;
+        height: 96vh;
+
+        border-radius: 7px;
+    }
+
+}

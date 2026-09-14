@@ -19,11 +19,15 @@
                 </div>
 
                 <a href="{% url 'relatorio_classificacao_cliente' %}" class="btn-clientes-ativos">
-                    👥 Classificação da Carteira
+                    Classificação da Carteira
                 </a>
 
-                <a href="{% url 'comercial_pedidos' %}" class="btn-pedidos">
-                    📦 Resultado dos Pedidos
+                <a
+                    href="{% url 'comercial_pedidos' %}"
+                    class="btn-clientes-ativos btn-pedidos"
+                    id="btnResultadoPedidos"
+                >
+                    Resultado dos Pedidos
                 </a>
 
             </div>
@@ -293,3 +297,48 @@
 </div>
 
 </div> <!-- FECHA .comercial-dashboard -->
+
+<!-- =====================================================
+     MODAL - RESULTADO DOS PEDIDOS
+====================================================== -->
+
+<div id="modalPedidos" class="modal-pedidos">
+
+    <div class="modal-pedidos-overlay"></div>
+
+    <div class="modal-pedidos-container">
+
+        <div class="modal-pedidos-header">
+
+            <div>
+                <h2>Resultado dos Pedidos</h2>
+
+                <span>
+                    Indicadores de pedidos e faturamento
+                </span>
+            </div>
+
+            <button
+                type="button"
+                class="modal-pedidos-close"
+                id="fecharModalPedidos"
+                aria-label="Fechar"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-pedidos-content">
+
+            <iframe
+                id="iframePedidos"
+                src=""
+                title="Resultado dos Pedidos"
+            ></iframe>
+
+        </div>
+
+    </div>
+
+</div>
