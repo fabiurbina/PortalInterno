@@ -813,11 +813,14 @@
 }
 
 .btn-pedidos {
-    background: #2563eb;
-    color: #fff;
+    background: rgba(18, 196, 192, 0.10);
+    color: #d9dde5;
+    border-color: rgba(18, 196, 192, 0.30);
 }
 
 .btn-pedidos:hover {
-    background: #1d4ed8;
-    transform: translateY(-2px);
+    background: rgba(18, 196, 192, 0.18);
+    border-color: #12c4c0;
+    color: #ffffff;
+    transform: translateY(-1px);
 }

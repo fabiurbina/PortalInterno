@@ -10,7 +10,6 @@
     <title>Resultado dos Pedidos</title>
 
     <link rel="stylesheet" href="{% static 'css/indicadores/pedidos.css' %}">
-
 </head>
 
 <body>
@@ -21,27 +20,23 @@
          CABEÇALHO
     ====================================================== -->
 
-    <header class="dashboard-header">
+    <header class="pedidos-topbar">
 
-        <div class="header-info">
+        <div class="pedidos-brand">
 
-            <div class="header-icon">
-                📦
-            </div>
+            <div class="pedidos-brand-mark"></div>
 
             <div>
-
                 <h1>Resultado dos Pedidos</h1>
 
-                <p>
-                    Acompanhe a evolução dos pedidos e do faturamento comercial.
+                <p class="pedidos-subtitle">
+                    Evolução dos pedidos e do faturamento comercial
                 </p>
-
             </div>
 
         </div>
 
-        <div class="header-status">
+        <div class="pedidos-status">
 
             <span class="status-dot"></span>
 
@@ -52,68 +47,50 @@
     </header>
 
 
-
     <!-- =====================================================
-         CARDS PRINCIPAIS
+         KPIs
     ====================================================== -->
 
-    <section class="cards-grid">
-
+    <section class="pedidos-kpis">
 
         <!-- PEDIDOS -->
 
-        <article class="metric-card">
+        <article class="pedidos-kpi">
 
-            <div class="metric-top">
-
-                <span class="metric-label">
-                    Pedidos
-                </span>
-
-                <span class="metric-icon">
-                    📦
-                </span>
-
+            <div class="pedidos-kpi-label">
+                Pedidos
             </div>
 
             <div
-                class="metric-value"
+                class="pedidos-kpi-value"
                 id="totalPedidos"
             >
                 0
             </div>
 
-            <div class="metric-description">
-                Pedidos considerados no período
+            <div class="pedidos-kpi-description">
+                Total de pedidos considerados
             </div>
 
         </article>
 
 
-        <!-- VALOR PEDIDOS -->
+        <!-- VALOR DOS PEDIDOS -->
 
-        <article class="metric-card">
+        <article class="pedidos-kpi">
 
-            <div class="metric-top">
-
-                <span class="metric-label">
-                    Valor dos pedidos
-                </span>
-
-                <span class="metric-icon">
-                    💰
-                </span>
-
+            <div class="pedidos-kpi-label">
+                Valor dos pedidos
             </div>
 
             <div
-                class="metric-value"
+                class="pedidos-kpi-value"
                 id="valorPedidos"
             >
                 R$ 0,00
             </div>
 
-            <div class="metric-description">
+            <div class="pedidos-kpi-description">
                 Valor total dos pedidos
             </div>
 
@@ -122,28 +99,20 @@
 
         <!-- FATURADOS -->
 
-        <article class="metric-card">
+        <article class="pedidos-kpi pedidos-kpi-destaque">
 
-            <div class="metric-top">
-
-                <span class="metric-label">
-                    Faturados
-                </span>
-
-                <span class="metric-icon">
-                    🧾
-                </span>
-
+            <div class="pedidos-kpi-label">
+                Faturados
             </div>
 
             <div
-                class="metric-value"
+                class="pedidos-kpi-value"
                 id="totalFaturados"
             >
                 0
             </div>
 
-            <div class="metric-description">
+            <div class="pedidos-kpi-description">
                 Pedidos faturados
             </div>
 
@@ -152,28 +121,20 @@
 
         <!-- FATURAMENTO -->
 
-        <article class="metric-card">
+        <article class="pedidos-kpi pedidos-kpi-destaque">
 
-            <div class="metric-top">
-
-                <span class="metric-label">
-                    Faturamento
-                </span>
-
-                <span class="metric-icon">
-                    💵
-                </span>
-
+            <div class="pedidos-kpi-label">
+                Faturamento
             </div>
 
             <div
-                class="metric-value"
+                class="pedidos-kpi-value"
                 id="valorFaturado"
             >
                 R$ 0,00
             </div>
 
-            <div class="metric-description">
+            <div class="pedidos-kpi-description">
                 Valor efetivamente faturado
             </div>
 
@@ -182,28 +143,20 @@
 
         <!-- CANCELADOS -->
 
-        <article class="metric-card">
+        <article class="pedidos-kpi">
 
-            <div class="metric-top">
-
-                <span class="metric-label">
-                    Cancelados
-                </span>
-
-                <span class="metric-icon">
-                    ❌
-                </span>
-
+            <div class="pedidos-kpi-label">
+                Cancelados
             </div>
 
             <div
-                class="metric-value"
+                class="pedidos-kpi-value"
                 id="totalCancelados"
             >
                 0
             </div>
 
-            <div class="metric-description">
+            <div class="pedidos-kpi-description">
                 Pedidos cancelados
             </div>
 
@@ -212,33 +165,24 @@
 
         <!-- A FATURAR -->
 
-        <article class="metric-card">
+        <article class="pedidos-kpi">
 
-            <div class="metric-top">
-
-                <span class="metric-label">
-                    A faturar
-                </span>
-
-                <span class="metric-icon">
-                    ⏳
-                </span>
-
+            <div class="pedidos-kpi-label">
+                A faturar
             </div>
 
             <div
-                class="metric-value"
+                class="pedidos-kpi-value"
                 id="totalAFaturar"
             >
                 0
             </div>
 
-            <div class="metric-description">
+            <div class="pedidos-kpi-description">
                 Pedidos ainda não faturados
             </div>
 
         </article>
-
 
     </section>
 
@@ -247,34 +191,25 @@
          GRÁFICOS
     ====================================================== -->
 
-    <section class="charts-grid">
+    <section class="pedidos-grid">
 
+        <!-- EVOLUÇÃO DOS PEDIDOS -->
 
-        <!-- PEDIDOS -->
+        <article class="pedidos-panel pedidos-panel-wide">
 
-        <article class="chart-card">
-
-            <div class="chart-header">
+            <div class="pedidos-panel-title">
 
                 <div>
-
-                    <h2>
-                        Evolução dos pedidos
-                    </h2>
+                    <h2>Evolução dos pedidos</h2>
 
                     <p>
                         Quantidade de pedidos pela data de inclusão
                     </p>
-
                 </div>
-
-                <span class="chart-icon">
-                    📈
-                </span>
 
             </div>
 
-            <div class="chart-area">
+            <div class="pedidos-chart">
 
                 <canvas id="pedidosChart"></canvas>
 
@@ -285,29 +220,21 @@
 
         <!-- FATURAMENTO -->
 
-        <article class="chart-card">
+        <article class="pedidos-panel">
 
-            <div class="chart-header">
+            <div class="pedidos-panel-title">
 
                 <div>
-
-                    <h2>
-                        Faturamento realizado
-                    </h2>
+                    <h2>Faturamento realizado</h2>
 
                     <p>
                         Valor faturado pela data de faturamento
                     </p>
-
                 </div>
-
-                <span class="chart-icon">
-                    💰
-                </span>
 
             </div>
 
-            <div class="chart-area">
+            <div class="pedidos-chart">
 
                 <canvas id="faturamentoChart"></canvas>
 
@@ -316,39 +243,24 @@
         </article>
 
 
-    </section>
+        <!-- SITUAÇÃO DOS PEDIDOS -->
 
+        <article class="pedidos-panel">
 
-    <!-- =====================================================
-         RESUMO
-    ====================================================== -->
-
-    <section class="bottom-grid">
-
-
-        <!-- SITUAÇÃO -->
-
-        <article class="summary-card">
-
-            <div class="summary-header">
+            <div class="pedidos-panel-title">
 
                 <div>
-
-                    <h2>
-                        Situação dos pedidos
-                    </h2>
+                    <h2>Situação dos pedidos</h2>
 
                     <p>
-                        Distribuição dos pedidos
+                        Distribuição dos pedidos por situação
                     </p>
-
                 </div>
 
             </div>
 
 
             <div class="status-list">
-
 
                 <div class="status-row">
 
@@ -434,27 +346,22 @@
 
         <!-- VISÃO COMERCIAL -->
 
-        <article class="summary-card">
+        <article class="pedidos-panel pedidos-panel-wide">
 
-            <div class="summary-header">
+            <div class="pedidos-panel-title">
 
                 <div>
-
-                    <h2>
-                        Visão comercial
-                    </h2>
+                    <h2>Visão comercial</h2>
 
                     <p>
                         Relação entre pedidos e faturamento
                     </p>
-
                 </div>
 
             </div>
 
 
             <div class="conversion-grid">
-
 
                 <div class="conversion-box">
 
@@ -489,7 +396,6 @@
 
                 </div>
 
-
             </div>
 
 
@@ -521,7 +427,6 @@
 
         </article>
 
-
     </section>
 
 
@@ -534,16 +439,12 @@
         id="emptyState"
     >
 
-        <div class="empty-icon">
-            📊
-        </div>
+        <div class="empty-mark"></div>
 
-        <h2>
-            Nenhum pedido encontrado
-        </h2>
+        <h2>Nenhum pedido encontrado</h2>
 
         <p>
-            Não existem pedidos para o período selecionado.
+            Não existem pedidos disponíveis para apresentação.
         </p>
 
     </section>

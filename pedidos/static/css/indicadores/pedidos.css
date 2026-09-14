@@ -1,5 +1,6 @@
 /* =========================================================
-   RESET
+   DASHBOARD DE PEDIDOS
+   PADRÃO VISUAL DO DASHBOARD COMERCIAL
 ========================================================= */
 
 * {
@@ -11,8 +12,8 @@
 
 body {
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #f5f7fb;
-    color: #1f2937;
+    background: #061526;
+    color: #f5f8fb;
 }
 
 
@@ -21,10 +22,43 @@ body {
 ========================================================= */
 
 .pedidos-dashboard {
+
+    --pedidos-accent: #12c4c0;
+    --pedidos-accent-dark: #167d8d;
+
     width: 100%;
     max-width: 1500px;
+
     margin: 0 auto;
-    padding: 30px;
+
+    padding: 18px;
+
+    background:
+        radial-gradient(
+            circle at 85% 5%,
+            rgba(0, 180, 190, .16),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #061526 0%,
+            #0b2038 55%,
+            #061525 100%
+        );
+
+    color: #f5f8fb;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, .16);
+}
+
+
+.pedidos-dashboard *,
+.pedidos-dashboard *::before,
+.pedidos-dashboard *::after {
+    box-sizing: border-box;
 }
 
 
@@ -32,333 +66,317 @@ body {
    CABEÇALHO
 ========================================================= */
 
-.dashboard-header {
+.pedidos-topbar {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     gap: 20px;
 
-    margin-bottom: 25px;
+    margin-bottom: 14px;
 }
 
 
-.header-info {
+.pedidos-brand {
+
     display: flex;
+
     align-items: center;
-    gap: 15px;
+
+    gap: 14px;
 }
 
 
-.header-icon {
+/* Marca visual em CSS — substitui o emoji */
+
+.pedidos-brand-mark {
+
     width: 52px;
-    height: 52px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 36px;
 
-    background: #ffffff;
+    position: relative;
+}
 
-    border: 1px solid #e5e7eb;
 
-    border-radius: 14px;
+.pedidos-brand-mark::before,
+.pedidos-brand-mark::after {
+
+    content: "";
+
+    position: absolute;
+
+    height: 14px;
+
+    width: 42px;
+
+    border-radius: 20px;
+
+    transform:
+        skewX(-35deg)
+        rotate(-8deg);
+
+    background: var(--pedidos-accent);
+}
+
+
+.pedidos-brand-mark::before {
+
+    left: 1px;
+
+    top: 5px;
+}
+
+
+.pedidos-brand-mark::after {
+
+    left: 13px;
+
+    top: 16px;
+
+    opacity: .72;
+}
+
+
+.pedidos-brand h1 {
+
+    margin: 0;
 
     font-size: 25px;
 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-
-.header-info h1 {
-    font-size: 27px;
     font-weight: 700;
 
-    color: #111827;
-
-    margin-bottom: 4px;
-}
-
-
-.header-info p {
-    color: #6b7280;
-    font-size: 13px;
-}
-
-
-.header-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    padding: 9px 13px;
-
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 10px;
-
-    color: #6b7280;
-
-    font-size: 12px;
-}
-
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-
-    border-radius: 50%;
-
-    background: #22c55e;
-}
-
-
-/* =========================================================
-   FILTROS
-========================================================= */
-
-.filters-card {
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 16px;
-
-    padding: 18px 20px;
-
-    margin-bottom: 20px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-}
-
-
-.filter-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-
-.filter-title > span {
-    font-size: 20px;
-}
-
-
-.filter-title strong {
-    display: block;
-
-    font-size: 13px;
-
-    color: #111827;
-}
-
-
-.filter-title small {
-    display: block;
-
-    margin-top: 3px;
-
-    font-size: 11px;
-
-    color: #9ca3af;
-}
-
-
-.filter-fields {
-    display: flex;
-    align-items: end;
-    gap: 10px;
-
-    flex-wrap: wrap;
-}
-
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-
-    gap: 5px;
-}
-
-
-.filter-group label {
-    font-size: 11px;
-
-    font-weight: 600;
-
-    color: #6b7280;
-}
-
-
-.filter-group input {
-    height: 38px;
-
-    min-width: 145px;
-
-    padding: 0 10px;
-
-    border: 1px solid #d1d5db;
-
-    border-radius: 8px;
-
-    background: #ffffff;
-
-    color: #374151;
-
-    font-size: 12px;
-
-    outline: none;
-}
-
-
-.filter-group input:focus {
-    border-color: #6366f1;
-
-    box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.10);
-}
-
-
-.btn-primary,
-.btn-secondary {
-    height: 38px;
-
-    padding: 0 16px;
-
-    border-radius: 8px;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-
-.btn-primary {
-    border: none;
-
-    background: #111827;
+    letter-spacing: .3px;
 
     color: #ffffff;
 }
 
 
-.btn-primary:hover {
-    background: #374151;
+.pedidos-subtitle {
+
+    color: #9db2c7;
+
+    font-size: 12px;
+
+    margin-top: 3px;
 }
 
 
-.btn-secondary {
-    border: 1px solid #d1d5db;
+.pedidos-status {
 
-    background: #ffffff;
+    display: flex;
 
-    color: #4b5563;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    background: rgba(9, 37, 59, .88);
+
+    border: 1px solid rgba(89, 184, 203, .45);
+
+    border-radius: 7px;
+
+    color: #b7cedb;
+
+    font-size: 11px;
 }
 
 
-.btn-secondary:hover {
-    background: #f9fafb;
+.status-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #12c4c0;
 }
 
 
 /* =========================================================
-   CARDS
+   KPIs
 ========================================================= */
 
-.cards-grid {
+.pedidos-kpis {
+
     display: grid;
 
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
 
-    gap: 15px;
+    gap: 10px;
 
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 
-.metric-card {
-    position: relative;
+.pedidos-kpi {
 
-    min-height: 135px;
+    min-height: 82px;
 
-    padding: 18px;
+    border:
+        1px solid
+        rgba(82, 188, 202, .28);
 
-    background: #ffffff;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18, 72, 96, .95),
+            rgba(8, 43, 64, .92)
+        );
 
-    border: 1px solid #e5e7eb;
+    border-radius: 6px;
 
-    border-radius: 15px;
+    padding: 11px 13px;
 
-    overflow: hidden;
-
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, .18);
 
     transition:
-        transform 0.2s,
-        box-shadow 0.2s;
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
 
-.metric-card:hover {
+.pedidos-kpi:hover {
+
     transform: translateY(-2px);
 
     box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.07);
+        0 10px 24px rgba(0, 0, 0, .25);
 }
 
 
-.metric-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.pedidos-kpi-destaque {
 
-    margin-bottom: 13px;
+    border-color:
+        rgba(18, 196, 192, .55);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15, 91, 101, .98),
+            rgba(7, 65, 75, .96)
+        );
 }
 
 
-.metric-label {
+.pedidos-kpi-label {
+
     font-size: 11px;
 
     font-weight: 600;
 
-    color: #6b7280;
+    color: #b7cedb;
+
+    margin-bottom: 5px;
 }
 
 
-.metric-icon {
-    font-size: 19px;
-}
+.pedidos-kpi-value {
 
-
-.metric-value {
-    font-size: 23px;
+    font-size: 21px;
 
     font-weight: 700;
 
-    color: #111827;
+    color: #dffcff;
 
     white-space: nowrap;
-
-    margin-bottom: 7px;
 }
 
 
-.metric-description {
+.pedidos-kpi-destaque
+.pedidos-kpi-value {
+
+    color: #bffffc;
+}
+
+
+.pedidos-kpi-description {
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: #91a9bb;
+}
+
+
+/* =========================================================
+   GRID PRINCIPAL
+========================================================= */
+
+.pedidos-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   PAINÉIS
+========================================================= */
+
+.pedidos-panel {
+
+    background:
+        rgba(226, 231, 235, .97);
+
+    color: #18202a;
+
+    border-radius: 6px;
+
+    min-height: 215px;
+
+    padding: 9px 11px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, .17);
+
+    overflow: hidden;
+}
+
+
+.pedidos-panel-wide {
+
+    grid-column: span 2;
+}
+
+
+.pedidos-panel-title {
+
+    text-align: center;
+
+    margin:
+        2px 0 6px;
+}
+
+
+.pedidos-panel-title h2 {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 2px;
+}
+
+
+.pedidos-panel-title p {
+
     font-size: 10px;
 
-    color: #9ca3af;
+    color: #7b8790;
 }
 
 
@@ -366,136 +384,40 @@ body {
    GRÁFICOS
 ========================================================= */
 
-.charts-grid {
-    display: grid;
+.pedidos-chart {
 
-    grid-template-columns: 1.35fr 1fr;
-
-    gap: 20px;
-
-    margin-bottom: 20px;
-}
-
-
-.chart-card {
-    min-height: 390px;
-
-    padding: 21px;
-
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 3px 12px rgba(0, 0, 0, 0.04);
-}
-
-
-.chart-header {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-start;
-
-    margin-bottom: 20px;
-}
-
-
-.chart-header h2 {
-    font-size: 15px;
-
-    font-weight: 700;
-
-    color: #111827;
-
-    margin-bottom: 4px;
-}
-
-
-.chart-header p {
-    font-size: 11px;
-
-    color: #9ca3af;
-}
-
-
-.chart-icon {
-    font-size: 20px;
-}
-
-
-.chart-area {
     position: relative;
 
-    height: 295px;
+    width: 100%;
+
+    height: 205px;
+}
+
+
+.pedidos-chart canvas {
+
+    max-width: 100%;
 }
 
 
 /* =========================================================
-   RESUMO
-========================================================= */
-
-.bottom-grid {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 20px;
-}
-
-
-.summary-card {
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 16px;
-
-    padding: 21px;
-
-    box-shadow:
-        0 3px 12px rgba(0, 0, 0, 0.04);
-}
-
-
-.summary-header {
-    margin-bottom: 20px;
-}
-
-
-.summary-header h2 {
-    font-size: 15px;
-
-    color: #111827;
-
-    margin-bottom: 4px;
-}
-
-
-.summary-header p {
-    font-size: 11px;
-
-    color: #9ca3af;
-}
-
-
-/* =========================================================
-   STATUS
+   SITUAÇÃO
 ========================================================= */
 
 .status-list {
+
     display: flex;
 
     flex-direction: column;
 
-    gap: 7px;
+    gap: 5px;
+
+    padding-top: 5px;
 }
 
 
 .status-row {
+
     display: flex;
 
     align-items: center;
@@ -507,56 +429,64 @@ body {
 
 
 .status-name {
+
     display: flex;
 
     align-items: center;
 
     gap: 8px;
 
-    font-size: 12px;
+    font-size: 11px;
 
-    color: #4b5563;
+    color: #52606d;
 }
 
 
 .status-row strong {
-    font-size: 13px;
 
-    color: #111827;
+    font-size: 12px;
+
+    color: #18202a;
 }
 
 
 .status-indicator {
-    width: 9px;
-    height: 9px;
+
+    width: 8px;
+
+    height: 8px;
 
     border-radius: 50%;
 }
 
 
 .status-indicator.faturado {
-    background: #22c55e;
+
+    background: #12c4c0;
 }
 
 
 .status-indicator.aberto {
-    background: #f59e0b;
+
+    background: #d39a24;
 }
 
 
 .status-indicator.cancelado {
-    background: #ef4444;
+
+    background: #c65a5a;
 }
 
 
 .status-progress {
+
     width: 100%;
 
-    height: 6px;
+    height: 5px;
 
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 
-    background: #f3f4f6;
+    background: #d6dadd;
 
     border-radius: 20px;
 
@@ -565,28 +495,33 @@ body {
 
 
 .progress-fill {
+
     width: 0%;
 
     height: 100%;
 
     border-radius: 20px;
 
-    transition: width 0.5s ease;
+    transition:
+        width .5s ease;
 }
 
 
 .progress-fill.faturado {
-    background: #22c55e;
+
+    background: #12c4c0;
 }
 
 
 .progress-fill.aberto {
-    background: #f59e0b;
+
+    background: #d39a24;
 }
 
 
 .progress-fill.cancelado {
-    background: #ef4444;
+
+    background: #c65a5a;
 }
 
 
@@ -595,49 +530,61 @@ body {
 ========================================================= */
 
 .conversion-grid {
+
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
-    gap: 14px;
+    gap: 8px;
+
+    margin-top: 6px;
 }
 
 
 .conversion-box {
-    padding: 18px;
 
-    background: #f9fafb;
+    padding: 12px;
 
-    border-radius: 12px;
+    background: #d9eeee;
+
+    border-radius: 6px;
+
+    border:
+        1px solid
+        rgba(18, 196, 192, .18);
 }
 
 
 .conversion-box span {
+
     display: block;
 
-    font-size: 11px;
+    font-size: 10px;
 
-    color: #6b7280;
+    color: #52606d;
 
-    margin-bottom: 7px;
+    margin-bottom: 5px;
 }
 
 
 .conversion-box strong {
+
     display: block;
 
-    font-size: 25px;
+    font-size: 22px;
 
-    color: #111827;
+    color: #087f7c;
 
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 
 .conversion-box small {
-    font-size: 10px;
 
-    color: #9ca3af;
+    font-size: 9px;
+
+    color: #7b8790;
 }
 
 
@@ -646,17 +593,19 @@ body {
 ========================================================= */
 
 .open-value {
-    margin-top: 15px;
 
-    padding: 17px;
+    margin-top: 8px;
 
-    background: #f9fafb;
+    padding: 10px;
 
-    border-radius: 12px;
+    background: #d9eeee;
+
+    border-radius: 6px;
 }
 
 
 .open-value > div:first-child {
+
     display: flex;
 
     align-items: center;
@@ -665,30 +614,33 @@ body {
 
     gap: 15px;
 
-    margin-bottom: 10px;
+    margin-bottom: 7px;
 }
 
 
 .open-value span {
-    font-size: 11px;
 
-    color: #6b7280;
+    font-size: 10px;
+
+    color: #52606d;
 }
 
 
 .open-value strong {
-    font-size: 15px;
 
-    color: #111827;
+    font-size: 14px;
+
+    color: #087f7c;
 }
 
 
 .value-progress {
+
     width: 100%;
 
-    height: 7px;
+    height: 6px;
 
-    background: #e5e7eb;
+    background: #ccd2d7;
 
     border-radius: 20px;
 
@@ -697,15 +649,17 @@ body {
 
 
 .value-progress-fill {
+
     width: 0%;
 
     height: 100%;
 
-    background: #6366f1;
+    background: #12c4c0;
 
     border-radius: 20px;
 
-    transition: width 0.5s ease;
+    transition:
+        width .5s ease;
 }
 
 
@@ -714,45 +668,58 @@ body {
 ========================================================= */
 
 .empty-state {
+
     display: none;
 
     text-align: center;
 
-    padding: 60px 20px;
+    padding: 45px 20px;
 }
 
 
-.empty-icon {
-    font-size: 40px;
+.empty-mark {
 
-    margin-bottom: 10px;
+    width: 38px;
+
+    height: 3px;
+
+    margin:
+        0 auto 14px;
+
+    background: #12c4c0;
+
+    border-radius: 5px;
 }
 
 
 .empty-state h2 {
-    font-size: 17px;
 
-    color: #4b5563;
+    font-size: 15px;
+
+    color: #d9e3eb;
 
     margin-bottom: 5px;
 }
 
 
 .empty-state p {
-    font-size: 12px;
 
-    color: #9ca3af;
+    font-size: 11px;
+
+    color: #91a9bb;
 }
 
 
 /* =========================================================
-   RESPONSIVO
+   RESPONSIVIDADE
 ========================================================= */
 
-@media (max-width: 1300px) {
+@media (max-width: 1400px) {
 
-    .cards-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .pedidos-kpis {
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
     }
 
 }
@@ -760,74 +727,75 @@ body {
 
 @media (max-width: 1000px) {
 
-    .filters-card {
-        flex-direction: column;
+    .pedidos-grid {
 
-        align-items: stretch;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
 
-    .filter-fields {
-        width: 100%;
-    }
+    .pedidos-panel-wide {
 
-
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    .bottom-grid {
-        grid-template-columns: 1fr;
+        grid-column: span 2;
     }
 
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
 
-    .pedidos-dashboard {
-        padding: 16px;
+    .pedidos-kpis {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
 
-    .dashboard-header {
+    .pedidos-topbar {
+
         align-items: flex-start;
 
         flex-direction: column;
     }
 
 
-    .header-status {
+    .pedidos-status {
+
         width: 100%;
     }
 
+}
 
-    .filter-fields {
-        flex-direction: column;
 
-        align-items: stretch;
+@media (max-width: 600px) {
+
+    .pedidos-dashboard {
+
+        padding: 14px;
     }
 
 
-    .filter-group {
-        width: 100%;
+    .pedidos-kpis {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
 
-    .filter-group input,
-    .btn-primary,
-    .btn-secondary {
-        width: 100%;
+    .pedidos-grid {
+
+        grid-template-columns: 1fr;
     }
 
 
-    .cards-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .pedidos-panel-wide {
+
+        grid-column: span 1;
     }
 
 
     .conversion-grid {
+
         grid-template-columns: 1fr;
     }
 
@@ -836,18 +804,27 @@ body {
 
 @media (max-width: 450px) {
 
-    .cards-grid {
+    .pedidos-kpis {
+
         grid-template-columns: 1fr;
     }
 
 
-    .metric-value {
-        font-size: 21px;
+    .pedidos-brand {
+
+        align-items: flex-start;
     }
 
 
-    .header-info h1 {
-        font-size: 23px;
+    .pedidos-brand h1 {
+
+        font-size: 22px;
+    }
+
+
+    .pedidos-chart {
+
+        height: 190px;
     }
 
 }
