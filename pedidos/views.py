@@ -40,7 +40,8 @@ from .mysql_service import (
     buscar_fin_dre,
     consultar_monitor_carga,
     consultar_acessos_portal,
-    consultar_pedidos
+    consultar_pedidos,
+    BuscarAprovacaoMPQualidade
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -4651,5 +4652,17 @@ def pedidos_view(request):
         "indicadores/comercial/pedidos.html",
         {
             "dados": dados,
+        }
+    )
+
+
+def relatorio_aprovacao_mp_qualidade(request):
+    dados = BuscarAprovacaoMPQualidade()
+
+    return render(
+        request,
+        "relatorios/relatorio_aprovacao_mp_qualidade.html",
+        {
+            "dados": dados
         }
     )

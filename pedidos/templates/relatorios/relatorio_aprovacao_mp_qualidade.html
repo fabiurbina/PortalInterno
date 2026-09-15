@@ -1,0 +1,566 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aprovação MP - Qualidade</title>
+
+    <style>
+
+        /* ============================================================
+           GERAL
+           ============================================================ */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .qualidade-container {
+            width: 100%;
+            padding: 25px 30px;
+        }
+
+
+        /* ============================================================
+           CABEÇALHO
+           ============================================================ */
+
+        .qualidade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .qualidade-titulo {
+            margin: 0;
+            font-size: 25px;
+            font-weight: 700;
+            color: #0D3B66;
+        }
+
+        .qualidade-subtitulo {
+            margin: 5px 0 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+
+        /* ============================================================
+           BOTÃO EXPORTAR
+           ============================================================ */
+
+        .btn-exportar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 10px 18px;
+
+            border: none;
+            border-radius: 7px;
+
+            background: #198754;
+            color: #fff;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-exportar:hover {
+            background: #157347;
+        }
+
+
+        /* ============================================================
+           TABELA
+           ============================================================ */
+
+        .qualidade-tabela-card {
+            background: #fff;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.08);
+
+            overflow: hidden;
+        }
+
+        .qualidade-tabela-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .qualidade-tabela {
+            width: 100%;
+            min-width: 1400px;
+
+            border-collapse: collapse;
+
+            font-size: 13px;
+        }
+
+        .qualidade-tabela thead {
+            background: #0D3B66;
+            color: #fff;
+        }
+
+        .qualidade-tabela th {
+            padding: 13px 12px;
+
+            text-align: left;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            border-bottom:
+                2px solid #092c4c;
+        }
+
+        .qualidade-tabela td {
+            padding: 11px 12px;
+
+            border-bottom:
+                1px solid #e9ecef;
+
+            color: #343a40;
+
+            vertical-align: middle;
+        }
+
+        .qualidade-tabela tbody tr:hover {
+            background: #f5f9fc;
+        }
+
+
+        /* ============================================================
+           COLUNAS
+           ============================================================ */
+
+        .col-id {
+            width: 60px;
+            text-align: center;
+        }
+
+        .col-quantidade {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .col-data {
+            white-space: nowrap;
+        }
+
+        .col-lote {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .col-motivo {
+            min-width: 180px;
+            max-width: 300px;
+
+            white-space: normal;
+
+            line-height: 1.4;
+        }
+
+        .col-observacoes {
+            min-width: 180px;
+            max-width: 300px;
+
+            white-space: normal;
+
+            line-height: 1.4;
+        }
+
+
+        /* ============================================================
+           PARECER
+           ============================================================ */
+
+        .parecer {
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            white-space: nowrap;
+        }
+
+        .parecer-aprovado {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .parecer-reprovado {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .parecer-pendente {
+            background: #fff3cd;
+            color: #664d03;
+        }
+
+        .parecer-default {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+
+        /* ============================================================
+           SEM REGISTROS
+           ============================================================ */
+
+        .sem-registros {
+            padding: 35px !important;
+
+            text-align: center;
+
+            color: #6c757d;
+        }
+
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+
+        @media (max-width: 700px) {
+
+            .qualidade-container {
+                padding: 15px;
+            }
+
+            .qualidade-header {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .qualidade-titulo {
+                font-size: 21px;
+            }
+
+            .btn-exportar {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="qualidade-container">
+
+
+    <!-- ============================================================
+         CABEÇALHO
+         ============================================================ -->
+
+    <div class="qualidade-header">
+
+        <div>
+
+            <h2 class="qualidade-titulo">
+                Aprovação MP - Qualidade
+            </h2>
+
+            <p class="qualidade-subtitulo">
+                Controle de inspeção e aprovação de matéria-prima
+            </p>
+
+        </div>
+
+
+        <button
+            class="btn-exportar"
+            onclick="exportarExcel()"
+        >
+            Exportar Excel
+        </button>
+
+    </div>
+
+
+    <!-- ============================================================
+         TABELA
+         ============================================================ -->
+
+    <div class="qualidade-tabela-card">
+
+        <div class="qualidade-tabela-wrapper">
+
+            <table
+                class="qualidade-tabela"
+                id="tabelaQualidade"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th class="col-id">
+                            ID
+                        </th>
+
+                        <th>
+                            Fornecedor
+                        </th>
+
+                        <th>
+                            Produto
+                        </th>
+
+                        <th class="col-quantidade">
+                            Quantidade
+                        </th>
+
+                        <th class="col-lote">
+                            Lote
+                        </th>
+
+                        <th class="col-data">
+                            Fabricação
+                        </th>
+
+                        <th class="col-data">
+                            Validade
+                        </th>
+
+                        <th class="col-data">
+                            Recebimento
+                        </th>
+
+                        <th class="col-data">
+                            Inspeção
+                        </th>
+
+                        <th>
+                            Parecer
+                        </th>
+
+                        <th class="col-motivo">
+                            Motivo
+                        </th>
+
+                        <th class="col-observacoes">
+                            Observações
+                        </th>
+
+                        <th>
+                            Responsável
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in dados %}
+
+                    <tr>
+
+                        <td class="col-id">
+                            {{ item.id }}
+                        </td>
+
+                        <td>
+                            {{ item.codigo_for|default:"-" }}
+                        </td>
+
+                        <td>
+                            {{ item.codigo_produto|default:"-" }}
+                        </td>
+
+                        <td class="col-quantidade">
+                            {{ item.qtdd|default:"-" }}
+                        </td>
+
+                        <td class="col-lote">
+                            {{ item.lote|default:"-" }}
+                        </td>
+
+                        <td class="col-data">
+                            {{ item.data_fabricacao|date:"d/m/Y" }}
+                        </td>
+
+                        <td class="col-data">
+                            {{ item.data_validade|date:"d/m/Y" }}
+                        </td>
+
+                        <td class="col-data">
+                            {{ item.data_recebimento|date:"d/m/Y" }}
+                        </td>
+
+                        <td class="col-data">
+                            {{ item.data|date:"d/m/Y" }}
+                        </td>
+
+
+                        <!-- PARECER -->
+
+                        <td>
+
+                            {% if item.descricao %}
+
+                                {% with parecer=item.descricao|lower %}
+
+                                    {% if "aprov" in parecer %}
+
+                                        <span class="parecer parecer-aprovado">
+                                            {{ item.descricao }}
+                                        </span>
+
+                                    {% elif "reprov" in parecer %}
+
+                                        <span class="parecer parecer-reprovado">
+                                            {{ item.descricao }}
+                                        </span>
+
+                                    {% elif "pend" in parecer %}
+
+                                        <span class="parecer parecer-pendente">
+                                            {{ item.descricao }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="parecer parecer-default">
+                                            {{ item.descricao }}
+                                        </span>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            {% else %}
+
+                                <span class="parecer parecer-default">
+                                    -
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="col-motivo">
+                            {{ item.motivo|default:"-" }}
+                        </td>
+
+
+                        <td class="col-observacoes">
+                            {{ item.observacoes|default:"-" }}
+                        </td>
+
+
+                        <td>
+                            {{ item.nome|default:"-" }}
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="13"
+                            class="sem-registros"
+                        >
+                            Nenhum registro encontrado.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     EXPORTAÇÃO EXCEL
+     ============================================================ -->
+
+<script>
+
+function exportarExcel() {
+
+    const tabela =
+        document.getElementById("tabelaQualidade");
+
+
+    if (
+        typeof XLSX === "undefined"
+    ) {
+
+        alert(
+            "A biblioteca de exportação para Excel não está disponível."
+        );
+
+        return;
+
+    }
+
+
+    const wb =
+        XLSX.utils.table_to_book(
+            tabela,
+            {
+                sheet: "Aprovação MP"
+            }
+        );
+
+
+    XLSX.writeFile(
+        wb,
+        "aprovacao_mp_qualidade.xlsx"
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+```

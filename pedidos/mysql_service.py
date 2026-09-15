@@ -1257,3 +1257,20 @@ def consultar_pedidos():
 
     finally:
         conexao.close()
+        
+        
+def BuscarAprovacaoMPQualidade():
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM ViesanoDW.vw_aprovacao_MP_qualidade
+            ORDER BY data DESC
+        """)
+
+        return cursor.fetchall()
+
+    finally:
+        conexao.close()
