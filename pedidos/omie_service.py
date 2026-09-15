@@ -504,11 +504,34 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
 
     novas_entradas = []
 
+    # ==========================================================
+    # Criar saldo de associação dos lotes
+    # ==========================================================
+
+    saldo_lotes = {}
+
+    for cod_prod, lotes_produto in indice_lotes.items():
+
+        saldo_lotes[cod_prod] = []
+
+        for lote in lotes_produto:
+
+            saldo_lotes[cod_prod].append({
+                **lote,
+                "saldo_associacao": float(
+                    lote.get("quantidade_entrada", 0)
+                )
+            })
+
+    # ==========================================================
+    # Entradas
+    # ==========================================================
+
     for entrada in entradas:
 
-        # ==========================
+        # ======================================================
         # Pedido + Fornecedor
-        # ==========================
+        # ======================================================
 
         info = indice.get(entrada["cod_prod"])
 
@@ -536,11 +559,11 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
 
             entrada.update(info)
 
-        # ==========================
+        # ======================================================
         # Lotes do produto
-        # ==========================
+        # ======================================================
 
-        lotes_produto = indice_lotes.get(
+        lotes_produto = saldo_lotes.get(
             entrada["cod_prod"],
             []
         )
@@ -556,35 +579,31 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
 
             continue
 
-        # ==========================
+        # ======================================================
         # Quantidade da entrada
-        # ==========================
+        # ======================================================
 
         quantidade_restante = float(
             entrada["quantidade"]
         )
 
-        # ==========================
-        # Associar lotes à entrada
-        # ==========================
+        # ======================================================
+        # Associar entrada aos lotes
+        # ======================================================
 
         for lote in lotes_produto:
 
-            quantidade_lote = float(
-                lote.get("quantidade_entrada", 0)
-            )
+            saldo_lote = lote["saldo_associacao"]
 
-            if quantidade_lote <= 0:
+            if saldo_lote <= 0:
                 continue
 
             if quantidade_restante <= 0:
                 break
 
-            # Quantidade deste lote pertencente
-            # a esta entrada
             quantidade_associada = min(
                 quantidade_restante,
-                quantidade_lote
+                saldo_lote
             )
 
             nova_entrada = entrada.copy()
@@ -593,14 +612,18 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
             nova_entrada["fabricacao"] = lote["fabricacao"]
             nova_entrada["validade"] = lote["validade"]
 
-            nova_entrada["quantidade"] = (
-                quantidade_associada
-            )
+            nova_entrada["quantidade"] = quantidade_associada
 
-            # Nova entrada começa PENDENTE
+            # Nova entrada começa pendente
             nova_entrada["status"] = "PENDENTE"
 
             novas_entradas.append(nova_entrada)
+
+            # ==================================================
+            # Baixa o lote já utilizado
+            # ==================================================
+
+            lote["saldo_associacao"] -= quantidade_associada
 
             quantidade_restante -= quantidade_associada
 
