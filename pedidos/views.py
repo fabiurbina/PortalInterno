@@ -4639,7 +4639,9 @@ def monitor_carga_view(request):
         }
     )
     
-    
+
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+@xframe_options_sameorigin
 def pedidos_view(request):
 
     dados = consultar_pedidos()
