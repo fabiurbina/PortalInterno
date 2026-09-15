@@ -1267,7 +1267,7 @@ def BuscarAprovacaoMPQualidade():
         cursor.execute("""
             SELECT *
             FROM ViesanoDW.vw_aprovacao_MP_qualidade
-            ORDER BY data DESC
+            ORDER BY id ASC
         """)
 
         return cursor.fetchall()
