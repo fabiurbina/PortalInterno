@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -346,7 +345,7 @@
             </a>
 
         </div>
-
+    </div>
 
     <!-- ============================================================
          TABELA
@@ -554,52 +553,7 @@
 
 </div>
 
-
-<!-- ============================================================
-     EXPORTAÇÃO EXCEL
-     ============================================================ -->
-
-<script>
-
-function exportarExcel() {
-
-    const tabela =
-        document.getElementById("tabelaQualidade");
-
-
-    if (
-        typeof XLSX === "undefined"
-    ) {
-
-        alert(
-            "A biblioteca de exportação para Excel não está disponível."
-        );
-
-        return;
-
-    }
-
-
-    const wb =
-        XLSX.utils.table_to_book(
-            tabela,
-            {
-                sheet: "Aprovação MP"
-            }
-        );
-
-
-    XLSX.writeFile(
-        wb,
-        "aprovacao_mp_qualidade.xlsx"
-    );
-
-}
-
-</script>
-
-
 </body>
 
 </html>
-```
+
