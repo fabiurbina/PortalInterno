@@ -896,74 +896,109 @@ function criarGraficoFluxoLeads(
    MODAL - RESULTADO DOS PEDIDOS
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("click", function (event) {
 
-    const botao = document.getElementById("btnResultadoPedidos");
-    const modal = document.getElementById("modalPedidos");
-    const fechar = document.getElementById("fecharModalPedidos");
-    const overlay = document.querySelector(".modal-pedidos-overlay");
-    const iframe = document.getElementById("iframePedidos");
+    const botao = event.target.closest("#btnResultadoPedidos");
 
-
-    if (!botao || !modal || !fechar || !overlay || !iframe) {
+    if (!botao) {
         return;
     }
 
+    event.preventDefault();
+    event.stopPropagation();
 
-    function abrirModal() {
+    const modal = document.getElementById("modalPedidos");
+    const iframe = document.getElementById("iframePedidos");
 
-        const url = botao.getAttribute("href");
-
-        iframe.src = url;
-
-        modal.classList.add("ativo");
-
-        document.documentElement.style.overflow = "hidden";
+    if (!modal || !iframe) {
+        console.error("Modal de pedidos não encontrado.");
+        return;
     }
 
+    iframe.src = botao.href;
 
-    function fecharModal() {
+    modal.classList.add("ativo");
 
-        modal.classList.remove("ativo");
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
 
-        iframe.src = "";
+});
 
-        document.documentElement.style.overflow = "";
+
+/* =========================================================
+   FECHAR MODAL
+========================================================= */
+
+document.addEventListener("click", function (event) {
+
+    const fechar = event.target.closest("#fecharModalPedidos");
+
+    if (!fechar) {
+        return;
     }
 
+    fecharModalPedidos();
 
-    botao.addEventListener("click", function (event) {
-
-        event.preventDefault();
-
-        abrirModal();
-
-    });
+});
 
 
-    fechar.addEventListener("click", function () {
+/* =========================================================
+   FECHAR CLICANDO NO FUNDO
+========================================================= */
 
-        fecharModal();
+document.addEventListener("click", function (event) {
 
-    });
+    if (
+        event.target.classList.contains(
+            "modal-pedidos-overlay"
+        )
+    ) {
+        fecharModalPedidos();
+    }
+
+});
 
 
-    overlay.addEventListener("click", function () {
+/* =========================================================
+   FUNÇÃO FECHAR
+========================================================= */
 
-        fecharModal();
+function fecharModalPedidos() {
 
-    });
+    const modal = document.getElementById("modalPedidos");
+    const iframe = document.getElementById("iframePedidos");
+
+    if (!modal || !iframe) {
+        return;
+    }
+
+    modal.classList.remove("ativo");
+
+    iframe.src = "";
+
+    document.documentElement.style.overflow = "";
+    document.body.style.overflow = "";
+
+}
 
 
-    document.addEventListener("keydown", function (event) {
+/* =========================================================
+   ESC
+========================================================= */
 
-        if (
-            event.key === "Escape" &&
-            modal.classList.contains("ativo")
-        ) {
-            fecharModal();
-        }
+document.addEventListener("keydown", function (event) {
 
-    });
+    if (event.key !== "Escape") {
+        return;
+    }
+
+    const modal = document.getElementById("modalPedidos");
+
+    if (
+        modal &&
+        modal.classList.contains("ativo")
+    ) {
+        fecharModalPedidos();
+    }
 
 });
