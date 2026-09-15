@@ -456,20 +456,28 @@ def consultar_fornecedor(cod_fornecedor):
     return response.json()
 
 def criar_indice_lotes(data):
+
     indice = {}
 
     for produto in data.get("listaLotes", []):
+
         cod_prod = produto["ident"]["nCodProd"]
         lotes = produto.get("lotes", [])
 
         indice[cod_prod] = []
 
         for lote in lotes:
+
             indice[cod_prod].append({
                 "lote": lote["cNumLote"],
                 "fabricacao": lote["dDataFabricacao"],
                 "validade": lote["dDataValidade"],
-                "quantidade": lote["nQuantDisponivel"]
+
+                # Quantidade que entrou originalmente no lote
+                "quantidade_entrada": lote["nQuantEntrada"],
+
+                # Saldo atual
+                "quantidade": lote["nQuantDisponivel"],
             })
 
     return indice
@@ -477,19 +485,23 @@ def criar_indice_lotes(data):
 
 def listar_entradas_com_fornecedor(data_inicial, data_final):
 
-    entradas = listar_movimentos_entrada(data_inicial, data_final)
-    pedidos = listar_pedidos_compra(data_inicial, data_final)
+    entradas = listar_movimentos_entrada(
+        data_inicial,
+        data_final
+    )
+
+    pedidos = listar_pedidos_compra(
+        data_inicial,
+        data_final
+    )
+
     lotes = listar_lotes()
 
     indice = criar_indice_pedidos(pedidos)
     indice_lotes = criar_indice_lotes(lotes)
 
-    from pprint import pprint
-
-    print("===== INDICE LOTES =====")
-    pprint(indice_lotes)
-
     cache_fornecedor = {}
+
     novas_entradas = []
 
     for entrada in entradas:
@@ -505,26 +517,27 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
             cod_for = info["cod_fornecedor"]
 
             if cod_for == 0:
+
                 entrada["fornecedor"] = "Não cadastrado"
 
             else:
 
                 if cod_for not in cache_fornecedor:
 
-                    print("cod_for =", cod_for)
-
                     fornecedor = consultar_fornecedor(cod_for)
 
-                    pprint(fornecedor)
+                    cache_fornecedor[cod_for] = (
+                        fornecedor["razao_social"]
+                    )
 
-                    cache_fornecedor[cod_for] = fornecedor["razao_social"]
-
-                entrada["fornecedor"] = cache_fornecedor[cod_for]
+                entrada["fornecedor"] = (
+                    cache_fornecedor[cod_for]
+                )
 
             entrada.update(info)
 
         # ==========================
-        # Lotes
+        # Lotes do produto
         # ==========================
 
         lotes_produto = indice_lotes.get(
@@ -537,21 +550,42 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
             entrada["lote"] = "Não cadastrado"
             entrada["fabricacao"] = "Não cadastrado"
             entrada["validade"] = "Não cadastrado"
-            entrada["status"] = "Aguardando"
+            entrada["status"] = "PENDENTE"
 
             novas_entradas.append(entrada)
 
             continue
 
         # ==========================
-        # Criar uma entrada por lote
+        # Quantidade da entrada
+        # ==========================
+
+        quantidade_restante = float(
+            entrada["quantidade"]
+        )
+
+        # ==========================
+        # Associar lotes à entrada
         # ==========================
 
         for lote in lotes_produto:
 
-            # Ignora lote sem saldo
-            if float(lote.get("quantidade", 0)) <= 0:
+            quantidade_lote = float(
+                lote.get("quantidade_entrada", 0)
+            )
+
+            if quantidade_lote <= 0:
                 continue
+
+            if quantidade_restante <= 0:
+                break
+
+            # Quantidade deste lote pertencente
+            # a esta entrada
+            quantidade_associada = min(
+                quantidade_restante,
+                quantidade_lote
+            )
 
             nova_entrada = entrada.copy()
 
@@ -559,22 +593,16 @@ def listar_entradas_com_fornecedor(data_inicial, data_final):
             nova_entrada["fabricacao"] = lote["fabricacao"]
             nova_entrada["validade"] = lote["validade"]
 
-            # Quantidade do lote
-            nova_entrada["quantidade"] = lote["quantidade"]
-
-            # ==========================
-            # Status da inspeção
-            # ==========================
-
-            nova_entrada["status"] = consultar_status_qualidade(
-                nova_entrada["cod_prod"],
-                nova_entrada["lote"]
+            nova_entrada["quantidade"] = (
+                quantidade_associada
             )
 
-            print("===== ENTRADA POR LOTE =====")
-            print(nova_entrada)
+            # Nova entrada começa PENDENTE
+            nova_entrada["status"] = "PENDENTE"
 
             novas_entradas.append(nova_entrada)
+
+            quantidade_restante -= quantidade_associada
 
     return novas_entradas
 
