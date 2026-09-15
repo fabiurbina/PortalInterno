@@ -4,47 +4,449 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Visualização da Inspeção</title>
+    <title>Inspeção de Qualidade</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #f5f7fa;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .documento {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* CABEÇALHO */
+
+        .cabecalho {
+            background: #0D3B66;
+            color: #fff;
+            padding: 25px 30px;
+        }
+
+        .cabecalho h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .cabecalho p {
+            margin: 6px 0 0;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* INFORMAÇÕES */
+
+        .informacoes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 25px 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .informacao {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 7px;
+            padding: 12px 15px;
+        }
+
+        .informacao-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .informacao-valor {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0D3B66;
+        }
+
+        /* TABELA */
+
+        .conteudo {
+            padding: 25px 30px 30px;
+        }
+
+        .titulo-tabela {
+            margin: 0 0 15px;
+            color: #0D3B66;
+            font-size: 18px;
+        }
+
+        .tabela {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tabela thead {
+            background: #0D3B66;
+            color: #fff;
+        }
+
+        .tabela th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .tabela td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .tabela tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .parametro {
+            width: 70px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .conforme {
+            width: 100px;
+            text-align: center;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-nao {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-vazio {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        /* RODAPÉ */
+
+        .acoes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-voltar {
+            border: 1px solid #0D3B66;
+            background: #fff;
+            color: #0D3B66;
+        }
+
+        .btn-voltar:hover {
+            background: #0D3B66;
+            color: #fff;
+        }
+
+        .btn-imprimir {
+            border: none;
+            background: #198754;
+            color: #fff;
+        }
+
+        .btn-imprimir:hover {
+            background: #157347;
+        }
+
+        /* RESPONSIVO */
+
+        @media (max-width: 800px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .informacoes {
+                grid-template-columns: 1fr;
+            }
+
+            .conteudo {
+                padding: 20px 15px;
+                overflow-x: auto;
+            }
+
+            .acoes {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+        }
+
+        /* IMPRESSÃO */
+
+        @media print {
+
+            body {
+                padding: 0;
+                background: #fff;
+            }
+
+            .documento {
+                box-shadow: none;
+                max-width: none;
+            }
+
+            .acoes {
+                display: none;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-    <h2>Inspeção de Qualidade</h2>
+<div class="documento">
 
-    {% for item in dados %}
+    <!-- CABEÇALHO -->
 
-        <p>
-            <strong>Parâmetro:</strong>
-            {{ item.id_parametro }}
-        </p>
+    <div class="cabecalho">
 
-        <p>
-            <strong>Descrição:</strong>
-            {{ item.descricao }}
-        </p>
+        <h1>
+            Inspeção de Qualidade
+        </h1>
 
         <p>
-            <strong>Resultado:</strong>
-            {{ item.resultado }}
+            Registro de inspeção e controle de qualidade de matéria-prima
         </p>
+
+    </div>
+
+
+    <!-- INFORMAÇÕES DA INSPEÇÃO -->
+
+    {% if dados %}
+
+    <div class="informacoes">
+
+        <div class="informacao">
+
+            <div class="informacao-label">
+                Inspeção
+            </div>
+
+            <div class="informacao-valor">
+                #{{ dados.0.id_inspecao }}
+            </div>
+
+        </div>
+
+
+        <div class="informacao">
+
+            <div class="informacao-label">
+                Lote
+            </div>
+
+            <div class="informacao-valor">
+                {{ dados.0.lote|default:"-" }}
+            </div>
+
+        </div>
+
+
+        <div class="informacao">
+
+            <div class="informacao-label">
+                Responsável
+            </div>
+
+            <div class="informacao-valor">
+                {{ dados.0.responsavel|default:"-" }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PARÂMETROS -->
+
+    <div class="conteudo">
+
+        <h2 class="titulo-tabela">
+            Parâmetros avaliados
+        </h2>
+
+        <table class="tabela">
+
+            <thead>
+
+                <tr>
+
+                    <th class="parametro">
+                        #
+                    </th>
+
+                    <th>
+                        Parâmetro
+                    </th>
+
+                    <th>
+                        Resultado
+                    </th>
+
+                    <th class="conforme">
+                        Conforme
+                    </th>
+
+                    <th>
+                        Observação
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in dados %}
+
+                <tr>
+
+                    <td class="parametro">
+                        {{ item.id_parametro }}
+                    </td>
+
+                    <td>
+                        {{ item.descricao }}
+                    </td>
+
+                    <td>
+                        {{ item.resultado|default:"-" }}
+                    </td>
+
+                    <td class="conforme">
+
+                        {% if item.conforme == 1 %}
+
+                            <span class="status status-ok">
+                                ✓ Sim
+                            </span>
+
+                        {% elif item.conforme == 0 %}
+
+                            <span class="status status-nao">
+                                ✕ Não
+                            </span>
+
+                        {% else %}
+
+                            <span class="status status-vazio">
+                                -
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ item.observacao|default:"-" }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="conteudo">
 
         <p>
-            <strong>Conforme:</strong>
-            {{ item.conforme }}
+            Nenhum dado encontrado para esta inspeção.
         </p>
 
-        <p>
-            <strong>Observação:</strong>
-            {{ item.observacao }}
-        </p>
+    </div>
 
-        <hr>
+    {% endif %}
 
-    {% endfor %}
+
+    <!-- AÇÕES -->
+
+    <div class="acoes">
+
+        <a
+            href="{% url 'relatorio_aprovacao_mp_qualidade' %}"
+            class="btn btn-voltar"
+        >
+            ← Voltar
+        </a>
+
+        <button
+            onclick="window.print()"
+            class="btn btn-imprimir"
+        >
+            🖨️ Imprimir / Salvar PDF
+        </button>
+
+    </div>
+
+</div>
 
 </body>
 
