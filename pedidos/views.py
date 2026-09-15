@@ -4666,3 +4666,114 @@ def relatorio_aprovacao_mp_qualidade(request):
             "dados": dados
         }
     )
+    
+    
+def exportar_aprovacao_mp_qualidade(request):
+
+    dados = BuscarAprovacaoMPQualidade()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Aprovação MP"
+
+    cabecalhos = [
+        "ID",
+        "Fornecedor",
+        "Código Produto",
+        "Produto",
+        "Quantidade",
+        "Lote",
+        "Fabricação",
+        "Validade",
+        "Recebimento",
+        "Inspeção",
+        "Parecer",
+        "Motivo",
+        "Observações",
+        "Responsável",
+    ]
+
+    ws.append(cabecalhos)
+
+    for celula in ws[1]:
+        celula.font = Font(bold=True, color="FFFFFF")
+        celula.fill = PatternFill(
+            "solid",
+            fgColor="0D3B66"
+        )
+        celula.alignment = Alignment(
+            horizontal="center"
+        )
+
+    for item in dados:
+
+        ws.append([
+            item["id"],
+            item["codigo_for"],
+            item["codigo_produto"],
+            item["Produto"],
+            item["qtdd"],
+            item["lote"],
+            item["data_fabricacao"],
+            item["data_validade"],
+            item["data_recebimento"],
+            item["data"],
+            item["descricao"],
+            item["motivo"],
+            item["observacoes"],
+            item["nome"],
+        ])
+
+    # Formatação das datas
+    for row in ws.iter_rows(
+        min_row=2,
+        min_col=7,
+        max_col=10
+    ):
+        for celula in row:
+            celula.number_format = "DD/MM/YYYY"
+
+    # Filtro no Excel
+    ws.auto_filter.ref = ws.dimensions
+
+    # Congelar cabeçalho
+    ws.freeze_panes = "A2"
+
+    # Ajustar largura das colunas
+    for coluna in ws.columns:
+
+        maior = 0
+        letra = get_column_letter(
+            coluna[0].column
+        )
+
+        for celula in coluna:
+
+            if celula.value is not None:
+
+                tamanho = len(
+                    str(celula.value)
+                )
+
+                if tamanho > maior:
+                    maior = tamanho
+
+        ws.column_dimensions[letra].width = min(
+            maior + 2,
+            40
+        )
+
+    response = HttpResponse(
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="aprovacao_mp_qualidade.xlsx"'
+    )
+
+    wb.save(response)
+
+    return response

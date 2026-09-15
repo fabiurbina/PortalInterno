@@ -1273,8 +1273,6 @@ def BuscarAprovacaoMPQualidade():
 
         dados = cursor.fetchall()
 
-        print(dados)
-
         return dados
 
     finally:

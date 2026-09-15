@@ -47,7 +47,8 @@ from .views import (
     financeiro_dre,
     monitor_carga_view,
     pedidos_view,
-    relatorio_aprovacao_mp_qualidade
+    relatorio_aprovacao_mp_qualidade,
+    exportar_aprovacao_mp_qualidade
 )
 
 
@@ -395,5 +396,12 @@ urlpatterns = [
     "relatorios/aprovacao-mp-qualidade/",
     relatorio_aprovacao_mp_qualidade,
     name="relatorio_aprovacao_mp_qualidade"
-)
+),
+        
+    path(
+    "relatorios/aprovacao-mp-qualidade/exportar/",
+    exportar_aprovacao_mp_qualidade,
+    name="exportar_aprovacao_mp_qualidade"
+),
+    
 ]
