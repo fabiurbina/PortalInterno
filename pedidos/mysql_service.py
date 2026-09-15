@@ -1264,13 +1264,18 @@ def BuscarAprovacaoMPQualidade():
 
     try:
         cursor = conexao.cursor()
+
         cursor.execute("""
             SELECT *
-            FROM ViesanoDW.vw_aprovacao_MP_qualidade
-            ORDER BY id ASC
+            FROM vw_aprovacao_MP_qualidade
+            ORDER BY data DESC
         """)
 
-        return cursor.fetchall()
+        dados = cursor.fetchall()
+
+        print(dados)
+
+        return dados
 
     finally:
         conexao.close()
