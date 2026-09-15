@@ -416,6 +416,10 @@
                             Responsável
                         </th>
 
+                        <th> 
+                            Ações
+                        </th>
+
                     </tr>
 
                 </thead>
@@ -523,6 +527,12 @@
 
                         <td>
                             {{ item.nome|default:"-" }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'visualizar_aprovacao_mp_qualidade' item.id %}">
+                                👁️
+                            </a>
                         </td>
 
                     </tr>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Visualização da Inspeção</title>
+
+</head>
+
+<body>
+
+    <h2>Inspeção de Qualidade</h2>
+
+    {% for item in dados %}
+
+        <p>
+            <strong>Parâmetro:</strong>
+            {{ item.id_parametro }}
+        </p>
+
+        <p>
+            <strong>Descrição:</strong>
+            {{ item.descricao }}
+        </p>
+
+        <p>
+            <strong>Resultado:</strong>
+            {{ item.resultado }}
+        </p>
+
+        <p>
+            <strong>Conforme:</strong>
+            {{ item.conforme }}
+        </p>
+
+        <p>
+            <strong>Observação:</strong>
+            {{ item.observacao }}
+        </p>
+
+        <hr>
+
+    {% endfor %}
+
+</body>
+
+</html>

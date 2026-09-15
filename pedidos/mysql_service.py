@@ -1277,3 +1277,35 @@ def BuscarAprovacaoMPQualidade():
 
     finally:
         conexao.close()
+        
+        
+def BuscarDetalhesInspecao(id_inspecao):
+
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            SELECT 
+                ri.id_inspecao,
+                ri.id_parametro,
+                iq.descricao,
+                ri.resultado,
+                ri.conforme,
+                ri.observacao,
+                tiq.responsavel,
+                tiq.lote
+            FROM ViesanoDW.tabResultadoInspecao ri
+            INNER JOIN tabItensQualidade iq 
+                ON iq.id_parametro = ri.id_parametro
+            INNER JOIN tabInpecaoQualidade tiq 
+                ON tiq.id = ri.id_inspecao
+            WHERE ri.id_inspecao = %s
+            ORDER BY ri.id_parametro
+        """, (id_inspecao,))
+
+        return cursor.fetchall()
+
+    finally:
+        conexao.close()

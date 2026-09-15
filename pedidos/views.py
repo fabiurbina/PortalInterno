@@ -41,7 +41,8 @@ from .mysql_service import (
     consultar_monitor_carga,
     consultar_acessos_portal,
     consultar_pedidos,
-    BuscarAprovacaoMPQualidade
+    BuscarAprovacaoMPQualidade,
+    BuscarDetalhesInspecao
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -4777,3 +4778,16 @@ def exportar_aprovacao_mp_qualidade(request):
     wb.save(response)
 
     return response
+
+
+def visualizar_aprovacao_mp_qualidade(request, id_inspecao):
+
+    dados = BuscarDetalhesInspecao(id_inspecao)
+
+    return render(
+        request,
+        "relatorios/visualizar_aprovacao_mp_qualidade.html",
+        {
+            "dados": dados,
+        }
+    )
