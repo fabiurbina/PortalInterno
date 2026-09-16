@@ -1309,3 +1309,22 @@ def BuscarDetalhesInspecao(id_inspecao):
 
     finally:
         conexao.close()
+        
+        
+def BuscarCabecalhoAprovacaoMPQualidade(id_inspecao):
+
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            SELECT *
+            FROM vw_aprovacao_MP_qualidade
+            WHERE id = %s
+        """, (id_inspecao,))
+
+        return cursor.fetchone()
+
+    finally:
+        conexao.close()

@@ -42,7 +42,8 @@ from .mysql_service import (
     consultar_acessos_portal,
     consultar_pedidos,
     BuscarAprovacaoMPQualidade,
-    BuscarDetalhesInspecao
+    BuscarDetalhesInspecao,
+    BuscarCabecalhoAprovacaoMPQualidade
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -4782,43 +4783,20 @@ def exportar_aprovacao_mp_qualidade(request):
 
 def visualizar_aprovacao_mp_qualidade(request, id_inspecao):
 
-    # ============================================================
-    # CABEÇALHO
-    # ============================================================
-
-    conexao = conectar()
-
-    try:
-        cursor = conexao.cursor()
-
-        cursor.execute("""
-            SELECT *
-            FROM vw_aprovacao_MP_qualidade
-            WHERE id = %s
-        """, (id_inspecao,))
-
-        ficha = cursor.fetchone()
-
-    finally:
-        conexao.close()
-
-
-    # ============================================================
-    # RESULTADOS DA INSPEÇÃO
-    # ============================================================
+    ficha = BuscarCabecalhoAprovacaoMPQualidade(id_inspecao)
 
     dados = BuscarDetalhesInspecao(id_inspecao)
 
-
-    # ============================================================
-    # ENVIA PARA O HTML
-    # ============================================================
+    resultados = {
+        item["id_parametro"]: item
+        for item in dados
+    }
 
     return render(
         request,
         "relatorios/visualizar_aprovacao_mp_qualidade.html",
         {
             "ficha": ficha,
-            "dados": dados,
+            "resultados": resultados,
         }
     )
