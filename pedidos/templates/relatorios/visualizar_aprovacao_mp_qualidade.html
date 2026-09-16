@@ -1,411 +1,782 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
-    <title>Inspeção de Qualidade</title>
+<title>
+    Controle de Qualidade
+</title>
 
-    <style>
+<link
+    rel="icon"
+    type="image/png"
+    href="{% static 'img/logo_viesano.png' %}"
+>
 
-        * {
-            box-sizing: border-box;
-        }
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
 
-        body {
-            margin: 0;
-            padding: 30px;
-            background: #f5f7fa;
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
+<style>
 
-        .documento {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-        }
+body{
+    background:#f4f6f9;
+}
 
-        /* CABEÇALHO */
+.qualidade-header{
+    background: linear-gradient(
+        90deg,
+        #0D3B66,
+        #2EC4B6
+    );
 
-        .cabecalho {
-            background: #0D3B66;
-            color: #fff;
-            padding: 25px 30px;
-        }
+    color:white;
 
-        .cabecalho h1 {
-            margin: 0;
-            font-size: 24px;
-        }
+    padding:25px;
 
-        .cabecalho p {
-            margin: 6px 0 0;
-            font-size: 14px;
-            opacity: 0.85;
-        }
+    border-radius:12px 12px 0 0;
+}
 
-        /* INFORMAÇÕES */
+.qualidade-card{
+    border:none;
+    border-radius:12px;
+    overflow:hidden;
+}
 
-        .informacoes {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 25px 30px;
-            border-bottom: 1px solid #e9ecef;
-        }
+.card{
+    border:none;
+    border-radius:12px;
+}
 
-        .informacao {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 7px;
-            padding: 12px 15px;
-        }
+.card-header{
+    font-weight:600;
+}
 
-        .informacao-label {
-            font-size: 11px;
-            color: #6c757d;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
+/* CAMPOS SOMENTE LEITURA */
 
-        .informacao-valor {
-            font-size: 14px;
-            font-weight: 600;
-            color: #0D3B66;
-        }
+input[readonly],
+textarea[readonly],
+select:disabled{
+    background-color:#f8f9fa;
+    cursor:default;
+}
 
-        /* TABELA */
-
-        .conteudo {
-            padding: 25px 30px 30px;
-        }
-
-        .titulo-tabela {
-            margin: 0 0 15px;
-            color: #0D3B66;
-            font-size: 18px;
-        }
-
-        .tabela {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .tabela thead {
-            background: #0D3B66;
-            color: #fff;
-        }
-
-        .tabela th {
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .tabela td {
-            padding: 11px 12px;
-            border-bottom: 1px solid #e9ecef;
-            vertical-align: middle;
-        }
-
-        .tabela tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .parametro {
-            width: 70px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .conforme {
-            width: 100px;
-            text-align: center;
-        }
-
-        /* STATUS */
-
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-ok {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .status-nao {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        .status-vazio {
-            background: #e9ecef;
-            color: #6c757d;
-        }
-
-        /* RODAPÉ */
-
-        .acoes {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            border-top: 1px solid #e9ecef;
-            background: #f8f9fa;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 18px;
-            border-radius: 7px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn-voltar {
-            border: 1px solid #0D3B66;
-            background: #fff;
-            color: #0D3B66;
-        }
-
-        .btn-voltar:hover {
-            background: #0D3B66;
-            color: #fff;
-        }
-
-        .btn-imprimir {
-            border: none;
-            background: #198754;
-            color: #fff;
-        }
-
-        .btn-imprimir:hover {
-            background: #157347;
-        }
-
-        /* RESPONSIVO */
-
-        @media (max-width: 800px) {
-
-            body {
-                padding: 15px;
-            }
-
-            .informacoes {
-                grid-template-columns: 1fr;
-            }
-
-            .conteudo {
-                padding: 20px 15px;
-                overflow-x: auto;
-            }
-
-            .acoes {
-                flex-direction: column;
-                gap: 10px;
-                align-items: stretch;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-        }
-
-        /* IMPRESSÃO */
-
-        @media print {
-
-            body {
-                padding: 0;
-                background: #fff;
-            }
-
-            .documento {
-                box-shadow: none;
-                max-width: none;
-            }
-
-            .acoes {
-                display: none;
-            }
-
-        }
-
-    </style>
+</style>
 
 </head>
 
-<body>
+<body class="container py-4">
 
-<div class="documento">
+<!-- ========================================================= -->
+<!-- CABEÇALHO -->
+<!-- ========================================================= -->
 
-    <!-- CABEÇALHO -->
+<div class="card shadow qualidade-card mb-4">
 
-    <div class="cabecalho">
+    <div class="qualidade-header">
 
-        <h1>
-            Inspeção de Qualidade
-        </h1>
+        <div class="d-flex justify-content-between">
 
-        <p>
-            Registro de inspeção e controle de qualidade de matéria-prima
-        </p>
+            <div>
 
-    </div>
+                <h2 class="mb-0">
+                    Controle de Qualidade
+                </h2>
 
+                <small>
+                    Recebimento e Liberação de Matérias-Primas
+                </small>
 
-    <!-- INFORMAÇÕES DA INSPEÇÃO -->
-
-    {% if dados %}
-
-    <div class="informacoes">
-
-        <div class="informacao">
-
-            <div class="informacao-label">
-                Inspeção
             </div>
 
-            <div class="informacao-valor">
-                #{{ dados.0.id_inspecao }}
-            </div>
+            <div class="text-end">
 
-        </div>
+                <strong>
+                    VIESANO SUPLEMENTOS
+                </strong>
 
+                <br>
 
-        <div class="informacao">
+                <small>
+                    Sistema de Gestão da Qualidade
+                </small>
 
-            <div class="informacao-label">
-                Lote
-            </div>
-
-            <div class="informacao-valor">
-                {{ dados.0.lote|default:"-" }}
-            </div>
-
-        </div>
-
-
-        <div class="informacao">
-
-            <div class="informacao-label">
-                Responsável
-            </div>
-
-            <div class="informacao-valor">
-                {{ dados.0.responsavel|default:"-" }}
             </div>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- PARÂMETROS -->
 
-    <div class="conteudo">
+<!-- ========================================================= -->
+<!-- INFORMAÇÕES DO LOTE -->
+<!-- ========================================================= -->
 
-        <h2 class="titulo-tabela">
-            Parâmetros avaliados
-        </h2>
+<div class="row mb-4">
 
-        <table class="tabela">
+    <div class="col-md-3">
 
-            <thead>
+        <strong>Quantidade:</strong><br>
 
-                <tr>
+        {{ ficha.qtdd }}
 
-                    <th class="parametro">
-                        #
-                    </th>
+    </div>
 
-                    <th>
+
+    <div class="col-md-3">
+
+        <strong>Data de recebimento:</strong><br>
+
+        {{ ficha.data_recebimento|date:"d/m/Y" }}
+
+    </div>
+
+
+    <div class="col-md-3">
+
+        <strong>Lote:</strong><br>
+
+        {{ ficha.lote }}
+
+    </div>
+
+
+    <div class="col-md-3">
+
+        <strong>Fabricação:</strong><br>
+
+        {{ ficha.data_fabricacao|date:"d/m/Y" }}
+
+    </div>
+
+
+    <div class="col-md-3 mt-3">
+
+        <strong>Validade:</strong><br>
+
+        {{ ficha.data_validade|date:"d/m/Y" }}
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- DADOS DO PRODUTO -->
+<!-- ========================================================= -->
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-success text-white">
+
+        Dados do Produto
+
+    </div>
+
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <strong>Produto:</strong>
+
+                {{ ficha.Produto }}
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <strong>Fornecedor:</strong>
+
+                {{ ficha.codigo_for }}
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <strong>Código:</strong>
+
+                {{ ficha.codigo_produto }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- INSPEÇÃO -->
+<!-- ========================================================= -->
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-primary text-white">
+
+        Inspeção da Matéria-Prima
+
+    </div>
+
+
+    <div class="card-body p-0">
+
+        <table class="table table-bordered table-hover align-middle mb-0">
+
+            <thead class="table-light">
+
+                <tr class="text-center">
+
+                    <th width="35%">
                         Parâmetro
                     </th>
 
                     <th>
-                        Resultado
+                        Resultado Obtido
                     </th>
 
-                    <th class="conforme">
+                    <th width="120">
                         Conforme
                     </th>
 
-                    <th>
-                        Observação
+                    <th width="150">
+                        Não Conforme
                     </th>
 
                 </tr>
 
             </thead>
 
+
             <tbody>
 
-                {% for item in dados %}
+
+                <!-- ================================================= -->
+                <!-- INSPEÇÃO VISUAL -->
+                <!-- ================================================= -->
 
                 <tr>
 
-                    <td class="parametro">
-                        {{ item.id_parametro }}
-                    </td>
-
                     <td>
-                        {{ item.descricao }}
+                        <strong>Embalagem íntegra</strong>
                     </td>
 
-                    <td>
-                        {{ item.resultado|default:"-" }}
+                    <td class="text-center">
+                        -
                     </td>
 
-                    <td class="conforme">
+                    <td class="text-center">
 
-                        {% if item.conforme == 1 %}
-
-                            <span class="status status-ok">
-                                ✓ Sim
-                            </span>
-
-                        {% elif item.conforme == 0 %}
-
-                            <span class="status status-nao">
-                                ✕ Não
-                            </span>
-
-                        {% else %}
-
-                            <span class="status status-vazio">
-                                -
-                            </span>
-
-                        {% endif %}
+                        <input
+                            type="radio"
+                            {% if resultados.1.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
 
                     </td>
 
-                    <td>
-                        {{ item.observacao|default:"-" }}
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.1.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
                     </td>
 
                 </tr>
 
-                {% endfor %}
+
+                <tr>
+
+                    <td>
+                        <strong>Ausência de umidade</strong>
+                    </td>
+
+                    <td class="text-center">
+                        -
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.2.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.2.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Ausência de avarias</strong>
+                    </td>
+
+                    <td class="text-center">
+                        -
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.3.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.3.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Identificação legível</strong>
+                    </td>
+
+                    <td class="text-center">
+                        -
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.4.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.4.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Lacre íntegro</strong>
+                    </td>
+
+                    <td class="text-center">
+                        -
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.5.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.5.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <!-- ================================================= -->
+                <!-- ANÁLISE SENSORIAL -->
+                <!-- ================================================= -->
+
+                <tr class="table-secondary">
+
+                    <th colspan="4">
+                        Análise Sensorial
+                    </th>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Aspecto</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.6.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.6.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.6.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Cor</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.7.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.7.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.7.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Odor</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.8.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.8.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.8.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Materiais Estranhos</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.9.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.9.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.9.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <!-- ================================================= -->
+                <!-- FÍSICO QUÍMICA -->
+                <!-- ================================================= -->
+
+                <tr class="table-secondary">
+
+                    <th colspan="4">
+                        Análise Físico-Química
+                    </th>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Densidade</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.10.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.10.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.10.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Umidade</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.11.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.11.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.11.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>Solubilidade</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.12.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.12.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.12.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>pH</strong>
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ resultados.13.resultado|default:'' }}"
+                            readonly
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.13.conforme == 1 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <input
+                            type="radio"
+                            {% if resultados.13.conforme == 0 %}checked{% endif %}
+                            disabled
+                        >
+
+                    </td>
+
+                </tr>
+
 
             </tbody>
 
@@ -413,40 +784,183 @@
 
     </div>
 
-    {% else %}
+</div>
 
-    <div class="conteudo">
 
-        <p>
-            Nenhum dado encontrado para esta inspeção.
-        </p>
+<!-- ========================================================= -->
+<!-- RESULTADO DA INSPEÇÃO -->
+<!-- ========================================================= -->
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-warning">
+
+        Resultado da Inspeção
 
     </div>
 
-    {% endif %}
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    Data da Inspeção
+                </label>
+
+                <input
+                    type="date"
+                    class="form-control"
+                    value="{{ ficha.data|date:'Y-m-d' }}"
+                    readonly
+                >
+
+            </div>
 
 
-    <!-- AÇÕES -->
+            <div class="col-md-4">
 
-    <div class="acoes">
+                <label class="form-label">
+                    Hora Início
+                </label>
+
+                <input
+                    type="time"
+                    class="form-control"
+                    value="{{ ficha.hora_inicio|default:'' }}"
+                    readonly
+                >
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    Hora Fim
+                </label>
+
+                <input
+                    type="time"
+                    class="form-control"
+                    value="{{ ficha.hora_fim|default:'' }}"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        <textarea
+            class="form-control mb-3"
+            rows="4"
+            readonly
+        >{{ ficha.observacoes|default:'' }}</textarea>
+
+
+        <!-- PARECER -->
+
+        <div class="form-check">
+
+            <input
+                class="form-check-input"
+                type="radio"
+                {% if ficha.descricao == "Aprovado" %}checked{% endif %}
+                disabled
+            >
+
+            <label class="form-check-label">
+                Aprovado
+            </label>
+
+        </div>
+
+
+        <div class="form-check">
+
+            <input
+                class="form-check-input"
+                type="radio"
+                {% if ficha.descricao == "Reprovado" %}checked{% endif %}
+                disabled
+            >
+
+            <label class="form-check-label">
+                Reprovado
+            </label>
+
+        </div>
+
+
+        <div class="form-check mb-3">
+
+            <input
+                class="form-check-input"
+                type="radio"
+                {% if ficha.descricao == "Aprovado com Restrição" %}checked{% endif %}
+                disabled
+            >
+
+            <label class="form-check-label">
+                Aprovado com Restrição
+            </label>
+
+        </div>
+
+
+        <!-- MOTIVO -->
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Motivo
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="{{ ficha.motivo|default:'' }}"
+                readonly
+            >
+
+        </div>
+
+
+        <!-- RESPONSÁVEL -->
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Responsável
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="{{ ficha.nome|default:'' }}"
+                readonly
+            >
+
+        </div>
+
 
         <a
             href="{% url 'relatorio_aprovacao_mp_qualidade' %}"
-            class="btn btn-voltar"
+            class="btn btn-secondary"
         >
-            ← Voltar
+            Voltar
         </a>
-
-        <button
-            onclick="window.print()"
-            class="btn btn-imprimir"
-        >
-            🖨️ Imprimir / Salvar PDF
-        </button>
 
     </div>
 
 </div>
+
 
 </body>
 

@@ -4782,12 +4782,43 @@ def exportar_aprovacao_mp_qualidade(request):
 
 def visualizar_aprovacao_mp_qualidade(request, id_inspecao):
 
+    # ============================================================
+    # CABEÇALHO
+    # ============================================================
+
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            SELECT *
+            FROM vw_aprovacao_MP_qualidade
+            WHERE id = %s
+        """, (id_inspecao,))
+
+        ficha = cursor.fetchone()
+
+    finally:
+        conexao.close()
+
+
+    # ============================================================
+    # RESULTADOS DA INSPEÇÃO
+    # ============================================================
+
     dados = BuscarDetalhesInspecao(id_inspecao)
+
+
+    # ============================================================
+    # ENVIA PARA O HTML
+    # ============================================================
 
     return render(
         request,
         "relatorios/visualizar_aprovacao_mp_qualidade.html",
         {
+            "ficha": ficha,
             "dados": dados,
         }
     )
