@@ -1,9 +1,8 @@
-import os
-import requests
-
-from dotenv import load_dotenv
 from pathlib import Path
+
 from gradio_client import Client
+from dotenv import load_dotenv
+from PIL import Image
 
 load_dotenv()
 
@@ -58,13 +57,16 @@ def generate_image_gradio():
         pasta_imagem / "login_destaque.png"
     )
 
-    # Substitui a imagem anterior
-    with open(imagem_origem, "rb") as origem:
-
-        with open(caminho_imagem, "wb") as destino:
-
-            destino.write(origem.read())
+    # Converte a imagem gerada para PNG
+    imagem = Image.open(imagem_origem)
+    imagem.save(
+        caminho_imagem,
+        "PNG"
+    )
 
     print("Imagem gerada com sucesso.")
     print(f"Imagem atual: {caminho_imagem}")
 
+
+if __name__ == "__main__":
+    generate_image_gradio()
