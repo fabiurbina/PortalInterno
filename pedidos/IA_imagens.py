@@ -1,83 +1,70 @@
 import os
 import requests
+
 from dotenv import load_dotenv
-import os
 from pathlib import Path
-from huggingface_hub import InferenceClient
+from gradio_client import Client
 
 load_dotenv()
 
-api_key = os.getenv("APIPOLLINATIONS")
-api_keyh = os.getenv("APIHuggingFace")
 
+def generate_image_gradio():
 
-def generate_image():
     prompt = (
-        "Professional and modern supplement manufacturing facility, "
-        "clean industrial environment, quality control, technology, "
-        "blue and turquoise visual identity, cinematic lighting, "
-        "wide horizontal banner, no text"
+        "Professional premium advertising photography for Viesano "
+        "Suplementos, a Brazilian dietary supplements company. "
+        "Modern supplement manufacturing facility, premium capsules, "
+        "supplement powders and elegant supplement containers. "
+        "Clean pharmaceutical and industrial environment, quality "
+        "control, technology and innovation. Sophisticated corporate "
+        "visual identity using subtle blue and turquoise tones. "
+        "Realistic high-end commercial photography, cinematic soft "
+        "lighting, premium composition, wide horizontal banner, "
+        "no people, no text, no logos."
     )
 
-    url = "https://gen.pollinations.ai/image/" + requests.utils.quote(prompt)
+    print("Gerando nova imagem da semana...")
 
-    response = requests.get(
-        url,
-        headers={
-            "Authorization": f"Bearer {api_key}"
-        },
-        params={
-            "model": "flux"
-        },
-        timeout=120
+    client = Client(
+        "black-forest-labs/FLUX.1-schnell"
     )
 
-    if response.ok:
-
-        caminho = r"C:\Users\fabio\OneDrive - Viesano Suplementos\Dados - TI\Site\PortalInterno\pedidos\imagem_dia.png"
-
-        with open(caminho, "wb") as arquivo:
-            arquivo.write(response.content)
-
-        print(f"✅ Imagem salva em: {caminho}")
-
-    else:
-        print("❌ Erro:", response.text)
-        
-        
-        
-def generate_image_huggingface():
-    
-    if not api_keyh:
-        raise ValueError("APIHuggingFace não encontrada no .env")
-
-    # Cria o cliente
-    client = InferenceClient(
-        provider="fal-ai",
-        api_key=api_keyh
+    resultado = client.predict(
+        prompt=prompt,
+        seed=0,
+        randomize_seed=True,
+        width=1536,
+        height=1024,
+        num_inference_steps=4,
+        api_name="/infer"
     )
 
-    # Gera a imagem
-    image = client.text_to_image(
-        prompt="A realistic golden retriever sitting in a beautiful garden",
-        model="black-forest-labs/FLUX.1-schnell"
+    imagem_origem = resultado[0]
+
+    # Pasta static/img do Django
+    pasta_imagem = (
+        Path(__file__).resolve().parent
+        / "pedidos"
+        / "static"
+        / "img"
     )
 
-    # Pasta onde este código está sendo executado
-    pasta_projeto = Path(__file__).resolve().parent
+    pasta_imagem.mkdir(
+        parents=True,
+        exist_ok=True
+    )
 
-    # Caminho da imagem
-    caminho_imagem = pasta_projeto / "teste_huggingface.png"
+    caminho_imagem = (
+        pasta_imagem / "login_destaque.png"
+    )
 
-    # Salva
-    image.save(caminho_imagem)
+    # Substitui a imagem anterior
+    with open(imagem_origem, "rb") as origem:
 
-    print(f"Imagem gerada com sucesso!")
-    print(f"Salva em: {caminho_imagem}")
+        with open(caminho_imagem, "wb") as destino:
 
+            destino.write(origem.read())
 
+    print("Imagem gerada com sucesso.")
+    print(f"Imagem atual: {caminho_imagem}")
 
-        
-if __name__ == "__main__":
-    
-    generate_image_huggingface()
