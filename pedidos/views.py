@@ -73,7 +73,7 @@ from django.conf import settings
 
 from .models import ContaHostinger,ReuniaoAgenda
 
-
+from django.http import FileResponse
 
 
 @login_required
@@ -249,6 +249,19 @@ def login_view(request):
             return redirect('/')
 
     return render(request, 'login.html')
+
+
+def login_destaque(request):
+    caminho = settings.BASE_DIR / "pedidos" / "static" / "img" / "login_destaque.png"
+
+    if not caminho.exists():
+        return HttpResponse(status=404)
+
+    return FileResponse(
+        open(caminho, "rb"),
+        content_type="image/png"
+    )
+    
 
 def logout_view(request):
     logout(request)

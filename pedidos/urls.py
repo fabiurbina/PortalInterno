@@ -6,6 +6,7 @@ from .views import (
     dashboard,
     home,
     login_view,
+    login_destaque,
     logout_view,
     ficha_op,
     salvar_conferencia,
@@ -49,7 +50,8 @@ from .views import (
     pedidos_view,
     relatorio_aprovacao_mp_qualidade,
     exportar_aprovacao_mp_qualidade,
-    visualizar_aprovacao_mp_qualidade
+    visualizar_aprovacao_mp_qualidade,
+    
 )
 
 
@@ -65,6 +67,12 @@ urlpatterns = [
         "login/",
         login_not_required(login_view),
         name="login",
+    ),
+    
+    path(
+    "login-destaque/",
+    login_not_required(login_destaque),
+    name="login_destaque",
     ),
 
     path(
