@@ -2,452 +2,126 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Viesano</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <link rel="icon"
+          type="image/png"
+          href="{% static 'img/logo_viesano.png' %}">
 
-    <title>Portal Interno Viesano</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link
-        rel="icon"
-        type="image/png"
-        href="{% static 'img/logo_viesano.png' %}"
-    >
+<style>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <style>
-
-        * {
-            box-sizing: border-box;
+        body{
+            background: linear-gradient(135deg,#0D3B66,#2EC4B6);
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
         }
 
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
+        .login-card{
+            width:100%;
+            max-width:450px;
+            border:none;
+            border-radius:20px;
+            overflow:hidden;
         }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #ffffff;
+        .login-header{
+            background:#0D3B66;
+            text-align:center;
+            padding:30px;
         }
 
-        .login-page {
-            width: 100%;
-            min-height: 100vh;
-            display: flex;
+        .login-body{
+            padding:30px;
         }
 
-
-        /* =========================================
-           IMAGEM
-        ========================================= */
-
-        .image-side {
-            width: 50%;
-            min-height: 100vh;
-            position: relative;
-            overflow: hidden;
-            background: #0D3B66;
+        .btn-viesano{
+            background:#0D3B66;
+            border:none;
         }
 
-        .image-side img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
+        .btn-viesano:hover{
+            background:#082744;
         }
 
-
-        /* =========================================
-           SOBREPOSIÇÃO DA IMAGEM
-        ========================================= */
-
-        .image-overlay {
-            position: absolute;
-            inset: 0;
-
-            background: linear-gradient(
-                90deg,
-                rgba(13, 59, 102, 0.15),
-                rgba(13, 59, 102, 0.00)
-            );
+        .logo{
+            max-width:250px;
         }
 
-
-        /* =========================================
-           TEXTO DA IMAGEM
-        ========================================= */
-
-        .image-content {
-            position: absolute;
-
-            left: 55px;
-            bottom: 55px;
-
-            z-index: 2;
-
-            color: #ffffff;
-
-            max-width: 500px;
-        }
-
-        .image-content h1 {
-            margin: 0 0 12px;
-
-            font-size: 42px;
-            font-weight: 700;
-
-            letter-spacing: -1px;
-        }
-
-        .image-content p {
-            margin: 0;
-
-            font-size: 18px;
-            line-height: 1.5;
-        }
-
-
-        /* =========================================
-           DIVISÃO CENTRAL
-        ========================================= */
-
-        .divider {
-            width: 1px;
-            min-height: 100vh;
-
-            background: #dfe5ea;
-
-            flex-shrink: 0;
-        }
-
-
-        /* =========================================
-           ÁREA LOGIN
-        ========================================= */
-
-        .login-side {
-            width: 50%;
-            min-height: 100vh;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 60px;
-
-            background: #ffffff;
-        }
-
-        .login-content {
-            width: 100%;
-            max-width: 420px;
-        }
-
-
-        /* =========================================
-           LOGO
-        ========================================= */
-
-        .logo {
-            width: 210px;
-            height: auto;
-
-            margin-bottom: 45px;
-        }
-
-
-        /* =========================================
-           TÍTULO
-        ========================================= */
-
-        .login-title {
-            margin: 0 0 8px;
-
-            color: #0D3B66;
-
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .login-subtitle {
-            margin-bottom: 35px;
-
-            color: #707b85;
-
-            font-size: 15px;
-        }
-
-
-        /* =========================================
-           CAMPOS
-        ========================================= */
-
-        .form-label {
-            margin-bottom: 8px;
-
-            color: #263238;
-
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .form-control {
-            height: 54px;
-
-            border: 1px solid #d9dfe5;
-
-            border-radius: 9px;
-
-            padding: 0 16px;
-
-            font-size: 15px;
-
-            box-shadow: none;
-        }
-
-        .form-control:focus {
-            border-color: #2EC4B6;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(46, 196, 182, 0.12);
-        }
-
-
-        /* =========================================
-           BOTÃO
-        ========================================= */
-
-        .btn-viesano {
-            height: 54px;
-
-            border: none;
-            border-radius: 9px;
-
-            background: #0D3B66;
-
-            font-size: 16px;
-            font-weight: 600;
-
-            transition: 0.2s;
-        }
-
-        .btn-viesano:hover {
-            background: #092d4f;
-
-            transform: translateY(-1px);
-        }
-
-
-        /* =========================================
-           RECUPERAÇÃO DE SENHA
-        ========================================= */
-
-        .forgot-password {
-            color: #0D3B66;
-
-            font-size: 14px;
-
-            text-decoration: none;
-        }
-
-        .forgot-password:hover {
-            color: #2EC4B6;
-        }
-
-
-        /* =========================================
-           RODAPÉ
-        ========================================= */
-
-        .footer-text {
-            margin-top: 50px;
-
-            color: #a0a8af;
-
-            font-size: 12px;
-
-            text-align: center;
-        }
-
-
-        /* =========================================
-           RESPONSIVO
-        ========================================= */
-
-        @media (max-width: 900px) {
-
-            .login-page {
-                display: block;
-            }
-
-            .image-side,
-            .divider {
-                display: none;
-            }
-
-            .login-side {
-                width: 100%;
-                min-height: 100vh;
-
-                padding: 35px 25px;
-            }
-
-        }
-
-    </style>
+</style>
 
 </head>
 
-
 <body>
 
-<div class="login-page">
+<div class="card shadow-lg login-card">
 
+    <div class="login-header">
 
-    <!-- =========================================
-         IMAGEM GERADA PELA IA
-    ========================================= -->
+        <img src="{% static 'img/logo.png' %}"
+             class="logo"
+             alt="Viesano">
 
-    <section class="image-side">
+        <h4 class="mt-3 text-white">
+            Portal Interno Viesano
+        </h4>
 
-        <img
-            src="{% static 'img/login_destaque.png' %}"
-            alt="Viesano Suplementos"
-        >
+        <p class="mt-3 text-white">
+            Portal de acesso para colaboradores.
+        </p>
 
-        <div class="image-overlay"></div>
+    </div>
 
-        <div class="image-content">
+    <div class="login-body">
 
-            <h1>
-                Viesano Suplementos
-            </h1>
+        <form method="POST">
+            {% csrf_token %}
 
-            <p>
-                Inovação, qualidade e tecnologia
-                em cada etapa.
-            </p>
+            <div class="mb-3">
+                <label class="form-label">
+                    Login
+                </label>
 
-        </div>
-
-    </section>
-
-
-    <!-- DIVISÃO CENTRAL -->
-
-    <div class="divider"></div>
-
-
-    <!-- =========================================
-         LOGIN
-    ========================================= -->
-
-    <section class="login-side">
-
-        <div class="login-content">
-
-
-            <img
-                src="{% static 'img/logo.png' %}"
-                class="logo"
-                alt="Viesano"
-            >
-
-
-            <h2 class="login-title">
-                Portal Interno
-            </h2>
-
-
-            <p class="login-subtitle">
-                Acesse o ambiente interno da Viesano.
-            </p>
-
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-
-                <div class="mb-4">
-
-                    <label class="form-label">
-                        Login
-                    </label>
-
-                    <input
-                        type="text"
-                        name="username"
-                        class="form-control"
-                        placeholder="Digite seu login Ex: joao.silva"
-                    >
-
-                </div>
-
-
-                <div class="mb-4">
-
-                    <label class="form-label">
-                        Senha
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Digite sua senha"
-                    >
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="btn btn-viesano text-white w-100"
-                >
-                    Entrar
-                </button>
-
-
-                <div class="text-center mt-3">
-
-                    <a
-                        href="{% url 'password_reset' %}"
-                        class="forgot-password"
-                    >
-                        Esqueceu sua senha?
-                    </a>
-
-                </div>
-
-            </form>
-
-
-            <div class="footer-text">
-                Portal Interno Viesano
+                <input
+                type="text"
+                name="username"
+                class="form-control"
+                placeholder="Digite seu login Ex: joao.silva">
             </div>
 
+            <div class="mb-4">
+                <label class="form-label">
+                    Senha
+                </label>
 
-        </div>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Digite sua senha">
+            </div>
 
-    </section>
+            <button class="btn btn-viesano text-white w-100">
+                Entrar
+            </button>
+
+            <div class="text-center mt-3">
+                <a href="{% url 'password_reset' %}">
+                    Esqueceu sua senha?
+                </a>
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
 </body>
-
 </html>
