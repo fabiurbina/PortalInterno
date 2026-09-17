@@ -11,48 +11,131 @@
           type="image/png"
           href="{% static 'img/logo_viesano.png' %}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
 <style>
 
-        body{
-            background: linear-gradient(135deg,#0D3B66,#2EC4B6);
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+    }
+
+    .login-page {
+        min-height: 100vh;
+        display: flex;
+    }
+
+    /* =========================
+       LADO DA IMAGEM
+       ========================= */
+
+    .image-side {
+        width: 50%;
+        min-height: 100vh;  
+        background: #0D3B66;
+        overflow: hidden;
+    }
+
+    .image-side img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* =========================
+       DIVISÓRIA
+       ========================= */
+
+    .divider {
+        width: 1px;
+        background: #dfe5ea;
+    }
+
+    /* =========================
+       LADO DO LOGIN
+       ========================= */
+
+    .login-side {
+        width: 50%;
+        min-height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 40px;
+        background: #ffffff;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 430px;
+    }
+
+    .logo {
+        max-width: 250px;
+        display: block;
+        margin: 0 auto 30px auto;
+    }
+
+    .login-title {
+        text-align: center;
+        color: #0D3B66;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 35px;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #333333;
+    }
+
+    .form-control {
+        height: 48px;
+        border-radius: 8px;
+    }
+
+    .btn-viesano {
+        height: 48px;
+        background: #0D3B66;
+        border: none;
+        border-radius: 8px;
+    }
+
+    .btn-viesano:hover {
+        background: #082744;
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 900px) {
+
+        .image-side,
+        .divider {
+            display: none;
         }
 
-        .login-card{
-            width:100%;
-            max-width:450px;
-            border:none;
-            border-radius:20px;
-            overflow:hidden;
+        .login-side {
+            width: 100%;
         }
 
-        .login-header{
-            background:#0D3B66;
-            text-align:center;
-            padding:30px;
-        }
-
-        .login-body{
-            padding:30px;
-        }
-
-        .btn-viesano{
-            background:#0D3B66;
-            border:none;
-        }
-
-        .btn-viesano:hover{
-            background:#082744;
-        }
-
-        .logo{
-            max-width:250px;
-        }
+    }
 
 </style>
 
@@ -60,64 +143,87 @@
 
 <body>
 
-<div class="card shadow-lg login-card">
+<div class="login-page">
 
-    <div class="login-header">
+    <!-- IMAGEM -->
+    <div class="image-side">
 
         <img src="{% static 'img/logo.png' %}"
-             class="logo"
              alt="Viesano">
-
-        <h4 class="mt-3 text-white">
-            Portal Interno Viesano
-        </h4>
-
-        <p class="mt-3 text-white">
-            Portal de acesso para colaboradores.
-        </p>
 
     </div>
 
-    <div class="login-body">
+    <!-- DIVISÓRIA -->
+    <div class="divider"></div>
 
-        <form method="POST">
-            {% csrf_token %}
+    <!-- LOGIN -->
+    <div class="login-side">
 
-            <div class="mb-3">
-                <label class="form-label">
-                    Login
-                </label>
+        <div class="login-container">
 
-                <input
-                type="text"
-                name="username"
-                class="form-control"
-                placeholder="Digite seu login Ex: joao.silva">
-            </div>
+            <img src="{% static 'img/logo.png' %}"
+                 class="logo"
+                 alt="Viesano">
 
-            <div class="mb-4">
-                <label class="form-label">
-                    Senha
-                </label>
+            <h3 class="login-title">
+                Portal Interno Viesano
+            </h3>
 
-                <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Digite sua senha">
-            </div>
+            <p class="login-subtitle">
+                Portal de acesso para colaboradores.
+            </p>
 
-            <button class="btn btn-viesano text-white w-100">
-                Entrar
-            </button>
+            <form method="POST">
 
-            <div class="text-center mt-3">
-                <a href="{% url 'password_reset' %}">
-                    Esqueceu sua senha?
-                </a>
-            </div>
+                {% csrf_token %}
 
-        </form>
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Login
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        class="form-control"
+                        placeholder="Digite seu login Ex: joao.silva">
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Digite sua senha">
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-viesano text-white w-100">
+
+                    Entrar
+
+                </button>
+
+                <div class="text-center mt-3">
+
+                    <a href="{% url 'password_reset' %}">
+                        Esqueceu sua senha?
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
