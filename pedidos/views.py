@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
@@ -4813,3 +4815,34 @@ def visualizar_aprovacao_mp_qualidade(request, id_inspecao):
             "resultados": resultados,
         }
     )
+    
+    
+def receber_login_destaque(request):
+
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    token_recebido = request.headers.get("Authorization")
+    token_esperado = os.getenv("LOGIN_DESTAQUE_TOKEN")
+
+    if token_recebido != f"Bearer {token_esperado}":
+        return HttpResponse(status=403)
+
+    imagem = request.FILES.get("imagem")
+
+    if not imagem:
+        return HttpResponse(status=400)
+
+    caminho = (
+        settings.BASE_DIR
+        / "pedidos"
+        / "static"
+        / "img"
+        / "login_destaque.png"
+    )
+
+    with open(caminho, "wb") as destino:
+        for chunk in imagem.chunks():
+            destino.write(chunk)
+
+    return HttpResponse(status=200)

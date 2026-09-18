@@ -3,6 +3,8 @@ from pathlib import Path
 from gradio_client import Client
 from dotenv import load_dotenv
 from PIL import Image
+import os
+import requests
 
 load_dotenv()
 
@@ -63,6 +65,34 @@ def generate_image_gradio():
         caminho_imagem,
         "PNG"
     )
+    
+    url_portal = "https://interno.viesano.com.br/receber-login-destaque/"
+
+    token = os.getenv("LOGIN_DESTAQUE_TOKEN")
+
+    with open(caminho_imagem, "rb") as arquivo:
+        resposta = requests.post(
+            url_portal,
+            files={
+                "imagem": (
+                    "login_destaque.png",
+                    arquivo,
+                    "image/png"
+                )
+            },
+            headers={
+                "Authorization": f"Bearer {token}"
+            },
+            timeout=120
+        )
+
+    if resposta.status_code == 200:
+        print("Imagem enviada para o PortalInterno com sucesso.")
+    else:
+        print(
+            f"Erro ao enviar imagem: "
+            f"{resposta.status_code} - {resposta.text}"
+        )
 
     print("Imagem gerada com sucesso.")
     print(f"Imagem atual: {caminho_imagem}")

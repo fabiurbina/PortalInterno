@@ -51,6 +51,7 @@ from .views import (
     relatorio_aprovacao_mp_qualidade,
     exportar_aprovacao_mp_qualidade,
     visualizar_aprovacao_mp_qualidade,
+    receber_login_destaque
     
 )
 
@@ -416,5 +417,10 @@ urlpatterns = [
     "relatorios/aprovacao-mp-qualidade/visualizar/<int:id_inspecao>/",
     visualizar_aprovacao_mp_qualidade,
     name="visualizar_aprovacao_mp_qualidade"
+),
+    path(
+    "receber-login-destaque/",
+    receber_login_destaque,
+    name="receber_login_destaque",
 ),
 ]
