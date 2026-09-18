@@ -420,7 +420,7 @@ urlpatterns = [
 ),
     path(
     "receber-login-destaque/",
-    receber_login_destaque,
+    login_not_required(receber_login_destaque),
     name="receber_login_destaque",
 ),
 ]
