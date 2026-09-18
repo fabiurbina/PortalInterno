@@ -4815,8 +4815,10 @@ def visualizar_aprovacao_mp_qualidade(request, id_inspecao):
             "resultados": resultados,
         }
     )
+
+from django.views.decorators.csrf import csrf_exempt
     
-    
+@csrf_exempt
 def receber_login_destaque(request):
 
     if request.method != "POST":
