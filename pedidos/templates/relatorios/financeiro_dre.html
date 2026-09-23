@@ -1,656 +1,1117 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 
 <head>
 
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Financeiro / DRE</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
+    <title>Financeiro / DRE</title>
 
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f7f6;
-            color: #26332d;
-        }
+
+    <style>
+
+        * {
+
+            box-sizing: border-box;
+
+        }
 
 
-        .container {
-            width: calc(100% - 32px);
-            max-width: none;
-            margin: 20px 16px;
-        }
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #f4f7f6;
+
+            color: #26332d;
+
+        }
 
 
-        /* ==========================================================
-           CABEÇALHO
-        ========================================================== */
 
-        .cabecalho {
+        .container {
+
+            width: calc(100% - 32px);
+
+            max-width: none;
+
+            margin: 20px 16px;
+
+        }
+
+
+
+        /* ==========================================================
+
+           CABEÇALHO
+
+        ========================================================== */
+
+        .cabecalho {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+
+        }
+
+
+
+        .cabecalho h1 {
+
+            margin: 0;
+
+            color: #174f35;
+
+            font-size: 25px;
+
+        }
+
+
+
+        .btn-voltar {
+
+            text-decoration: none;
+
+            background: #174f35;
+
+            color: white;
+
+            padding: 9px 17px;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+        }
+
+
+
+        .btn-voltar\:hover {
+
+            opacity: .9;
+
+        }
+
+
+
+        /* ==========================================================
+
+           CARDS
+
+        ========================================================== */
+
+        .cards-resumo {
+
+            display: grid;
+
+            grid-template-columns: repeat(6, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+
+        .card-resumo {
+
+            background: white;
+
+            border: 1px solid #e1e8e4;
+
+            border-radius: 11px;
+
+            padding: 14px 15px;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
+
+            min-width: 0;
+
+        }
+
+
+
+        .card-resumo .titulo {
+
+            font-size: 10px;
+
+            color: #6c7771;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+
+            letter-spacing: .35px;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        .card-resumo .valor {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            text-align: right;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        .card-total {
+
+            border-left: 4px solid #174f35;
+
+        }
+
+
+
+        .card-total .valor {
+
+            color: #174f35;
+
+        }
+
+        .card-entrada {
+
+            border-left: 4px solid #198754;
+
+        }
+
+        .card-entrada .valor {
+
+            color: #198754;
+
+        }
+
+
+
+        .card-pago {
+
+            border-left: 4px solid #198754;
+
+        }
+
+
+
+        .card-pago .valor {
+
+            color: #198754;
+
+        }
+
+
+
+        .card-vencer {
+
+            border-left: 4px solid #d99a16;
+
+        }
+
+
+
+        .card-vencer .valor {
+
+            color: #b77c00;
+
+        }
+
+
+
+        .card-sla-ok {
+
+            border-left: 4px solid #24966a;
+
+        }
+
+
+
+        .card-sla-ok .valor {
+
+            color: #24966a;
+
+        }
+
+
+
+        .card-sla-atraso {
+
+            border-left: 4px solid #d9363e;
+
+        }
+
+
+
+        .card-sla-atraso .valor {
+
+            color: #d9363e;
+
+        }
+
+
+
+        .card-pontualidade {
+
+            border-left: 4px solid #2878a7;
+
+        }
+
+
+
+        .card-pontualidade .valor {
+
+            color: #2878a7;
+
+        }
+
+
+
+        .pontualidade-info {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-top: 6px;
+
+            font-size: 10px;
+
+            color: #6c7771;
+
+        }
+
+
+
+        .pontualidade-percentual {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            color: #2878a7;
+
+        }
+
+
+
+        /* ==========================================================
+
+           FILTROS
+
+        ========================================================== */
+
+        .filtros {
+
+            background: white;
+
+            border: 1px solid #e1e8e4;
+
+            border-radius: 11px;
+
+            padding: 15px;
+
+            margin-bottom: 18px;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+
+        }
+
+
+
+        .filtros h3 {
+
+            margin: 0 0 13px 0;
+
+            color: #174f35;
+
+            font-size: 15px;
+
+        }
+
+
+
+        .filtros-grid {
+
+            display: grid;
+
+            grid-template-columns:
+
+                1fr
+
+                1fr
+
+                1fr
+
+                1fr
+
+                1fr
+
+                1fr
+
+                auto;
+
+            gap: 9px;
+
+            align-items: end;
+
+        }
+
+
+
+        .campo {
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-width: 0;
+
+        }
+
+
+
+        .campo label {
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            margin-bottom: 4px;
+
+            color: #4d5a53;
+
+        }
+
+
+
+        .campo input,
+
+        .campo select {
+
+            width: 100%;
+
+            height: 37px;
+
+            padding: 0 8px;
+
+            border: 1px solid #ccd7d1;
+
+            border-radius: 7px;
+
+            background: white;
+
+            font-size: 11px;
+
+            color: #26332d;
+
+        }
+
+
+
+        .campo input\:focus,
+
+        .campo select\:focus {
+
+            outline: none;
+
+            border-color: #174f35;
+
+        }
+
+
+
+        .btn-filtrar {
+
+            height: 37px;
+
+            padding: 0 17px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #174f35;
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+
+        .btn-filtrar\:hover {
+
+            opacity: .9;
+
+        }
+
+
+
+        .btn-limpar {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            height: 34px;
+
+            padding: 0 15px;
+
+            border-radius: 7px;
+
+            border: 1px solid #ccd7d1;
+
+            color: #4d5a53;
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            background: white;
+
+        }
+
+
+
+        /* ==========================================================
+
+           TABELA
+
+        ========================================================== */
+
+        .tabela-container {
+
+            width: 100%;
+
+            background: white;
+
+            border: 1px solid #e1e8e4;
+
+            border-radius: 11px;
+
+            overflow: hidden;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+
+        }
+
+
+
+        .tabela-topo {
+
+            padding: 13px 15px;
+
+            border-bottom: 1px solid #e5ebe7;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+
+        .tabela-topo h3 {
+
+            margin: 0;
+
+            color: #174f35;
+
+            font-size: 15px;
+
+        }
+
+
+
+        .contador {
+
+            font-size: 10px;
+
+            color: #6c7771;
+
+        }
+
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            table-layout: fixed;
+
+        }
+
+
+
+        /* ==========================================================
+
+           LARGURA DAS COLUNAS
+
+        ========================================================== */
+
+        #tabelaFinanceiro th\:nth-child(1),
+
+        #tabelaFinanceiro td\:nth-child(1) {
+
+            width: 6%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(2),
+
+        #tabelaFinanceiro td\:nth-child(2) {
+
+            width: 14%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(3),
+
+        #tabelaFinanceiro td\:nth-child(3) {
+
+            width: 7%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(4),
+
+        #tabelaFinanceiro td\:nth-child(4) {
+
+            width: 8%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(5),
+
+        #tabelaFinanceiro td\:nth-child(5) {
+
+            width: 8%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(6),
+
+        #tabelaFinanceiro td\:nth-child(6) {
+
+            width: 20%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(7),
+
+        #tabelaFinanceiro td\:nth-child(7) {
+
+            width: 9%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(8),
+
+        #tabelaFinanceiro td\:nth-child(8) {
+
+            width: 9%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(9),
+
+        #tabelaFinanceiro td\:nth-child(9) {
+
+            width: 7%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(10),
+
+        #tabelaFinanceiro td\:nth-child(10) {
+
+            width: 5%;
+
+        }
+
+
+
+        #tabelaFinanceiro th\:nth-child(11),
+
+        #tabelaFinanceiro td\:nth-child(11) {
+
+            width: 7%;
+
+        }
+
+
+
+        th {
+
+            background: #f4f7f6;
+
+            color: #4d5a53;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            padding: 9px 6px;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+            cursor: pointer;
+
+            user-select: none;
+
+        }
+
+
+
+        th\:hover {
+
+            background: #e8efeb;
+
+        }
+
+
+
+        th .seta {
+
+            margin-left: 2px;
+
+            font-size: 8px;
+
+            color: #174f35;
+
+        }
+
+
+
+        td {
+
+            padding: 10px 6px;
+
+            border-top: 1px solid #edf1ef;
+
+            font-size: 10px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+
+        tbody tr\:hover {
+
+            background: #f8faf9;
+
+        }
+
+
+
+        /* ==========================================================
+
+           VALORES
+
+        ========================================================== */
+
+        .valor {
+
+            text-align: right;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        /* ==========================================================
+
+           PRAZO
+
+        ========================================================== */
+
+        .prazo {
+
+            text-align: center;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        .prazo-atrasado {
+
+            color: #d9363e;
+
+        }
+
+
+
+        .prazo-ok {
+
+            color: #198754;
+
+        }
+
+
+
+        /* ==========================================================
+
+           STATUS
+
+        ========================================================== */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 4px 7px;
+
+            border-radius: 20px;
+
+            font-size: 8px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        .status-pago {
+
+            background: #e3f3e9;
+
+            color: #17633d;
+
+        }
+
+
+
+        .status-vencer {
+
+            background: #fff4d6;
+
+            color: #856404;
+
+        }
+
+
+
+        .status-outro {
+
+            background: #edf0ef;
+
+            color: #56635c;
+
+        }
+
+
+
+        /* ==========================================================
+
+           SLA
+
+        ========================================================== */
+
+        .sla {
+
+            display: inline-block;
+
+            padding: 4px 7px;
+
+            border-radius: 20px;
+
+            font-size: 8px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        .sla-ok {
+
+            background: #dff5e9;
+
+            color: #17633d;
+
+        }
+
+
+
+        .sla-atraso {
+
+            background: #ffe1e1;
+
+            color: #b4232d;
+
+        }
+
+
+
+        .sla-sem {
+
+            background: #edf0ef;
+
+            color: #56635c;
+
+        }
+
+
+
+        /* ==========================================================
+
+           SEM DADOS
+
+        ========================================================== */
+
+        .sem-dados {
+
+            text-align: center;
+
+            padding: 50px 20px;
+
+            color: #7a847f;
+
+            font-size: 13px;
+
+        }
+
+
+
+        /* ==========================================================
+
+           RESPONSIVO
+
+        ========================================================== */
+
+        @media (max-width: 1500px) {
+
+            .cards-resumo {
+
+                grid-template-columns: repeat(3, 1fr);
+
+            }
+
+            .filtros-grid {
+
+                grid-template-columns: repeat(4, 1fr);
+
+            }
+
+        }
+
+
+
+        @media (max-width: 900px) {
+
+            .container {
+
+                width: calc(100% - 20px);
+
+                margin: 15px 10px;
+
+            }
+
+
+
+            .cards-resumo {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+
+
+            .filtros-grid {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+
+
+            .cabecalho {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 12px;
+
+            }
+
+        }
+
+
+
+        @media (max-width: 600px) {
+
+            .cards-resumo {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+
+            .filtros-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+
+            .btn-filtrar,
+
+            .btn-limpar {
+
+                width: 100%;
+
+            }
+
+        }
+
+        .btn-exportar {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        height: 34px;
+
+        padding: 0 14px;
+
+        border-radius: 7px;
+
+        border: none;
+
+        background: #198754;
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 11px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+    }
+
+    .btn-exportar\:hover {
+
+        opacity: .9;
+
+    }
+
+    
+        .paginacao {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
-        }
-
-
-        .cabecalho h1 {
-            margin: 0;
-            color: #174f35;
-            font-size: 25px;
-        }
-
-
-        .btn-voltar {
-            text-decoration: none;
-            background: #174f35;
-            color: white;
-            padding: 9px 17px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-
-        .btn-voltar:hover {
-            opacity: .9;
-        }
-
-
-        /* ==========================================================
-           CARDS
-        ========================================================== */
-
-        .cards-resumo {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-
-        .card-resumo {
-            background: white;
-            border: 1px solid #e1e8e4;
-            border-radius: 11px;
-            padding: 14px 15px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
-            min-width: 0;
-        }
-
-
-        .card-resumo .titulo {
-            font-size: 10px;
-            color: #6c7771;
-            font-weight: bold;
-            margin-bottom: 8px;
-            letter-spacing: .35px;
-            white-space: nowrap;
-        }
-
-
-        .card-resumo .valor {
-            font-size: 18px;
-            font-weight: bold;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-
-        .card-total {
-            border-left: 4px solid #174f35;
-        }
-
-
-        .card-total .valor {
-            color: #174f35;
-        }
-
-        .card-entrada {
-            border-left: 4px solid #198754;
-        }
-
-        .card-entrada .valor {
-            color: #198754;
-        }
-
-
-        .card-pago {
-            border-left: 4px solid #198754;
-        }
-
-
-        .card-pago .valor {
-            color: #198754;
-        }
-
-
-        .card-vencer {
-            border-left: 4px solid #d99a16;
-        }
-
-
-        .card-vencer .valor {
-            color: #b77c00;
-        }
-
-
-        .card-sla-ok {
-            border-left: 4px solid #24966a;
-        }
-
-
-        .card-sla-ok .valor {
-            color: #24966a;
-        }
-
-
-        .card-sla-atraso {
-            border-left: 4px solid #d9363e;
-        }
-
-
-        .card-sla-atraso .valor {
-            color: #d9363e;
-        }
-
-
-        .card-pontualidade {
-            border-left: 4px solid #2878a7;
-        }
-
-
-        .card-pontualidade .valor {
-            color: #2878a7;
-        }
-
-
-        .pontualidade-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 6px;
-            font-size: 10px;
-            color: #6c7771;
-        }
-
-
-        .pontualidade-percentual {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2878a7;
-        }
-
-
-        /* ==========================================================
-           FILTROS
-        ========================================================== */
-
-        .filtros {
-            background: white;
-            border: 1px solid #e1e8e4;
-            border-radius: 11px;
+            justify-content: center;
+            gap: 8px;
             padding: 15px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+            border-top: 1px solid #e5ebe7;
         }
 
-
-        .filtros h3 {
-            margin: 0 0 13px 0;
-            color: #174f35;
-            font-size: 15px;
-        }
-
-
-        .filtros-grid {
-            display: grid;
-
-            grid-template-columns:
-                1fr
-                1fr
-                1fr
-                1fr
-                1fr
-                1fr
-                auto;
-
-            gap: 9px;
-
-            align-items: end;
-        }
-
-
-        .campo {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-
-        .campo label {
-            font-size: 10px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #4d5a53;
-        }
-
-
-        .campo input,
-        .campo select {
-            width: 100%;
-            height: 37px;
-            padding: 0 8px;
-            border: 1px solid #ccd7d1;
-            border-radius: 7px;
-            background: white;
-            font-size: 11px;
-            color: #26332d;
-        }
-
-
-        .campo input:focus,
-        .campo select:focus {
-            outline: none;
-            border-color: #174f35;
-        }
-
-
-        .btn-filtrar {
-            height: 37px;
-            padding: 0 17px;
-            border: none;
-            border-radius: 7px;
-            background: #174f35;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-
-        .btn-filtrar:hover {
-            opacity: .9;
-        }
-
-
-        .btn-limpar {
+        .paginacao a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 34px;
-            padding: 0 15px;
-            border-radius: 7px;
+            min-width: 34px;
+            height: 32px;
+            padding: 0 10px;
             border: 1px solid #ccd7d1;
-            color: #4d5a53;
+            border-radius: 6px;
+            background: white;
+            color: #174f35;
             text-decoration: none;
             font-size: 11px;
-            background: white;
+            font-weight: bold;
         }
 
-
-        /* ==========================================================
-           TABELA
-        ========================================================== */
-
-        .tabela-container {
-            width: 100%;
-            background: white;
-            border: 1px solid #e1e8e4;
-            border-radius: 11px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
-        }
-
-
-        .tabela-topo {
-            padding: 13px 15px;
-            border-bottom: 1px solid #e5ebe7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-
-        .tabela-topo h3 {
-            margin: 0;
-            color: #174f35;
-            font-size: 15px;
-        }
-
-
-        .contador {
-            font-size: 10px;
-            color: #6c7771;
-        }
-
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-
-        /* ==========================================================
-           LARGURA DAS COLUNAS
-        ========================================================== */
-
-        #tabelaFinanceiro th:nth-child(1),
-        #tabelaFinanceiro td:nth-child(1) {
-            width: 6%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(2),
-        #tabelaFinanceiro td:nth-child(2) {
-            width: 14%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(3),
-        #tabelaFinanceiro td:nth-child(3) {
-            width: 7%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(4),
-        #tabelaFinanceiro td:nth-child(4) {
-            width: 8%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(5),
-        #tabelaFinanceiro td:nth-child(5) {
-            width: 8%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(6),
-        #tabelaFinanceiro td:nth-child(6) {
-            width: 20%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(7),
-        #tabelaFinanceiro td:nth-child(7) {
-            width: 9%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(8),
-        #tabelaFinanceiro td:nth-child(8) {
-            width: 9%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(9),
-        #tabelaFinanceiro td:nth-child(9) {
-            width: 7%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(10),
-        #tabelaFinanceiro td:nth-child(10) {
-            width: 5%;
-        }
-
-
-        #tabelaFinanceiro th:nth-child(11),
-        #tabelaFinanceiro td:nth-child(11) {
-            width: 7%;
-        }
-
-
-        th {
+        .paginacao a:hover {
             background: #f4f7f6;
-            color: #4d5a53;
-            font-size: 9px;
-            text-transform: uppercase;
-            padding: 9px 6px;
-            text-align: left;
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
         }
 
-
-        th:hover {
-            background: #e8efeb;
-        }
-
-
-        th .seta {
-            margin-left: 2px;
-            font-size: 8px;
-            color: #174f35;
-        }
-
-
-        td {
-            padding: 10px 6px;
-            border-top: 1px solid #edf1ef;
-            font-size: 10px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-
-        tbody tr:hover {
-            background: #f8faf9;
-        }
-
-
-        /* ==========================================================
-           VALORES
-        ========================================================== */
-
-        .valor {
-            text-align: right;
+        .paginacao span {
+            font-size: 11px;
+            color: #6c7771;
             font-weight: bold;
-            white-space: nowrap;
         }
-
-
-        /* ==========================================================
-           PRAZO
-        ========================================================== */
-
-        .prazo {
-            text-align: center;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-
-        .prazo-atrasado {
-            color: #d9363e;
-        }
-
-
-        .prazo-ok {
-            color: #198754;
-        }
-
-
-        /* ==========================================================
-           STATUS
-        ========================================================== */
-
-        .status {
-            display: inline-block;
-            padding: 4px 7px;
-            border-radius: 20px;
-            font-size: 8px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-
-        .status-pago {
-            background: #e3f3e9;
-            color: #17633d;
-        }
-
-
-        .status-vencer {
-            background: #fff4d6;
-            color: #856404;
-        }
-
-
-        .status-outro {
-            background: #edf0ef;
-            color: #56635c;
-        }
-
-
-        /* ==========================================================
-           SLA
-        ========================================================== */
-
-        .sla {
-            display: inline-block;
-            padding: 4px 7px;
-            border-radius: 20px;
-            font-size: 8px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-
-        .sla-ok {
-            background: #dff5e9;
-            color: #17633d;
-        }
-
-
-        .sla-atraso {
-            background: #ffe1e1;
-            color: #b4232d;
-        }
-
-
-        .sla-sem {
-            background: #edf0ef;
-            color: #56635c;
-        }
-
-
-        /* ==========================================================
-           SEM DADOS
-        ========================================================== */
-
-        .sem-dados {
-            text-align: center;
-            padding: 50px 20px;
-            color: #7a847f;
-            font-size: 13px;
-        }
-
-
-        /* ==========================================================
-           RESPONSIVO
-        ========================================================== */
-
-        @media (max-width: 1500px) {
-
-            .cards-resumo {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .filtros-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-        }
-
-
-        @media (max-width: 900px) {
-
-            .container {
-                width: calc(100% - 20px);
-                margin: 15px 10px;
-            }
-
-
-            .cards-resumo {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-
-            .filtros-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-
-            .cabecalho {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-        }
-
-
-        @media (max-width: 600px) {
-
-            .cards-resumo {
-                grid-template-columns: 1fr;
-            }
-
-
-            .filtros-grid {
-                grid-template-columns: 1fr;
-            }
-
-
-            .btn-filtrar,
-            .btn-limpar {
-                width: 100%;
-            }
-
-        }
-        .btn-exportar {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-
-        height: 34px;
-        padding: 0 14px;
-
-        border-radius: 7px;
-        border: none;
-
-        background: #198754;
-        color: white;
-
-        text-decoration: none;
-
-        font-size: 11px;
-        font-weight: bold;
-
-        cursor: pointer;
-    }
-
-    .btn-exportar:hover {
-        opacity: .9;
-    }
 
     </style>
 
 </head>
+
 
 
 <body>
@@ -658,840 +1119,1211 @@
 <div class="container">
 
 
-    <!-- ==========================================================
-         CABEÇALHO
-    ========================================================== -->
 
-    <div class="cabecalho">
+    <!-- ==========================================================
 
-        <h1>💰 Financeiro / DRE</h1>
+         CABEÇALHO
 
-        <a
-            href="{% url 'relatorios_diversos' %}"
-            class="btn-voltar"
-        >
-            ← Voltar
-        </a>
+    ========================================================== -->
 
-    </div>
+    <div class="cabecalho">
 
+        <h1>💰 Financeiro / DRE</h1>
 
-    <!-- ==========================================================
-         CARDS
-    ========================================================== -->
+        <a
 
-    <div class="cards-resumo">
+            href="{% url 'relatorios_diversos' %}"
 
+            class="btn-voltar"
 
-        <!-- TOTAL DESPESAS -->
+        >
 
-        <div class="card-resumo card-total">
+            ← Voltar
 
-            <div class="titulo">
-                TOTAL DESPESAS
-            </div>
+        </a>
 
-            <div class="valor">
-                {{ total_despesas }}
-            </div>
+    </div>
 
-        </div>
 
 
-        <div class="card-resumo card-entrada">
+    <!-- ==========================================================
 
-            <div class="titulo">
-                TOTAL ENTRADAS
-            </div>
+         CARDS
 
-            <div class="valor">
-                {{ total_entradas }}
-            </div>
+    ========================================================== -->
 
-        </div>
+    <div class="cards-resumo">
 
 
-        <!-- TOTAL PAGO -->
 
-        <div class="card-resumo card-pago">
+        <!-- TOTAL DESPESAS -->
 
-            <div class="titulo">
-                TOTAL PAGO
-            </div>
+        <div class="card-resumo card-total">
 
-            <div class="valor">
-                {{ total_pago }}
-            </div>
+            <div class="titulo">
 
-        </div>
+                TOTAL DESPESAS
 
+            </div>
 
-        <!-- A VENCER -->
+            <div class="valor">
 
-        <div class="card-resumo card-vencer">
+                {{ total_despesas }}
 
-            <div class="titulo">
-                A VENCER
-            </div>
+            </div>
 
-            <div class="valor">
-                {{ total_a_vencer }}
-            </div>
+        </div>
 
-        </div>
 
 
-        <!-- DENTRO DO PRAZO -->
+        <div class="card-resumo card-entrada">
 
-        <div class="card-resumo card-sla-ok">
+            <div class="titulo">
 
-            <div class="titulo">
-                DENTRO DO PRAZO
-            </div>
+                TOTAL ENTRADAS
 
-            <div class="valor">
-                {{ total_dentro_prazo }}
-            </div>
+            </div>
 
-        </div>
+            <div class="valor">
 
+                {{ total_entradas }}
 
-        <!-- FORA DO PRAZO -->
+            </div>
 
-        <div class="card-resumo card-sla-atraso">
+        </div>
 
-            <div class="titulo">
-                FORA DO PRAZO
-            </div>
 
-            <div class="valor">
-                {{ total_fora_prazo }}
-            </div>
 
-        </div>
+        <!-- TOTAL PAGO -->
 
+        <div class="card-resumo card-pago">
 
-        <!-- INDICADOR DE PONTUALIDADE -->
+            <div class="titulo">
 
-        <div class="card-resumo card-pontualidade">
+                TOTAL PAGO
 
-            <div class="titulo">
-                PAGAMENTOS DENTRO DO PRAZO
-            </div>
+            </div>
 
-            <div class="valor percentual-pontualidade">
-                {{ percentual_pontualidade }}
-            </div>
+            <div class="valor">
 
-            <div class="pontualidade-info">
+                {{ total_pago }}
 
-                <span>
-                    {{ pagamentos_dentro_prazo }}
-                    de
-                    {{ pagamentos_realizados }}
-                    pagamentos
-                </span>
+            </div>
 
-            </div>
+        </div>
 
-        </div>
 
 
-    </div>
+        <!-- A VENCER -->
 
+        <div class="card-resumo card-vencer">
 
-    <!-- ==========================================================
-         FILTROS
-    ========================================================== -->
+            <div class="titulo">
 
-    <div class="filtros">
+                A VENCER
 
-        <h3>Filtros</h3>
+            </div>
 
+            <div class="valor">
 
-        <form method="GET">
+                {{ total_a_vencer }}
 
-            <div class="filtros-grid">
+            </div>
 
+        </div>
 
-                <!-- VENCIMENTO DE -->
 
-                <div class="campo">
 
-                    <label for="data_vencimento_inicio">
-                        Vencimento de
-                    </label>
+        <!-- INDICADOR DE PONTUALIDADE -->
 
-                    <input
-                        type="date"
-                        id="data_vencimento_inicio"
-                        name="data_vencimento_inicio"
-                        value="{{ data_vencimento_inicio }}"
-                    >
+        <div class="card-resumo card-pontualidade">
 
-                </div>
+            <div class="titulo">
 
+                PAGAMENTOS DENTRO DO PRAZO
 
-                <!-- VENCIMENTO ATÉ -->
+            </div>
 
-                <div class="campo">
+            <div class="valor percentual-pontualidade">
 
-                    <label for="data_vencimento_fim">
-                        Vencimento até
-                    </label>
+                {{ percentual_pontualidade }}
 
-                    <input
-                        type="date"
-                        id="data_vencimento_fim"
-                        name="data_vencimento_fim"
-                        value="{{ data_vencimento_fim }}"
-                    >
+            </div>
 
-                </div>
+            <div class="pontualidade-info">
 
+                <span>
 
-                <!-- PAGAMENTO DE -->
+                    {{ pagamentos_dentro_prazo }}
 
-                <div class="campo">
+                    de
 
-                    <label for="data_pagamento_inicio">
-                        Pagamento de
-                    </label>
+                    {{ pagamentos_realizados }}
 
-                    <input
-                        type="date"
-                        id="data_pagamento_inicio"
-                        name="data_pagamento_inicio"
-                        value="{{ data_pagamento_inicio }}"
-                    >
+                    pagamentos
 
-                </div>
+                </span>
 
+            </div>
 
-                <!-- PAGAMENTO ATÉ -->
+        </div>
 
-                <div class="campo">
 
-                    <label for="data_pagamento_fim">
-                        Pagamento até
-                    </label>
 
-                    <input
-                        type="date"
-                        id="data_pagamento_fim"
-                        name="data_pagamento_fim"
-                        value="{{ data_pagamento_fim }}"
-                    >
+    </div>
 
-                </div>
 
 
-                <!-- STATUS -->
+    <!-- ==========================================================
 
-                <div class="campo">
+         FILTROS
 
-                    <label for="status">
-                        Status Financeiro
-                    </label>
+    ========================================================== -->
 
-                    <select
-                        id="status"
-                        name="status"
-                    >
+    <div class="filtros">
 
-                        <option
-                            value=""
-                            {% if status_filtro == "" %}selected{% endif %}
-                        >
-                            Todos
-                        </option>
+        <h3>Filtros</h3>
 
-                        <option
-                            value="PAGO"
-                            {% if status_filtro == "PAGO" %}selected{% endif %}
-                        >
-                            Pago
-                        </option>
 
-                        <option
-                            value="A VENCER"
-                            {% if status_filtro == "A VENCER" %}selected{% endif %}
-                        >
-                            A vencer
-                        </option>
 
-                    </select>
+        <form method="GET">
 
-                </div>
+            <div class="filtros-grid">
 
 
-                <!-- SLA -->
 
-                <div class="campo">
+                <!-- VENCIMENTO DE -->
 
-                    <label for="sla">
-                        SLA
-                    </label>
+                <div class="campo">
 
-                    <select
-                        id="sla"
-                        name="sla"
-                    >
+                    <label for="data_vencimento_inicio">
 
-                        <option
-                            value=""
-                            {% if sla_filtro == "" %}selected{% endif %}
-                        >
-                            Todos
-                        </option>
+                        Vencimento de
 
-                        <option
-                            value="Dentro do Prazo"
-                            {% if sla_filtro == "Dentro do Prazo" %}selected{% endif %}
-                        >
-                            Dentro do Prazo
-                        </option>
+                    </label>
 
-                        <option
-                            value="Fora do Prazo"
-                            {% if sla_filtro == "Fora do Prazo" %}selected{% endif %}
-                        >
-                            Fora do Prazo
-                        </option>
+                    <input
 
-                    </select>
+                        type="date"
 
-                </div>
+                        id="data_vencimento_inicio"
 
+                        name="data_vencimento_inicio"
 
-                <!-- FILTRAR -->
+                        value="{{ data_vencimento_inicio }}"
 
-                <button
-                    type="submit"
-                    class="btn-filtrar"
-                >
-                    Filtrar
-                </button>
+                    >
 
+                </div>
 
-            </div>
 
-        </form>
 
+                <!-- VENCIMENTO ATÉ -->
 
-        <!-- LIMPAR -->
+                <div class="campo">
 
-        {% if data_vencimento_inicio or data_vencimento_fim or data_pagamento_inicio or data_pagamento_fim or status_filtro or sla_filtro %}
+                    <label for="data_vencimento_fim">
 
-            <div style="margin-top: 9px;">
+                        Vencimento até
 
-                <a
-                    href="{% url 'financeiro_dre' %}"
-                    class="btn-limpar"
-                >
-                    Limpar filtros
-                </a>
+                    </label>
 
-            </div>
+                    <input
 
-        {% endif %}
+                        type="date"
 
+                        id="data_vencimento_fim"
 
-    </div>
+                        name="data_vencimento_fim"
 
+                        value="{{ data_vencimento_fim }}"
 
-    <!-- ==========================================================
-         TABELA
-    ========================================================== -->
+                    >
 
-    <div class="tabela-container">
+                </div>
 
 
-        <div class="tabela-topo">
 
-            <h3>
-                Lançamentos financeiros
-            </h3>
+                <!-- PAGAMENTO DE -->
 
-            <div class="contador">
-                {{ dados|length }} lançamento(s)
-            </div>
+                <div class="campo">
 
-             <a
-            href="{% url 'exportar_financeiro_dre' %}?data_vencimento_inicio={{ data_vencimento_inicio }}&data_vencimento_fim={{ data_vencimento_fim }}&data_pagamento_inicio={{ data_pagamento_inicio }}&data_pagamento_fim={{ data_pagamento_fim }}&status={{ status_filtro }}&sla={{ sla_filtro }}"
-            class="btn-exportar"
-            >
-                📊 Exportar Excel
-            </a>
+                    <label for="data_pagamento_inicio">
 
-        </div>
+                        Pagamento de
 
-    </div>
+                    </label>
 
-        {% if dados %}
+                    <input
 
+                        type="date"
 
-        <table id="tabelaFinanceiro">
+                        id="data_pagamento_inicio"
 
+                        name="data_pagamento_inicio"
 
-            <thead>
+                        value="{{ data_pagamento_inicio }}"
 
-                <tr>
+                    >
 
-                    <th>
-                        DRE
-                        <span class="seta"></span>
-                    </th>
+                </div>
 
-                    <th>
-                        Categoria
-                        <span class="seta"></span>
-                    </th>
 
-                    <th>
-                        Emissão
-                        <span class="seta"></span>
-                    </th>
 
-                    <th>
-                        Vencimento
-                        <span class="seta"></span>
-                    </th>
+                <!-- PAGAMENTO ATÉ -->
 
-                    <th>
-                        Pagamento
-                        <span class="seta"></span>
-                    </th>
+                <div class="campo">
 
-                    <th>
-                        Cliente / Fornecedor
-                        <span class="seta"></span>
-                    </th>
+                    <label for="data_pagamento_fim">
 
-                    <th>
-                        Valor Título
-                        <span class="seta"></span>
-                    </th>
+                        Pagamento até
 
-                    <th>
-                        Valor Pago
-                        <span class="seta"></span>
-                    </th>
+                    </label>
 
-                    <th>
-                        Status
-                        <span class="seta"></span>
-                    </th>
+                    <input
 
-                    <th>
-                        Prazo
-                        <span class="seta"></span>
-                    </th>
+                        type="date"
 
-                    <th>
-                        SLA
-                        <span class="seta"></span>
-                    </th>
+                        id="data_pagamento_fim"
 
-                </tr>
+                        name="data_pagamento_fim"
 
-            </thead>
+                        value="{{ data_pagamento_fim }}"
 
+                    >
 
-            <tbody>
+                </div>
 
 
-            {% for item in dados %}
 
+                <!-- STATUS -->
 
-                <tr>
+                <div class="campo">
 
+                    <label for="status">
 
-                    <!-- DRE -->
+                        Status Financeiro
 
-                    <td
-                        title="{{ item.descricaoDRE|default:'-' }}"
-                    >
-                        {{ item.descricaoDRE|default:"-" }}
-                    </td>
+                    </label>
 
+                    <select
 
-                    <!-- CATEGORIA -->
+                        id="status"
 
-                    <td
-                        title="{{ item.descricao|default:'-' }}"
-                    >
-                        {{ item.descricao|default:"-" }}
-                    </td>
+                        name="status"
 
+                    >
 
-                    <!-- EMISSÃO -->
+                        <option
 
-                    <td
-                        data-sort="{{ item.dDtEmissao|date:'Y-m-d' }}"
-                    >
-                        {{ item.dDtEmissao|date:"d/m/Y"|default:"-" }}
-                    </td>
+                            value=""
 
+                            {% if status_filtro == "" %}selected{% endif %}
 
-                    <!-- VENCIMENTO -->
+                        >
 
-                    <td
-                        data-sort="{{ item.dDtPrevisao|date:'Y-m-d' }}"
-                    >
-                        {{ item.dDtPrevisao|date:"d/m/Y"|default:"-" }}
-                    </td>
+                            Todos
 
+                        </option>
 
-                    <!-- PAGAMENTO -->
+                        <option
 
-                    <td
-                        data-sort="{{ item.dDtPagamento|date:'Y-m-d' }}"
-                    >
-                        {{ item.dDtPagamento|date:"d/m/Y"|default:"-" }}
-                    </td>
+                            value="PAGO"
 
+                            {% if status_filtro == "PAGO" %}selected{% endif %}
 
-                    <!-- CLIENTE / FORNECEDOR -->
+                        >
 
-                    <td
-                        title="{{ item.razao_social|default:'-' }}"
-                    >
-                        {{ item.razao_social|default:"-" }}
-                    </td>
+                            Pago
 
+                        </option>
 
-                    <!-- VALOR TÍTULO -->
+                        <option
 
-                    <td class="valor">
-                        {{ item.valor_titulo_formatado }}
-                    </td>
+                            value="A VENCER"
 
+                            {% if status_filtro == "A VENCER" %}selected{% endif %}
 
-                    <!-- VALOR PAGO -->
+                        >
 
-                    <td class="valor">
-                        {{ item.valor_pago_formatado }}
-                    </td>
+                            A vencer
 
+                        </option>
 
-                    <!-- STATUS -->
+                    </select>
 
-                    <td>
+                </div>
 
-                        {% if item.cStatus == "PAGO" %}
 
-                            <span class="status status-pago">
-                                PAGO
-                            </span>
 
-                        {% elif item.cStatus == "A VENCER" %}
+                <!-- SLA -->
 
-                            <span class="status status-vencer">
-                                A VENCER
-                            </span>
+                <div class="campo">
 
-                        {% else %}
+                    <label for="sla">
 
-                            <span class="status status-outro">
-                                {{ item.cStatus|default:"-" }}
-                            </span>
+                        SLA
 
-                        {% endif %}
+                    </label>
 
-                    </td>
+                    <select
 
+                        id="sla"
 
-                    <!-- PRAZO -->
+                        name="sla"
 
-                    <td
-                        class="prazo
-                        {% if item.Prazo < 0 %}
-                            prazo-atrasado
-                        {% elif item.Prazo is not None %}
-                            prazo-ok
-                        {% endif %}"
-                    >
+                    >
 
-                        {% if item.Prazo is not None %}
+                        <option
 
-                            {% if item.Prazo < 0 %}
+                            value=""
 
-                                {{ item.Prazo }} dias
+                            {% if sla_filtro == "" %}selected{% endif %}
 
-                            {% elif item.Prazo == 0 %}
+                        >
 
-                                Hoje
+                            Todos
 
-                            {% else %}
+                        </option>
 
-                                {{ item.Prazo }} dias
+                        <option
 
-                            {% endif %}
+                            value="Dentro do Prazo"
 
-                        {% else %}
+                            {% if sla_filtro == "Dentro do Prazo" %}selected{% endif %}
 
-                            -
+                        >
 
-                        {% endif %}
+                            Dentro do Prazo
 
-                    </td>
+                        </option>
 
+                        <option
 
-                    <!-- SLA -->
+                            value="Fora do Prazo"
 
-                    <td>
+                            {% if sla_filtro == "Fora do Prazo" %}selected{% endif %}
 
-                        {% if item.StatusPagamento == "Dentro do Prazo" %}
+                        >
 
-                            <span class="sla sla-ok">
-                                DENTRO DO PRAZO
-                            </span>
+                            Fora do Prazo
 
-                        {% elif item.StatusPagamento == "Fora do Prazo" %}
+                        </option>
 
-                            <span class="sla sla-atraso">
-                                FORA DO PRAZO
-                            </span>
+                    </select>
 
-                        {% else %}
+                </div>
 
-                            <span class="sla sla-sem">
-                                -
-                            </span>
+                <!-- TIPO -->
 
-                        {% endif %}
+            <div class="campo">
 
-                    </td>
+                <label for="tipo">
 
+                    Tipo
 
-                </tr>
+                </label>
 
+                <select
 
-            {% endfor %}
+                    id="tipo"
 
+                    name="tipo"
 
-            </tbody>
+                >
 
+                    <option
 
-        </table>
+                        value=""
 
+                        {% if tipo_filtro == "" %}selected{% endif %}
 
-        {% else %}
+                    >
 
+                        Todos
 
-            <div class="sem-dados">
+                    </option>
 
-                Nenhum lançamento encontrado para os filtros selecionados.
+                    <option
 
-            </div>
+                        value="DESPESA"
 
+                        {% if tipo_filtro == "DESPESA" %}selected{% endif %}
 
-        {% endif %}
+                    >
 
+                        Despesas
 
-    </div>
+                    </option>
+
+                    <option
+
+                        value="ENTRADA"
+
+                        {% if tipo_filtro == "ENTRADA" %}selected{% endif %}
+
+                    >
+
+                        Entradas
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+                <!-- FILTRAR -->
+
+                <button
+
+                    type="submit"
+
+                    class="btn-filtrar"
+
+                >
+
+                    Filtrar
+
+                </button>
+
+
+
+            </div>
+
+        </form>
+
+
+
+        <!-- LIMPAR -->
+
+        {% if data_vencimento_inicio or data_vencimento_fim or data_pagamento_inicio or data_pagamento_fim or status_filtro or sla_filtro or tipo_filtro %}
+
+            <div style="margin-top: 9px;">
+
+                <a
+
+                    href="{% url 'financeiro_dre' %}"
+
+                    class="btn-limpar"
+
+                >
+
+                    Limpar filtros
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+
+
+    </div>
+
+
+
+    <!-- ==========================================================
+
+         TABELA
+
+    ========================================================== -->
+
+    <div class="tabela-container">
+
+
+
+        <div class="tabela-topo">
+
+            <h3>
+
+                Lançamentos financeiros
+
+            </h3>
+
+            <div class="contador">
+
+                Exibindo {{ dados|length }} de {{ dados_total }} lançamento(s)
+
+            </div>
+
+             <a
+
+            href="{% url 'exportar_financeiro_dre' %}?data_vencimento_inicio={{ data_vencimento_inicio }}&data_vencimento_fim={{ data_vencimento_fim }}&data_pagamento_inicio={{ data_pagamento_inicio }}&data_pagamento_fim={{ data_pagamento_fim }}&status={{ status_filtro }}&sla={{ sla_filtro }}&tipo={{ tipo_filtro }}"
+
+            class="btn-exportar"
+
+            >
+
+                📊 Exportar Excel
+
+            </a>
+
+        </div>
+
+    </div>
+
+        {% if dados %}
+
+
+
+        <table id="tabelaFinanceiro">
+
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+
+                        DRE
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Categoria
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Emissão
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Vencimento
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Pagamento
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Cliente / Fornecedor
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Valor Título
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Valor Pago
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Status
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        Prazo
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                    <th>
+
+                        SLA
+
+                        <span class="seta"></span>
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+
+            {% for item in dados %}
+
+
+
+                <tr>
+
+
+
+                    <!-- DRE -->
+
+                    <td
+
+                        title="{{ item.descricaoDRE|default:'-' }}"
+
+                    >
+
+                        {{ item.descricaoDRE|default:"-" }}
+
+                    </td>
+
+
+
+                    <!-- CATEGORIA -->
+
+                    <td
+
+                        title="{{ item.descricao|default:'-' }}"
+
+                    >
+
+                        {{ item.descricao|default:"-" }}
+
+                    </td>
+
+
+
+                    <!-- EMISSÃO -->
+
+                    <td
+
+                        data-sort="{{ item.dDtEmissao|date:'Y-m-d' }}"
+
+                    >
+
+                        {{ item.dDtEmissao|date:"d/m/Y"|default:"-" }}
+
+                    </td>
+
+
+
+                    <!-- VENCIMENTO -->
+
+                    <td
+
+                        data-sort="{{ item.dDtPrevisao|date:'Y-m-d' }}"
+
+                    >
+
+                        {{ item.dDtPrevisao|date:"d/m/Y"|default:"-" }}
+
+                    </td>
+
+
+
+                    <!-- PAGAMENTO -->
+
+                    <td
+
+                        data-sort="{{ item.dDtPagamento|date:'Y-m-d' }}"
+
+                    >
+
+                        {{ item.dDtPagamento|date:"d/m/Y"|default:"-" }}
+
+                    </td>
+
+
+
+                    <!-- CLIENTE / FORNECEDOR -->
+
+                    <td
+
+                        title="{{ item.razao_social|default:'-' }}"
+
+                    >
+
+                        {{ item.razao_social|default:"-" }}
+
+                    </td>
+
+
+
+                    <!-- VALOR TÍTULO -->
+
+                    <td class="valor">
+
+                        {{ item.valor_titulo_formatado }}
+
+                    </td>
+
+
+
+                    <!-- VALOR PAGO -->
+
+                    <td class="valor">
+
+                        {{ item.valor_pago_formatado }}
+
+                    </td>
+
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if item.cStatus == "PAGO" %}
+
+                            <span class="status status-pago">
+
+                                PAGO
+
+                            </span>
+
+                        {% elif item.cStatus == "A VENCER" %}
+
+                            <span class="status status-vencer">
+
+                                A VENCER
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status status-outro">
+
+                                {{ item.cStatus|default:"-" }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                    <!-- PRAZO -->
+
+                    <td
+
+                        class="prazo
+
+                        {% if item.Prazo < 0 %}
+
+                            prazo-atrasado
+
+                        {% elif item.Prazo is not None %}
+
+                            prazo-ok
+
+                        {% endif %}"
+
+                    >
+
+                        {% if item.Prazo is not None %}
+
+                            {% if item.Prazo < 0 %}
+
+                                {{ item.Prazo }} dias
+
+                            {% elif item.Prazo == 0 %}
+
+                                Hoje
+
+                            {% else %}
+
+                                {{ item.Prazo }} dias
+
+                            {% endif %}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                    <!-- SLA -->
+
+                    <td>
+
+                        {% if item.StatusPagamento == "Dentro do Prazo" %}
+
+                            <span class="sla sla-ok">
+
+                                DENTRO DO PRAZO
+
+                            </span>
+
+                        {% elif item.StatusPagamento == "Fora do Prazo" %}
+
+                            <span class="sla sla-atraso">
+
+                                FORA DO PRAZO
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="sla sla-sem">
+
+                                -
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            {% endfor %}
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+        {% else %}
+
+
+
+            <div class="sem-dados">
+
+                Nenhum lançamento encontrado para os filtros selecionados.
+
+            </div>
+
+
+
+        {% endif %}
+
+
+
+    </div>
+
 
 
 </div>
 
 
+
 <!-- ==========================================================
-     ORDENAÇÃO DAS COLUNAS
-========================================================== -->
+
+     ORDENAÇÃO DAS COLUNAS
+
+\========================================================== -->
 
 <script>
 
 const tabela = document.getElementById(
-    "tabelaFinanceiro"
+
+    "tabelaFinanceiro"
+
 );
+
 
 
 if (tabela) {
 
-    const headers = tabela.querySelectorAll("th");
+    const headers = tabela.querySelectorAll("th");
 
 
-    headers.forEach(function(header, coluna) {
 
-        let ascendente = true;
+    headers.forEach(function(*header*, *coluna*) {
 
+        let ascendente = true;
 
-        header.addEventListener(
-            "click",
-            function() {
 
-                const tbody = tabela.querySelector(
-                    "tbody"
-                );
 
+        header.addEventListener(
 
-                const linhas = Array.from(
-                    tbody.querySelectorAll("tr")
-                );
+            "click",
 
+            function() {
 
-                linhas.sort(function(a, b) {
+                const tbody = tabela.querySelector(
 
-                    const celulaA =
-                        a.children[coluna];
+                    "tbody"
 
-                    const celulaB =
-                        b.children[coluna];
+                );
 
 
-                    /* ======================================
-                       DATAS
-                    ====================================== */
 
-                    if (
-                        celulaA.dataset.sort !== undefined &&
-                        celulaB.dataset.sort !== undefined
-                    ) {
+                const linhas = Array.from(
 
-                        let valorA =
-                            celulaA.dataset.sort;
+                    tbody.querySelectorAll("tr")
 
-                        let valorB =
-                            celulaB.dataset.sort;
+                );
 
 
-                        if (!valorA) {
-                            return 1;
-                        }
 
+                linhas.sort(function(*a*, *b*) {
 
-                        if (!valorB) {
-                            return -1;
-                        }
+                    const celulaA =
 
+                        a.children[coluna];
 
-                        if (valorA < valorB) {
-                            return ascendente ? -1 : 1;
-                        }
+                    const celulaB =
 
+                        b.children[coluna];
 
-                        if (valorA > valorB) {
-                            return ascendente ? 1 : -1;
-                        }
 
 
-                        return 0;
+                    /* ======================================
 
-                    }
+                       DATAS
 
+                    ====================================== */
 
-                    /* ======================================
-                       PRAZO
-                    ====================================== */
+                    if (
 
-                    if (
-                        celulaA.classList.contains("prazo") &&
-                        celulaB.classList.contains("prazo")
-                    ) {
+                        celulaA.dataset.sort !== undefined &&
 
-                        const valorA =
-                            parseInt(
-                                celulaA.innerText
-                            ) || 0;
+                        celulaB.dataset.sort !== undefined
 
+                    ) {
 
-                        const valorB =
-                            parseInt(
-                                celulaB.innerText
-                            ) || 0;
+                        let valorA =
 
+                            celulaA.dataset.sort;
 
-                        if (valorA < valorB) {
-                            return ascendente ? -1 : 1;
-                        }
+                        let valorB =
 
+                            celulaB.dataset.sort;
 
-                        if (valorA > valorB) {
-                            return ascendente ? 1 : -1;
-                        }
 
 
-                        return 0;
+                        if (!valorA) {
 
-                    }
+                            return 1;
 
+                        }
 
-                    /* ======================================
-                       TEXTO
-                    ====================================== */
 
-                    const valorA =
-                        celulaA.innerText
-                            .trim()
-                            .toLowerCase();
 
+                        if (!valorB) {
 
-                    const valorB =
-                        celulaB.innerText
-                            .trim()
-                            .toLowerCase();
+                            return -1;
 
+                        }
 
-                    if (valorA < valorB) {
-                        return ascendente ? -1 : 1;
-                    }
 
 
-                    if (valorA > valorB) {
-                        return ascendente ? 1 : -1;
-                    }
+                        if (valorA < valorB) {
 
+                            return ascendente ? -1 : 1;
 
-                    return 0;
+                        }
 
-                });
 
 
-                linhas.forEach(function(linha) {
+                        if (valorA > valorB) {
 
-                    tbody.appendChild(linha);
+                            return ascendente ? 1 : -1;
 
-                });
+                        }
 
 
-                headers.forEach(function(h) {
 
-                    const seta =
-                        h.querySelector(".seta");
+                        return 0;
 
+                    }
 
-                    if (seta) {
-                        seta.textContent = "";
-                    }
 
-                });
 
+                    /* ======================================
 
-                const seta =
-                    header.querySelector(".seta");
+                       PRAZO
 
+                    ====================================== */
 
-                if (seta) {
+                    if (
 
-                    seta.textContent =
-                        ascendente
-                            ? " ▲"
-                            : " ▼";
+                        celulaA.classList.contains("prazo") &&
 
-                }
+                        celulaB.classList.contains("prazo")
 
+                    ) {
 
-                ascendente = !ascendente;
+                        const valorA =
 
-            }
-        );
+                            parseInt(
 
-    });
+                                celulaA.innerText
+
+                            ) || 0;
+
+
+
+                        const valorB =
+
+                            parseInt(
+
+                                celulaB.innerText
+
+                            ) || 0;
+
+
+
+                        if (valorA < valorB) {
+
+                            return ascendente ? -1 : 1;
+
+                        }
+
+
+
+                        if (valorA > valorB) {
+
+                            return ascendente ? 1 : -1;
+
+                        }
+
+
+
+                        return 0;
+
+                    }
+
+
+
+                    /* ======================================
+
+                       TEXTO
+
+                    ====================================== */
+
+                    const valorA =
+
+                        celulaA.innerText
+
+                            .trim()
+
+                            .toLowerCase();
+
+
+
+                    const valorB =
+
+                        celulaB.innerText
+
+                            .trim()
+
+                            .toLowerCase();
+
+
+
+                    if (valorA < valorB) {
+
+                        return ascendente ? -1 : 1;
+
+                    }
+
+
+
+                    if (valorA > valorB) {
+
+                        return ascendente ? 1 : -1;
+
+                    }
+
+
+
+                    return 0;
+
+                });
+
+
+
+                linhas.forEach(function(*linha*) {
+
+                    tbody.appendChild(linha);
+
+                });
+
+
+
+                headers.forEach(function(*h*) {
+
+                    const seta =
+
+                        h.querySelector(".seta");
+
+
+
+                    if (seta) {
+
+                        seta.textContent = "";
+
+                    }
+
+                });
+
+
+
+                const seta =
+
+                    header.querySelector(".seta");
+
+
+
+                if (seta) {
+
+                    seta.textContent =
+
+                        ascendente
+
+                            ? " ▲"
+
+                            : " ▼";
+
+                }
+
+
+
+                ascendente = !ascendente;
+
+            }
+
+        );
+
+    });
 
 }
 
 </script>
+
 
 
 </body>

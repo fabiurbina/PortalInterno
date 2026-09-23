@@ -3421,6 +3421,7 @@ def financeiro_dre(request):
 
     from decimal import Decimal
     from datetime import date
+    from django.core.paginator import Paginator
 
     usuario = request.user
 
@@ -3473,6 +3474,10 @@ def financeiro_dre(request):
     sla_filtro = request.GET.get(
         "sla", ""
     )
+    
+    tipo_filtro = request.GET.get(
+    "tipo", ""
+    )
 
     # ==========================================================
     # FUNÇÃO PARA VALORES
@@ -3513,6 +3518,13 @@ def financeiro_dre(request):
 
         status = item.get("cStatus")
         status_sla = item.get("StatusPagamento")
+        
+        if status == "RECEBIDO":
+            tipo = "ENTRADA"
+        else:
+            tipo = "DESPESA"
+
+        item["Tipo"] = tipo
 
         data_vencimento = item.get("dDtPrevisao")
         data_pagamento = item.get("dDtPagamento")
@@ -3559,6 +3571,15 @@ def financeiro_dre(request):
 
             if status_sla != sla_filtro:
                 continue
+            
+        # ======================================================
+        # FILTRO TIPO
+        # ======================================================
+
+        if tipo_filtro:
+
+            if tipo != tipo_filtro:
+                continue
 
         # ======================================================
         # FILTRO VENCIMENTO
@@ -3599,6 +3620,23 @@ def financeiro_dre(request):
 
             if str(data_pagamento) > data_pagamento_fim:
                 continue
+            
+        # ==========================================================
+        # PAGINAÇÃO
+        # ==========================================================
+
+        paginator = Paginator(
+            dados_filtrados,
+            25
+        )
+
+        pagina_numero = request.GET.get(
+            "page"
+        )
+
+        pagina = paginator.get_page(
+            pagina_numero
+        )
 
         # ======================================================
         # VALORES FORMATADOS
@@ -3753,7 +3791,13 @@ def financeiro_dre(request):
 
     contexto = {
 
-        "dados": dados_filtrados,
+        "dados": pagina,
+
+        "dados_total": len(dados_filtrados),
+
+        "pagina": pagina,
+
+        "tipo_filtro": tipo_filtro,
 
         # Filtros
         "data_vencimento_inicio": data_vencimento_inicio,
