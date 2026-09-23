@@ -52,6 +52,8 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "interno.viesano.com.br",
     "portalinterno-production.up.railway.app",
+    "localhost",
+    "127.0.0.1",
 ]
 
 

@@ -46,6 +46,7 @@ from .views import (
     indicadores_comercial_dados,
     indicadores_financeiro_dados,
     financeiro_dre,
+    exportar_financeiro_dre,
     monitor_carga_view,
     pedidos_view,
     relatorio_aprovacao_mp_qualidade,
@@ -388,6 +389,12 @@ urlpatterns = [
         financeiro_dre,
         name="financeiro_dre",
     ),
+    
+    path(
+    "relatorios/financeiro-dre/exportar/",
+        exportar_financeiro_dre,
+    name="exportar_financeiro_dre"
+),
     
         path(
         "relatorios/monitor-carga/",

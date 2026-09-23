@@ -116,6 +116,14 @@
             color: #174f35;
         }
 
+        .card-entrada {
+            border-left: 4px solid #198754;
+        }
+
+        .card-entrada .valor {
+            color: #198754;
+        }
+
 
         .card-pago {
             border-left: 4px solid #198754;
@@ -614,6 +622,31 @@
             }
 
         }
+        .btn-exportar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 34px;
+        padding: 0 14px;
+
+        border-radius: 7px;
+        border: none;
+
+        background: #198754;
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: bold;
+
+        cursor: pointer;
+    }
+
+    .btn-exportar:hover {
+        opacity: .9;
+    }
 
     </style>
 
@@ -660,6 +693,19 @@
 
             <div class="valor">
                 {{ total_despesas }}
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo card-entrada">
+
+            <div class="titulo">
+                TOTAL ENTRADAS
+            </div>
+
+            <div class="valor">
+                {{ total_entradas }}
             </div>
 
         </div>
@@ -971,8 +1017,16 @@
                 {{ dados|length }} lançamento(s)
             </div>
 
+             <a
+            href="{% url 'exportar_financeiro_dre' %}?data_vencimento_inicio={{ data_vencimento_inicio }}&data_vencimento_fim={{ data_vencimento_fim }}&data_pagamento_inicio={{ data_pagamento_inicio }}&data_pagamento_fim={{ data_pagamento_fim }}&status={{ status_filtro }}&sla={{ sla_filtro }}"
+            class="btn-exportar"
+            >
+                📊 Exportar Excel
+            </a>
+
         </div>
 
+    </div>
 
         {% if dados %}
 

@@ -3433,6 +3433,7 @@ def financeiro_dre(request):
         or usuario.email.lower() in [
             "fabio.soares@viesano.com.br",
             "aline.andrade@viesano.com.br",
+            "andre.machado@viesano.com.br",
         ]
     ):
         return HttpResponseForbidden(
@@ -3628,6 +3629,15 @@ def financeiro_dre(request):
         ),
         Decimal("0")
     )
+    
+    total_entradas = sum(
+        (
+            valor_decimal(item.get("nValorTitulo"))
+            for item in dados_filtrados
+            if item.get("cStatus") == "RECEBIDO"
+        ),
+        Decimal("0")
+    )
 
     total_pago = sum(
         (
@@ -3720,6 +3730,10 @@ def financeiro_dre(request):
     total_pago_formatado = dinheiro(
         total_pago
     )
+    
+    total_entradas_formatado = dinheiro(
+    total_entradas
+    )
 
     total_a_vencer_formatado = dinheiro(
         total_a_vencer
@@ -3753,6 +3767,7 @@ def financeiro_dre(request):
 
         # Cards
         "total_despesas": total_despesas_formatado,
+        "total_entradas": total_entradas_formatado,
         "total_pago": total_pago_formatado,
         "total_a_vencer": total_a_vencer_formatado,
         "total_dentro_prazo": total_dentro_prazo_formatado,
@@ -3770,6 +3785,356 @@ def financeiro_dre(request):
         "relatorios/financeiro_dre.html",
         contexto
     )
+    
+    
+@login_required
+def exportar_financeiro_dre(request):
+
+    from decimal import Decimal
+    from datetime import date
+    from django.http import HttpResponse
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.utils import get_column_letter
+
+    usuario = request.user
+
+    # ==========================================================
+    # CONTROLE DE ACESSO
+    # ==========================================================
+
+    if not (
+        usuario.is_superuser
+        or usuario.email.lower() in [
+            "fabio.soares@viesano.com.br",
+            "aline.andrade@viesano.com.br",
+            "andre.machado@viesano.com.br",
+        ]
+    ):
+        return HttpResponse(
+            "Você não tem permissão para exportar este relatório.",
+            status=403
+        )
+
+    # ==========================================================
+    # DADOS
+    # ==========================================================
+
+    dados = buscar_fin_dre()
+
+    # ==========================================================
+    # FILTROS
+    # ==========================================================
+
+    data_vencimento_inicio = request.GET.get(
+        "data_vencimento_inicio", ""
+    )
+
+    data_vencimento_fim = request.GET.get(
+        "data_vencimento_fim", ""
+    )
+
+    data_pagamento_inicio = request.GET.get(
+        "data_pagamento_inicio", ""
+    )
+
+    data_pagamento_fim = request.GET.get(
+        "data_pagamento_fim", ""
+    )
+
+    status_filtro = request.GET.get(
+        "status", ""
+    )
+
+    sla_filtro = request.GET.get(
+        "sla", ""
+    )
+
+    # ==========================================================
+    # FUNÇÃO PARA VALORES
+    # ==========================================================
+
+    def valor_decimal(valor):
+
+        if valor is None:
+            return Decimal("0")
+
+        try:
+            return Decimal(str(valor))
+
+        except:
+            return Decimal("0")
+
+    # ==========================================================
+    # PROCESSAMENTO
+    # ==========================================================
+
+    dados_filtrados = []
+
+    for item in dados:
+
+        status = item.get("cStatus")
+        status_sla = item.get("StatusPagamento")
+
+        data_vencimento = item.get("dDtPrevisao")
+        data_pagamento = item.get("dDtPagamento")
+
+        # ======================================================
+        # PRAZO
+        # ======================================================
+
+        prazo = None
+
+        if (
+            status == "PAGO"
+            and data_vencimento
+            and data_pagamento
+        ):
+
+            prazo = (
+                data_vencimento - data_pagamento
+            ).days
+
+        elif (
+            status == "A VENCER"
+            and data_vencimento
+        ):
+
+            prazo = (
+                data_vencimento - date.today()
+            ).days
+
+        item["Prazo"] = prazo
+
+        # ======================================================
+        # FILTRO STATUS
+        # ======================================================
+
+        if status_filtro:
+
+            if status != status_filtro:
+                continue
+
+        # ======================================================
+        # FILTRO SLA
+        # ======================================================
+
+        if sla_filtro:
+
+            if status_sla != sla_filtro:
+                continue
+
+        # ======================================================
+        # FILTRO VENCIMENTO
+        # ======================================================
+
+        if data_vencimento_inicio:
+
+            if not data_vencimento:
+                continue
+
+            if str(data_vencimento) < data_vencimento_inicio:
+                continue
+
+        if data_vencimento_fim:
+
+            if not data_vencimento:
+                continue
+
+            if str(data_vencimento) > data_vencimento_fim:
+                continue
+
+        # ======================================================
+        # FILTRO PAGAMENTO
+        # ======================================================
+
+        if data_pagamento_inicio:
+
+            if not data_pagamento:
+                continue
+
+            if str(data_pagamento) < data_pagamento_inicio:
+                continue
+
+        if data_pagamento_fim:
+
+            if not data_pagamento:
+                continue
+
+            if str(data_pagamento) > data_pagamento_fim:
+                continue
+
+        # ======================================================
+        # ADICIONA
+        # ======================================================
+
+        dados_filtrados.append(item)
+
+    # ==========================================================
+    # CRIA EXCEL
+    # ==========================================================
+
+    wb = Workbook()
+
+    ws = wb.active
+    ws.title = "Financeiro"
+
+    # ==========================================================
+    # CABEÇALHO
+    # ==========================================================
+
+    cabecalho = [
+        "DRE",
+        "Categoria",
+        "Emissão",
+        "Vencimento",
+        "Pagamento",
+        "Cliente / Fornecedor",
+        "Valor Título",
+        "Valor Pago",
+        "Status",
+        "Prazo",
+        "SLA",
+    ]
+
+    ws.append(cabecalho)
+
+    # ==========================================================
+    # ESTILO CABEÇALHO
+    # ==========================================================
+
+    for cell in ws[1]:
+
+        cell.font = Font(
+            bold=True,
+            color="FFFFFF"
+        )
+
+        cell.fill = PatternFill(
+            "solid",
+            fgColor="174F35"
+        )
+
+        cell.alignment = Alignment(
+            horizontal="center"
+        )
+
+    # ==========================================================
+    # DADOS
+    # ==========================================================
+
+    for item in dados_filtrados:
+
+        ws.append([
+            item.get("descricaoDRE") or "-",
+
+            item.get("descricao") or "-",
+
+            item.get("dDtEmissao"),
+
+            item.get("dDtPrevisao"),
+
+            item.get("dDtPagamento"),
+
+            item.get("razao_social") or "-",
+
+            valor_decimal(
+                item.get("nValorTitulo")
+            ),
+
+            valor_decimal(
+                item.get("nValPago")
+            ),
+
+            item.get("cStatus") or "-",
+
+            item.get("Prazo"),
+
+            item.get("StatusPagamento") or "-",
+        ])
+
+    # ==========================================================
+    # FORMATAÇÃO
+    # ==========================================================
+
+    for row in ws.iter_rows(
+        min_row=2,
+        max_row=ws.max_row
+    ):
+
+        # Datas
+        for coluna in [3, 4, 5]:
+
+            cell = row[coluna - 1]
+
+            if cell.value:
+
+                cell.number_format = "DD/MM/YYYY"
+
+        # Valores
+        for coluna in [7, 8]:
+
+            cell = row[coluna - 1]
+
+            cell.number_format = 'R$ #,##0.00'
+
+    # ==========================================================
+    # FILTRO AUTOMÁTICO
+    # ==========================================================
+
+    if ws.max_row > 1:
+
+        ws.auto_filter.ref = ws.dimensions
+
+    # ==========================================================
+    # CONGELAR CABEÇALHO
+    # ==========================================================
+
+    ws.freeze_panes = "A2"
+
+    # ==========================================================
+    # LARGURA DAS COLUNAS
+    # ==========================================================
+
+    larguras = {
+        "A": 25,
+        "B": 30,
+        "C": 13,
+        "D": 13,
+        "E": 13,
+        "F": 35,
+        "G": 18,
+        "H": 18,
+        "I": 15,
+        "J": 12,
+        "K": 20,
+    }
+
+    for coluna, largura in larguras.items():
+
+        ws.column_dimensions[
+            coluna
+        ].width = largura
+
+    # ==========================================================
+    # RESPOSTA
+    # ==========================================================
+
+    response = HttpResponse(
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="financeiro_dre.xlsx"'
+    )
+
+    wb.save(response)
+
+    return response
+
     
     
 from collections import defaultdict
