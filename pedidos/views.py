@@ -3421,20 +3421,18 @@ def indicadores_comercial_dados(request):
     
     
 @login_required
+@login_required
 def financeiro_dre(request):
 
     from decimal import Decimal
     from datetime import date
-
     from django.core.paginator import Paginator
-    from django.http import HttpResponseForbidden
-    from django.shortcuts import render
+
+    usuario = request.user
 
     # ==========================================================
     # CONTROLE DE ACESSO
     # ==========================================================
-
-    usuario = request.user
 
     if not (
         usuario.is_superuser
@@ -3459,42 +3457,27 @@ def financeiro_dre(request):
     # ==========================================================
 
     data_vencimento_inicio = request.GET.get(
-        "data_vencimento_inicio",
-        ""
+        "data_vencimento_inicio", ""
     )
 
     data_vencimento_fim = request.GET.get(
-        "data_vencimento_fim",
-        ""
+        "data_vencimento_fim", ""
     )
 
     data_pagamento_inicio = request.GET.get(
-        "data_pagamento_inicio",
-        ""
+        "data_pagamento_inicio", ""
     )
 
     data_pagamento_fim = request.GET.get(
-        "data_pagamento_fim",
-        ""
+        "data_pagamento_fim", ""
     )
 
-    status_filtro = request.GET.get(
-        "status",
-        ""
-    )
-
-    sla_filtro = request.GET.get(
-        "sla",
-        ""
-    )
-
-    dre_filtro = request.GET.get(
-        "dre",
-        ""
-    )
+    status_filtro = request.GET.get("status", "")
+    sla_filtro = request.GET.get("sla", "")
+    dre_filtro = request.GET.get("dre", "")
 
     # ==========================================================
-    # FUNÇÃO PARA VALORES
+    # FUNÇÕES AUXILIARES
     # ==========================================================
 
     def valor_decimal(valor):
@@ -3504,13 +3487,8 @@ def financeiro_dre(request):
 
         try:
             return Decimal(str(valor))
-
-        except:
+        except (ValueError, TypeError):
             return Decimal("0")
-
-    # ==========================================================
-    # FORMATAÇÃO DE DINHEIRO
-    # ==========================================================
 
     def dinheiro(valor):
 
@@ -3524,7 +3502,7 @@ def financeiro_dre(request):
         )
 
     # ==========================================================
-    # PROCESSAMENTO
+    # APLICAÇÃO DOS FILTROS
     # ==========================================================
 
     dados_filtrados = []
@@ -3605,7 +3583,7 @@ def financeiro_dre(request):
                 continue
 
         # ======================================================
-        # FILTRO VENCIMENTO - INÍCIO
+        # FILTRO VENCIMENTO
         # ======================================================
 
         if data_vencimento_inicio:
@@ -3616,10 +3594,6 @@ def financeiro_dre(request):
             if str(data_vencimento) < data_vencimento_inicio:
                 continue
 
-        # ======================================================
-        # FILTRO VENCIMENTO - FIM
-        # ======================================================
-
         if data_vencimento_fim:
 
             if not data_vencimento:
@@ -3629,7 +3603,7 @@ def financeiro_dre(request):
                 continue
 
         # ======================================================
-        # FILTRO PAGAMENTO - INÍCIO
+        # FILTRO PAGAMENTO
         # ======================================================
 
         if data_pagamento_inicio:
@@ -3639,10 +3613,6 @@ def financeiro_dre(request):
 
             if str(data_pagamento) < data_pagamento_inicio:
                 continue
-
-        # ======================================================
-        # FILTRO PAGAMENTO - FIM
-        # ======================================================
 
         if data_pagamento_fim:
 
@@ -3665,14 +3635,18 @@ def financeiro_dre(request):
         )
 
         # ======================================================
-        # ADICIONA SOMENTE DEPOIS DE TODOS OS FILTROS
+        # ADICIONA AOS DADOS FILTRADOS
         # ======================================================
 
         dados_filtrados.append(item)
 
     # ==========================================================
-    # TOTAIS DOS DADOS FILTRADOS
+    # TOTAIS
     # ==========================================================
+
+    # ----------------------------------------------------------
+    # DESPESAS
+    # ----------------------------------------------------------
 
     total_despesas = sum(
         (
@@ -3683,6 +3657,10 @@ def financeiro_dre(request):
         Decimal("0")
     )
 
+    # ----------------------------------------------------------
+    # ENTRADAS
+    # ----------------------------------------------------------
+
     total_entradas = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
@@ -3691,6 +3669,35 @@ def financeiro_dre(request):
         ),
         Decimal("0")
     )
+
+    # ----------------------------------------------------------
+    # LUCRO BRUTO
+    # ----------------------------------------------------------
+
+    total_lucro_bruto = sum(
+        (
+            valor_decimal(item.get("nValorTitulo"))
+            for item in dados_filtrados
+        ),
+        Decimal("0")
+    )
+
+    # ----------------------------------------------------------
+    # RECEBIDO
+    # ----------------------------------------------------------
+
+    total_recebido = sum(
+        (
+            valor_decimal(item.get("nValPago"))
+            for item in dados_filtrados
+            if item.get("cStatus") == "RECEBIDO"
+        ),
+        Decimal("0")
+    )
+
+    # ----------------------------------------------------------
+    # PAGO
+    # ----------------------------------------------------------
 
     total_pago = sum(
         (
@@ -3701,6 +3708,10 @@ def financeiro_dre(request):
         Decimal("0")
     )
 
+    # ----------------------------------------------------------
+    # A VENCER
+    # ----------------------------------------------------------
+
     total_a_vencer = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
@@ -3710,6 +3721,10 @@ def financeiro_dre(request):
         Decimal("0")
     )
 
+    # ----------------------------------------------------------
+    # DENTRO DO PRAZO
+    # ----------------------------------------------------------
+
     total_dentro_prazo = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
@@ -3718,6 +3733,10 @@ def financeiro_dre(request):
         ),
         Decimal("0")
     )
+
+    # ----------------------------------------------------------
+    # FORA DO PRAZO
+    # ----------------------------------------------------------
 
     total_fora_prazo = sum(
         (
@@ -3768,59 +3787,49 @@ def financeiro_dre(request):
         percentual_pontualidade = Decimal("0")
 
     percentual_pontualidade_formatado = (
-        f"{percentual_pontualidade:.2f}"
-        .replace(".", ",")
+        f"{percentual_pontualidade:.2f}".replace(".", ",")
         + "%"
     )
 
     # ==========================================================
-    # VALORES DOS CARDS FORMATADOS
+    # CARDS DINÂMICOS
     # ==========================================================
 
-    total_despesas_formatado = dinheiro(
-        total_despesas
-    )
+    if dre_filtro == "Lucro Bruto":
 
-    total_entradas_formatado = dinheiro(
-        total_entradas
-    )
+        titulo_card_1 = "TOTAL LUCRO BRUTO"
+        valor_card_1 = dinheiro(total_lucro_bruto)
 
-    total_pago_formatado = dinheiro(
-        total_pago
-    )
+        titulo_card_2 = "TOTAL RECEBIDO"
+        valor_card_2 = dinheiro(total_recebido)
 
-    total_a_vencer_formatado = dinheiro(
-        total_a_vencer
-    )
+        titulo_card_3 = "A RECEBER"
+        valor_card_3 = dinheiro(total_a_vencer)
 
-    total_dentro_prazo_formatado = dinheiro(
-        total_dentro_prazo
-    )
+    elif dre_filtro == "Despesas":
 
-    total_fora_prazo_formatado = dinheiro(
-        total_fora_prazo
-    )
+        titulo_card_1 = "TOTAL DESPESAS"
+        valor_card_1 = dinheiro(total_despesas)
+
+        titulo_card_2 = "TOTAL PAGO"
+        valor_card_2 = dinheiro(total_pago)
+
+        titulo_card_3 = "A VENCER"
+        valor_card_3 = dinheiro(total_a_vencer)
+
+    else:
+
+        titulo_card_1 = "TOTAL DESPESAS"
+        valor_card_1 = dinheiro(total_despesas)
+
+        titulo_card_2 = "TOTAL ENTRADAS"
+        valor_card_2 = dinheiro(total_entradas)
+
+        titulo_card_3 = "TOTAL PAGO"
+        valor_card_3 = dinheiro(total_pago)
 
     # ==========================================================
     # PAGINAÇÃO
-    # ==========================================================
-    #
-    # IMPORTANTE:
-    # A paginação acontece SOMENTE depois que
-    # dados_filtrados está completamente pronto.
-    #
-    # Assim:
-    #
-    # filtros
-    #     ↓
-    # dados_filtrados
-    #     ↓
-    # cards
-    #     ↓
-    # paginação
-    #     ↓
-    # tabela
-    #
     # ==========================================================
 
     paginator = Paginator(
@@ -3828,9 +3837,7 @@ def financeiro_dre(request):
         25
     )
 
-    pagina_numero = request.GET.get(
-        "page"
-    )
+    pagina_numero = request.GET.get("page")
 
     pagina = paginator.get_page(
         pagina_numero
@@ -3838,19 +3845,12 @@ def financeiro_dre(request):
 
     # ==========================================================
     # QUERY STRING
-    # ==========================================================
-    #
-    # Mantém TODOS os filtros durante a navegação.
-    # Remove somente "page".
-    #
+    # Mantém os filtros quando troca de página
     # ==========================================================
 
     parametros = request.GET.copy()
 
-    parametros.pop(
-        "page",
-        None
-    )
+    parametros.pop("page", None)
 
     query_string = parametros.urlencode()
 
@@ -3860,85 +3860,67 @@ def financeiro_dre(request):
 
     contexto = {
 
-        # ======================================================
-        # TABELA
-        # ======================================================
-
+        # Dados da página atual
         "dados": pagina,
 
-        # Total REAL depois dos filtros
-        "dados_total": len(
-            dados_filtrados
-        ),
+        # Total de registros após todos os filtros
+        "dados_total": len(dados_filtrados),
 
-        # Objeto da paginação
+        # Objeto de paginação
         "pagina": pagina,
 
-        # Filtros preservados na paginação
+        # Mantém os filtros na paginação
         "query_string": query_string,
 
-        # ======================================================
-        # FILTROS
-        # ======================================================
+        # ------------------------------------------------------
+        # Filtros
+        # ------------------------------------------------------
 
-        "data_vencimento_inicio":
-            data_vencimento_inicio,
+        "data_vencimento_inicio": data_vencimento_inicio,
+        "data_vencimento_fim": data_vencimento_fim,
 
-        "data_vencimento_fim":
-            data_vencimento_fim,
+        "data_pagamento_inicio": data_pagamento_inicio,
+        "data_pagamento_fim": data_pagamento_fim,
 
-        "data_pagamento_inicio":
-            data_pagamento_inicio,
+        "status_filtro": status_filtro,
+        "sla_filtro": sla_filtro,
+        "dre_filtro": dre_filtro,
 
-        "data_pagamento_fim":
-            data_pagamento_fim,
+        # ------------------------------------------------------
+        # Cards dinâmicos
+        # ------------------------------------------------------
 
-        "status_filtro":
-            status_filtro,
+        "titulo_card_1": titulo_card_1,
+        "valor_card_1": valor_card_1,
 
-        "sla_filtro":
-            sla_filtro,
+        "titulo_card_2": titulo_card_2,
+        "valor_card_2": valor_card_2,
 
-        "dre_filtro":
-            dre_filtro,
+        "titulo_card_3": titulo_card_3,
+        "valor_card_3": valor_card_3,
 
-        # ======================================================
-        # CARDS
-        # ======================================================
+        # ------------------------------------------------------
+        # Totais
+        # ------------------------------------------------------
 
-        "total_despesas":
-            total_despesas_formatado,
+        "total_despesas": dinheiro(total_despesas),
+        "total_entradas": dinheiro(total_entradas),
+        "total_pago": dinheiro(total_pago),
+        "total_a_vencer": dinheiro(total_a_vencer),
+        "total_dentro_prazo": dinheiro(total_dentro_prazo),
+        "total_fora_prazo": dinheiro(total_fora_prazo),
 
-        "total_entradas":
-            total_entradas_formatado,
+        # ------------------------------------------------------
+        # Indicador de pontualidade
+        # ------------------------------------------------------
 
-        "total_pago":
-            total_pago_formatado,
+        "pagamentos_realizados": pagamentos_realizados,
+        "pagamentos_dentro_prazo": pagamentos_dentro_prazo,
+        "pagamentos_fora_prazo": pagamentos_fora_prazo,
 
-        "total_a_vencer":
-            total_a_vencer_formatado,
-
-        "total_dentro_prazo":
-            total_dentro_prazo_formatado,
-
-        "total_fora_prazo":
-            total_fora_prazo_formatado,
-
-        # ======================================================
-        # INDICADORES
-        # ======================================================
-
-        "pagamentos_realizados":
-            pagamentos_realizados,
-
-        "pagamentos_dentro_prazo":
-            pagamentos_dentro_prazo,
-
-        "pagamentos_fora_prazo":
-            pagamentos_fora_prazo,
-
-        "percentual_pontualidade":
-            percentual_pontualidade_formatado,
+        "percentual_pontualidade": (
+            percentual_pontualidade_formatado
+        ),
     }
 
     # ==========================================================
@@ -3952,7 +3934,7 @@ def financeiro_dre(request):
     )
     
     
-@login_required
+    
 @login_required
 def exportar_financeiro_dre(request):
 
