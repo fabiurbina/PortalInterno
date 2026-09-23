@@ -3471,17 +3471,9 @@ def financeiro_dre(request):
         "data_pagamento_fim", ""
     )
 
-    status_filtro = request.GET.get(
-        "status", ""
-    )
-
-    sla_filtro = request.GET.get(
-        "sla", ""
-    )
-    
-    tipo_filtro = request.GET.get(
-    "tipo", ""
-    )
+    status_filtro = request.GET.get("status", "")
+    sla_filtro = request.GET.get("sla", "")
+    dre_filtro = request.GET.get("dre", "")
 
     # ==========================================================
     # FUNÇÃO PARA VALORES
@@ -3577,14 +3569,12 @@ def financeiro_dre(request):
                 continue
             
         # ======================================================
-        # FILTRO TIPO
+        # FILTRO DRE
         # ======================================================
 
-        if tipo_filtro:
-
-            if tipo != tipo_filtro:
-                continue
-
+        if dre_filtro and item.get("descricaoDRE") != dre_filtro:
+            continue
+        
         # ======================================================
         # FILTRO VENCIMENTO
         # ======================================================
@@ -3801,8 +3791,7 @@ def financeiro_dre(request):
 
         "pagina": dados,
 
-        "tipo_filtro": tipo_filtro,
-
+     
         # Filtros
         "data_vencimento_inicio": data_vencimento_inicio,
         "data_vencimento_fim": data_vencimento_fim,
@@ -3812,6 +3801,7 @@ def financeiro_dre(request):
 
         "status_filtro": status_filtro,
         "sla_filtro": sla_filtro,
+        "dre_filtro": dre_filtro,
 
         # Cards
         "total_despesas": total_despesas_formatado,

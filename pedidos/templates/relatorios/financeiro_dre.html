@@ -623,16 +623,18 @@
                 </div>
 
                 <div class="campo">
-                    <label for="tipo">Tipo</label>
-                    <select id="tipo" name="tipo">
-                        <option value="" {% if tipo_filtro == "" %}selected{% endif %}>
+                   <label for="dre">DRE</label>
+                    <select id="dre" name="dre">
+                        <option value="" {% if dre_filtro == "" %}selected{% endif %}>
                             Todos
                         </option>
-                        <option value="DESPESA" {% if tipo_filtro == "DESPESA" %}selected{% endif %}>
+
+                        <option value="Despesas" {% if dre_filtro == "Despesas" %}selected{% endif %}>
                             Despesas
                         </option>
-                        <option value="ENTRADA" {% if tipo_filtro == "ENTRADA" %}selected{% endif %}>
-                            Entradas
+
+                        <option value="Lucro Bruto" {% if dre_filtro == "Lucro Bruto" %}selected{% endif %}>
+                            Lucro Bruto
                         </option>
                     </select>
                 </div>
