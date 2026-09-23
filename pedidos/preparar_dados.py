@@ -173,3 +173,114 @@ def preparar_dados_comercial(registros):
         "oportunidades_relevantes": oportunidades_relevantes,
         "clientes_relevantes": clientes_relevantes
     }
+    
+    
+def preparar_dados_pedidos(registros):
+
+    if not registros:
+        return {
+            "resumo": {},
+            "pedidos_relevantes": [],
+            "clientes_relevantes": []
+        }
+
+    total_pedidos = len(registros)
+
+    valor_total = sum(
+        float(r.get("Valor do Pedido") or 0)
+        for r in registros
+    )
+
+    total_unidades = sum(
+        float(r.get("Total de Unidades") or 0)
+        for r in registros
+    )
+
+    total_produtos = sum(
+        int(r.get("Quantidade de Produtos") or 0)
+        for r in registros
+    )
+
+    faturados = sum(
+        1 for r in registros
+        if str(r.get("faturado") or "").upper() == "S"
+    )
+
+    cancelados = sum(
+        1 for r in registros
+        if str(r.get("cancelado") or "").upper() == "S"
+    )
+
+    ticket_medio = (
+        valor_total / total_pedidos
+        if total_pedidos
+        else 0
+    )
+
+    resumo = {
+        "total_pedidos": total_pedidos,
+        "valor_total_pedidos": valor_total,
+        "ticket_medio": ticket_medio,
+        "total_unidades": total_unidades,
+        "total_produtos": total_produtos,
+        "pedidos_faturados": faturados,
+        "pedidos_cancelados": cancelados,
+        "pedidos_nao_cancelados": total_pedidos - cancelados,
+    }
+
+    pedidos = []
+
+    for r in registros:
+        pedidos.append({
+            "codigo_pedido": r.get("codigo_pedido"),
+            "numero_pedido": r.get("numero_pedido"),
+            "cliente": r.get("razao_social"),
+            "codigo_cliente": r.get("codigo_cliente"),
+            "data_inclusao": r.get("dIncl"),
+            "data_faturamento": r.get("dfat"),
+            "status": r.get("statusPedido"),
+            "faturado": r.get("faturado"),
+            "cancelado": r.get("cancelado"),
+            "quantidade_produtos": r.get("Quantidade de Produtos"),
+            "total_unidades": r.get("Total de Unidades"),
+            "valor": r.get("Valor do Pedido"),
+            "ticket_medio": r.get("Ticket Médio"),
+        })
+
+    # Clientes que mais geraram pedidos
+    clientes = {}
+
+    for pedido in pedidos:
+
+        cliente = pedido["cliente"] or "Cliente não informado"
+
+        if cliente not in clientes:
+            clientes[cliente] = {
+                "cliente": cliente,
+                "quantidade_pedidos": 0,
+                "valor_total": 0
+            }
+
+        clientes[cliente]["quantidade_pedidos"] += 1
+        clientes[cliente]["valor_total"] += float(
+            pedido["valor"] or 0
+        )
+
+    clientes_relevantes = sorted(
+        clientes.values(),
+        key=lambda x: x["valor_total"],
+        reverse=True
+    )[:10]
+
+    # Pedidos de maior valor
+    pedidos_relevantes = sorted(
+        pedidos,
+        key=lambda x: float(x["valor"] or 0),
+        reverse=True
+    )[:10]
+
+    return {
+        "resumo": resumo,
+        "pedidos_relevantes": pedidos_relevantes,
+        "clientes_relevantes": clientes_relevantes
+    }

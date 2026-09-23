@@ -52,7 +52,8 @@ from .views import (
     relatorio_aprovacao_mp_qualidade,
     exportar_aprovacao_mp_qualidade,
     visualizar_aprovacao_mp_qualidade,
-    receber_login_destaque
+    receber_login_destaque,
+    agente_comercial_view
     
 )
 
@@ -429,5 +430,11 @@ urlpatterns = [
     "receber-login-destaque/",
     login_not_required(receber_login_destaque),
     name="receber_login_destaque",
+),
+    
+    path(
+    "agente-comercial/",
+    agente_comercial_view,
+    name="agente_comercial"
 ),
 ]

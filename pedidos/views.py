@@ -5459,3 +5459,10 @@ def receber_login_destaque(request):
             destino.write(chunk)
 
     return HttpResponse(status=200)
+
+
+def agente_comercial_view(request):
+    return render(
+        request,
+        "agente/comercial.html"
+    )

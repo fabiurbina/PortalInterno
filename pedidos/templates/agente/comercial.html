@@ -1,0 +1,385 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Agente Comercial | Viesano</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/agente/comercial.css' %}"
+    >
+
+</head>
+
+<body>
+
+<div class="agente-container">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+            <div class="logo-area">
+
+                <div class="logo-icon">
+                    V
+                </div>
+
+                <div>
+                    <div class="logo-title">
+                        VIESANO
+                    </div>
+
+                    <div class="logo-subtitle">
+                        Inteligência Comercial
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn-nova-conversa"
+            id="btnNovaConversa"
+        >
+
+            <span>＋</span>
+
+            Nova conversa
+
+        </button>
+
+
+        <div class="sidebar-section">
+
+            <div class="sidebar-label">
+                CONVERSAS
+            </div>
+
+            <div
+                id="historico"
+                class="historico"
+            >
+
+                <div class="historico-vazio">
+
+                    Nenhuma conversa ainda.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-footer">
+
+            <div class="agente-status">
+
+                <span class="status-dot"></span>
+
+                <div>
+
+                    <strong>
+                        Agente Comercial
+                    </strong>
+
+                    <small>
+                        Online
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL
+    ====================================================== -->
+
+    <main class="chat-area">
+
+        <!-- HEADER -->
+
+        <header class="chat-header">
+
+            <div class="header-agent">
+
+                <div class="agent-avatar">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h1>
+                        Agente Comercial
+                    </h1>
+
+                    <p>
+                        Análise inteligente de CRM e pedidos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="header-status">
+
+                <span class="status-dot"></span>
+
+                Conectado
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTEÚDO DO CHAT
+        ================================================== -->
+
+        <section
+            class="chat-content"
+            id="chatContent"
+        >
+
+            <!-- TELA INICIAL -->
+
+            <div
+                class="welcome"
+                id="welcome"
+            >
+
+                <div class="welcome-avatar">
+                    🤖
+                </div>
+
+                <h2>
+                    Olá! 👋
+                </h2>
+
+                <p class="welcome-text">
+
+                    Sou o agente comercial da Viesano.
+
+                    <br>
+
+                    Posso analisar o CRM, pedidos e cruzar
+                    os dados para ajudar você a entender
+                    o desempenho das vendas.
+
+                </p>
+
+
+                <!-- SUGESTÕES -->
+
+                <div class="suggestions">
+
+                    <button
+                        class="suggestion-card"
+                        data-question="Como está nossa força de vendas hoje?"
+                    >
+
+                        <span class="suggestion-icon">
+                            📊
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Como está nossa força de vendas?
+                            </strong>
+
+                            <small>
+                                Analise CRM e pedidos
+                            </small>
+
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        class="suggestion-card"
+                        data-question="A força de vendas está gerando pedidos?"
+                    >
+
+                        <span class="suggestion-icon">
+                            🛒
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                O CRM está virando pedidos?
+                            </strong>
+
+                            <small>
+                                Compare potencial e resultado
+                            </small>
+
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        class="suggestion-card"
+                        data-question="Quais clientes estão gerando mais pedidos?"
+                    >
+
+                        <span class="suggestion-icon">
+                            👥
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Quais clientes estão comprando?
+                            </strong>
+
+                            <small>
+                                Analise os principais compradores
+                            </small>
+
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        class="suggestion-card"
+                        data-question="Quais oportunidades do CRM merecem mais atenção?"
+                    >
+
+                        <span class="suggestion-icon">
+                            🎯
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Quais oportunidades merecem atenção?
+                            </strong>
+
+                            <small>
+                                Analise o pipeline comercial
+                            </small>
+
+                        </div>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- MENSAGENS -->
+
+            <div
+                class="messages"
+                id="messages"
+            >
+
+            </div>
+
+
+            <!-- LOADING -->
+
+            <div
+                class="typing"
+                id="typing"
+            >
+
+                <div class="message-avatar">
+                    🤖
+                </div>
+
+                <div class="typing-bubble">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+                <span class="typing-text">
+                    Analisando os dados...
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CAMPO DE MENSAGEM
+        ================================================== -->
+
+        <footer class="input-area">
+
+            <div class="input-wrapper">
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Pergunte qualquer coisa sobre o comercial..."
+                    rows="1"
+                ></textarea>
+
+
+                <button
+                    id="sendButton"
+                    class="send-button"
+                    title="Enviar"
+                >
+
+                    ➤
+
+                </button>
+
+            </div>
+
+
+            <div class="input-hint">
+
+                O agente utiliza dados reais do CRM e dos pedidos
+                para responder.
+
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script
+    src="{% static 'js/agente/comercial.js' %}"
+></script>
+
+</body>
+
+</html>
