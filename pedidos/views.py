@@ -3425,13 +3425,16 @@ def financeiro_dre(request):
 
     from decimal import Decimal
     from datetime import date
-    from django.core.paginator import Paginator
 
-    usuario = request.user
+    from django.core.paginator import Paginator
+    from django.http import HttpResponseForbidden
+    from django.shortcuts import render
 
     # ==========================================================
     # CONTROLE DE ACESSO
     # ==========================================================
+
+    usuario = request.user
 
     if not (
         usuario.is_superuser
@@ -3456,24 +3459,39 @@ def financeiro_dre(request):
     # ==========================================================
 
     data_vencimento_inicio = request.GET.get(
-        "data_vencimento_inicio", ""
+        "data_vencimento_inicio",
+        ""
     )
 
     data_vencimento_fim = request.GET.get(
-        "data_vencimento_fim", ""
+        "data_vencimento_fim",
+        ""
     )
 
     data_pagamento_inicio = request.GET.get(
-        "data_pagamento_inicio", ""
+        "data_pagamento_inicio",
+        ""
     )
 
     data_pagamento_fim = request.GET.get(
-        "data_pagamento_fim", ""
+        "data_pagamento_fim",
+        ""
     )
 
-    status_filtro = request.GET.get("status", "")
-    sla_filtro = request.GET.get("sla", "")
-    dre_filtro = request.GET.get("dre", "")
+    status_filtro = request.GET.get(
+        "status",
+        ""
+    )
+
+    sla_filtro = request.GET.get(
+        "sla",
+        ""
+    )
+
+    dre_filtro = request.GET.get(
+        "dre",
+        ""
+    )
 
     # ==========================================================
     # FUNÇÃO PARA VALORES
@@ -3486,6 +3504,7 @@ def financeiro_dre(request):
 
         try:
             return Decimal(str(valor))
+
         except:
             return Decimal("0")
 
@@ -3514,13 +3533,21 @@ def financeiro_dre(request):
 
         status = item.get("cStatus")
         status_sla = item.get("StatusPagamento")
-        
+
+        # ======================================================
+        # TIPO
+        # ======================================================
+
         if status == "RECEBIDO":
             tipo = "ENTRADA"
         else:
             tipo = "DESPESA"
 
         item["Tipo"] = tipo
+
+        # ======================================================
+        # DATAS
+        # ======================================================
 
         data_vencimento = item.get("dDtPrevisao")
         data_pagamento = item.get("dDtPagamento")
@@ -3567,16 +3594,18 @@ def financeiro_dre(request):
 
             if status_sla != sla_filtro:
                 continue
-            
+
         # ======================================================
         # FILTRO DRE
         # ======================================================
 
-        if dre_filtro and item.get("descricaoDRE") != dre_filtro:
-            continue
-        
+        if dre_filtro:
+
+            if item.get("descricaoDRE") != dre_filtro:
+                continue
+
         # ======================================================
-        # FILTRO VENCIMENTO
+        # FILTRO VENCIMENTO - INÍCIO
         # ======================================================
 
         if data_vencimento_inicio:
@@ -3587,6 +3616,10 @@ def financeiro_dre(request):
             if str(data_vencimento) < data_vencimento_inicio:
                 continue
 
+        # ======================================================
+        # FILTRO VENCIMENTO - FIM
+        # ======================================================
+
         if data_vencimento_fim:
 
             if not data_vencimento:
@@ -3596,7 +3629,7 @@ def financeiro_dre(request):
                 continue
 
         # ======================================================
-        # FILTRO PAGAMENTO
+        # FILTRO PAGAMENTO - INÍCIO
         # ======================================================
 
         if data_pagamento_inicio:
@@ -3607,6 +3640,10 @@ def financeiro_dre(request):
             if str(data_pagamento) < data_pagamento_inicio:
                 continue
 
+        # ======================================================
+        # FILTRO PAGAMENTO - FIM
+        # ======================================================
+
         if data_pagamento_fim:
 
             if not data_pagamento:
@@ -3614,23 +3651,6 @@ def financeiro_dre(request):
 
             if str(data_pagamento) > data_pagamento_fim:
                 continue
-            
-        # ==========================================================
-        # PAGINAÇÃO
-        # ==========================================================
-
-        paginator = Paginator(
-            dados_filtrados,
-            25
-        )
-
-        pagina_numero = request.GET.get(
-            "page"
-        )
-
-        pagina = paginator.get_page(
-            pagina_numero
-        )
 
         # ======================================================
         # VALORES FORMATADOS
@@ -3645,28 +3665,29 @@ def financeiro_dre(request):
         )
 
         # ======================================================
-        # ADICIONA
+        # ADICIONA SOMENTE DEPOIS DE TODOS OS FILTROS
         # ======================================================
 
         dados_filtrados.append(item)
 
     # ==========================================================
-    # TOTAIS
+    # TOTAIS DOS DADOS FILTRADOS
     # ==========================================================
 
     total_despesas = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
             for item in dados_filtrados
+            if item.get("Tipo") == "DESPESA"
         ),
         Decimal("0")
     )
-    
+
     total_entradas = sum(
         (
             valor_decimal(item.get("nValorTitulo"))
             for item in dados_filtrados
-            if item.get("cStatus") == "RECEBIDO"
+            if item.get("Tipo") == "ENTRADA"
         ),
         Decimal("0")
     )
@@ -3747,7 +3768,8 @@ def financeiro_dre(request):
         percentual_pontualidade = Decimal("0")
 
     percentual_pontualidade_formatado = (
-        f"{percentual_pontualidade:.2f}".replace(".", ",")
+        f"{percentual_pontualidade:.2f}"
+        .replace(".", ",")
         + "%"
     )
 
@@ -3759,12 +3781,12 @@ def financeiro_dre(request):
         total_despesas
     )
 
+    total_entradas_formatado = dinheiro(
+        total_entradas
+    )
+
     total_pago_formatado = dinheiro(
         total_pago
-    )
-    
-    total_entradas_formatado = dinheiro(
-    total_entradas
     )
 
     total_a_vencer_formatado = dinheiro(
@@ -3780,43 +3802,148 @@ def financeiro_dre(request):
     )
 
     # ==========================================================
+    # PAGINAÇÃO
+    # ==========================================================
+    #
+    # IMPORTANTE:
+    # A paginação acontece SOMENTE depois que
+    # dados_filtrados está completamente pronto.
+    #
+    # Assim:
+    #
+    # filtros
+    #     ↓
+    # dados_filtrados
+    #     ↓
+    # cards
+    #     ↓
+    # paginação
+    #     ↓
+    # tabela
+    #
+    # ==========================================================
+
+    paginator = Paginator(
+        dados_filtrados,
+        25
+    )
+
+    pagina_numero = request.GET.get(
+        "page"
+    )
+
+    pagina = paginator.get_page(
+        pagina_numero
+    )
+
+    # ==========================================================
+    # QUERY STRING
+    # ==========================================================
+    #
+    # Mantém TODOS os filtros durante a navegação.
+    # Remove somente "page".
+    #
+    # ==========================================================
+
+    parametros = request.GET.copy()
+
+    parametros.pop(
+        "page",
+        None
+    )
+
+    query_string = parametros.urlencode()
+
+    # ==========================================================
     # CONTEXTO
     # ==========================================================
 
     contexto = {
 
-        "dados": dados,
+        # ======================================================
+        # TABELA
+        # ======================================================
 
-        "dados_total": paginator.count,
+        "dados": pagina,
 
-        "pagina": dados,
+        # Total REAL depois dos filtros
+        "dados_total": len(
+            dados_filtrados
+        ),
 
-     
-        # Filtros
-        "data_vencimento_inicio": data_vencimento_inicio,
-        "data_vencimento_fim": data_vencimento_fim,
+        # Objeto da paginação
+        "pagina": pagina,
 
-        "data_pagamento_inicio": data_pagamento_inicio,
-        "data_pagamento_fim": data_pagamento_fim,
+        # Filtros preservados na paginação
+        "query_string": query_string,
 
-        "status_filtro": status_filtro,
-        "sla_filtro": sla_filtro,
-        "dre_filtro": dre_filtro,
+        # ======================================================
+        # FILTROS
+        # ======================================================
 
-        # Cards
-        "total_despesas": total_despesas_formatado,
-        "total_entradas": total_entradas_formatado,
-        "total_pago": total_pago_formatado,
-        "total_a_vencer": total_a_vencer_formatado,
-        "total_dentro_prazo": total_dentro_prazo_formatado,
-        "total_fora_prazo": total_fora_prazo_formatado,
+        "data_vencimento_inicio":
+            data_vencimento_inicio,
 
-        # Indicador
-        "pagamentos_realizados": pagamentos_realizados,
-        "pagamentos_dentro_prazo": pagamentos_dentro_prazo,
-        "pagamentos_fora_prazo": pagamentos_fora_prazo,
-        "percentual_pontualidade": percentual_pontualidade_formatado,
+        "data_vencimento_fim":
+            data_vencimento_fim,
+
+        "data_pagamento_inicio":
+            data_pagamento_inicio,
+
+        "data_pagamento_fim":
+            data_pagamento_fim,
+
+        "status_filtro":
+            status_filtro,
+
+        "sla_filtro":
+            sla_filtro,
+
+        "dre_filtro":
+            dre_filtro,
+
+        # ======================================================
+        # CARDS
+        # ======================================================
+
+        "total_despesas":
+            total_despesas_formatado,
+
+        "total_entradas":
+            total_entradas_formatado,
+
+        "total_pago":
+            total_pago_formatado,
+
+        "total_a_vencer":
+            total_a_vencer_formatado,
+
+        "total_dentro_prazo":
+            total_dentro_prazo_formatado,
+
+        "total_fora_prazo":
+            total_fora_prazo_formatado,
+
+        # ======================================================
+        # INDICADORES
+        # ======================================================
+
+        "pagamentos_realizados":
+            pagamentos_realizados,
+
+        "pagamentos_dentro_prazo":
+            pagamentos_dentro_prazo,
+
+        "pagamentos_fora_prazo":
+            pagamentos_fora_prazo,
+
+        "percentual_pontualidade":
+            percentual_pontualidade_formatado,
     }
+
+    # ==========================================================
+    # RENDER
+    # ==========================================================
 
     return render(
         request,
@@ -3826,20 +3953,23 @@ def financeiro_dre(request):
     
     
 @login_required
+@login_required
 def exportar_financeiro_dre(request):
 
     from decimal import Decimal
     from datetime import date
+
     from django.http import HttpResponse
+
     from openpyxl import Workbook
     from openpyxl.styles import Font, PatternFill, Alignment
-    from openpyxl.utils import get_column_letter
 
-    usuario = request.user
 
     # ==========================================================
     # CONTROLE DE ACESSO
     # ==========================================================
+
+    usuario = request.user
 
     if not (
         usuario.is_superuser
@@ -3854,39 +3984,54 @@ def exportar_financeiro_dre(request):
             status=403
         )
 
+
     # ==========================================================
     # DADOS
     # ==========================================================
 
     dados = buscar_fin_dre()
 
+
     # ==========================================================
     # FILTROS
     # ==========================================================
 
     data_vencimento_inicio = request.GET.get(
-        "data_vencimento_inicio", ""
+        "data_vencimento_inicio",
+        ""
     )
 
     data_vencimento_fim = request.GET.get(
-        "data_vencimento_fim", ""
+        "data_vencimento_fim",
+        ""
     )
 
     data_pagamento_inicio = request.GET.get(
-        "data_pagamento_inicio", ""
+        "data_pagamento_inicio",
+        ""
     )
 
     data_pagamento_fim = request.GET.get(
-        "data_pagamento_fim", ""
+        "data_pagamento_fim",
+        ""
     )
 
     status_filtro = request.GET.get(
-        "status", ""
+        "status",
+        ""
     )
 
     sla_filtro = request.GET.get(
-        "sla", ""
+        "sla",
+        ""
     )
+
+    # NOVO: FILTRO DRE
+    dre_filtro = request.GET.get(
+        "dre",
+        ""
+    )
+
 
     # ==========================================================
     # FUNÇÃO PARA VALORES
@@ -3903,25 +4048,31 @@ def exportar_financeiro_dre(request):
         except:
             return Decimal("0")
 
+
     # ==========================================================
-    # PROCESSAMENTO
+    # PROCESSAMENTO E FILTROS
     # ==========================================================
 
     dados_filtrados = []
 
+
     for item in dados:
 
         status = item.get("cStatus")
+
         status_sla = item.get("StatusPagamento")
 
         data_vencimento = item.get("dDtPrevisao")
+
         data_pagamento = item.get("dDtPagamento")
+
 
         # ======================================================
         # PRAZO
         # ======================================================
 
         prazo = None
+
 
         if (
             status == "PAGO"
@@ -3933,6 +4084,7 @@ def exportar_financeiro_dre(request):
                 data_vencimento - data_pagamento
             ).days
 
+
         elif (
             status == "A VENCER"
             and data_vencimento
@@ -3942,7 +4094,9 @@ def exportar_financeiro_dre(request):
                 data_vencimento - date.today()
             ).days
 
+
         item["Prazo"] = prazo
+
 
         # ======================================================
         # FILTRO STATUS
@@ -3953,6 +4107,7 @@ def exportar_financeiro_dre(request):
             if status != status_filtro:
                 continue
 
+
         # ======================================================
         # FILTRO SLA
         # ======================================================
@@ -3962,8 +4117,19 @@ def exportar_financeiro_dre(request):
             if status_sla != sla_filtro:
                 continue
 
+
         # ======================================================
-        # FILTRO VENCIMENTO
+        # FILTRO DRE
+        # ======================================================
+
+        if dre_filtro:
+
+            if item.get("descricaoDRE") != dre_filtro:
+                continue
+
+
+        # ======================================================
+        # FILTRO VENCIMENTO - INÍCIO
         # ======================================================
 
         if data_vencimento_inicio:
@@ -3974,6 +4140,11 @@ def exportar_financeiro_dre(request):
             if str(data_vencimento) < data_vencimento_inicio:
                 continue
 
+
+        # ======================================================
+        # FILTRO VENCIMENTO - FIM
+        # ======================================================
+
         if data_vencimento_fim:
 
             if not data_vencimento:
@@ -3982,8 +4153,9 @@ def exportar_financeiro_dre(request):
             if str(data_vencimento) > data_vencimento_fim:
                 continue
 
+
         # ======================================================
-        # FILTRO PAGAMENTO
+        # FILTRO PAGAMENTO - INÍCIO
         # ======================================================
 
         if data_pagamento_inicio:
@@ -3994,6 +4166,11 @@ def exportar_financeiro_dre(request):
             if str(data_pagamento) < data_pagamento_inicio:
                 continue
 
+
+        # ======================================================
+        # FILTRO PAGAMENTO - FIM
+        # ======================================================
+
         if data_pagamento_fim:
 
             if not data_pagamento:
@@ -4002,11 +4179,13 @@ def exportar_financeiro_dre(request):
             if str(data_pagamento) > data_pagamento_fim:
                 continue
 
+
         # ======================================================
         # ADICIONA
         # ======================================================
 
         dados_filtrados.append(item)
+
 
     # ==========================================================
     # CRIA EXCEL
@@ -4015,27 +4194,42 @@ def exportar_financeiro_dre(request):
     wb = Workbook()
 
     ws = wb.active
+
     ws.title = "Financeiro"
+
 
     # ==========================================================
     # CABEÇALHO
     # ==========================================================
 
     cabecalho = [
+
         "DRE",
+
         "Categoria",
+
         "Emissão",
+
         "Vencimento",
+
         "Pagamento",
+
         "Cliente / Fornecedor",
+
         "Valor Título",
+
         "Valor Pago",
+
         "Status",
+
         "Prazo",
+
         "SLA",
+
     ]
 
     ws.append(cabecalho)
+
 
     # ==========================================================
     # ESTILO CABEÇALHO
@@ -4057,6 +4251,7 @@ def exportar_financeiro_dre(request):
             horizontal="center"
         )
 
+
     # ==========================================================
     # DADOS
     # ==========================================================
@@ -4064,6 +4259,7 @@ def exportar_financeiro_dre(request):
     for item in dados_filtrados:
 
         ws.append([
+
             item.get("descricaoDRE") or "-",
 
             item.get("descricao") or "-",
@@ -4089,7 +4285,9 @@ def exportar_financeiro_dre(request):
             item.get("Prazo"),
 
             item.get("StatusPagamento") or "-",
+
         ])
+
 
     # ==========================================================
     # FORMATAÇÃO
@@ -4100,7 +4298,10 @@ def exportar_financeiro_dre(request):
         max_row=ws.max_row
     ):
 
-        # Datas
+        # ------------------------------------------------------
+        # DATAS
+        # ------------------------------------------------------
+
         for coluna in [3, 4, 5]:
 
             cell = row[coluna - 1]
@@ -4109,12 +4310,17 @@ def exportar_financeiro_dre(request):
 
                 cell.number_format = "DD/MM/YYYY"
 
-        # Valores
+
+        # ------------------------------------------------------
+        # VALORES
+        # ------------------------------------------------------
+
         for coluna in [7, 8]:
 
             cell = row[coluna - 1]
 
             cell.number_format = 'R$ #,##0.00'
+
 
     # ==========================================================
     # FILTRO AUTOMÁTICO
@@ -4124,29 +4330,44 @@ def exportar_financeiro_dre(request):
 
         ws.auto_filter.ref = ws.dimensions
 
+
     # ==========================================================
     # CONGELAR CABEÇALHO
     # ==========================================================
 
     ws.freeze_panes = "A2"
 
+
     # ==========================================================
     # LARGURA DAS COLUNAS
     # ==========================================================
 
     larguras = {
+
         "A": 25,
+
         "B": 30,
+
         "C": 13,
+
         "D": 13,
+
         "E": 13,
+
         "F": 35,
+
         "G": 18,
+
         "H": 18,
+
         "I": 15,
+
         "J": 12,
+
         "K": 20,
+
     }
+
 
     for coluna, largura in larguras.items():
 
@@ -4154,22 +4375,27 @@ def exportar_financeiro_dre(request):
             coluna
         ].width = largura
 
+
     # ==========================================================
     # RESPOSTA
     # ==========================================================
 
     response = HttpResponse(
+
         content_type=(
             "application/vnd.openxmlformats-officedocument."
             "spreadsheetml.sheet"
         )
+
     )
 
     response["Content-Disposition"] = (
         'attachment; filename="financeiro_dre.xlsx"'
     )
 
+
     wb.save(response)
+
 
     return response
 

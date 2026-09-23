@@ -649,7 +649,7 @@
             </div>
         </form>
 
-        {% if data_vencimento_inicio or data_vencimento_fim or data_pagamento_inicio or data_pagamento_fim or status_filtro or sla_filtro or tipo_filtro %}
+       {% if data_vencimento_inicio or data_vencimento_fim or data_pagamento_inicio or data_pagamento_fim or status_filtro or sla_filtro or dre_filtro %}
             <div class="linha-limpar">
                 <a href="{% url 'financeiro_dre' %}" class="btn-limpar">
                     Limpar filtros
@@ -671,7 +671,7 @@
             </div>
 
             <a
-                href="{% url 'exportar_financeiro_dre' %}?data_vencimento_inicio={{ data_vencimento_inicio }}&data_vencimento_fim={{ data_vencimento_fim }}&data_pagamento_inicio={{ data_pagamento_inicio }}&data_pagamento_fim={{ data_pagamento_fim }}&status={{ status_filtro }}&sla={{ sla_filtro }}&tipo={{ tipo_filtro }}"
+                href="{% url 'exportar_financeiro_dre' %}?data_vencimento_inicio={{ data_vencimento_inicio|urlencode }}&data_vencimento_fim={{ data_vencimento_fim|urlencode }}&data_pagamento_inicio={{ data_pagamento_inicio|urlencode }}&data_pagamento_fim={{ data_pagamento_fim|urlencode }}&status={{ status_filtro|urlencode }}&sla={{ sla_filtro|urlencode }}&dre={{ dre_filtro|urlencode }}"
                 class="btn-exportar"
             >
                 📊 Exportar Excel
