@@ -1495,15 +1495,19 @@ def pedidos(request):
             if pedido["titulo"] == status_filtro
         ]
 
+    # ==========================================================
     # PAGINAÇÃO
+    # 50 REGISTROS POR PÁGINA
+    # ==========================================================
+
     paginator = Paginator(
-        pedidos_processados,
-        20
+        dados_filtrados,
+        50
     )
 
     pagina = request.GET.get("page")
 
-    pedidos_processados = paginator.get_page(
+    dados_filtrados = paginator.get_page(
         pagina
     )
 
@@ -3791,11 +3795,11 @@ def financeiro_dre(request):
 
     contexto = {
 
-        "dados": pagina,
+        "dados": dados,
 
-        "dados_total": len(dados_filtrados),
+        "dados_total": paginator.count,
 
-        "pagina": pagina,
+        "pagina": dados,
 
         "tipo_filtro": tipo_filtro,
 
