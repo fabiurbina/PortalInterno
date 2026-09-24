@@ -66,48 +66,103 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function adicionarMensagem(texto, tipo) {
 
-        const message = document.createElement("div");
+    const message = document.createElement("div");
 
-        message.classList.add(
-            "message",
-            tipo === "user"
-                ? "user"
-                : "assistant"
-        );
+    message.classList.add(
+        "message",
+        tipo === "user"
+            ? "user"
+            : "assistant"
+    );
 
+    const content = document.createElement("div");
 
-        const content = document.createElement("div");
+    content.classList.add("message-content");
 
-        content.classList.add("message-content");
+    if (tipo === "assistant") {
 
+        const html = marked.parse(String(texto), {
+            breaks: true,
+            gfm: true
+        });
 
-        // Mantém quebras de linha
-        content.innerHTML = String(texto)
-            .replace(/\n/g, "<br>");
+        content.innerHTML = DOMPurify.sanitize(html);
 
+    } else {
 
-        message.appendChild(content);
-
-        messagesContainer.appendChild(message);
-
-
-        rolarParaFinal();
+        content.textContent = texto;
     }
+
+    message.appendChild(content);
+
+    messagesContainer.appendChild(message);
+
+    rolarParaFinal();
+}
 
 
     // =========================================================
     // MOSTRAR DIGITANDO
     // =========================================================
 
-    function mostrarDigitando() {
+    let intervaloDigitando = null;
 
-        if (typingIndicator) {
+function mostrarDigitando() {
 
-            typingIndicator.classList.add("active");
+    if (!typingIndicator) {
+        return;
+    }
+
+    const mensagens = [
+        "Analisando os dados...",
+        "Cruzando CRM e pedidos...",
+        "Identificando os principais pontos...",
+        "Preparando a análise..."
+    ];
+
+    let indice = 0;
+
+    typingIndicator.innerHTML = `
+        <div class="typing-avatar">
+            🤖
+        </div>
+
+        <div class="typing-content">
+
+            <div class="typing-text">
+                ${mensagens[indice]}
+            </div>
+
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+    `;
+
+    typingIndicator.classList.add("active");
+
+    intervaloDigitando = setInterval(() => {
+
+        indice++;
+
+        if (indice >= mensagens.length) {
+            indice = 0;
         }
 
-        rolarParaFinal();
-    }
+        const texto =
+            typingIndicator.querySelector(".typing-text");
+
+        if (texto) {
+            texto.textContent = mensagens[indice];
+        }
+
+    }, 1800);
+
+    rolarParaFinal();
+}
 
 
     // =========================================================
@@ -116,11 +171,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function esconderDigitando() {
 
-        if (typingIndicator) {
+    if (intervaloDigitando) {
 
-            typingIndicator.classList.remove("active");
-        }
+        clearInterval(intervaloDigitando);
+
+        intervaloDigitando = null;
     }
+
+    if (typingIndicator) {
+
+        typingIndicator.classList.remove("active");
+    }
+}
 
 
     // =========================================================

@@ -947,4 +947,243 @@ body {
 
     }
 
+}/* =========================================================
+   TYPING INDICATOR
+   ========================================================= */
+
+.typing {
+    max-width: 850px;
+    margin: 14px auto;
+    display: none;
+    align-items: center;
+    gap: 10px;
+}
+
+.typing.active {
+    display: flex;
+}
+
+.typing-avatar {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #0D3B66;
+
+    font-size: 18px;
+}
+
+.typing-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 14px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.typing-text {
+    white-space: nowrap;
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.typing-dots span {
+    width: 5px;
+    height: 5px;
+
+    background: #2EC4B6;
+
+    border-radius: 50%;
+
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}/* =========================================================
+   RESPOSTA DA IA
+   ========================================================= */
+
+.message.assistant .message-content {
+    line-height: 1.65;
+    font-size: 14px;
+}
+
+
+/* TÍTULOS */
+
+.message.assistant .message-content h1,
+.message.assistant .message-content h2,
+.message.assistant .message-content h3 {
+    color: #0D3B66;
+    margin-top: 18px;
+    margin-bottom: 10px;
+}
+
+.message.assistant .message-content h1 {
+    font-size: 20px;
+}
+
+.message.assistant .message-content h2 {
+    font-size: 17px;
+}
+
+.message.assistant .message-content h3 {
+    font-size: 15px;
+}
+
+
+/* PARÁGRAFOS */
+
+.message.assistant .message-content p {
+    margin: 8px 0;
+}
+
+
+/* NEGRITO */
+
+.message.assistant .message-content strong {
+    color: #0D3B66;
+    font-weight: 700;
+}
+
+
+/* LISTAS */
+
+.message.assistant .message-content ul,
+.message.assistant .message-content ol {
+    margin: 10px 0;
+    padding-left: 22px;
+}
+
+.message.assistant .message-content li {
+    margin-bottom: 5px;
+}
+
+
+/* TABELA */
+
+.message.assistant .message-content table {
+    width: 100%;
+    border-collapse: collapse;
+
+    margin: 16px 0;
+
+    font-size: 13px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.message.assistant .message-content th {
+    background: #0D3B66;
+    color: white;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    padding: 10px 12px;
+
+    border-bottom: 1px solid #dbe3ec;
+}
+
+.message.assistant .message-content td {
+    padding: 9px 12px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    color: #334155;
+}
+
+.message.assistant .message-content tr:last-child td {
+    border-bottom: none;
+}
+
+.message.assistant .message-content tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+
+/* CÓDIGO */
+
+.message.assistant .message-content code {
+    background: #f1f5f9;
+
+    padding: 2px 5px;
+
+    border-radius: 4px;
+
+    font-size: 12px;
+}
+
+
+/* LINKS */
+
+.message.assistant .message-content a {
+    color: #0D3B66;
+    font-weight: 600;
+}
+
+
+/* BLOCO DE CÓDIGO */
+
+.message.assistant .message-content pre {
+    background: #0f172a;
+    color: #e2e8f0;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    overflow-x: auto;
+
+    margin: 12px 0;
 }
