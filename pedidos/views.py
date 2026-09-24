@@ -76,7 +76,7 @@ from django.conf import settings
 from .models import ContaHostinger,ReuniaoAgenda
 
 from django.http import FileResponse
-from agente_comercial import agente_comercial
+from .agente_comercial import agente_comercial
 
 
 @login_required
