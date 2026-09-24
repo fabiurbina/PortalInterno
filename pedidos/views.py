@@ -76,6 +76,7 @@ from django.conf import settings
 from .models import ContaHostinger,ReuniaoAgenda
 
 from django.http import FileResponse
+from agente_comercial import agente_comercial
 
 
 @login_required
@@ -5466,3 +5467,39 @@ def agente_comercial_view(request):
         request,
         "agente/comercial.html"
     )
+
+from django.views.decorators.http import require_POST
+@require_POST
+def agente_comercial_chat(request):
+    try:
+        dados = json.loads(request.body)
+
+        mensagem = dados.get("mensagem", "").strip()
+
+        if not mensagem:
+            return JsonResponse(
+                {
+                    "sucesso": False,
+                    "erro": "Digite uma mensagem."
+                },
+                status=400
+            )
+
+        resposta = agente_comercial(mensagem)
+
+        return JsonResponse({
+            "sucesso": True,
+            "resposta": resposta
+        })
+
+    except Exception as e:
+
+        print("ERRO AGENTE COMERCIAL:", e)
+
+        return JsonResponse(
+            {
+                "sucesso": False,
+                "erro": "Não foi possível consultar o agente comercial."
+            },
+            status=500
+        )

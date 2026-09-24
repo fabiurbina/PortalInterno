@@ -53,7 +53,8 @@ from .views import (
     exportar_aprovacao_mp_qualidade,
     visualizar_aprovacao_mp_qualidade,
     receber_login_destaque,
-    agente_comercial_view
+    agente_comercial_view,
+    agente_comercial_chat
     
 )
 
@@ -437,4 +438,9 @@ urlpatterns = [
     agente_comercial_view,
     name="agente_comercial"
 ),
+    
+    path(
+    "agente-comercial/chat/",
+    agente_comercial_chat,
+    name="agente_comercial_chat"),
 ]
