@@ -44,30 +44,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function adicionarMensagem(texto, tipo) {
 
-        const message = document.createElement("div");
+    const message = document.createElement("div");
 
-        message.classList.add(
-            "message",
-            tipo === "user"
-                ? "message-user"
-                : "message-assistant"
-        );
+    message.classList.add(
+        "message",
+        tipo === "user" ? "user" : "assistant"
+    );
 
-        const content = document.createElement("div");
+    const content = document.createElement("div");
 
-        content.classList.add("message-content");
+    content.classList.add("message-content");
 
-        // Mantém quebra de linha
-        content.innerHTML = texto
-            .replace(/\n/g, "<br>");
+    content.innerHTML = texto.replace(/\n/g, "<br>");
 
-        message.appendChild(content);
+    message.appendChild(content);
 
-        messagesContainer.appendChild(message);
+    messagesContainer.appendChild(message);
 
-        messagesContainer.scrollTop =
-            messagesContainer.scrollHeight;
-    }
+    // Aguarda o navegador calcular o novo tamanho
+    requestAnimationFrame(() => {
+
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: "smooth"
+        });
+
+    });
+}
 
 
     // =========================
@@ -76,21 +79,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function mostrarDigitando() {
 
-        if (typingIndicator) {
-            typingIndicator.style.display = "flex";
-        }
-
-        messagesContainer.scrollTop =
-            messagesContainer.scrollHeight;
+    if (typingIndicator) {
+        typingIndicator.classList.add("active");
     }
 
-
-    function esconderDigitando() {
-
-        if (typingIndicator) {
-            typingIndicator.style.display = "none";
-        }
-    }
+    requestAnimationFrame(() => {
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: "smooth"
+        });
+    });
+}
 
 
     // =========================
@@ -259,8 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     input.value = texto;
-
-                    enviarMensagem();
+                    input.focus();
                 }
             );
         });
