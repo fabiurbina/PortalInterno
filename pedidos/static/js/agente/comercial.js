@@ -1,11 +1,33 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    // =========================================================
+    // ELEMENTOS
+    // =========================================================
+
     const input = document.getElementById("messageInput");
     const sendButton = document.getElementById("sendButton");
-    const messagesContainer = document.getElementById("messages");
-    const welcomeScreen = document.getElementById("welcomeScreen");
-    const typingIndicator = document.getElementById("typingIndicator");
-    const newChatButton = document.getElementById("newChatButton");
+
+    const messagesContainer =
+        document.getElementById("messages");
+
+    const chatContent =
+        document.getElementById("chatContent");
+
+    const welcomeScreen =
+        document.getElementById("welcome");
+
+    const typingIndicator =
+        document.getElementById("typing");
+
+    const newChatButton =
+        document.getElementById("btnNovaConversa");
+
+
+    // =========================================================
+    // CONTROLE
+    // =========================================================
+
+    let intervaloDigitando = null;
 
 
     // =========================================================
@@ -16,19 +38,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let cookieValue = null;
 
-        if (document.cookie && document.cookie !== "") {
+        if (
+            document.cookie &&
+            document.cookie !== ""
+        ) {
 
-            const cookies = document.cookie.split(";");
+            const cookies =
+                document.cookie.split(";");
 
             for (let cookie of cookies) {
 
                 cookie = cookie.trim();
 
-                if (cookie.startsWith(name + "=")) {
+                if (
+                    cookie.startsWith(
+                        name + "="
+                    )
+                ) {
 
-                    cookieValue = decodeURIComponent(
-                        cookie.substring(name.length + 1)
-                    );
+                    cookieValue =
+                        decodeURIComponent(
+                            cookie.substring(
+                                name.length + 1
+                            )
+                        );
 
                     break;
                 }
@@ -40,19 +73,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =========================================================
-    // SCROLL PARA O FINAL
+    // SCROLL
     // =========================================================
 
     function rolarParaFinal() {
 
-        if (!messagesContainer) {
+        if (!chatContent) {
             return;
         }
 
         requestAnimationFrame(() => {
 
-            messagesContainer.scrollTo({
-                top: messagesContainer.scrollHeight,
+            chatContent.scrollTo({
+                top: chatContent.scrollHeight,
                 behavior: "smooth"
             });
 
@@ -64,125 +97,232 @@ document.addEventListener("DOMContentLoaded", function () {
     // ADICIONAR MENSAGEM
     // =========================================================
 
-    function adicionarMensagem(texto, tipo) {
+    function adicionarMensagem(
+        texto,
+        tipo
+    ) {
 
-    const message = document.createElement("div");
-
-    message.classList.add(
-        "message",
-        tipo === "user"
-            ? "user"
-            : "assistant"
-    );
-
-    const content = document.createElement("div");
-
-    content.classList.add("message-content");
-
-    if (tipo === "assistant") {
-
-        const html = marked.parse(String(texto), {
-            breaks: true,
-            gfm: true
-        });
-
-        content.innerHTML = DOMPurify.sanitize(html);
-
-    } else {
-
-        content.textContent = texto;
-    }
-
-    message.appendChild(content);
-
-    messagesContainer.appendChild(message);
-
-    rolarParaFinal();
-}
-
-
-    // =========================================================
-    // MOSTRAR DIGITANDO
-    // =========================================================
-
-    let intervaloDigitando = null;
-
-function mostrarDigitando() {
-
-    if (!typingIndicator) {
-        return;
-    }
-
-    const mensagens = [
-        "Analisando os dados...",
-        "Cruzando CRM e pedidos...",
-        "Identificando os principais pontos...",
-        "Preparando a análise..."
-    ];
-
-    let indice = 0;
-
-    typingIndicator.innerHTML = `
-        <div class="typing-avatar">
-            🤖
-        </div>
-
-        <div class="typing-content">
-
-            <div class="typing-text">
-                ${mensagens[indice]}
-            </div>
-
-            <div class="typing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-        </div>
-    `;
-
-    typingIndicator.classList.add("active");
-
-    intervaloDigitando = setInterval(() => {
-
-        indice++;
-
-        if (indice >= mensagens.length) {
-            indice = 0;
+        if (!messagesContainer) {
+            return;
         }
 
-        const texto =
-            typingIndicator.querySelector(".typing-text");
+        const message =
+            document.createElement("div");
 
-        if (texto) {
-            texto.textContent = mensagens[indice];
+        message.classList.add(
+            "message",
+            tipo === "user"
+                ? "user"
+                : "assistant"
+        );
+
+
+        // =====================================================
+        // AVATAR DA IA
+        // =====================================================
+
+        if (tipo === "assistant") {
+
+            const avatar =
+                document.createElement("div");
+
+            avatar.classList.add(
+                "message-avatar"
+            );
+
+            avatar.textContent = "🤖";
+
+            message.appendChild(avatar);
         }
 
-    }, 1800);
 
-    rolarParaFinal();
-}
+        // =====================================================
+        // CONTEÚDO
+        // =====================================================
+
+        const content =
+            document.createElement("div");
+
+        content.classList.add(
+            "message-content"
+        );
+
+
+        if (tipo === "assistant") {
+
+            // Renderiza Markdown
+            if (
+                typeof marked !== "undefined" &&
+                typeof DOMPurify !== "undefined"
+            ) {
+
+                const html =
+                    marked.parse(
+                        String(texto),
+                        {
+                            breaks: true,
+                            gfm: true
+                        }
+                    );
+
+                content.innerHTML =
+                    DOMPurify.sanitize(
+                        html
+                    );
+
+            } else {
+
+                // Fallback caso as bibliotecas
+                // não estejam disponíveis
+
+                content.textContent =
+                    String(texto);
+            }
+
+        } else {
+
+            // Mensagem do usuário
+            content.textContent =
+                String(texto);
+        }
+
+
+        message.appendChild(content);
+
+        messagesContainer.appendChild(
+            message
+        );
+
+
+        rolarParaFinal();
+    }
 
 
     // =========================================================
-    // ESCONDER DIGITANDO
+    // MOSTRAR "DIGITANDO"
+    // =========================================================
+
+    function mostrarDigitando() {
+
+        if (!typingIndicator) {
+            return;
+        }
+
+
+        // Evita múltiplos intervalos
+        if (intervaloDigitando) {
+
+            clearInterval(
+                intervaloDigitando
+            );
+
+            intervaloDigitando = null;
+        }
+
+
+        const mensagens = [
+
+            "Analisando os dados...",
+
+            "Cruzando CRM e pedidos...",
+
+            "Identificando os principais pontos...",
+
+            "Preparando a análise..."
+
+        ];
+
+
+        let indice = 0;
+
+
+        typingIndicator.innerHTML = `
+
+            <div class="typing-avatar">
+                🤖
+            </div>
+
+            <div class="typing-content">
+
+                <span class="typing-text">
+                    ${mensagens[indice]}
+                </span>
+
+                <div class="typing-dots">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        typingIndicator.classList.add(
+            "active"
+        );
+
+
+        intervaloDigitando =
+            setInterval(() => {
+
+                indice++;
+
+                if (
+                    indice >=
+                    mensagens.length
+                ) {
+
+                    indice = 0;
+                }
+
+
+                const texto =
+                    typingIndicator.querySelector(
+                        ".typing-text"
+                    );
+
+
+                if (texto) {
+
+                    texto.textContent =
+                        mensagens[indice];
+                }
+
+
+            }, 1800);
+
+
+        rolarParaFinal();
+    }
+
+
+    // =========================================================
+    // ESCONDER "DIGITANDO"
     // =========================================================
 
     function esconderDigitando() {
 
-    if (intervaloDigitando) {
+        if (intervaloDigitando) {
 
-        clearInterval(intervaloDigitando);
+            clearInterval(
+                intervaloDigitando
+            );
 
-        intervaloDigitando = null;
+            intervaloDigitando = null;
+        }
+
+
+        if (typingIndicator) {
+
+            typingIndicator.classList.remove(
+                "active"
+            );
+        }
     }
-
-    if (typingIndicator) {
-
-        typingIndicator.classList.remove("active");
-    }
-}
 
 
     // =========================================================
@@ -191,7 +331,13 @@ function mostrarDigitando() {
 
     async function enviarMensagem() {
 
-        const mensagem = input.value.trim();
+        if (!input) {
+            return;
+        }
+
+
+        const mensagem =
+            input.value.trim();
 
 
         if (!mensagem) {
@@ -199,66 +345,124 @@ function mostrarDigitando() {
         }
 
 
-        // Esconde tela inicial
+        // =====================================================
+        // ESCONDE TELA INICIAL
+        // =====================================================
+
         if (welcomeScreen) {
 
-            welcomeScreen.style.display = "none";
+            welcomeScreen.style.display =
+                "none";
         }
 
 
-        // Adiciona mensagem do usuário
+        // =====================================================
+        // MOSTRA MENSAGEM DO USUÁRIO
+        // =====================================================
+
         adicionarMensagem(
             mensagem,
             "user"
         );
 
 
-        // Limpa campo
+        // =====================================================
+        // LIMPA INPUT
+        // =====================================================
+
         input.value = "";
+
         input.style.height = "auto";
 
 
-        // Desabilita botão
-        sendButton.disabled = true;
+        // =====================================================
+        // BLOQUEIA ENVIO
+        // =====================================================
+
+        if (sendButton) {
+
+            sendButton.disabled = true;
+        }
 
 
-        // Mostra carregamento
+        // =====================================================
+        // MOSTRA PROCESSAMENTO
+        // =====================================================
+
         mostrarDigitando();
 
 
         try {
 
-            const response = await fetch(
-                "/agente-comercial/chat/",
-                {
-                    method: "POST",
+            const response =
+                await fetch(
+                    "/agente-comercial/chat/",
+                    {
+                        method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": getCookie("csrftoken")
-                    },
+                        headers: {
 
-                    body: JSON.stringify({
-                        mensagem: mensagem
-                    })
-                }
-            );
+                            "Content-Type":
+                                "application/json",
+
+                            "X-CSRFToken":
+                                getCookie(
+                                    "csrftoken"
+                                )
+                        },
+
+                        body: JSON.stringify({
+
+                            mensagem:
+                                mensagem
+
+                        })
+                    }
+                );
 
 
-            const data = await response.json();
+            // =================================================
+            // TENTA LER JSON
+            // =================================================
+
+            let data;
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (erroJson) {
+
+                throw new Error(
+                    "Resposta inválida do servidor."
+                );
+            }
 
 
-            // Esconde carregamento
+            // =================================================
+            // ESCONDE PROCESSAMENTO
+            // =================================================
+
             esconderDigitando();
 
 
-            // Verifica erro
-            if (!response.ok || !data.sucesso) {
+            // =================================================
+            // ERRO DO BACKEND
+            // =================================================
+
+            if (
+                !response.ok ||
+                !data.sucesso
+            ) {
 
                 adicionarMensagem(
+
                     data.erro ||
                     "Não consegui consultar o agente comercial.",
+
                     "assistant"
+
                 );
 
                 return;
@@ -270,8 +474,11 @@ function mostrarDigitando() {
             // =================================================
 
             adicionarMensagem(
+
                 data.resposta,
+
                 "assistant"
+
             );
 
 
@@ -287,16 +494,25 @@ function mostrarDigitando() {
 
 
             adicionarMensagem(
+
                 "Não consegui conectar ao agente comercial.",
+
                 "assistant"
+
             );
 
 
         } finally {
 
-            sendButton.disabled = false;
+            if (sendButton) {
+
+                sendButton.disabled =
+                    false;
+            }
+
 
             input.focus();
+
         }
     }
 
@@ -311,6 +527,7 @@ function mostrarDigitando() {
             "click",
             enviarMensagem
         );
+
     }
 
 
@@ -332,9 +549,12 @@ function mostrarDigitando() {
                     event.preventDefault();
 
                     enviarMensagem();
+
                 }
+
             }
         );
+
     }
 
 
@@ -348,12 +568,16 @@ function mostrarDigitando() {
             "input",
             function () {
 
-                this.style.height = "auto";
+                this.style.height =
+                    "auto";
 
                 this.style.height =
-                    this.scrollHeight + "px";
+                    this.scrollHeight +
+                    "px";
+
             }
         );
+
     }
 
 
@@ -362,35 +586,45 @@ function mostrarDigitando() {
     // =========================================================
 
     document
-        .querySelectorAll(".suggestion-card")
-        .forEach(function (card) {
+        .querySelectorAll(
+            ".suggestion-card"
+        )
+        .forEach(
+            function (card) {
 
-            card.addEventListener(
-                "click",
-                function () {
+                card.addEventListener(
+                    "click",
+                    function () {
 
-                    const texto =
-                        this.dataset.message;
+                        const texto =
+                            this.dataset.message;
 
 
-                    if (!texto) {
-                        return;
+                        if (!texto) {
+                            return;
+                        }
+
+
+                        input.value =
+                            texto;
+
+
+                        input.focus();
+
+
+                        // Ajusta altura
+                        input.style.height =
+                            "auto";
+
+                        input.style.height =
+                            input.scrollHeight +
+                            "px";
+
                     }
+                );
 
-
-                    input.value = texto;
-
-                    input.focus();
-
-
-                    // Ajusta altura
-                    input.style.height = "auto";
-
-                    input.style.height =
-                        input.scrollHeight + "px";
-                }
-            );
-        });
+            }
+        );
 
 
     // =========================================================
@@ -403,26 +637,48 @@ function mostrarDigitando() {
             "click",
             function () {
 
-                messagesContainer.innerHTML = "";
+                // Limpa mensagens
+                messagesContainer.innerHTML =
+                    "";
 
 
+                // Mostra tela inicial
                 if (welcomeScreen) {
 
                     welcomeScreen.style.display =
-                        "flex";
+                        "block";
                 }
 
 
+                // Para indicador
                 esconderDigitando();
 
 
+                // Limpa input
                 input.value = "";
 
-                input.style.height = "auto";
+                input.style.height =
+                    "auto";
+
 
                 input.focus();
+
+
+                // Volta para o início
+                if (chatContent) {
+
+                    chatContent.scrollTo({
+
+                        top: 0,
+
+                        behavior: "smooth"
+
+                    });
+                }
+
             }
         );
+
     }
 
 });

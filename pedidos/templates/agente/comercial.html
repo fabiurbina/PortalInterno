@@ -40,6 +40,7 @@
                 </div>
 
                 <div>
+
                     <div class="logo-title">
                         VIESANO
                     </div>
@@ -47,6 +48,7 @@
                     <div class="logo-subtitle">
                         Inteligência Comercial
                     </div>
+
                 </div>
 
             </div>
@@ -78,9 +80,7 @@
             >
 
                 <div class="historico-vazio">
-
                     Nenhuma conversa ainda.
-
                 </div>
 
             </div>
@@ -194,69 +194,122 @@
 
                 <!-- SUGESTÕES -->
 
-                <div class="suggestion-card"
-                    data-message="Como está o desempenho da nossa força de vendas?">
+                <div class="suggestions">
 
-                    <div class="suggestion-icon">📊</div>
+                    <div
+                        class="suggestion-card"
+                        data-message="Como está o desempenho da nossa força de vendas?"
+                    >
 
-                    <div>
-                        <strong>Desempenho comercial</strong>
-                        <p>Entenda se nossa força de vendas está gerando pedidos.</p>
+                        <div class="suggestion-icon">
+                            📊
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Desempenho comercial
+                            </strong>
+
+                            <p>
+                                Entenda se nossa força de vendas está gerando pedidos.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="suggestion-card"
+                        data-message="Quais são os clientes com maior potencial no CRM?"
+                    >
+
+                        <div class="suggestion-icon">
+                            🎯
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Clientes em potencial
+                            </strong>
+
+                            <p>
+                                Veja quem representa as maiores oportunidades.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="suggestion-card"
+                        data-message="Quais clientes estão comprando e também possuem oportunidades no CRM?"
+                    >
+
+                        <div class="suggestion-icon">
+                            🔎
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                CRM x Pedidos
+                            </strong>
+
+                            <p>
+                                Compare oportunidades com vendas realizadas.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="suggestion-card"
+                        data-message="Quais são os maiores pedidos realizados?"
+                    >
+
+                        <div class="suggestion-icon">
+                            💰
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Maiores pedidos
+                            </strong>
+
+                            <p>
+                                Identifique os pedidos de maior valor.
+                            </p>
+
+                        </div>
+
                     </div>
 
                 </div>
 
-
-                <div class="suggestion-card"
-                    data-message="Quais são os clientes com maior potencial no CRM?">
-
-                    <div class="suggestion-icon">🎯</div>
-
-                    <div>
-                        <strong>Clientes em potencial</strong>
-                        <p>Veja quem representa as maiores oportunidades.</p>
-                    </div>
-
-                </div>
+            </div>
 
 
-                <div class="suggestion-card"
-                    data-message="Quais clientes estão comprando e também possuem oportunidades no CRM?">
-
-                    <div class="suggestion-icon">🔎</div>
-
-                    <div>
-                        <strong>CRM x Pedidos</strong>
-                        <p>Compare oportunidades com vendas realizadas.</p>
-                    </div>
-
-                </div>
-
-
-                <div class="suggestion-card"
-                    data-message="Quais são os maiores pedidos realizados?">
-
-                    <div class="suggestion-icon">💰</div>
-
-                    <div>
-                        <strong>Maiores pedidos</strong>
-                        <p>Identifique os pedidos de maior valor.</p>
-                    </div>
-
-                </div>
-
-
-            <!-- MENSAGENS -->
+            <!-- =================================================
+                 MENSAGENS
+            ================================================== -->
 
             <div
                 class="messages"
                 id="messages"
             >
-
             </div>
 
 
-            <!-- LOADING -->
+            <!-- =================================================
+                 LOADING / DIGITANDO
+            ================================================== -->
 
             <div
                 class="typing"
@@ -326,9 +379,21 @@
 </div>
 
 
+<!-- =========================================================
+     BIBLIOTECAS
+========================================================= -->
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+
+<!-- =========================================================
+     JAVASCRIPT DO AGENTE
+========================================================= -->
+
 <script src="{% static 'js/agente/comercial.js' %}"></script>
+
 
 </body>
 
