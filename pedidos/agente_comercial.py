@@ -3,12 +3,12 @@ import json
 
 from groq import Groq
 
-from preparar_dados import (
+from .preparar_dados import (
     preparar_dados_comercial,
     preparar_dados_pedidos
 )
 
-from mysql_service import (
+from .mysql_service import (
     buscar_CRM,
     consultar_pedidos
 )
