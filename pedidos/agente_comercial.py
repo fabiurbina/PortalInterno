@@ -5,12 +5,14 @@ from groq import Groq
 
 from .preparar_dados import (
     preparar_dados_comercial,
-    preparar_dados_pedidos
+    preparar_dados_pedidos,
+    preparar_dados_classificacao_cliente
 )
 
 from .mysql_service import (
     buscar_CRM,
-    consultar_pedidos
+    consultar_pedidos,
+    BuscarclassificacaoCliente
 )
 
 
@@ -47,6 +49,13 @@ def consultar_pedidos_agente():
     registros = consultar_pedidos()
 
     return preparar_dados_pedidos(registros)
+
+
+def consultar_carteira_comercial():
+
+    registros = BuscarclassificacaoCliente()
+
+    return preparar_dados_classificacao_cliente(registros)
 
 
 # ==========================================================
@@ -105,6 +114,49 @@ tools = [
                 "required": []
             }
         }
+    },
+
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_carteira_comercial",
+
+            "description": """
+            Consulta a classificação da carteira comercial da Viesano.
+
+            Use esta ferramenta para analisar:
+            clientes, prospects, clientes ativos,
+            clientes inativos, prospects ativos,
+            prospects inativos, atividade no CRM,
+            atividade em pedidos e classificação comercial.
+
+            A ferramenta utiliza a view vw_classificacaoCliente.
+
+            Os dados disponíveis incluem:
+            quantidade de oportunidades,
+            última atividade no CRM,
+            quantidade de pedidos,
+            última atividade em pedidos,
+            status do CRM,
+            status do pedido e classificação.
+
+            Use esta ferramenta quando a pergunta envolver
+            a situação da carteira comercial, clientes ativos
+            ou inativos, prospects ativos ou inativos,
+            relacionamento comercial ou análise da carteira.
+
+            Não confunda esta informação com o pipeline do CRM
+            ou com os pedidos realizados. A carteira representa
+            uma classificação comercial baseada nos dados da
+            vw_classificacaoCliente.
+            """,
+
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
     }
 
 ]
@@ -118,7 +170,9 @@ FUNCOES = {
 
     "consultar_crm": consultar_crm,
 
-    "consultar_pedidos": consultar_pedidos_agente
+    "consultar_pedidos": consultar_pedidos_agente,
+    
+    "consultar_carteira_comercial": consultar_carteira_comercial
 
 }
 

@@ -284,3 +284,63 @@ def preparar_dados_pedidos(registros):
         "pedidos_relevantes": pedidos_relevantes,
         "clientes_relevantes": clientes_relevantes
     }
+    
+
+def preparar_dados_classificacao_cliente(registros):
+
+    if not registros:
+        return {
+            "resumo": {},
+            "clientes_relevantes": []
+        }
+
+    classificacoes = {}
+    status_crm = {}
+    status_pedido = {}
+
+    clientes = []
+
+    for r in registros:
+
+        classificacao = r.get("classificacao")
+        crm = r.get("status_crm")
+        pedido = r.get("status_pedido")
+
+        if classificacao:
+            classificacoes[classificacao] = (
+                classificacoes.get(classificacao, 0) + 1
+            )
+
+        if crm:
+            status_crm[crm] = (
+                status_crm.get(crm, 0) + 1
+            )
+
+        if pedido:
+            status_pedido[pedido] = (
+                status_pedido.get(pedido, 0) + 1
+            )
+
+        clientes.append({
+            "nome": r.get("Nome"),
+            "cnpj": r.get("CNPJ"),
+            "qtd_oportunidades": r.get("Qtd Oportunidades"),
+            "ultima_atividade_crm": r.get("UltimaAtividadeCRM"),
+            "qtd_pedidos": r.get("qtd_pedidos"),
+            "ultima_atividade_pedidos": r.get("UltimaAtividadePedidos"),
+            "status_crm": r.get("status_crm"),
+            "status_pedido": r.get("status_pedido"),
+            "classificacao": r.get("classificacao")
+        })
+
+    resumo = {
+        "total_clientes": len(registros),
+        "classificacoes": classificacoes,
+        "status_crm": status_crm,
+        "status_pedido": status_pedido
+    }
+
+    return {
+        "resumo": resumo,
+        "clientes_relevantes": clientes
+    }
