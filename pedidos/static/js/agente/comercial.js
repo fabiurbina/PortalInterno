@@ -7,9 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const typingIndicator = document.getElementById("typingIndicator");
     const newChatButton = document.getElementById("newChatButton");
 
-    // =========================
+
+    // =========================================================
     // CSRF
-    // =========================
+    // =========================================================
 
     function getCookie(name) {
 
@@ -38,92 +39,130 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =========================
+    // =========================================================
+    // SCROLL PARA O FINAL
+    // =========================================================
+
+    function rolarParaFinal() {
+
+        if (!messagesContainer) {
+            return;
+        }
+
+        requestAnimationFrame(() => {
+
+            messagesContainer.scrollTo({
+                top: messagesContainer.scrollHeight,
+                behavior: "smooth"
+            });
+
+        });
+    }
+
+
+    // =========================================================
     // ADICIONAR MENSAGEM
-    // =========================
+    // =========================================================
 
     function adicionarMensagem(texto, tipo) {
 
-    const message = document.createElement("div");
+        const message = document.createElement("div");
 
-    message.classList.add(
-        "message",
-        tipo === "user" ? "user" : "assistant"
-    );
-
-    const content = document.createElement("div");
-
-    content.classList.add("message-content");
-
-    content.innerHTML = texto.replace(/\n/g, "<br>");
-
-    message.appendChild(content);
-
-    messagesContainer.appendChild(message);
-
-    // Aguarda o navegador calcular o novo tamanho
-    requestAnimationFrame(() => {
-
-        messagesContainer.scrollTo({
-            top: messagesContainer.scrollHeight,
-            behavior: "smooth"
-        });
-
-    });
-}
+        message.classList.add(
+            "message",
+            tipo === "user"
+                ? "user"
+                : "assistant"
+        );
 
 
-    // =========================
-    // LOADING
-    // =========================
+        const content = document.createElement("div");
+
+        content.classList.add("message-content");
+
+
+        // Mantém quebras de linha
+        content.innerHTML = String(texto)
+            .replace(/\n/g, "<br>");
+
+
+        message.appendChild(content);
+
+        messagesContainer.appendChild(message);
+
+
+        rolarParaFinal();
+    }
+
+
+    // =========================================================
+    // MOSTRAR DIGITANDO
+    // =========================================================
 
     function mostrarDigitando() {
 
-    if (typingIndicator) {
-        typingIndicator.classList.add("active");
+        if (typingIndicator) {
+
+            typingIndicator.classList.add("active");
+        }
+
+        rolarParaFinal();
     }
 
-    requestAnimationFrame(() => {
-        messagesContainer.scrollTo({
-            top: messagesContainer.scrollHeight,
-            behavior: "smooth"
-        });
-    });
-}
+
+    // =========================================================
+    // ESCONDER DIGITANDO
+    // =========================================================
+
+    function esconderDigitando() {
+
+        if (typingIndicator) {
+
+            typingIndicator.classList.remove("active");
+        }
+    }
 
 
-    // =========================
+    // =========================================================
     // ENVIAR MENSAGEM
-    // =========================
+    // =========================================================
 
     async function enviarMensagem() {
 
         const mensagem = input.value.trim();
 
+
         if (!mensagem) {
             return;
         }
 
+
         // Esconde tela inicial
         if (welcomeScreen) {
+
             welcomeScreen.style.display = "none";
         }
 
-        // Mostra pergunta do usuário
+
+        // Adiciona mensagem do usuário
         adicionarMensagem(
             mensagem,
             "user"
         );
 
+
         // Limpa campo
         input.value = "";
-
         input.style.height = "auto";
+
 
         // Desabilita botão
         sendButton.disabled = true;
 
+
+        // Mostra carregamento
         mostrarDigitando();
+
 
         try {
 
@@ -146,9 +185,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await response.json();
 
+
+            // Esconde carregamento
             esconderDigitando();
 
 
+            // Verifica erro
             if (!response.ok || !data.sucesso) {
 
                 adicionarMensagem(
@@ -161,7 +203,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Resposta da IA
+            // =================================================
+            // RESPOSTA DA IA
+            // =================================================
+
             adicionarMensagem(
                 data.resposta,
                 "assistant"
@@ -175,12 +220,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 erro
             );
 
+
             esconderDigitando();
+
 
             adicionarMensagem(
                 "Não consegui conectar ao agente comercial.",
                 "assistant"
             );
+
 
         } finally {
 
@@ -191,56 +239,65 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =========================
+    // =========================================================
     // BOTÃO ENVIAR
-    // =========================
+    // =========================================================
 
-    sendButton.addEventListener(
-        "click",
-        enviarMensagem
-    );
+    if (sendButton) {
+
+        sendButton.addEventListener(
+            "click",
+            enviarMensagem
+        );
+    }
 
 
-    // =========================
+    // =========================================================
     // ENTER
-    // =========================
+    // =========================================================
 
-    input.addEventListener(
-        "keydown",
-        function (event) {
+    if (input) {
 
-            if (
-                event.key === "Enter" &&
-                !event.shiftKey
-            ) {
+        input.addEventListener(
+            "keydown",
+            function (event) {
 
-                event.preventDefault();
+                if (
+                    event.key === "Enter" &&
+                    !event.shiftKey
+                ) {
 
-                enviarMensagem();
+                    event.preventDefault();
+
+                    enviarMensagem();
+                }
             }
-        }
-    );
+        );
+    }
 
 
-    // =========================
-    // AUTO RESIZE
-    // =========================
+    // =========================================================
+    // AUTO RESIZE DO INPUT
+    // =========================================================
 
-    input.addEventListener(
-        "input",
-        function () {
+    if (input) {
 
-            this.style.height = "auto";
+        input.addEventListener(
+            "input",
+            function () {
 
-            this.style.height =
-                this.scrollHeight + "px";
-        }
-    );
+                this.style.height = "auto";
+
+                this.style.height =
+                    this.scrollHeight + "px";
+            }
+        );
+    }
 
 
-    // =========================
+    // =========================================================
     // SUGESTÕES
-    // =========================
+    // =========================================================
 
     document
         .querySelectorAll(".suggestion-card")
@@ -253,20 +310,30 @@ document.addEventListener("DOMContentLoaded", function () {
                     const texto =
                         this.dataset.message;
 
+
                     if (!texto) {
                         return;
                     }
 
+
                     input.value = texto;
+
                     input.focus();
+
+
+                    // Ajusta altura
+                    input.style.height = "auto";
+
+                    input.style.height =
+                        input.scrollHeight + "px";
                 }
             );
         });
 
 
-    // =========================
+    // =========================================================
     // NOVA CONVERSA
-    // =========================
+    // =========================================================
 
     if (newChatButton) {
 
@@ -276,10 +343,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 messagesContainer.innerHTML = "";
 
+
                 if (welcomeScreen) {
+
                     welcomeScreen.style.display =
                         "flex";
                 }
+
+
+                esconderDigitando();
+
 
                 input.value = "";
 
