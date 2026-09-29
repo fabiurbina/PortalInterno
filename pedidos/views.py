@@ -5516,3 +5516,37 @@ def relatorio_estrutura(request):
             "dados": dados
         }
     )
+    
+    
+def exportar_estrutura_produto_excel(request):
+
+    query = """
+        SELECT
+            codigo_produto,
+            descricao_produto,
+            codigo_item,
+            descricao_item,
+            quantidade,
+            percentual_perda,
+            unidade
+        FROM ViesanoDW.vw_estrutura_produto
+        ORDER BY codigo_produto, codigo_item
+    """
+
+    df = pd.read_sql(query, connection)
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="estrutura_produtos.xlsx"'
+    )
+
+    df.to_excel(
+        response,
+        index=False,
+        sheet_name="Estrutura Produtos"
+    )
+
+    return response

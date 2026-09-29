@@ -55,7 +55,8 @@ from .views import (
     receber_login_destaque,
     agente_comercial_view,
     agente_comercial_chat,
-    relatorio_estrutura
+    relatorio_estrutura,
+    exportar_estrutura_produto_excel
     
 )
 
@@ -450,4 +451,10 @@ urlpatterns = [
         relatorio_estrutura,
         name="relatorio_estrutura"
     ),
+    
+    path(
+    "relatorios/estrutura-produto/exportar/",
+    exportar_estrutura_produto_excel,
+    name="exportar_estrutura_produto_excel"
+),
 ]

@@ -601,6 +601,42 @@
             }
 
         }
+        .btn-excel {
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        height: 34px;
+
+        padding: 0 13px;
+
+        border-radius: 7px;
+
+        background: #198754;
+        border: 1px solid #198754;
+
+        color: #ffffff;
+
+        font-size: 12px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition: all .2s ease;
+    }
+
+
+    .btn-excel:hover {
+        background: #146c43;
+        border-color: #146c43;
+
+        color: #ffffff;
+
+        transform: translateY(-1px);
+    }
 
     </style>
 
@@ -728,15 +764,17 @@
          ESTRUTURA
     ================================= -->
 
-    <div class="estrutura-container">
+    <div class="estrutura-topo">
 
+        <h3 class="estrutura-titulo">
+            Estrutura dos produtos
+        </h3>
 
-        <div class="estrutura-topo">
-
-            <h3 class="estrutura-titulo">
-                Estrutura dos produtos
-            </h3>
-
+        <div style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        ">
 
             <span
                 class="badge-registros"
@@ -745,7 +783,16 @@
                 0 produtos
             </span>
 
+            <a
+                href="{% url 'exportar_estrutura_produto_excel' %}"
+                class="btn-excel"
+            >
+                📥 Exportar Excel
+            </a>
+
         </div>
+
+    </div>
 
 
         <div id="listaProdutos">
