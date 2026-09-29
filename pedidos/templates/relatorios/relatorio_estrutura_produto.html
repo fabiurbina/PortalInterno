@@ -786,6 +786,7 @@
             <a
                 href="{% url 'exportar_estrutura_produto_excel' %}"
                 class="btn-excel"
+                id="btnExportar"
             >
                 📥 Exportar Excel
             </a>
@@ -992,6 +993,9 @@ document.addEventListener(
         const filtroProduto =
             document.getElementById("filtroProduto");
 
+        const btnExportar =
+            document.getElementById("btnExportar");
+
 
         const limparFiltros =
             document.getElementById("limparFiltros");
@@ -1075,55 +1079,61 @@ document.addEventListener(
 
         function aplicarFiltro() {
 
+    const produtoSelecionado =
+        filtroProduto.value;
 
-            const produtoSelecionado =
-                filtroProduto.value;
+    let visiveis = 0;
 
+    produtos.forEach(
+        function (produto) {
 
-            let visiveis = 0;
+            const codigo =
+                produto.dataset.produto;
 
+            const mostrar =
+                !produtoSelecionado ||
+                codigo === produtoSelecionado;
 
-            produtos.forEach(
-                function (produto) {
+            produto.style.display =
+                mostrar ? "" : "none";
 
-
-                    const codigo =
-                        produto.dataset.produto;
-
-
-                    const mostrar =
-                        !produtoSelecionado ||
-                        codigo === produtoSelecionado;
-
-
-                    produto.style.display =
-                        mostrar
-                            ? ""
-                            : "none";
-
-
-                    if (mostrar) {
-                        visiveis++;
-                    }
-
-
-                }
-            );
-
-
-            quantidadeVisivel.textContent =
-                visiveis;
-
-
-            badgeRegistros.textContent =
-                visiveis +
-                (
-                    visiveis === 1
-                        ? " produto"
-                        : " produtos"
-                );
+            if (mostrar) {
+                visiveis++;
+            }
 
         }
+    );
+
+
+    quantidadeVisivel.textContent =
+        visiveis;
+
+
+    badgeRegistros.textContent =
+        visiveis +
+        (
+            visiveis === 1
+                ? " produto"
+                : " produtos"
+        );
+
+
+    // Atualiza o Excel
+    if (produtoSelecionado) {
+
+        btnExportar.href =
+            "{% url 'exportar_estrutura_produto_excel' %}"
+            + "?produto="
+            + encodeURIComponent(produtoSelecionado);
+
+    } else {
+
+        btnExportar.href =
+            "{% url 'exportar_estrutura_produto_excel' %}";
+
+    }
+
+}
 
 
 

@@ -5520,6 +5520,8 @@ def relatorio_estrutura(request):
     
 def exportar_estrutura_produto_excel(request):
 
+    produto = request.GET.get("produto")
+
     query = """
         SELECT
             codigo_produto,
@@ -5530,10 +5532,23 @@ def exportar_estrutura_produto_excel(request):
             percentual_perda,
             unidade
         FROM ViesanoDW.vw_estrutura_produto
+    """
+
+    params = []
+
+    if produto:
+        query += " WHERE codigo_produto = %s"
+        params.append(produto)
+
+    query += """
         ORDER BY codigo_produto, codigo_item
     """
 
-    df = pd.read_sql(query, connection)
+    df = pd.read_sql(
+        query,
+        connection,
+        params=params
+    )
 
     response = HttpResponse(
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
