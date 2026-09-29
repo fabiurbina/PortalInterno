@@ -54,7 +54,8 @@ from .views import (
     visualizar_aprovacao_mp_qualidade,
     receber_login_destaque,
     agente_comercial_view,
-    agente_comercial_chat
+    agente_comercial_chat,
+    relatorio_estrutura
     
 )
 
@@ -443,4 +444,10 @@ urlpatterns = [
     "agente-comercial/chat/",
     agente_comercial_chat,
     name="agente_comercial_chat"),
+    
+    path(
+        "relatorios/estrutura-produto/",
+        relatorio_estrutura,
+        name="relatorio_estrutura"
+    ),
 ]

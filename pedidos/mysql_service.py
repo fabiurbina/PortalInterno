@@ -1328,3 +1328,21 @@ def BuscarCabecalhoAprovacaoMPQualidade(id_inspecao):
 
     finally:
         conexao.close()
+        
+        
+def buscarEstruturaProduto():
+
+    conexao = conectar()
+
+    try:
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            SELECT * FROM vw_estrutura_produto 
+            
+            """)
+
+        return cursor.fetchall()
+
+    finally:
+        conexao.close()

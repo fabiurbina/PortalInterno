@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Estrutura de Produtos | Viesano</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+
+        .pagina {
+            width: 100%;
+            padding: 28px 35px 40px;
+        }
+
+
+        /* ================================
+           CABEÇALHO
+        ================================= */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+
+        .titulo-area h1 {
+            margin: 0;
+
+            font-size: 27px;
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .titulo-area p {
+            margin: 6px 0 0;
+
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+            border: 1px solid #d8e1dc;
+
+            color: #174f35;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-voltar:hover {
+            background: #174f35;
+            color: #ffffff;
+            border-color: #174f35;
+        }
+
+
+        /* ================================
+           FILTROS
+        ================================= */
+
+        .filtros {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            padding: 20px 22px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .filtros-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 17px;
+        }
+
+
+        .filtros-titulo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #174f35;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .filtros-info {
+            font-size: 12px;
+            color: #8a9690;
+        }
+
+
+        .filtros-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                auto;
+
+            gap: 14px;
+
+            align-items: end;
+        }
+
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+
+        .campo label {
+            font-size: 12px;
+            font-weight: 600;
+
+            color: #59655f;
+        }
+
+
+        .campo select {
+            width: 100%;
+
+            height: 40px;
+
+            padding: 0 12px;
+
+            border: 1px solid #d6dfda;
+            border-radius: 7px;
+
+            background: #ffffff;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            outline: none;
+
+            cursor: pointer;
+        }
+
+
+        .campo select:focus {
+            border-color: #2d8a5b;
+
+            box-shadow:
+                0 0 0 3px rgba(45, 138, 91, .10);
+        }
+
+
+        .btn-limpar {
+            height: 40px;
+
+            padding: 0 17px;
+
+            border: 1px solid #d6dfda;
+            border-radius: 7px;
+
+            background: #f8faf9;
+
+            color: #59655f;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-limpar:hover {
+            background: #eaf3ee;
+            color: #174f35;
+            border-color: #b9d2c4;
+        }
+
+
+        /* ================================
+           RESUMO
+        ================================= */
+
+        .barra-resumo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+
+        .resultado {
+            font-size: 13px;
+            color: #69756f;
+        }
+
+
+        .resultado strong {
+            color: #174f35;
+        }
+
+
+        /* ================================
+           ESTRUTURA
+        ================================= */
+
+        .estrutura-container {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .estrutura-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 17px 20px;
+
+            border-bottom: 1px solid #e7ece9;
+        }
+
+
+        .estrutura-titulo {
+            margin: 0;
+
+            color: #263c31;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .badge-registros {
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #eaf5ee;
+            color: #217447;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        /* ================================
+           PRODUTO
+        ================================= */
+
+        .produto {
+            border-bottom: 1px solid #edf1ef;
+        }
+
+
+        .produto:last-child {
+            border-bottom: none;
+        }
+
+
+        .produto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 15px 20px;
+
+            cursor: pointer;
+
+            transition: background .15s ease;
+        }
+
+
+        .produto-header:hover {
+            background: #f7fbf8;
+        }
+
+
+        .produto-identificacao {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            min-width: 0;
+        }
+
+
+        .produto-seta {
+            width: 22px;
+            height: 22px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 5px;
+
+            background: #f1f5f3;
+
+            color: #174f35;
+
+            font-size: 10px;
+
+            transition: transform .2s ease;
+        }
+
+
+        .produto.aberto .produto-seta {
+            transform: rotate(90deg);
+        }
+
+
+        .produto-codigo {
+            font-size: 13px;
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .produto-descricao {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #7a8580;
+
+            font-size: 12px;
+        }
+
+
+        .badge-itens {
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #f1f5f3;
+            color: #59655f;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        /* ================================
+           ITENS
+        ================================= */
+
+        .produto-itens {
+            display: none;
+
+            padding: 0 20px 18px;
+
+            background: #fafcfb;
+        }
+
+
+        .produto.aberto .produto-itens {
+            display: block;
+        }
+
+
+        .tabela-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+
+        .produto-itens thead th {
+            padding: 11px 14px;
+
+            background: #f5f8f6;
+
+            border-bottom: 1px solid #dfe7e2;
+
+            color: #64736b;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .04em;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+
+        .produto-itens tbody td {
+            padding: 12px 14px;
+
+            border-bottom: 1px solid #edf1ef;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        .produto-itens tbody tr {
+            transition: background .15s ease;
+        }
+
+
+        .produto-itens tbody tr:hover {
+            background: #f7fbf8;
+        }
+
+
+        .produto-itens tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        .codigo-item {
+            font-weight: 700;
+            color: #174f35;
+        }
+
+
+        .quantidade {
+            font-weight: 600;
+            text-align: right;
+        }
+
+
+        .percentual {
+            font-weight: 600;
+            text-align: right;
+        }
+
+
+        .unidade {
+            display: inline-block;
+
+            padding: 4px 8px;
+
+            background: #f1f5f3;
+
+            border-radius: 5px;
+
+            color: #3f4d46;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+
+        /* ================================
+           SEM REGISTROS
+        ================================= */
+
+        .sem-registros {
+            padding: 55px 20px !important;
+
+            text-align: center;
+
+            color: #8b9791;
+
+            font-size: 13px;
+        }
+
+
+        .sem-registros-icon {
+            font-size: 32px;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* ================================
+           RESPONSIVO
+        ================================= */
+
+        @media (max-width: 800px) {
+
+            .pagina {
+                padding: 20px;
+            }
+
+
+            .filtros-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .cabecalho {
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+
+            .produto-header {
+                align-items: flex-start;
+
+                gap: 12px;
+            }
+
+
+            .badge-itens {
+                margin-top: 2px;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .produto-identificacao {
+                align-items: flex-start;
+            }
+
+
+            .produto-descricao {
+                max-width: 230px;
+
+                white-space: normal;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="pagina">
+
+
+    <!-- ================================
+         CABEÇALHO
+    ================================= -->
+
+    <div class="cabecalho">
+
+        <div class="titulo-area">
+
+            <h1>
+                Estrutura de Produtos
+            </h1>
+
+            <p>
+                Consulte a composição dos produtos, quantidades, unidades e percentuais de perda.
+            </p>
+
+        </div>
+
+
+        <a
+            href="javascript:history.back()"
+            class="btn-voltar"
+        >
+            ← Voltar
+        </a>
+
+    </div>
+
+
+
+    <!-- ================================
+         FILTROS
+    ================================= -->
+
+    <div class="filtros">
+
+        <div class="filtros-topo">
+
+            <div class="filtros-titulo">
+
+                <span>🔎</span>
+
+                <span>
+                    Filtros de consulta
+                </span>
+
+            </div>
+
+
+            <div class="filtros-info">
+
+                Os filtros são carregados com os dados do relatório.
+
+            </div>
+
+        </div>
+
+
+        <div class="filtros-grid">
+
+
+            <div class="campo">
+
+                <label for="filtroProduto">
+                    Produto
+                </label>
+
+                <select id="filtroProduto">
+
+                    <option value="">
+                        Todos os produtos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-limpar"
+                id="limparFiltros"
+            >
+                Limpar filtros
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================
+         RESUMO
+    ================================= -->
+
+    <div class="barra-resumo">
+
+        <div class="resultado">
+
+            Exibindo
+            <strong id="quantidadeVisivel">0</strong>
+            produtos
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================
+         ESTRUTURA
+    ================================= -->
+
+    <div class="estrutura-container">
+
+
+        <div class="estrutura-topo">
+
+            <h3 class="estrutura-titulo">
+                Estrutura dos produtos
+            </h3>
+
+
+            <span
+                class="badge-registros"
+                id="badgeRegistros"
+            >
+                0 produtos
+            </span>
+
+        </div>
+
+
+        <div id="listaProdutos">
+
+
+            {% regroup dados by codigo_produto as produtos %}
+
+
+            {% for produto in produtos %}
+
+
+            <div
+                class="produto"
+                data-produto="{{ produto.grouper }}"
+            >
+
+
+                <!-- PRODUTO -->
+
+                <div
+                    class="produto-header"
+                    onclick="toggleProduto(this)"
+                >
+
+                    <div class="produto-identificacao">
+
+
+                        <span class="produto-seta">
+                            ▶
+                        </span>
+
+
+                        <div>
+
+                            <span class="produto-codigo">
+                                {{ produto.grouper }}
+                            </span>
+
+
+                            <span class="produto-descricao">
+                                {{ produto.list.0.descricao_produto }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="badge-itens">
+
+                        {{ produto.list|length }}
+
+                        {% if produto.list|length == 1 %}
+                            item
+                        {% else %}
+                            itens
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- ITENS -->
+
+                <div class="produto-itens">
+
+
+                    <div class="tabela-scroll">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Código Item
+                                    </th>
+
+                                    <th>
+                                        Descrição Item
+                                    </th>
+
+                                    <th style="text-align: right;">
+                                        Quantidade
+                                    </th>
+
+                                    <th>
+                                        Unidade
+                                    </th>
+
+                                    <th style="text-align: right;">
+                                        Perda
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% for item in produto.list %}
+
+
+                                <tr>
+
+
+                                    <td>
+
+                                        <span class="codigo-item">
+                                            {{ item.codigo_item }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ item.descricao_item }}
+                                    </td>
+
+
+                                    <td class="quantidade">
+                                        {{ item.quantidade|floatformat:6 }}
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="unidade">
+                                            {{ item.unidade }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <td class="percentual">
+                                        {{ item.percentual_perda|floatformat:6 }}
+                                    </td>
+
+
+                                </tr>
+
+
+                                {% endfor %}
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            {% empty %}
+
+
+            <div class="sem-registros">
+
+                <div class="sem-registros-icon">
+                    📦
+                </div>
+
+                Nenhuma estrutura de produto encontrada.
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const filtroProduto =
+            document.getElementById("filtroProduto");
+
+
+        const limparFiltros =
+            document.getElementById("limparFiltros");
+
+
+        const produtos =
+            document.querySelectorAll(
+                ".produto[data-produto]"
+            );
+
+
+        const quantidadeVisivel =
+            document.getElementById(
+                "quantidadeVisivel"
+            );
+
+
+        const badgeRegistros =
+            document.getElementById(
+                "badgeRegistros"
+            );
+
+
+
+        /* ==================================
+           FILTRO DE PRODUTOS
+        ================================== */
+
+        function carregarProdutos() {
+
+
+            const valores = new Set();
+
+
+            produtos.forEach(
+                function (produto) {
+
+                    const codigo =
+                        produto.dataset.produto;
+
+
+                    if (codigo) {
+                        valores.add(codigo);
+                    }
+
+                }
+            );
+
+
+            Array.from(valores)
+                .sort()
+                .forEach(
+                    function (valor) {
+
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value = valor;
+
+                        option.textContent = valor;
+
+
+                        filtroProduto.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+        }
+
+
+
+        /* ==================================
+           APLICA FILTRO
+        ================================== */
+
+        function aplicarFiltro() {
+
+
+            const produtoSelecionado =
+                filtroProduto.value;
+
+
+            let visiveis = 0;
+
+
+            produtos.forEach(
+                function (produto) {
+
+
+                    const codigo =
+                        produto.dataset.produto;
+
+
+                    const mostrar =
+                        !produtoSelecionado ||
+                        codigo === produtoSelecionado;
+
+
+                    produto.style.display =
+                        mostrar
+                            ? ""
+                            : "none";
+
+
+                    if (mostrar) {
+                        visiveis++;
+                    }
+
+
+                }
+            );
+
+
+            quantidadeVisivel.textContent =
+                visiveis;
+
+
+            badgeRegistros.textContent =
+                visiveis +
+                (
+                    visiveis === 1
+                        ? " produto"
+                        : " produtos"
+                );
+
+        }
+
+
+
+        /* ==================================
+           LIMPAR FILTRO
+        ================================== */
+
+        limparFiltros.addEventListener(
+            "click",
+            function () {
+
+
+                filtroProduto.value = "";
+
+
+                aplicarFiltro();
+
+
+            }
+        );
+
+
+
+        /* ==================================
+           EVENTO
+        ================================== */
+
+        filtroProduto.addEventListener(
+            "change",
+            aplicarFiltro
+        );
+
+
+
+        /* ==================================
+           INICIALIZAÇÃO
+        ================================== */
+
+        carregarProdutos();
+
+        aplicarFiltro();
+
+
+    }
+);
+
+
+
+/* ==================================
+   ABRIR / FECHAR PRODUTO
+================================== */
+
+function toggleProduto(elemento) {
+
+
+    const produto =
+        elemento.closest(".produto");
+
+
+    produto.classList.toggle("aberto");
+
+
+}
+
+</script>
+
+
+</body>
+
+</html>

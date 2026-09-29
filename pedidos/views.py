@@ -45,7 +45,8 @@ from .mysql_service import (
     consultar_pedidos,
     BuscarAprovacaoMPQualidade,
     BuscarDetalhesInspecao,
-    BuscarCabecalhoAprovacaoMPQualidade
+    BuscarCabecalhoAprovacaoMPQualidade,
+    buscarEstruturaProduto
 )
 from django.core.cache import cache
 from .status_service import interpretar_status
@@ -5503,3 +5504,15 @@ def agente_comercial_chat(request):
             },
             status=500
         )
+        
+        
+def relatorio_estrutura(request):
+    dados = buscarEstruturaProduto()
+
+    return render(
+        request,
+        "relatorios/relatorio_estrutura_produto.html",
+        {
+            "dados": dados
+        }
+    )
