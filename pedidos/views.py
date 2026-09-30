@@ -1457,7 +1457,6 @@ def salvar_inspecao(request):
 def pedidos(request):
 
     numero_pedido = request.GET.get("pedido")
-    
     status_filtro = request.GET.get("status")
 
     lista_pedidos = consultar_todos_pedidos()
@@ -1479,45 +1478,35 @@ def pedidos(request):
 
     # FILTRO PELO NÚMERO DO PEDIDO
     if numero_pedido:
-
         pedidos_processados = [
             pedido
             for pedido in pedidos_processados
             if str(pedido["numero_pedido"]) == numero_pedido
-            
         ]
-        
-     # FILTRO POR STATUS
 
+    # FILTRO POR STATUS
     if status_filtro:
-
         pedidos_processados = [
             pedido
             for pedido in pedidos_processados
             if pedido["titulo"] == status_filtro
         ]
 
-    # ==========================================================
     # PAGINAÇÃO
-    # 50 REGISTROS POR PÁGINA
-    # ==========================================================
-
     paginator = Paginator(
-        dados_filtrados,
+        pedidos_processados,
         50
     )
 
     pagina = request.GET.get("page")
 
-    dados_filtrados = paginator.get_page(
-        pagina
-    )
+    pedidos_paginados = paginator.get_page(pagina)
 
     return render(
         request,
         "pedidos.html",
         {
-            "pedidos": pedidos_processados,
+            "pedidos": pedidos_paginados,
             "status_selecionado": status_filtro,
             "pedido_pesquisado": numero_pedido,
         }
