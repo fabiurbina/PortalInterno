@@ -5554,3 +5554,13 @@ def exportar_estrutura_produto_excel(request):
     )
 
     return response
+
+
+def financeiro_dre(request):
+    dados = buscar_fin_dre()
+
+    return render(
+        request,
+        "indicadores/financeiro/dre.html",
+        {"dados": dados}
+    )
