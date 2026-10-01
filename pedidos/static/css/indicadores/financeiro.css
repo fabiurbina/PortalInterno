@@ -549,3 +549,46 @@
     }
 
 }
+
+.financeiro-dre-acesso {
+    margin: 20px 0;
+}
+
+.financeiro-dre-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    width: fit-content;
+
+    padding: 14px 20px;
+
+    background: #0d3b66;
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    transition: 0.2s;
+}
+
+.financeiro-dre-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
+}
+
+.financeiro-dre-icon {
+    font-size: 24px;
+}
+
+.financeiro-dre-btn strong {
+    display: block;
+    font-size: 15px;
+}
+
+.financeiro-dre-btn small {
+    display: block;
+    margin-top: 3px;
+    opacity: 0.8;
+}

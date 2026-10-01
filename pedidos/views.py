@@ -48,6 +48,8 @@ from .mysql_service import (
     BuscarCabecalhoAprovacaoMPQualidade,
     buscarEstruturaProduto
 )
+
+from .services.financeiro.dre import classificar_dre
 from django.core.cache import cache
 from .status_service import interpretar_status
 from collections import defaultdict
@@ -5556,11 +5558,62 @@ def exportar_estrutura_produto_excel(request):
     return response
 
 
+from collections import defaultdict
+
 def financeiro_dre(request):
+
     dados = buscar_fin_dre()
+
+    dre = defaultdict(float)
+    grupos_dre = defaultdict(lambda: defaultdict(float))
+
+    for item in dados:
+
+        classificacao = classificar_dre(
+            item.get("descricao")
+        )
+
+        item["classificacao_superior"] = classificacao["superior"]
+        item["grupo_dre"] = classificacao["grupo"]
+        item["entra_dre"] = classificacao["entra_dre"]
+
+        # Somente lançamentos que pertencem ao DRE
+        if not classificacao["entra_dre"]:
+            continue
+
+        # Somente pagamentos realizados
+        status = str(
+            item.get("cStatus") or ""
+        ).strip().upper()
+
+        if status != "PAGO":
+            continue
+
+        valor = float(
+            item.get("nValPago") or 0
+        )
+
+        # Classificação superior
+        dre[
+            classificacao["superior"]
+        ] += valor
+
+        # Grupo + classificação superior
+        grupos_dre[
+            classificacao["grupo"]
+        ][
+            classificacao["superior"]
+        ] += valor
 
     return render(
         request,
         "indicadores/financeiro/dre.html",
-        {"dados": dados}
+        {
+            "dados": dados,
+            "dre": dict(dre),
+            "grupos_dre": {
+                grupo: dict(categorias)
+                for grupo, categorias in grupos_dre.items()
+            },
+        }
     )
