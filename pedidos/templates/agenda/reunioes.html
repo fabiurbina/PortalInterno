@@ -807,25 +807,56 @@
 
         <!-- CALENDÁRIO -->
 
-        {% if email_usuario and not reunioes and not erro %}
-            <div class="sem-eventos">
-                📭 Nenhuma reunião encontrada. Você pode criar uma nova reunião.
-            </div>
-        {% endif %}
+    
+
 
         <div class="calendario">
+
+
             <div class="dias-semana">
-                <div class="dia-semana">SEG</div>
-                <div class="dia-semana">TER</div>
-                <div class="dia-semana">QUA</div>
-                <div class="dia-semana">QUI</div>
-                <div class="dia-semana">SEX</div>
-                <div class="dia-semana">SÁB</div>
-                <div class="dia-semana">DOM</div>
+
+                <div class="dia-semana">
+                    SEG
+                </div>
+
+                <div class="dia-semana">
+                    TER
+                </div>
+
+                <div class="dia-semana">
+                    QUA
+                </div>
+
+                <div class="dia-semana">
+                    QUI
+                </div>
+
+                <div class="dia-semana">
+                    SEX
+                </div>
+
+                <div class="dia-semana">
+                    SÁB
+                </div>
+
+                <div class="dia-semana">
+                    DOM
+                </div>
+
             </div>
 
-            <div id="dias" class="dias"></div>
+
+            <div
+                id="dias"
+                class="dias"
+            ></div>
+
+
         </div>
+
+        {% if email_usuario and not reunioes and not erro %}
+            <div class="sem-eventos">📭 Nenhuma reunião encontrada. O calendário continua disponível.</div>
+        {% endif %}
 
 
 </div>
@@ -944,6 +975,7 @@
 </div>
 
 
+{{ reunioes|json_script:"reunioes-data" }}
 <script>
 
 
@@ -951,7 +983,7 @@
     // REUNIÕES DO DJANGO
     // ========================================================
 
-    const reunioes = JSON.parse('{{ reunioes|escapejs }}');
+    const reunioes = JSON.parse(document.getElementById("reunioes-data").textContent || "[]");
 
 
     // ========================================================
@@ -1651,7 +1683,6 @@ function fecharFormularioFora(event) {
     // INICIALIZAR
     // ========================================================
 
-    // Inicializa o calendário mesmo quando ainda não existem reuniões.
     renderizarCalendario();
 
 
