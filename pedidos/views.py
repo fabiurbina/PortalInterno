@@ -2739,7 +2739,7 @@ def agenda_reunioes(request):
 
         reunioes.append({
             "id": reuniao.id,
-
+            
             "uid": reuniao.uid,
 
             "titulo": reuniao.titulo,
