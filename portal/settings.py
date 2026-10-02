@@ -375,3 +375,5 @@ EMAIL_HOST_PASSWORD = os.getenv(
 DEFAULT_FROM_EMAIL = (
     "naoresponda@viesano.com.br"
 )
+
+
