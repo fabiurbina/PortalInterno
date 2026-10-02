@@ -56,7 +56,8 @@ from .views import (
     agente_comercial_view,
     agente_comercial_chat,
     relatorio_estrutura,
-    exportar_estrutura_produto_excel
+    exportar_estrutura_produto_excel,
+    criar_reuniao
     
 )
 
@@ -366,6 +367,11 @@ urlpatterns = [
         name="sincronizar_todas_agendas",
     ),
 
+    path(
+    "agenda/criar-reuniao/",
+    criar_reuniao,
+    name="criar_reuniao"
+    ),
 
     # ========================================================
     # DADOS DOS INDICADORES

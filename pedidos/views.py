@@ -1,5 +1,4 @@
 import os
-
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
@@ -76,7 +75,7 @@ from cryptography.fernet import Fernet
 
 from django.conf import settings
 
-from .models import ContaHostinger,ReuniaoAgenda
+from .models import ContaHostinger,ReuniaoAgenda, ParticipanteReuniao
 
 from django.http import FileResponse
 from .agente_comercial import agente_comercial
@@ -5556,3 +5555,91 @@ def exportar_estrutura_produto_excel(request):
     )
 
     return response
+
+
+import uuid
+@login_required
+def criar_reuniao(request):
+
+    if request.method != "POST":
+        return redirect("agenda_reunioes")
+
+    try:
+        conta = ContaHostinger.objects.get(
+            usuario=request.user
+        )
+
+        titulo = request.POST.get("titulo", "").strip()
+        data = request.POST.get("data", "")
+        hora_inicio = request.POST.get("hora_inicio", "")
+        hora_fim = request.POST.get("hora_fim", "")
+        emails = request.POST.get("participantes", "")
+        descricao = request.POST.get("descricao", "")
+
+        if not all([titulo, data, hora_inicio, hora_fim]):
+            messages.error(
+                request,
+                "Preencha título, data e horários."
+            )
+            return redirect("agenda_reunioes")
+
+        inicio = timezone.make_aware(
+            datetime.strptime(
+                f"{data} {hora_inicio}",
+                "%Y-%m-%d %H:%M"
+            )
+        )
+
+        fim = timezone.make_aware(
+            datetime.strptime(
+                f"{data} {hora_fim}",
+                "%Y-%m-%d %H:%M"
+            )
+        )
+
+        if fim <= inicio:
+            messages.error(
+                request,
+                "O horário final deve ser posterior ao inicial."
+            )
+            return redirect("agenda_reunioes")
+
+        lista_emails = list(dict.fromkeys(
+            email.strip().lower()
+            for email in emails.replace(";", ",").split(",")
+            if email.strip()
+        ))
+
+        reuniao = ReuniaoAgenda.objects.create(
+            conta=conta,
+            uid=f"{uuid.uuid4()}",
+            titulo=titulo,
+            inicio=inicio,
+            fim=fim,
+            data=inicio.date(),
+            hora_inicio=hora_inicio,
+            hora_fim=hora_fim,
+            organizador_email=conta.email,
+            participantes=lista_emails,
+            descricao=descricao,
+            status="CONFIRMED",
+        )
+
+        for email in lista_emails:
+            ParticipanteReuniao.objects.create(
+                reuniao=reuniao,
+                email=email,
+            )
+
+        messages.success(
+            request,
+            "Reunião cadastrada com sucesso!"
+        )
+
+    except Exception as e:
+        messages.error(
+            request,
+            f"Erro ao criar reunião: {e}"
+        )
+
+    return redirect("agenda_reunioes")

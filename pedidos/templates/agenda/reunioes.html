@@ -462,6 +462,54 @@
 
     }
 
+    .botao-nova-reuniao {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    font-weight: bold;
+}
+
+.modal-formulario {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1100;
+}
+
+.formulario-reuniao {
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+}
+
+.formulario-reuniao input,
+.formulario-reuniao textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.formulario-reuniao textarea {
+    min-height: 80px;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
 
 </style>
 
@@ -654,6 +702,15 @@
 
             <div class="controles">
 
+
+                <button
+                    type="button"
+                    class="botao botao-nova-reuniao"
+                    onclick="abrirFormularioReuniao()"
+                >
+                    + Nova reunião
+                </button>
+
                 <!-- SINCRONIZAR AGENDA -->
                 <form
                     method="POST"
@@ -750,67 +807,93 @@
 
         <!-- CALENDÁRIO -->
 
-    {% if reunioes %}
-
+        {% if email_usuario and not reunioes and not erro %}
+            <div class="sem-eventos">
+                📭 Nenhuma reunião encontrada. Você pode criar uma nova reunião.
+            </div>
+        {% endif %}
 
         <div class="calendario">
-
-
             <div class="dias-semana">
-
-                <div class="dia-semana">
-                    SEG
-                </div>
-
-                <div class="dia-semana">
-                    TER
-                </div>
-
-                <div class="dia-semana">
-                    QUA
-                </div>
-
-                <div class="dia-semana">
-                    QUI
-                </div>
-
-                <div class="dia-semana">
-                    SEX
-                </div>
-
-                <div class="dia-semana">
-                    SÁB
-                </div>
-
-                <div class="dia-semana">
-                    DOM
-                </div>
-
+                <div class="dia-semana">SEG</div>
+                <div class="dia-semana">TER</div>
+                <div class="dia-semana">QUA</div>
+                <div class="dia-semana">QUI</div>
+                <div class="dia-semana">SEX</div>
+                <div class="dia-semana">SÁB</div>
+                <div class="dia-semana">DOM</div>
             </div>
 
-
-            <div
-                id="dias"
-                class="dias"
-            ></div>
-
-
+            <div id="dias" class="dias"></div>
         </div>
 
 
-    {% elif email_usuario and not erro %}
+</div>
 
-
-        <div class="sem-eventos">
-
-            📭 Nenhuma reunião encontrada.
-
+<div
+    id="modalFormularioReuniao"
+    class="modal-formulario"
+    onclick="fecharFormularioFora(event)"
+>
+    <div class="formulario-reuniao">
+        <div class="modal-cabecalho">
+            <h2 class="modal-titulo">Nova reunião</h2>
+            <button
+                type="button"
+                class="fechar"
+                onclick="fecharFormularioReuniao()"
+            >×</button>
         </div>
 
+        <form method="POST" action="{% url 'criar_reuniao' %}">
+            {% csrf_token %}
 
-    {% endif %}
+            <div class="campo">
+                <label for="tituloReuniao">Título</label>
+                <input id="tituloReuniao" name="titulo" required>
+            </div>
 
+            <div class="campo">
+                <label for="dataReuniao">Data</label>
+                <input type="date" id="dataReuniao" name="data" required>
+            </div>
 
+            <div class="campo">
+                <label for="horaInicioReuniao">Horário inicial</label>
+                <input type="time" id="horaInicioReuniao" name="hora_inicio" required>
+            </div>
+
+            <div class="campo">
+                <label for="horaFimReuniao">Horário final</label>
+                <input type="time" id="horaFimReuniao" name="hora_fim" required>
+            </div>
+
+            <div class="campo">
+                <label for="participantesReuniao">E-mails dos participantes</label>
+                <textarea
+                    id="participantesReuniao"
+                    name="participantes"
+                    placeholder="email1@empresa.com, email2@empresa.com"
+                ></textarea>
+            </div>
+
+            <div class="campo">
+                <label for="descricaoReuniao">Descrição</label>
+                <textarea id="descricaoReuniao" name="descricao"></textarea>
+            </div>
+
+            <div class="acoes-formulario">
+                <button type="button" class="botao"
+                    onclick="fecharFormularioReuniao()">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="botao botao-nova-reuniao">
+                    Salvar reunião
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 
@@ -868,7 +951,7 @@
     // REUNIÕES DO DJANGO
     // ========================================================
 
-    const reunioes = {{ reunioes|safe }};
+    const reunioes = JSON.parse('{{ reunioes|escapejs }}');
 
 
     // ========================================================
@@ -1330,6 +1413,32 @@
 
     }
 
+    function abrirFormularioReuniao() {
+    const modal = document.getElementById("modalFormularioReuniao");
+    modal.style.display = "flex";
+
+    const campoData = document.getElementById("dataReuniao");
+
+    if (!campoData.value) {
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+        const dia = String(hoje.getDate()).padStart(2, "0");
+
+        campoData.value = `${ano}-${mes}-${dia}`;
+    }
+}
+
+function fecharFormularioReuniao() {
+    document.getElementById("modalFormularioReuniao").style.display = "none";
+}
+
+function fecharFormularioFora(event) {
+    if (event.target.id === "modalFormularioReuniao") {
+        fecharFormularioReuniao();
+    }
+}
+
 
     // ========================================================
     // ABRIR MODAL
@@ -1542,11 +1651,8 @@
     // INICIALIZAR
     // ========================================================
 
-    {% if reunioes %}
-
-        renderizarCalendario();
-
-    {% endif %}
+    // Inicializa o calendário mesmo quando ainda não existem reuniões.
+    renderizarCalendario();
 
 
 </script>

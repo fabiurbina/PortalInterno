@@ -25,28 +25,6 @@ class ContaHostinger(models.Model):
         return f"{self.usuario.username} - {self.email}"
     
     
-class ContaHostinger(models.Model):
-
-    usuario = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name="conta_hostinger"
-    )
-
-    email = models.EmailField()
-
-    senha_criptografada = models.TextField()
-
-    criado_em = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    atualizado_em = models.DateTimeField(
-        auto_now=True
-    )
-
-    def __str__(self):
-        return f"{self.usuario.username} - {self.email}"
 
 
 class ReuniaoAgenda(models.Model):
@@ -172,3 +150,44 @@ class ReuniaoAgenda(models.Model):
             f"{self.titulo} - "
             f"{self.inicio}"
         )
+        
+        
+# status choices for participant responses
+class ParticipanteReuniao(models.Model):
+    STATUS_CHOICES = [
+        ("PENDENTE", "Pendente"),
+        ("ACEITO", "Aceito"),
+        ("RECUSADO", "Recusado"),
+        ("TALVEZ", "Talvez"),
+    ]
+
+    reuniao = models.ForeignKey(
+        ReuniaoAgenda,
+        on_delete=models.CASCADE,
+        related_name="respostas_participantes"
+    )
+
+    email = models.EmailField()
+    nome = models.CharField(max_length=150, blank=True)
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="PENDENTE"
+    )
+
+    respondido_em = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["reuniao", "email"],
+                name="unico_participante_por_reuniao"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.email} - {self.get_status_display()}"
