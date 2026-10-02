@@ -56,8 +56,7 @@ from .views import (
     agente_comercial_view,
     agente_comercial_chat,
     relatorio_estrutura,
-    exportar_estrutura_produto_excel,
-    financeiro_dre
+    exportar_estrutura_produto_excel
     
 )
 
@@ -459,9 +458,4 @@ urlpatterns = [
     name="exportar_estrutura_produto_excel"
 ),
     
-    path(
-    "indicadores/financeiro/dre/",
-    financeiro_dre,
-    name="financeiro_dre"
-),
 ]
