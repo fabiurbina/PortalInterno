@@ -1734,7 +1734,7 @@ function fecharFormularioFora(event) {
 
     renderizarCalendario();
 
-    function abrirEdicaoReuniao(reuniao) {
+    window.abrirEdicaoReuniao = function(reuniao) {
     document.getElementById("editarTitulo").value = reuniao.titulo || "";
     document.getElementById("editarData").value = reuniao.data || "";
     document.getElementById("editarHoraInicio").value = reuniao.hora_inicio || "";
