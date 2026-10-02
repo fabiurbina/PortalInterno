@@ -975,6 +975,38 @@
 </div>
 
 
+<div id="modalEditarReuniao" class="modal-fundo" style="display: none;">
+    <div class="modal">
+        <div class="modal-cabecalho">
+            <h2>Editar reunião</h2>
+            <button type="button" onclick="fecharEdicaoReuniao()">✕</button>
+        </div>
+
+        <form id="formEditarReuniao" method="POST">
+            {% csrf_token %}
+
+            <label>Título</label>
+            <input type="text" name="titulo" id="editarTitulo" required>
+
+            <label>Data</label>
+            <input type="date" name="data" id="editarData" required>
+
+            <label>Horário de início</label>
+            <input type="time" name="hora_inicio" id="editarHoraInicio" required>
+
+            <label>Horário de término</label>
+            <input type="time" name="hora_fim" id="editarHoraFim" required>
+
+            <label>Descrição</label>
+            <textarea name="descricao" id="editarDescricao"></textarea>
+
+            <button type="submit">Salvar alterações</button>
+            <button type="button" onclick="fecharEdicaoReuniao()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+
 {{ reunioes|json_script:"reunioes-data" }}
 <script>
 
@@ -1561,6 +1593,15 @@ function fecharFormularioFora(event) {
 
         }
 
+        // BOTÃO EDITAR — INCLUIR AQUI
+        html += `
+            <button type="button" onclick="abrirEdicaoReuniao(reuniao)">
+                ✏️ Editar reunião
+            </button>
+        `;
+
+        document.getElementById("modalDetalhes").innerHTML = html;
+
 
         // Participantes
 
@@ -1692,6 +1733,24 @@ function fecharFormularioFora(event) {
     // ========================================================
 
     renderizarCalendario();
+
+    function abrirEdicaoReuniao(reuniao) {
+    document.getElementById("editarTitulo").value = reuniao.titulo || "";
+    document.getElementById("editarData").value = reuniao.data || "";
+    document.getElementById("editarHoraInicio").value = reuniao.hora_inicio || "";
+    document.getElementById("editarHoraFim").value = reuniao.hora_fim || "";
+    document.getElementById("editarDescricao").value = reuniao.descricao || "";
+
+    const url = "{% url 'editar_reuniao' 0 %}";
+    document.getElementById("formEditarReuniao").action =
+        url.replace("/0/", `/${reuniao.id}/`);
+
+    document.getElementById("modalEditarReuniao").style.display = "flex";
+}
+
+function fecharEdicaoReuniao() {
+    document.getElementById("modalEditarReuniao").style.display = "none";
+}
 
 
 </script>

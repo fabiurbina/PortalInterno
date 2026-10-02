@@ -58,7 +58,8 @@ from .views import (
     relatorio_estrutura,
     exportar_estrutura_produto_excel,
     criar_reuniao,
-    responder_convite
+    responder_convite,
+    editar_reuniao
     
 )
 
@@ -380,6 +381,14 @@ urlpatterns = [
     login_not_required(responder_convite),
         name="responder_convite",
     ),
+    
+    
+    path(
+    "agenda/reuniao/<int:reuniao_id>/editar/",
+    editar_reuniao,
+    name="editar_reuniao",
+    ),
+
 
     # ========================================================
     # DADOS DOS INDICADORES

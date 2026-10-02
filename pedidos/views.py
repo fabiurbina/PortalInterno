@@ -2738,6 +2738,7 @@ def agenda_reunioes(request):
     for reuniao in reunioes_db:
 
         reunioes.append({
+            "id": reuniao.id,
 
             "uid": reuniao.uid,
 
@@ -5608,10 +5609,19 @@ def criar_reuniao(request):
             )
             return redirect("agenda_reunioes")
 
+        email_organizador = (conta.email or "").strip().lower()
+
         lista_emails = list(dict.fromkeys(
-            email.strip().lower()
-            for email in emails.replace(";", ",").split(",")
-            if email.strip()
+            email
+            for email in [
+                email_organizador,
+                *[
+                    item.strip().lower()
+                    for item in emails.replace(";", ",").split(",")
+                    if item.strip()
+                ]
+            ]
+            if email
         ))
 
         reuniao = ReuniaoAgenda.objects.create(
@@ -5630,12 +5640,19 @@ def criar_reuniao(request):
         )
 
         for email in lista_emails:
+            eh_organizador = email == email_organizador
+
             ParticipanteReuniao.objects.create(
                 reuniao=reuniao,
                 email=email,
+                status="ACEITO" if eh_organizador else "PENDENTE",
+                respondido_em=timezone.now() if eh_organizador else None,
             )
             
         for email in lista_emails:
+            if email == email_organizador:
+                continue
+
             try:
                 enviar_convite_reuniao(reuniao, email)
                 print(f"Convite processado para {email}")
@@ -5680,3 +5697,84 @@ def responder_convite(request, token, resposta):
         "status": participante.get_status_display(),
         "reuniao": participante.reuniao,
     })
+    
+    
+
+def editar_reuniao(request, reuniao_id):
+    reuniao = get_object_or_404(
+        ReuniaoAgenda,
+        id=reuniao_id
+    )
+
+    if request.method == "POST":
+        titulo = request.POST.get("titulo", "").strip()
+        data = request.POST.get("data", "").strip()
+        hora_inicio = request.POST.get("hora_inicio", "").strip()
+        hora_fim = request.POST.get("hora_fim", "").strip()
+        descricao = request.POST.get("descricao", "").strip()
+
+        if not all([titulo, data, hora_inicio, hora_fim]):
+            messages.error(
+                request,
+                "Preencha o título, a data e os horários."
+            )
+            return redirect("editar_reuniao", reuniao_id=reuniao.id)
+
+        try:
+            inicio = datetime.strptime(
+                f"{data} {hora_inicio}",
+                "%Y-%m-%d %H:%M"
+            )
+            fim = datetime.strptime(
+                f"{data} {hora_fim}",
+                "%Y-%m-%d %H:%M"
+            )
+
+            if fim <= inicio:
+                messages.error(
+                    request,
+                    "O horário final deve ser posterior ao inicial."
+                )
+                return redirect(
+                    "editar_reuniao",
+                    reuniao_id=reuniao.id
+                )
+
+            inicio = timezone.make_aware(
+                inicio,
+                timezone.get_current_timezone()
+            )
+            fim = timezone.make_aware(
+                fim,
+                timezone.get_current_timezone()
+            )
+
+            reuniao.titulo = titulo
+            reuniao.inicio = inicio
+            reuniao.fim = fim
+            reuniao.data = inicio.date()
+            reuniao.hora_inicio = hora_inicio
+            reuniao.hora_fim = hora_fim
+            reuniao.descricao = descricao
+
+            reuniao.save()
+
+            messages.success(
+                request,
+                "Reunião atualizada com sucesso."
+            )
+            return redirect("agenda_reunioes")
+
+        except ValueError:
+            messages.error(
+                request,
+                "Data ou horário inválido."
+            )
+            return redirect("editar_reuniao", reuniao_id=reuniao.id)
+
+    return render(
+        request,
+        "editar_reuniao.html",
+        {"reuniao": reuniao}
+    )
+
