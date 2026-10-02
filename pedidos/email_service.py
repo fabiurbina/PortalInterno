@@ -15,6 +15,12 @@ def enviar_email_boas_vindas(cliente, email, senha):
         "emails/boas_vindas.html",
         contexto
     )
+    
+    print("URL ACEITAR:", contexto["url_aceitar"])
+    print("URL TALVEZ:", contexto["url_talvez"])
+    print("URL RECUSAR:", contexto["url_recusar"])
+    print("BOTÃO ACEITAR NO HTML:", "url_aceitar" in html)
+    print("LINK ACEITAR GERADO:", contexto["url_aceitar"] in html)
 
     enviar_email(
         assunto="Bem-vindo ao Portal do Cliente Viesano",
