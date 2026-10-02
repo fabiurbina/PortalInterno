@@ -57,7 +57,8 @@ from .views import (
     agente_comercial_chat,
     relatorio_estrutura,
     exportar_estrutura_produto_excel,
-    criar_reuniao
+    criar_reuniao,
+    responder_convite
     
 )
 
@@ -371,6 +372,13 @@ urlpatterns = [
     "agenda/criar-reuniao/",
     criar_reuniao,
     name="criar_reuniao"
+    ),
+    
+    
+    path(
+    "agenda/responder/<uuid:token>/<str:resposta>/",
+    login_not_required(responder_convite),
+        name="responder_convite",
     ),
 
     # ========================================================

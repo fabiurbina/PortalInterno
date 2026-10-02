@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 
 class ContaHostinger(models.Model):
@@ -165,6 +166,14 @@ class ParticipanteReuniao(models.Model):
         ReuniaoAgenda,
         on_delete=models.CASCADE,
         related_name="respostas_participantes"
+    )
+    
+    token_resposta = models.UUIDField(
+    default=uuid.uuid4,
+    unique=True,
+    null=True,
+    blank=True,
+    editable=False
     )
 
     email = models.EmailField()

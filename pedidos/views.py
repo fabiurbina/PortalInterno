@@ -75,7 +75,7 @@ from cryptography.fernet import Fernet
 
 from django.conf import settings
 
-from .models import ContaHostinger,ReuniaoAgenda, ParticipanteReuniao
+from .models import ContaHostinger,ReuniaoAgenda, ParticipanteReuniao, ParticipanteReuniao
 
 from django.http import FileResponse
 from .agente_comercial import agente_comercial
@@ -5733,3 +5733,31 @@ def enviar_convite_reuniao(reuniao, email_destino):
             "sucesso": False,
             "erro": str(erro),
         }
+
+
+from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+
+def responder_convite(request, token, resposta):
+    participante = get_object_or_404(
+        ParticipanteReuniao,
+        token_resposta=token
+    )
+
+    respostas_validas = {
+        "aceitar": "ACEITO",
+        "talvez": "TALVEZ",
+        "recusar": "RECUSADO",
+    }
+
+    if resposta not in respostas_validas:
+        return render(request, "agenda/resposta_invalida.html")
+
+    participante.status = respostas_validas[resposta]
+    participante.respondido_em = timezone.now()
+    participante.save(update_fields=["status", "respondido_em"])
+
+    return render(request, "agenda/resposta_registrada.html", {
+        "status": participante.get_status_display(),
+        "reuniao": participante.reuniao,
+    })
