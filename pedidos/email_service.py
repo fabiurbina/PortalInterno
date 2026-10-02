@@ -31,6 +31,8 @@ from .models import ParticipanteReuniao
 
 
 def enviar_convite_reuniao(reuniao, email):
+    
+    print("### ENTREI NA VERSÃO NOVA DO CONVITE ###", flush=True)
     try:
         participante = ParticipanteReuniao.objects.get(
             reuniao=reuniao,
