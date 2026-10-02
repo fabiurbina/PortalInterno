@@ -5632,10 +5632,11 @@ def criar_reuniao(request):
             )
             
         for email in lista_emails:
-            resultado = enviar_convite_reuniao(reuniao, email)
-
-            if not resultado["sucesso"]:
-                print(f"Erro ao enviar convite para {email}: {resultado['erro']}")
+            try:
+                enviar_convite_reuniao(reuniao, email)
+                print(f"Convite processado para {email}")
+            except Exception as e:
+                print(f"Erro ao enviar convite para {email}: {e}")
 
 
     except Exception as e:

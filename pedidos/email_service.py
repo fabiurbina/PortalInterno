@@ -28,33 +28,47 @@ from django.conf import settings
 from .models import ParticipanteReuniao
 
 
+
 def enviar_convite_reuniao(reuniao, email):
-    participante = ParticipanteReuniao.objects.get(
-        reuniao=reuniao,
-        email=email
-    )
+    try:
+        participante = ParticipanteReuniao.objects.get(
+            reuniao=reuniao,
+            email=email
+        )
 
-    base_url = settings.SITE_URL.rstrip("/")
+        base_url = settings.SITE_URL.rstrip("/")
 
-    contexto = {
-        "titulo": reuniao.titulo,
-        "data": reuniao.inicio.strftime("%d/%m/%Y"),
-        "hora_inicio": reuniao.inicio.strftime("%H:%M"),
-        "hora_fim": reuniao.fim.strftime("%H:%M"),
-        "organizador": reuniao.organizador_email,
-        "descricao": reuniao.descricao or "Sem descrição.",
-        "url_aceitar": f"{base_url}{reverse('responder_convite', args=[participante.token_resposta, 'aceitar'])}",
-        "url_talvez": f"{base_url}{reverse('responder_convite', args=[participante.token_resposta, 'talvez'])}",
-        "url_recusar": f"{base_url}{reverse('responder_convite', args=[participante.token_resposta, 'recusar'])}",
-    }
+        contexto = {
+            "titulo": reuniao.titulo,
+            "data": reuniao.inicio.strftime("%d/%m/%Y"),
+            "hora_inicio": reuniao.inicio.strftime("%H:%M"),
+            "hora_fim": reuniao.fim.strftime("%H:%M"),
+            "organizador": reuniao.organizador_email,
+            "descricao": reuniao.descricao or "Sem descrição.",
+            "url_aceitar": f"{base_url}{reverse('responder_convite', args=[participante.token_resposta, 'aceitar'])}",
+            "url_talvez": f"{base_url}{reverse('responder_convite', args=[participante.token_resposta, 'talvez'])}",
+            "url_recusar": f"{base_url}{reverse('responder_convite', args=[participante.token_resposta, 'recusar'])}",
+        }
 
-    html = render_to_string(
-        "emails/convite_reuniao.html",
-        contexto
-    )
+        html = render_to_string(
+            "emails/convite_reuniao.html",
+            contexto
+        )
 
-    enviar_email(
-        assunto=f"Convite para reunião: {reuniao.titulo}",
-        destinatario=email,
-        html=html
-    )
+        resposta = enviar_email(
+            assunto=f"Convite para reunião: {reuniao.titulo}",
+            destinatario=email,
+            html=html
+        )
+
+        return {
+            "sucesso": True,
+            "message_id": resposta.get("MessageId")
+        }
+
+    except Exception as e:
+        print(f"Erro ao enviar convite para {email}: {e}")
+        return {
+            "sucesso": False,
+            "erro": str(e)
+        }
