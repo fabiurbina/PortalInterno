@@ -1577,17 +1577,25 @@ function fecharFormularioFora(event) {
             `;
 
 
-            reuniao.participantes.forEach(
-                participante => {
+            reuniao.participantes.forEach(participante => {
+                const status = participante.status;
 
-                    html += `
-                        <div>
-                            • ${participante}
-                        </div>
-                    `;
+                let icone = "⏳";
 
+                if (status === "Aceito") {
+                    icone = "✅";
+                } else if (status === "Recusado") {
+                    icone = "❌";
+                } else if (status === "Talvez") {
+                    icone = "🤔";
                 }
-            );
+
+                html += `
+                    <div>
+                        • ${participante.email} — ${icone} ${status}
+                    </div>
+                `;
+            });
 
 
             html += `

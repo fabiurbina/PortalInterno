@@ -2787,9 +2787,13 @@ def agenda_reunioes(request):
                 reuniao.organizador_email
             ),
 
-            "participantes": (
-                reuniao.participantes
-            ),
+            "participantes": [
+                {
+                    "email": participante.email,
+                    "status": participante.get_status_display(),
+                }
+                for participante in reuniao.respostas_participantes.all()
+            ],
 
             "link_reuniao": (
                 reuniao.link_reuniao
