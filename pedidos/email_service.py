@@ -25,8 +25,7 @@ def enviar_email_boas_vindas(cliente, email, senha):
     
 from django.urls import reverse
 from django.conf import settings
-from django.template.loader import render_to_string
-from pedidos.models import ParticipanteReuniao
+from .models import ParticipanteReuniao
 
 
 def enviar_convite_reuniao(reuniao, email):
