@@ -419,11 +419,20 @@ def ficha_op(request, codigo_op):
             str(item['codigo_local_estoque'])
         )
         
-        
+    
+    
+    produto = consultar_produto(
+        op['identificacao']['nCodProduto']
+    )
+
+    codigo_pa = op['identificacao']['nCodProduto']
+    print("Código PA:", codigo_pa)
+    print("Código PA:", codigo_pa)
+    estrutura = consultar_estrutura(codigo_pa)
+
     materias_primas = []
     embalagens = []
 
-    # Mapa do produto da malha -> tipo da estrutura
     mapa_tipo_produto = {
         int(item['idProdMalha']): item['tipoProdMalha']
         for item in estrutura.get('itens', [])
@@ -442,6 +451,7 @@ def ficha_op(request, codigo_op):
 
         elif tipo_produto == '02':
             embalagens.append(item)
+        
 
 
     # Calcula o peso total da batida
@@ -474,16 +484,7 @@ def ficha_op(request, codigo_op):
     print("💊 QUANTIDADE DE CÁPSULAS:", quantidade_capsulas, "UN")
     print("📏 PESO TEÓRICO POR CÁPSULA:", peso_por_capsula_mg, "MG")
             
-            
-
-    produto = consultar_produto(
-    op['identificacao']['nCodProduto']
-    )
-
-    codigo_pa = op['identificacao']['nCodProduto']
-    print("Código PA:", codigo_pa)
-    print("Código PA:", codigo_pa)
-    estrutura = consultar_estrutura(codigo_pa)
+                
 
     observacao_estrutura = (
         estrutura.get("observacoes", {})
