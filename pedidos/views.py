@@ -425,15 +425,14 @@ def ficha_op(request, codigo_op):
 
     for item in op.get('itensDetalhes', []):
 
-        descricao_local = item.get('descricao_local', '')
+        tipo_item = str(
+            item.get('tipoProdMalha', '')
+        ).zfill(2)
 
-        if (
-            descricao_local == 'Estoque Matéria Prima'
-            or descricao_local.startswith('Estoque de Terceiros')
-        ):
+        if tipo_item == '01':
             materias_primas.append(item)
 
-        elif descricao_local == 'Estoque de Embalagens':
+        elif tipo_item == '02':
             embalagens.append(item)
 
 
