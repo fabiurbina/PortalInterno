@@ -1109,7 +1109,10 @@ def ficha_logistica(request, codigo_op):
             }
         )
 
-    # Busca descrição dos produtos
+    # ============================================================
+    # BUSCA DESCRIÇÃO DOS PRODUTOS
+    # ============================================================
+
     produtos_cache = {}
 
     for item in op.get('itensDetalhes', []):
@@ -1121,45 +1124,103 @@ def ficha_logistica(request, codigo_op):
             produto_mp = consultar_produto(codigo)
 
             produtos_cache[codigo] = {
-                'codigo': produto_mp.get('codigo', str(codigo)),
-                'descricao': produto_mp.get('descricao', ''),
-                'familia': produto_mp.get('descricao_familia', '')
+                'codigo': produto_mp.get(
+                    'codigo',
+                    str(codigo)
+                ),
+                'descricao': produto_mp.get(
+                    'descricao',
+                    ''
+                ),
+                'familia': produto_mp.get(
+                    'descricao_familia',
+                    ''
+                )
             }
 
-        item['codigo_produto'] = produtos_cache[codigo]['codigo']
-        item['descricao_produto'] = produtos_cache[codigo]['descricao']
-        item['familia_produto'] = produtos_cache[codigo]['familia']
-    print(item['descricao_produto'])
-    print(item['familia_produto'])
-    print('----------------')
+        item['codigo_produto'] = (
+            produtos_cache[codigo]['codigo']
+        )
 
-    # Locais de estoque
+        item['descricao_produto'] = (
+            produtos_cache[codigo]['descricao']
+        )
+
+        item['familia_produto'] = (
+            produtos_cache[codigo]['familia']
+        )
+
+
+    # ============================================================
+    # PRODUTO ACABADO / ESTRUTURA
+    # ============================================================
+
+    codigo_pa = op['identificacao']['nCodProduto']
+
+    estrutura = consultar_estrutura(codigo_pa)
+
+
+    # ============================================================
+    # MAPA DO TIPO DO PRODUTO
+    #
+    # 01 = Matéria-prima
+    # 02 = Embalagem
+    # ============================================================
+
+    mapa_tipo_produto = {
+        int(item['idProdMalha']): item['tipoProdMalha']
+        for item in estrutura.get('itens', [])
+    }
+
+
+    # ============================================================
+    # LOCAIS DE ESTOQUE
+    # ============================================================
+
     locais = listar_locais_estoque()
 
     mapa_locais = {}
 
-    for local in locais.get('locaisEncontrados', []):
+    for local in locais.get(
+        'locaisEncontrados',
+        []
+    ):
 
         mapa_locais[
             local['codigo_local_estoque']
         ] = local['descricao']
 
+
+    # ============================================================
     # LOTES
+    # ============================================================
+
     lotes = listar_lotes()
 
     mapa_lotes = {}
 
-    for produto_lote in lotes.get('listaLotes', []):
+    for produto_lote in lotes.get(
+        'listaLotes',
+        []
+    ):
 
-        codigo_produto = produto_lote['ident']['nCodProd']
+        codigo_produto = (
+            produto_lote['ident']['nCodProd']
+        )
 
         if produto_lote.get('lotes'):
 
             lote = produto_lote['lotes'][0]
 
             mapa_lotes[codigo_produto] = {
-                'lote': lote.get('cNumLote', ''),
-                'validade': lote.get('dDataValidade', '')
+                'lote': lote.get(
+                    'cNumLote',
+                    ''
+                ),
+                'validade': lote.get(
+                    'dDataValidade',
+                    ''
+                )
             }
 
         else:
@@ -1168,18 +1229,28 @@ def ficha_logistica(request, codigo_op):
                 'lote': '',
                 'validade': ''
             }
-            
+
+
+    # ============================================================
+    # CLASSIFICAÇÃO DOS ITENS
+    # ============================================================
 
     materias_primas = []
     embalagens = []
 
-    for item in op.get('itensDetalhes', []):
+    for item in op.get(
+        'itensDetalhes',
+        []
+    ):
 
+        # Descrição do local
         item['descricao_local'] = mapa_locais.get(
             item['codigo_local_estoque'],
             str(item['codigo_local_estoque'])
         )
 
+
+        # Lote
         codigo = item['nIdProdutoMalha']
 
         item['lote'] = mapa_lotes.get(
@@ -1190,6 +1261,8 @@ def ficha_logistica(request, codigo_op):
             ''
         )
 
+
+        # Validade
         item['validade'] = mapa_lotes.get(
             codigo,
             {}
@@ -1198,23 +1271,46 @@ def ficha_logistica(request, codigo_op):
             ''
         )
 
-        if item['descricao_local'] == 'Estoque Matéria Prima':
+
+        # ========================================================
+        # CLASSIFICA PELO TIPO DA ESTRUTURA
+        # ========================================================
+
+        codigo_produto = int(
+            item['nIdProdutoMalha']
+        )
+
+        tipo_produto = mapa_tipo_produto.get(
+            codigo_produto
+        )
+
+        if tipo_produto == '01':
 
             materias_primas.append(item)
 
-        elif item['descricao_local'] == 'Estoque de Embalagens':
+        elif tipo_produto == '02':
 
             embalagens.append(item)
+
+
+    # ============================================================
+    # RENDER
+    # ============================================================
 
     return render(
         request,
         'ficha_logistica.html',
         {
             'op': op,
+
             'materias_primas': materias_primas,
+
             'embalagens': embalagens,
+
             'lote_pa': '',
+
             'validade_pa': '',
+
             'etapas_producao': []
         }
     )
