@@ -423,17 +423,24 @@ def ficha_op(request, codigo_op):
     materias_primas = []
     embalagens = []
 
+    # Mapa do produto da malha -> tipo da estrutura
+    mapa_tipo_produto = {
+        int(item['idProdMalha']): item['tipoProdMalha']
+        for item in estrutura.get('itens', [])
+    }
+
     for item in op.get('itensDetalhes', []):
 
-        descricao_local = item.get('descricao_local', '')
+        codigo_produto = int(item['nIdProdutoMalha'])
 
-        if (
-            descricao_local == 'Estoque Matéria Prima'
-            or descricao_local.startswith('Estoque de Terceiros')
-        ):
+        tipo_produto = mapa_tipo_produto.get(
+            codigo_produto
+        )
+
+        if tipo_produto == '01':
             materias_primas.append(item)
 
-        elif descricao_local == 'Estoque de Embalagens':
+        elif tipo_produto == '02':
             embalagens.append(item)
 
 

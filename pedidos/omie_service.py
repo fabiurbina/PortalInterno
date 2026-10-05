@@ -694,14 +694,6 @@ def consultar_estrutura(id_produto):
     )
 
     response.raise_for_status()
-    
-    dados = response.json()
 
-    print("===== ESTRUTURA RETORNADA =====")
-    print(dados)
-    print("================================")
-
-    return dados
-
-    #return response.json()
+    return response.json()
 
