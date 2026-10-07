@@ -285,6 +285,7 @@
 
             <tr>
                 <th>OP</th>
+                <th>Codigo Produto</th>
                 <th>Produto</th>
                 <th>Qtde</th>
                 <th>Previsão</th>
@@ -296,8 +297,13 @@
                 </td>
 
                 <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+                    {{ codigo_interno }}
+                </td>
+
+                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
                     {{ nome_produto }}
                 </td>
+
 
                 <td style="font-size: 18px; font-weight: 600; padding: 10px;">
                     {{ op.identificacao.nQtde }}

@@ -277,6 +277,7 @@ def ficha_op(request, codigo_op):
 
     op = consultar_op(codigo_op)
     
+    
     if 'identificacao' not in op:
 
         return render(
@@ -295,6 +296,12 @@ def ficha_op(request, codigo_op):
 
     # Busca descrição das matérias-primas
     produtos_cache = {}
+    
+    codigo_omie_pa = op['identificacao']['nCodProduto']
+
+    produto_pa = consultar_produto(codigo_omie_pa)
+
+    codigo_interno = produto_pa.get('codigo', '') # Código interno do produto acabado
 
     for item in op.get('itensDetalhes', []):
 
@@ -303,6 +310,7 @@ def ficha_op(request, codigo_op):
         if codigo not in produtos_cache:
 
             produto_mp = consultar_produto(codigo)
+            
 
             produtos_cache[codigo] = {
             'codigo': produto_mp.get('codigo', str(codigo)),
@@ -591,6 +599,7 @@ def ficha_op(request, codigo_op):
             'op': op,
             'observacao_op': observacao_op,
             'nome_produto': nome_produto,
+            'codigo_interno': codigo_interno,
             'nome_etapa': nome_etapa,
             'materias_primas': materias_primas,
             'embalagens': embalagens,
