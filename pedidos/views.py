@@ -1123,6 +1123,12 @@ def ficha_logistica(request, codigo_op):
     # ============================================================
 
     produtos_cache = {}
+    
+    codigo_omie_pa = op['identificacao']['nCodProduto']
+
+    produto_pa = consultar_produto(codigo_omie_pa)
+
+    codigo_interno = produto_pa.get('codigo', '') # Código interno do produto acabado
 
     for item in op.get('itensDetalhes', []):
 
@@ -1311,6 +1317,10 @@ def ficha_logistica(request, codigo_op):
         'ficha_logistica.html',
         {
             'op': op,
+            
+            'nome_produto': produto_pa.get('descricao', ''),
+            
+            'codigo_interno': codigo_interno,
 
             'materias_primas': materias_primas,
 
