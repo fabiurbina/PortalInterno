@@ -5653,7 +5653,8 @@ def exportar_estrutura_produto_excel(request):
             descricao_item,
             quantidade,
             percentual_perda,
-            unidade
+            unidade,
+            tipo_item
         FROM ViesanoDW.vw_estrutura_produto
     """
 
