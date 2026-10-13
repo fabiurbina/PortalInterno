@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Chão de Fábrica | Viesano</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            padding: 24px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f3f5f7;
+
+            color: #212529;
+        }
+
+
+        .container {
+
+            width: 100%;
+
+            max-width: 1600px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
+           CABEÇALHO
+           ===================================================== */
+
+        .topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 22px;
+        }
+
+
+        .topo-esquerda {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .icone-pagina {
+
+            width: 48px;
+
+            height: 48px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #0D3B66;
+
+            color: white;
+
+            border-radius: 10px;
+
+            font-size: 23px;
+
+            box-shadow:
+                0 3px 8px
+                rgba(13, 59, 102, 0.20);
+        }
+
+
+        .titulo-area h1 {
+
+            margin: 0;
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            color: #1f2933;
+        }
+
+
+        .titulo-area p {
+
+            margin: 4px 0 0;
+
+            font-size: 13px;
+
+            color: #6c757d;
+        }
+
+
+        .marca {
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #0D3B66;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* =====================================================
+           BOTÃO VOLTAR
+           ===================================================== */
+
+        .btn-voltar {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 18px;
+
+            padding: 9px 14px;
+
+            background: white;
+
+            color: #0D3B66;
+
+            border: 1px solid #d9dee3;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .btn-voltar:hover {
+
+            background: #0D3B66;
+
+            color: white;
+
+            border-color: #0D3B66;
+        }
+
+
+        /* =====================================================
+           INDICADORES
+           ===================================================== */
+
+        .indicadores {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .indicador {
+
+            background: white;
+
+            border-radius: 9px;
+
+            padding: 16px 18px;
+
+            border: 1px solid #e1e5e9;
+
+            box-shadow:
+                0 2px 6px
+                rgba(0, 0, 0, 0.04);
+        }
+
+
+        .indicador-label {
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            font-weight: bold;
+
+            color: #6c757d;
+
+            margin-bottom: 6px;
+        }
+
+
+        .indicador-valor {
+
+            font-size: 25px;
+
+            font-weight: 700;
+
+            color: #0D3B66;
+        }
+
+
+        /* =====================================================
+           CARD PRINCIPAL
+           ===================================================== */
+
+        .card {
+
+            background: white;
+
+            border-radius: 10px;
+
+            border: 1px solid #e1e5e9;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0, 0, 0, 0.05);
+
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           BARRA DO CARD
+           ===================================================== */
+
+        .card-topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 15px 18px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            background: #fafbfc;
+        }
+
+
+        .card-titulo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #212529;
+        }
+
+
+        .card-titulo-icone {
+
+            color: #0D3B66;
+
+            font-size: 17px;
+        }
+
+
+        .instrucao {
+
+            font-size: 12px;
+
+            color: #6c757d;
+        }
+
+
+        /* =====================================================
+           STATUS
+           ===================================================== */
+
+        .status-salvamento {
+
+            display: none;
+
+            padding: 9px 14px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            border-bottom: 1px solid transparent;
+        }
+
+
+        .status-salvamento.sucesso {
+
+            display: block;
+
+            color: #198754;
+
+            background: #edf8f1;
+
+            border-color: #d6efdf;
+        }
+
+
+        .status-salvamento.erro {
+
+            display: block;
+
+            color: #dc3545;
+
+            background: #fdf0f1;
+
+            border-color: #f4d5d8;
+        }
+
+
+        /* =====================================================
+           TABELA
+           ===================================================== */
+
+        .tabela-container {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            max-height: 650px;
+
+            overflow-y: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            min-width: 1250px;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+        }
+
+
+        /* =====================================================
+           CABEÇALHO DA TABELA
+           ===================================================== */
+
+        thead th {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 5;
+
+            background: #0D3B66;
+
+            color: white;
+
+            padding: 11px 10px;
+
+            text-align: left;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+
+            white-space: nowrap;
+
+            border-right:
+                1px solid
+                rgba(255,255,255,0.12);
+        }
+
+
+        thead th:first-child {
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           CÉLULAS
+           ===================================================== */
+
+        tbody td {
+
+            padding: 11px 10px;
+
+            font-size: 12px;
+
+            border-bottom: 1px solid #e9ecef;
+
+            color: #343a40;
+
+            white-space: nowrap;
+
+            vertical-align: middle;
+        }
+
+
+        /* =====================================================
+           LINHAS
+           ===================================================== */
+
+        tbody tr {
+
+            background: white;
+
+            transition:
+                background-color 0.15s,
+                opacity 0.15s,
+                transform 0.15s;
+        }
+
+
+        tbody tr:hover {
+
+            background: #f5f8fb;
+        }
+
+
+        tbody tr.arrastando {
+
+            opacity: 0.45;
+
+            background: #e9eef3;
+        }
+
+
+        /* =====================================================
+           COLUNA DE ARRASTE
+           ===================================================== */
+
+        .coluna-arrastar {
+
+            width: 45px;
+
+            text-align: center;
+        }
+
+
+        .arrastar {
+
+            width: 45px;
+
+            text-align: center;
+
+            cursor: grab;
+
+            color: #89939d;
+
+            font-size: 18px;
+
+            user-select: none;
+        }
+
+
+        .arrastar:hover {
+
+            color: #0D3B66;
+        }
+
+
+        .arrastar:active {
+
+            cursor: grabbing;
+        }
+
+
+        /* =====================================================
+           CÓDIGO DA OP
+           ===================================================== */
+
+        .codigo-op {
+
+            font-weight: 700;
+
+            color: #0D3B66;
+        }
+
+
+        .ordem-producao {
+
+            font-weight: 700;
+
+            color: #212529;
+        }
+
+
+        /* =====================================================
+           ORDEM
+           ===================================================== */
+
+        .coluna-ordem {
+
+            width: 75px;
+
+            text-align: center;
+        }
+
+
+        .valor-ordem {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 32px;
+
+            height: 28px;
+
+            padding: 0 8px;
+
+            border-radius: 5px;
+
+            background: #eef2f6;
+
+            color: #0D3B66;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           QUANTIDADE
+           ===================================================== */
+
+        .quantidade {
+
+            font-weight: 700;
+
+            text-align: right;
+        }
+
+
+        /* =====================================================
+           PRIMEIRA OP DA FILA
+           ===================================================== */
+
+        tbody tr:first-child
+        .valor-ordem {
+
+            background: #0D3B66;
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           SEM REGISTROS
+           ===================================================== */
+
+        .sem-registros {
+
+            text-align: center !important;
+
+            padding: 50px !important;
+
+            color: #6c757d !important;
+
+            font-size: 14px !important;
+        }
+
+
+        /* =====================================================
+           RODAPÉ
+           ===================================================== */
+
+        .rodape-card {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 11px 18px;
+
+            background: #fafbfc;
+
+            border-top: 1px solid #e5e7eb;
+
+            color: #6c757d;
+
+            font-size: 11px;
+        }
+
+
+        .rodape-esquerda {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+        }
+
+
+        .indicador-arraste {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #0D3B66;
+        }
+
+        .sla {
+            font-weight: 700;
+            }
+
+            .sla.atrasado {
+                color: #dc3545;
+            }
+
+            .sla.hoje {
+                color: #d39e00;
+            }
+
+            .sla.prazo {
+                color: #198754;
+            }
+
+
+        /* =====================================================
+           RESPONSIVO
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            body {
+
+                padding: 12px;
+            }
+
+
+            .topo {
+
+                align-items: flex-start;
+            }
+
+
+            .marca {
+
+                display: none;
+            }
+
+
+            .indicadores {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .topo {
+
+                margin-bottom: 15px;
+            }
+
+
+            .icone-pagina {
+
+                width: 42px;
+
+                height: 42px;
+
+                font-size: 20px;
+            }
+
+
+            .titulo-area h1 {
+
+                font-size: 22px;
+            }
+
+
+            .indicadores {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .indicador-valor {
+
+                font-size: 21px;
+            }
+
+
+            .card-topo {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 6px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =====================================================
+         VOLTAR
+         ===================================================== -->
+
+    <a
+        href="{% url 'relatorios_diversos' %}"
+        class="btn-voltar"
+    >
+
+        ←
+
+        Voltar para Relatórios
+
+    </a>
+
+
+    <!-- =====================================================
+         CABEÇALHO
+         ===================================================== -->
+
+    <div class="topo">
+
+
+        <div class="topo-esquerda">
+
+
+            <div class="icone-pagina">
+
+                🏭
+
+            </div>
+
+
+            <div class="titulo-area">
+
+                <h1>
+                    Chão de Fábrica
+                </h1>
+
+                <p>
+                    Sequenciamento e acompanhamento
+                    das ordens de produção
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="marca">
+
+            VIESANO SUPLEMENTOS
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         INDICADORES
+         ===================================================== -->
+
+    <div class="indicadores">
+
+
+        <div class="indicador">
+
+            <div class="indicador-label">
+                Total de OPs
+            </div>
+
+            <div class="indicador-valor"
+                 id="total-ops">
+
+                {{ dados|length }}
+
+            </div>
+
+        </div>
+
+
+        <div class="indicador">
+
+            <div class="indicador-label">
+                Sequência Atual
+            </div>
+
+            <div class="indicador-valor">
+
+                {% if dados %}
+                    1 → {{ dados|length }}
+                {% else %}
+                    0
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="indicador">
+
+            <div class="indicador-label">
+                Status
+            </div>
+
+            <div class="indicador-valor">
+
+                Ativo
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         CARD PRINCIPAL
+         ===================================================== -->
+
+    <div class="card">
+
+
+        <!-- CABEÇALHO -->
+
+        <div class="card-topo">
+
+
+            <div class="card-titulo">
+
+                <span class="card-titulo-icone">
+                    ☷
+                </span>
+
+                Sequenciamento da Produção
+
+            </div>
+
+
+            <div class="instrucao">
+
+                ↕ Arraste as OPs para definir a sequência
+
+            </div>
+
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div
+            id="status-salvamento"
+            class="status-salvamento"
+        ></div>
+
+
+        <!-- =================================================
+             TABELA
+             ================================================= -->
+
+        <div class="tabela-container">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+
+                        <th
+                            class="coluna-arrastar"
+                        >
+                            ☰
+                        </th>
+
+
+                        <th>
+                            Cliente
+                        </th>
+
+
+                        <th>
+                            Data
+                        </th>
+
+
+                        <th>
+                            Previsão
+                        </th>
+
+
+                        <th>
+                            Nº Pedido
+                        </th>
+
+
+                        <th>
+                            Ordem Produção
+                        </th>
+
+
+                        <th>
+                            Código OP
+                        </th>
+
+
+                        <th>
+                            Produto
+                        </th>
+
+
+                        <th>
+                            Etapa
+                        </th>
+
+
+                        <th>
+                            Quantidade
+                        </th>
+
+                        <th>
+                            SLA
+                        </th>
+
+                        <th
+                            class="coluna-ordem"
+                        >
+                            Ordem
+                        </th>
+
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="tabela-chao-fabrica"
+                >
+
+
+                    {% for linha in dados %}
+
+
+                        <tr
+                            draggable="true"
+                            data-codigo-op="{{ linha.numero_CodOP }}"
+                        >
+
+
+                            <!-- ARRASTAR -->
+
+                            <td class="arrastar">
+
+                                ☰
+
+                            </td>
+
+
+                            <!-- CLIENTE -->
+
+                            <td>
+
+                                {{ linha.Cliente }}
+
+                            </td>
+
+
+                            <!-- DATA -->
+
+                            <td>
+
+                                {{ linha.Data|date:"d/m/Y" }}
+
+                            </td>
+
+
+                            <!-- PREVISÃO -->
+
+                            <td>
+
+                                {{ linha.Previsão|date:"d/m/Y" }}
+
+                            </td>
+
+
+                            <!-- PEDIDO -->
+
+                            <td>
+
+                                {{ linha.NumeroPedido }}
+
+                            </td>
+
+
+                            <!-- ORDEM PRODUÇÃO -->
+
+                            <td
+                                class="ordem-producao"
+                            >
+
+                                {{ linha.OrdemProdução }}
+
+                            </td>
+
+
+                            <!-- CÓDIGO OP -->
+
+                            <td
+                                class="codigo-op"
+                            >
+
+                                {{ linha.numero_CodOP }}
+
+                            </td>
+
+
+                            <!-- PRODUTO -->
+
+                            <td>
+
+                                {{ linha.Produto }}
+
+                            </td>
+
+
+                            <!-- ETAPA -->
+
+                            <td>
+
+                                {{ linha.Etapa }}
+
+                            </td>
+
+
+                            <!-- QUANTIDADE -->
+
+                            <td
+                                class="quantidade"
+                            >
+
+                                {{ linha.Quantidade }}
+
+                            </td>
+
+                            <td class="sla
+                                {% if 'ATRASADO' in linha.SLA %}
+                                    atrasado
+                                {% elif 'VENCE HOJE' in linha.SLA %}
+                                    hoje
+                                {% elif 'NO PRAZO' in linha.SLA %}
+                                    prazo
+                                {% endif %}
+                            ">
+                                {{ linha.SLA }}
+                            </td>
+
+
+                            <!-- ORDEM -->
+
+                            <td
+                                class="coluna-ordem"
+                            >
+
+                                <span
+                                    class="valor-ordem"
+                                >
+
+                                    {{ linha.ordem }}
+
+                                </span>
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% empty %}
+
+
+                        <tr>
+
+                            <td
+                                colspan="11"
+                                class="sem-registros"
+                            >
+
+                                Nenhuma ordem de produção
+                                encontrada.
+
+                            </td>
+
+                        </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        <!-- =================================================
+             RODAPÉ
+             ================================================= -->
+
+        <div class="rodape-card">
+
+
+            <div class="rodape-esquerda">
+
+                <span
+                    class="indicador-arraste"
+                ></span>
+
+                Arraste uma OP para alterar
+                sua posição na sequência.
+
+            </div>
+
+
+            <div>
+
+                Alterações salvas automaticamente
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   TABELA
+   ========================================================= */
+
+const tabela =
+    document.getElementById(
+        "tabela-chao-fabrica"
+    );
+
+
+let linhaArrastada = null;
+
+
+/* =========================================================
+   INÍCIO DO ARRASTE
+   ========================================================= */
+
+tabela.addEventListener(
+    "dragstart",
+    function(event) {
+
+
+        const linha =
+            event.target.closest("tr");
+
+
+        if (!linha) {
+
+            return;
+
+        }
+
+
+        linhaArrastada =
+            linha;
+
+
+        linha.classList.add(
+            "arrastando"
+        );
+
+
+        event.dataTransfer.effectAllowed =
+            "move";
+
+    }
+);
+
+
+/* =========================================================
+   ARRASTANDO
+   ========================================================= */
+
+tabela.addEventListener(
+    "dragover",
+    function(event) {
+
+
+        event.preventDefault();
+
+
+        const linhaDestino =
+            event.target.closest("tr");
+
+
+        if (
+            !linhaDestino ||
+            linhaDestino === linhaArrastada
+        ) {
+
+            return;
+
+        }
+
+
+        const retangulo =
+            linhaDestino.getBoundingClientRect();
+
+
+        const meio =
+            retangulo.top +
+            retangulo.height / 2;
+
+
+        if (
+            event.clientY < meio
+        ) {
+
+
+            tabela.insertBefore(
+                linhaArrastada,
+                linhaDestino
+            );
+
+
+        } else {
+
+
+            tabela.insertBefore(
+                linhaArrastada,
+                linhaDestino.nextSibling
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FINAL DO ARRASTE
+   ========================================================= */
+
+tabela.addEventListener(
+    "dragend",
+    function(event) {
+
+
+        const linha =
+            event.target.closest("tr");
+
+
+        if (linha) {
+
+            linha.classList.remove(
+                "arrastando"
+            );
+
+        }
+
+
+        linhaArrastada = null;
+
+
+        atualizarNumeracao();
+
+
+        salvarNovaOrdem();
+
+    }
+);
+
+
+/* =========================================================
+   ATUALIZA NUMERAÇÃO
+   ========================================================= */
+
+function atualizarNumeracao() {
+
+
+    const linhas =
+        tabela.querySelectorAll("tr");
+
+
+    linhas.forEach(
+        function(linha, index) {
+
+
+            const elemento =
+                linha.querySelector(
+                    ".valor-ordem"
+                );
+
+
+            if (elemento) {
+
+
+                elemento.textContent =
+                    index + 1;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SALVA ORDEM NO MYSQL
+   ========================================================= */
+
+function salvarNovaOrdem() {
+
+
+    const linhas =
+        tabela.querySelectorAll("tr");
+
+
+    const ordens = [];
+
+
+    linhas.forEach(
+        function(linha, index) {
+
+
+            const codigoOP =
+                linha.dataset.codigoOp;
+
+
+            if (!codigoOP) {
+
+                return;
+
+            }
+
+
+            ordens.push({
+
+                numero_CodOP:
+                    codigoOP,
+
+                ordem:
+                    index + 1
+
+            });
+
+        }
+    );
+
+
+    if (
+        ordens.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const status =
+        document.getElementById(
+            "status-salvamento"
+        );
+
+
+    status.className =
+        "status-salvamento";
+
+
+    status.textContent =
+        "Salvando sequência de produção...";
+
+
+    status.style.display =
+        "block";
+
+
+    fetch(
+        "{% url 'atualizar_ordem_chao_fabrica' %}",
+        {
+
+
+            method: "POST",
+
+
+            headers: {
+
+                "Content-Type":
+                    "application/json",
+
+                "X-CSRFToken":
+                    getCookie(
+                        "csrftoken"
+                    )
+
+            },
+
+
+            body:
+                JSON.stringify(
+                    ordens
+                )
+
+        }
+
+    )
+
+    .then(
+        function(response) {
+
+            return response.json();
+
+        }
+    )
+
+    .then(
+        function(data) {
+
+
+            if (
+                data.sucesso
+            ) {
+
+
+                status.className =
+                    "status-salvamento sucesso";
+
+
+                status.textContent =
+                    "✓ Sequência de produção salva com sucesso.";
+
+
+            } else {
+
+
+                status.className =
+                    "status-salvamento erro";
+
+
+                status.textContent =
+                    "Erro ao salvar: " +
+                    data.erro;
+
+            }
+
+        }
+    )
+
+    .catch(
+        function(error) {
+
+
+            console.error(
+                "Erro:",
+                error
+            );
+
+
+            status.className =
+                "status-salvamento erro";
+
+
+            status.textContent =
+                "Erro ao atualizar a sequência de produção.";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CSRF
+   ========================================================= */
+
+function getCookie(name) {
+
+
+    let cookieValue = null;
+
+
+    if (
+        document.cookie &&
+        document.cookie !== ""
+    ) {
+
+
+        const cookies =
+            document.cookie.split(";");
+
+
+        for (
+            let i = 0;
+            i < cookies.length;
+            i++
+        ) {
+
+
+            const cookie =
+                cookies[i].trim();
+
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) ===
+                (name + "=")
+            ) {
+
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return cookieValue;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

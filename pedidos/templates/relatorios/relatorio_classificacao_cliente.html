@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Classificação de Clientes | Viesano</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+
+        .pagina {
+            width: 100%;
+            padding: 28px 35px 40px;
+        }
+
+
+        /* ================================
+           CABEÇALHO
+        ================================= */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+
+        .titulo-area h1 {
+            margin: 0;
+
+            font-size: 27px;
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .titulo-area p {
+            margin: 6px 0 0;
+
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+            border: 1px solid #d8e1dc;
+
+            color: #174f35;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-voltar:hover {
+            background: #174f35;
+            color: #ffffff;
+            border-color: #174f35;
+        }
+
+
+        /* ================================
+           CARDS RESUMO
+        ================================= */
+
+        .cards-resumo {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .card-resumo {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            padding: 17px 20px;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .card-label {
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            color: #7a8580;
+
+            margin-bottom: 7px;
+        }
+
+
+        .card-valor {
+            font-size: 25px;
+
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .card-subtitulo {
+            margin-top: 4px;
+
+            font-size: 11px;
+
+            color: #8a9690;
+        }
+
+
+        /* ================================
+           FILTROS
+        ================================= */
+
+        .filtros {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            padding: 20px 22px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .filtros-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 17px;
+        }
+
+
+        .filtros-titulo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #174f35;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .filtros-info {
+            font-size: 12px;
+            color: #8a9690;
+        }
+
+
+        .filtros-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.3fr
+                1.3fr
+                1.3fr
+                1.8fr
+                auto;
+
+            gap: 14px;
+
+            align-items: end;
+        }
+
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+
+        .campo label {
+            font-size: 12px;
+
+            font-weight: 600;
+
+            color: #59655f;
+        }
+
+
+        .campo select,
+        .campo input {
+            width: 100%;
+
+            height: 40px;
+
+            padding: 0 12px;
+
+            border: 1px solid #d6dfda;
+            border-radius: 7px;
+
+            background: #ffffff;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            outline: none;
+        }
+
+
+        .campo select {
+            cursor: pointer;
+        }
+
+
+        .campo select:focus,
+        .campo input:focus {
+            border-color: #2d8a5b;
+
+            box-shadow:
+                0 0 0 3px rgba(45, 138, 91, .10);
+        }
+
+
+        .btn-limpar {
+            height: 40px;
+
+            padding: 0 17px;
+
+            border: 1px solid #d6dfda;
+            border-radius: 7px;
+
+            background: #f8faf9;
+
+            color: #59655f;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-limpar:hover {
+            background: #eaf3ee;
+
+            color: #174f35;
+
+            border-color: #b9d2c4;
+        }
+
+
+        /* ================================
+           RESUMO
+        ================================= */
+
+        .barra-resumo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+
+        .resultado {
+            font-size: 13px;
+
+            color: #69756f;
+        }
+
+
+        .resultado strong {
+            color: #174f35;
+        }
+
+
+        /* ================================
+           TABELA
+        ================================= */
+
+        .tabela-container {
+            background: #ffffff;
+
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .tabela-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 17px 20px;
+
+            border-bottom: 1px solid #e7ece9;
+        }
+
+
+        .tabela-titulo {
+            margin: 0;
+
+            color: #263c31;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .tabela-acoes {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .badge-registros {
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #eaf5ee;
+            color: #217447;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .btn-excel {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            height: 34px;
+
+            padding: 0 13px;
+
+            border-radius: 7px;
+
+            background: #198754;
+
+            border: 1px solid #198754;
+
+            color: #ffffff;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            transition: all .2s ease;
+        }
+
+
+        .btn-excel:hover {
+            background: #146c43;
+
+            border-color: #146c43;
+
+            color: #ffffff;
+
+            transform: translateY(-1px);
+        }
+
+
+        .tabela-scroll {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1150px;
+        }
+
+
+        thead th {
+            padding: 13px 16px;
+
+            background: #f5f8f6;
+
+            border-bottom: 1px solid #dfe7e2;
+
+            color: #64736b;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+
+        tbody td {
+            padding: 14px 16px;
+
+            border-bottom: 1px solid #edf1ef;
+
+            color: #37423d;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr {
+            transition: background .15s ease;
+        }
+
+
+        tbody tr:hover {
+            background: #f7fbf8;
+        }
+
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        .nome-cliente {
+            font-weight: 700;
+
+            color: #174f35;
+        }
+
+
+        .cnpj {
+            font-family: monospace;
+
+            font-size: 12px;
+
+            color: #59655f;
+        }
+
+
+        .numero {
+            text-align: center;
+
+            font-weight: 600;
+        }
+
+
+        .data {
+            color: #59655f;
+
+            font-size: 12px;
+        }
+
+
+        /* ================================
+           STATUS
+        ================================= */
+
+        .status {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .status-ponto {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
+
+        .status-ativo {
+            background: #eaf7ef;
+
+            color: #21804a;
+        }
+
+
+        .status-inativo {
+            background: #fdecec;
+
+            color: #c43d3d;
+        }
+
+
+        .status-prospect {
+            background: #eef4fb;
+
+            color: #3971a8;
+        }
+
+
+        .status-prospect-inativo {
+            background: #f1f3f2;
+
+            color: #6d7772;
+        }
+
+
+        /* ================================
+           SEM REGISTROS
+        ================================= */
+
+        .sem-registros {
+            padding: 55px 20px !important;
+
+            text-align: center;
+
+            color: #8b9791;
+
+            font-size: 13px;
+        }
+
+
+        .sem-registros-icon {
+            font-size: 32px;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* ================================
+           RESPONSIVO
+        ================================= */
+
+        @media (max-width: 1100px) {
+
+            .cards-resumo {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .filtros-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .pagina {
+                padding: 20px;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .cabecalho {
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+
+            .cards-resumo {
+                grid-template-columns: 1fr;
+            }
+
+
+            .filtros-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .tabela-topo {
+                align-items: flex-start;
+
+                gap: 12px;
+
+                flex-direction: column;
+            }
+
+
+            .tabela-acoes {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="pagina">
+
+
+    <!-- CABEÇALHO -->
+
+    <div class="cabecalho">
+
+        <div class="titulo-area">
+
+            <h1>
+                Classificação de Clientes
+            </h1>
+
+            <p>
+                Análise comercial baseada nas atividades do CRM e pedidos dos últimos 3 meses.
+            </p>
+
+        </div>
+
+
+        <a
+            href="javascript:history.back()"
+            class="btn-voltar"
+        >
+            ← Voltar
+        </a>
+
+    </div>
+
+
+    <!-- CARDS RESUMO -->
+
+    <div class="cards-resumo">
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Clientes Ativos
+            </div>
+
+            <div
+                class="card-valor"
+                id="totalClientesAtivos"
+            >
+                0
+            </div>
+
+            <div class="card-subtitulo">
+                Atividade comercial recente
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Clientes Inativos
+            </div>
+
+            <div
+                class="card-valor"
+                id="totalClientesInativos"
+            >
+                0
+            </div>
+
+            <div class="card-subtitulo">
+                Sem atividade nos últimos 3 meses
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Prospects Ativos
+            </div>
+
+            <div
+                class="card-valor"
+                id="totalProspectsAtivos"
+            >
+                0
+            </div>
+
+            <div class="card-subtitulo">
+                Prospecção recente
+            </div>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <div class="card-label">
+                Prospects Inativos
+            </div>
+
+            <div
+                class="card-valor"
+                id="totalProspectsInativos"
+            >
+                0
+            </div>
+
+            <div class="card-subtitulo">
+                Sem atividade recente
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTROS -->
+
+    <div class="filtros">
+
+        <div class="filtros-topo">
+
+            <div class="filtros-titulo">
+
+                <span>🔎</span>
+
+                <span>
+                    Filtros de consulta
+                </span>
+
+            </div>
+
+
+            <div class="filtros-info">
+
+                Classificação baseada em CRM e pedidos.
+
+            </div>
+
+        </div>
+
+
+        <div class="filtros-grid">
+
+
+            <!-- CLASSIFICAÇÃO -->
+
+            <div class="campo">
+
+                <label for="filtroClassificacao">
+                    Classificação
+                </label>
+
+                <select id="filtroClassificacao">
+
+                    <option value="">
+                        Todas
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATUS CRM -->
+
+            <div class="campo">
+
+                <label for="filtroCRM">
+                    Status CRM
+                </label>
+
+                <select id="filtroCRM">
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- STATUS PEDIDO -->
+
+            <div class="campo">
+
+                <label for="filtroPedido">
+                    Status Pedido
+                </label>
+
+                <select id="filtroPedido">
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- BUSCA -->
+
+            <div class="campo">
+
+                <label for="filtroBusca">
+                    Nome ou CNPJ
+                </label>
+
+                <input
+                    type="text"
+                    id="filtroBusca"
+                    placeholder="Digite para pesquisar..."
+                >
+
+            </div>
+
+
+            <!-- LIMPAR -->
+
+            <button
+                type="button"
+                class="btn-limpar"
+                id="limparFiltros"
+            >
+                Limpar filtros
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTADOR -->
+
+    <div class="barra-resumo">
+
+        <div class="resultado">
+
+            Exibindo
+
+            <strong id="quantidadeVisivel">
+                0
+            </strong>
+
+            registros
+
+        </div>
+
+    </div>
+
+
+    <!-- TABELA -->
+
+    <div class="tabela-container">
+
+
+        <div class="tabela-topo">
+
+            <h3 class="tabela-titulo">
+                Clientes e Prospects
+            </h3>
+
+
+            <div class="tabela-acoes">
+
+                <span
+                    class="badge-registros"
+                    id="badgeRegistros"
+                >
+                    0 registros
+                </span>
+
+
+                <a
+                    href="{% url 'exportar_classificacao_cliente_excel' %}"
+                    class="btn-excel"
+                >
+                    📥 Exportar Excel
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="tabela-scroll">
+
+            <table id="tabelaClientes">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Nome
+                        </th>
+
+                        <th>
+                            CNPJ
+                        </th>
+
+                        <th>
+                            Classificação
+                        </th>
+
+                        <th>
+                            Status CRM
+                        </th>
+
+                        <th>
+                            Status Pedido
+                        </th>
+
+                        <th>
+                            Última Atividade CRM
+                        </th>
+
+                        <th>
+                            Último Pedido
+                        </th>
+
+                        <th>
+                            Qtd. Oportunidades
+                        </th>
+
+                        <th>
+                            Qtd. Pedidos
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in dados %}
+
+                    <tr
+                        data-classificacao="{{ item.classificacao }}"
+                        data-crm="{{ item.status_crm }}"
+                        data-pedido="{{ item.status_pedido }}"
+                        data-busca="{{ item.Nome }} {{ item.CNPJ }}"
+                    >
+
+
+                        <!-- NOME -->
+
+                        <td>
+
+                            <span class="nome-cliente">
+                                {{ item.Nome }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- CNPJ -->
+
+                        <td>
+
+                            <span class="cnpj">
+                                {{ item.CNPJ }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- CLASSIFICAÇÃO -->
+
+                        <td>
+
+                            <span class="status status-auto">
+
+                                <span class="status-ponto"></span>
+
+                                <span class="texto-status-classificacao">
+                                    {{ item.classificacao }}
+                                </span>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- STATUS CRM -->
+
+                        <td>
+
+                            <span class="status status-auto">
+
+                                <span class="status-ponto"></span>
+
+                                <span class="texto-status-crm">
+                                    {{ item.status_crm }}
+                                </span>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- STATUS PEDIDO -->
+
+                        <td>
+
+                            <span class="status status-auto">
+
+                                <span class="status-ponto"></span>
+
+                                <span class="texto-status-pedido">
+                                    {{ item.status_pedido }}
+                                </span>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ÚLTIMA ATIVIDADE CRM -->
+
+                        <td class="data">
+
+                            {{ item.UltimaAtividadeCRM|default:"-" }}
+
+                        </td>
+
+
+                        <!-- ÚLTIMO PEDIDO -->
+
+                        <td class="data">
+
+                            {{ item.UltimaAtividadePedidos|default:"-" }}
+
+                        </td>
+
+
+                        <!-- OPORTUNIDADES -->
+
+                        <td class="numero">
+
+                            {{ item.qtd_oportunidades }}
+
+                        </td>
+
+
+                        <!-- PEDIDOS -->
+
+                        <td class="numero">
+
+                            {{ item.qtd_pedidos }}
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="sem-registros"
+                        >
+
+                            <div class="sem-registros-icon">
+                                📊
+                            </div>
+
+                            Nenhum cliente ou prospect encontrado.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const filtroClassificacao =
+            document.getElementById(
+                "filtroClassificacao"
+            );
+
+
+        const filtroCRM =
+            document.getElementById(
+                "filtroCRM"
+            );
+
+
+        const filtroPedido =
+            document.getElementById(
+                "filtroPedido"
+            );
+
+
+        const filtroBusca =
+            document.getElementById(
+                "filtroBusca"
+            );
+
+
+        const limparFiltros =
+            document.getElementById(
+                "limparFiltros"
+            );
+
+
+        const linhas =
+            document.querySelectorAll(
+                "#tabelaClientes tbody tr[data-classificacao]"
+            );
+
+
+        const quantidadeVisivel =
+            document.getElementById(
+                "quantidadeVisivel"
+            );
+
+
+        const badgeRegistros =
+            document.getElementById(
+                "badgeRegistros"
+            );
+
+
+        const totalClientesAtivos =
+            document.getElementById(
+                "totalClientesAtivos"
+            );
+
+
+        const totalClientesInativos =
+            document.getElementById(
+                "totalClientesInativos"
+            );
+
+
+        const totalProspectsAtivos =
+            document.getElementById(
+                "totalProspectsAtivos"
+            );
+
+
+        const totalProspectsInativos =
+            document.getElementById(
+                "totalProspectsInativos"
+            );
+
+
+        /* ==================================
+           STATUS VISUAL
+        ================================== */
+
+        function aplicarStatusVisual() {
+
+            linhas.forEach(
+                function (linha) {
+
+
+                    const classificacao =
+                        linha.dataset.classificacao;
+
+
+                    const crm =
+                        linha.dataset.crm;
+
+
+                    const pedido =
+                        linha.dataset.pedido;
+
+
+                    const badgeClassificacao =
+                        linha.querySelector(
+                            ".texto-status-classificacao"
+                        )?.parentElement;
+
+
+                    const badgeCRM =
+                        linha.querySelector(
+                            ".texto-status-crm"
+                        )?.parentElement;
+
+
+                    const badgePedido =
+                        linha.querySelector(
+                            ".texto-status-pedido"
+                        )?.parentElement;
+
+
+                    function limparStatus(badge) {
+
+                        if (!badge) return;
+
+                        badge.classList.remove(
+                            "status-ativo",
+                            "status-inativo",
+                            "status-prospect",
+                            "status-prospect-inativo"
+                        );
+
+                    }
+
+
+                    limparStatus(
+                        badgeClassificacao
+                    );
+
+
+                    limparStatus(
+                        badgeCRM
+                    );
+
+
+                    limparStatus(
+                        badgePedido
+                    );
+
+
+                    /* CLASSIFICAÇÃO */
+
+                    if (
+                        classificacao ===
+                        "CLIENTE ATIVO"
+                    ) {
+
+                        badgeClassificacao?.classList.add(
+                            "status-ativo"
+                        );
+
+                    }
+
+                    else if (
+                        classificacao ===
+                        "CLIENTE INATIVO"
+                    ) {
+
+                        badgeClassificacao?.classList.add(
+                            "status-inativo"
+                        );
+
+                    }
+
+                    else if (
+                        classificacao ===
+                        "PROSPECT ATIVO"
+                    ) {
+
+                        badgeClassificacao?.classList.add(
+                            "status-prospect"
+                        );
+
+                    }
+
+                    else {
+
+                        badgeClassificacao?.classList.add(
+                            "status-prospect-inativo"
+                        );
+
+                    }
+
+
+                    /* CRM */
+
+                    if (
+                        crm ===
+                        "PROSPECÇÃO ATIVA"
+                    ) {
+
+                        badgeCRM?.classList.add(
+                            "status-ativo"
+                        );
+
+                    }
+
+                    else {
+
+                        badgeCRM?.classList.add(
+                            "status-inativo"
+                        );
+
+                    }
+
+
+                    /* PEDIDO */
+
+                    if (
+                        pedido ===
+                        "CLIENTE ATIVO"
+                    ) {
+
+                        badgePedido?.classList.add(
+                            "status-ativo"
+                        );
+
+                    }
+
+                    else if (
+                        pedido ===
+                        "CLIENTE INATIVO"
+                    ) {
+
+                        badgePedido?.classList.add(
+                            "status-inativo"
+                        );
+
+                    }
+
+                    else {
+
+                        badgePedido?.classList.add(
+                            "status-prospect"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* ==================================
+           FILTROS DINÂMICOS
+        ================================== */
+
+        function adicionarOpcoes(
+            select,
+            valores,
+            textoPadrao
+        ) {
+
+
+            select.innerHTML = "";
+
+
+            const opcaoTodos =
+                document.createElement(
+                    "option"
+                );
+
+
+            opcaoTodos.value = "";
+
+
+            opcaoTodos.textContent =
+                textoPadrao;
+
+
+            select.appendChild(
+                opcaoTodos
+            );
+
+
+            valores
+                .sort()
+                .forEach(
+                    function (valor) {
+
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            valor;
+
+
+                        option.textContent =
+                            valor;
+
+
+                        select.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+        }
+
+
+        function carregarFiltros() {
+
+
+            const classificacoes =
+                new Set();
+
+
+            const crm =
+                new Set();
+
+
+            const pedidos =
+                new Set();
+
+
+            linhas.forEach(
+                function (linha) {
+
+
+                    if (
+                        linha.dataset.classificacao
+                    ) {
+
+                        classificacoes.add(
+                            linha.dataset.classificacao
+                        );
+
+                    }
+
+
+                    if (
+                        linha.dataset.crm
+                    ) {
+
+                        crm.add(
+                            linha.dataset.crm
+                        );
+
+                    }
+
+
+                    if (
+                        linha.dataset.pedido
+                    ) {
+
+                        pedidos.add(
+                            linha.dataset.pedido
+                        );
+
+                    }
+
+                }
+            );
+
+
+            adicionarOpcoes(
+                filtroClassificacao,
+                Array.from(
+                    classificacoes
+                ),
+                "Todas"
+            );
+
+
+            adicionarOpcoes(
+                filtroCRM,
+                Array.from(
+                    crm
+                ),
+                "Todos"
+            );
+
+
+            adicionarOpcoes(
+                filtroPedido,
+                Array.from(
+                    pedidos
+                ),
+                "Todos"
+            );
+
+        }
+
+
+        /* ==================================
+           RESUMO DOS CARDS
+        ================================== */
+
+        function atualizarResumo() {
+
+
+            let clientesAtivos = 0;
+
+            let clientesInativos = 0;
+
+            let prospectsAtivos = 0;
+
+            let prospectsInativos = 0;
+
+
+            linhas.forEach(
+                function (linha) {
+
+
+                    const classificacao =
+                        linha.dataset.classificacao;
+
+
+                    if (
+                        classificacao ===
+                        "CLIENTE ATIVO"
+                    ) {
+
+                        clientesAtivos++;
+
+                    }
+
+                    else if (
+                        classificacao ===
+                        "CLIENTE INATIVO"
+                    ) {
+
+                        clientesInativos++;
+
+                    }
+
+                    else if (
+                        classificacao ===
+                        "PROSPECT ATIVO"
+                    ) {
+
+                        prospectsAtivos++;
+
+                    }
+
+                    else if (
+                        classificacao ===
+                        "PROSPECT INATIVO"
+                    ) {
+
+                        prospectsInativos++;
+
+                    }
+
+                }
+            );
+
+
+            totalClientesAtivos.textContent =
+                clientesAtivos;
+
+
+            totalClientesInativos.textContent =
+                clientesInativos;
+
+
+            totalProspectsAtivos.textContent =
+                prospectsAtivos;
+
+
+            totalProspectsInativos.textContent =
+                prospectsInativos;
+
+        }
+
+
+        /* ==================================
+           APLICA FILTROS
+        ================================== */
+
+        function aplicarFiltros() {
+
+
+            const classificacao =
+                filtroClassificacao.value
+                    .toUpperCase();
+
+
+            const crm =
+                filtroCRM.value
+                    .toUpperCase();
+
+
+            const pedido =
+                filtroPedido.value
+                    .toUpperCase();
+
+
+            const busca =
+                filtroBusca.value
+                    .toLowerCase()
+                    .trim();
+
+
+            let visiveis = 0;
+
+
+            linhas.forEach(
+                function (linha) {
+
+
+                    let mostrar = true;
+
+
+                    /* CLASSIFICAÇÃO */
+
+                    if (
+                        classificacao &&
+                        linha.dataset.classificacao
+                            .toUpperCase() !==
+                        classificacao
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+
+                    /* CRM */
+
+                    if (
+                        crm &&
+                        linha.dataset.crm
+                            .toUpperCase() !==
+                        crm
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+
+                    /* PEDIDO */
+
+                    if (
+                        pedido &&
+                        linha.dataset.pedido
+                            .toUpperCase() !==
+                        pedido
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+
+                    /* BUSCA */
+
+                    if (
+                        busca &&
+                        !linha.dataset.busca
+                            .toLowerCase()
+                            .includes(busca)
+                    ) {
+
+                        mostrar = false;
+
+                    }
+
+
+                    linha.style.display =
+                        mostrar
+                            ? ""
+                            : "none";
+
+
+                    if (mostrar) {
+
+                        visiveis++;
+
+                    }
+
+                }
+            );
+
+
+            quantidadeVisivel.textContent =
+                visiveis;
+
+
+            badgeRegistros.textContent =
+                visiveis +
+                (
+                    visiveis === 1
+                        ? " registro"
+                        : " registros"
+                );
+
+        }
+
+
+        /* ==================================
+           LIMPAR FILTROS
+        ================================== */
+
+        limparFiltros.addEventListener(
+            "click",
+            function () {
+
+
+                filtroClassificacao.value =
+                    "";
+
+
+                filtroCRM.value =
+                    "";
+
+
+                filtroPedido.value =
+                    "";
+
+
+                filtroBusca.value =
+                    "";
+
+
+                aplicarFiltros();
+
+            }
+        );
+
+
+        /* ==================================
+           EVENTOS
+        ================================== */
+
+        filtroClassificacao.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+        filtroCRM.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+        filtroPedido.addEventListener(
+            "change",
+            aplicarFiltros
+        );
+
+
+        filtroBusca.addEventListener(
+            "input",
+            aplicarFiltros
+        );
+
+
+        /* ==================================
+           INICIALIZAÇÃO
+        ================================== */
+
+        carregarFiltros();
+
+        aplicarStatusVisual();
+
+        atualizarResumo();
+
+        aplicarFiltros();
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>

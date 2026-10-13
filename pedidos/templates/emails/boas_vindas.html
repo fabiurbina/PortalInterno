@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Bem-vindo ao Portal do Cliente Viesano</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f3f5f7;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f5f7;padding:40px 0;">
+<tr>
+<td align="center">
+
+<table width="650" cellpadding="0" cellspacing="0" style="background:white;border-radius:10px;overflow:hidden;">
+
+    <!-- Cabeçalho -->
+
+    <tr>
+        <td align="center"
+            style="background:#1d6f42;padding:35px;">
+
+            <h1 style="
+                color:white;
+                margin:0;
+                font-size:32px;
+                font-weight:bold;">
+                VIESANO
+            </h1>
+
+            <p style="
+                color:#dff3e7;
+                margin-top:8px;
+                font-size:15px;">
+                Portal do Cliente
+            </p>
+
+        </td>
+    </tr>
+
+    <!-- Corpo -->
+
+    <tr>
+        <td style="padding:45px;">
+
+            <h2 style="
+                color:#1d6f42;
+                margin-top:0;">
+                Bem-vindo!
+            </h2>
+
+            <p style="
+                color:#444;
+                font-size:16px;
+                line-height:1.7;">
+
+                Olá,
+
+                <strong>{{ razao_social }}</strong>.
+
+            </p>
+
+            <p style="
+                color:#444;
+                font-size:16px;
+                line-height:1.7;">
+
+                É um prazer recebê-lo no
+                <strong>Portal do Cliente Viesano</strong>.
+
+            </p>
+
+            <p style="
+                color:#444;
+                font-size:16px;
+                line-height:1.7;">
+
+                Através do portal você poderá acompanhar o andamento de seus pedidos e consultar informações sempre que necessário.
+
+            </p>
+
+            <br>
+
+            <table width="100%" cellpadding="12"
+                style="
+                background:#f5f7f8;
+                border:1px solid #dfe5e8;
+                border-radius:8px;">
+
+                <tr>
+
+                    <td>
+
+                        <strong>Login</strong>
+
+                        <br><br>
+
+                        {{ login }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+
+                        <strong>Senha Temporária</strong>
+
+                        <br><br>
+
+                        {{ senha }}
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <br><br>
+
+            <div align="center">
+
+                <a href="{{ portal }}"
+                   style="
+                   background:#1d6f42;
+                   color:white;
+                   text-decoration:none;
+                   padding:16px 34px;
+                   border-radius:6px;
+                   display:inline-block;
+                   font-size:16px;
+                   font-weight:bold;">
+
+                    Acessar Portal
+
+                </a>
+
+            </div>
+
+            <br><br>
+
+            <p style="
+                color:#555;
+                line-height:1.8;
+                font-size:15px;">
+
+                Por motivos de segurança, recomendamos que a senha temporária seja alterada após o primeiro acesso. Assim, apenas pessoas autorizadas terão acesso às informações da sua empresa.
+
+            </p>
+
+            <hr style="
+                margin:35px 0;
+                border:none;
+                border-top:1px solid #e8e8e8;">
+
+            <p style="
+                color:#666;
+                font-size:15px;
+                line-height:1.8;">
+
+                Em caso de dúvidas, nossa equipe estará à disposição para atendê-lo.
+
+            </p>
+
+            <p style="
+                margin-top:30px;
+                color:#444;">
+
+                Atenciosamente,
+
+                <br><br>
+
+                <strong>Equipe Viesano Suplementos</strong>
+
+            </p>
+
+        </td>
+    </tr>
+
+    <!-- Rodapé -->
+
+    <tr>
+
+        <td
+        align="center"
+        style="
+        background:#f8f8f8;
+        padding:25px;
+        color:#888;
+        font-size:13px;
+        line-height:1.8;">
+
+            Este é um e-mail enviado automaticamente pelo Portal do Cliente Viesano.<br>
+
+            Por favor, não responda esta mensagem.
+
+            <br><br>
+
+            © {% now "Y" %} Viesano Suplementos
+
+        </td>
+
+    </tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
