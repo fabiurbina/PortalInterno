@@ -1,0 +1,154 @@
+Listagem de caminhos de pasta para o volume Windows
+O número de série do volume é 94CB-0F4C
+C:.
+|   .gitignore
+|   db.sqlite3
+|   estrutura.txt
+|   manage.py
+|   Portal.py
+|   requirements.txt
+|   
++---docs
+|   \---portal
+|           README.md
+|           
++---integracoes
+|       omie.py
+|       
++---Manual
++---pedidos
+|   |   .env
+|   |   admin.py
+|   |   agente_comercial.py
+|   |   apps.py
+|   |   email_service.py
+|   |   email_ses.py
+|   |   groq_service.py
+|   |   IA_imagens.py
+|   |   models.py
+|   |   mysql_service.py
+|   |   omie_service.py
+|   |   preparar_dados.py
+|   |   status_service.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|   |   |   0001_initial.py
+|   |   |   0002_reuniaoagenda.py
+|   |   |   0003_participantereuniao.py
+|   |   |   0004_participantereuniao_token_resposta.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           0001_initial.cpython-310.pyc
+|   |           0002_reuniaoagenda.cpython-310.pyc
+|   |           0003_participantereuniao.cpython-310.pyc
+|   |           0004_participantereuniao_token_resposta.cpython-310.pyc
+|   |           __init__.cpython-310.pyc
+|   |           
+|   +---pedidos
+|   |   \---static
+|   |       \---img
+|   |               login_destaque.png
+|   |               
+|   +---sql
+|   |       Posicao_estoque.sql
+|   |       
+|   +---static
+|   |   +---css
+|   |   |   |   style.css
+|   |   |   |   
+|   |   |   +---agente
+|   |   |   |       comercial.css
+|   |   |   |       
+|   |   |   \---indicadores
+|   |   |           comercial.css
+|   |   |           financeiro.css
+|   |   |           pedidos.css
+|   |   |           producao.css
+|   |   |           
+|   |   +---img
+|   |   |       logo.png
+|   |   |       logo_viesano.png
+|   |   |       
+|   |   \---js
+|   |       +---agente
+|   |       |       comercial.js
+|   |       |       
+|   |       \---indicadores
+|   |               comercial.js
+|   |               financeiro.js
+|   |               pedidos.js
+|   |               producao.js
+|   |               
+|   +---templates
+|   |   |   alterar_senha.html
+|   |   |   base.html
+|   |   |   dashboard.html
+|   |   |   home.html
+|   |   |   login.html
+|   |   |   password_reset.html
+|   |   |   password_reset_done.html
+|   |   |   qualidade_inspecao.html
+|   |   |   
+|   |   +---agente
+|   |   |       comercial.html
+|   |   |       
+|   |   \---indicadores
+|   |       |   indicadores.html
+|   |       |   
+|   |       +---comercial
+|   |       |       dashboard.html
+|   |       |       pedidos.html
+|   |       |       
+|   |       +---financeiro
+|   |       |       dashboard.html
+|   |       |       dre.html
+|   |       |       
+|   |       +---inteligencia
+|   |       |       inteligencia_comercial.html
+|   |       |       inteligencia_producao.html
+|   |       |       
+|   |       \---producao
+|   |               dashboard.html
+|   |               
+|   +---templatetags
+|   |   |   formatacao.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           formatacao.cpython-310.pyc
+|   |           __init__.cpython-310.pyc
+|   |           
+|   \---__pycache__
+|           admin.cpython-310.pyc
+|           agente_comercial.cpython-310.pyc
+|           apps.cpython-310.pyc
+|           email_service.cpython-310.pyc
+|           email_ses.cpython-310.pyc
+|           groq_service.cpython-310.pyc
+|           models.cpython-310.pyc
+|           mysql_service.cpython-310.pyc
+|           omie_service.cpython-310.pyc
+|           preparar_dados.cpython-310.pyc
+|           status_service.cpython-310.pyc
+|           urls.cpython-310.pyc
+|           views.cpython-310.pyc
+|           __init__.cpython-310.pyc
+|           
+\---portal
+    |   asgi.py
+    |   settings.py
+    |   urls.py
+    |   wsgi.py
+    |   __init__.py
+    |   
+    \---__pycache__
+            settings.cpython-310.pyc
+            urls.cpython-310.pyc
+            wsgi.cpython-310.pyc
+            __init__.cpython-310.pyc
+            
