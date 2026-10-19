@@ -469,6 +469,8 @@ def ficha_op(request, codigo_op):
     quantidade_capsulas = 0
 
     for item in materias_primas:
+        
+        print("MATÉRIAS-PRIMAS:", materias_primas)
 
         unidade = item.get('unidade_produto', '').upper()
         quantidade = float(item.get('nQtde', 0) or 0)
