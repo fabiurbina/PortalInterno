@@ -273,364 +273,298 @@ def logout_view(request):
     return redirect('/login/')
 
 
+
+import traceback
+
+from django.core.cache import cache
+from django.shortcuts import render
+
+
 def ficha_op(request, codigo_op):
-
-    op = consultar_op(codigo_op)
-    
-    
-    if 'identificacao' not in op:
-
-        return render(
-            request,
-            'ficha_op.html',
-            {
-                'erro': op.get(
-                    'faultstring',
-                    'Erro ao consultar OP'
-                )
-            }
-        )
-        
-    # Observação da OP
-    observacao_op = op.get('observacoes', {}).get('cObs', '')
-
-    # Busca descrição das matérias-primas
-    produtos_cache = {}
-    
-    codigo_omie_pa = op['identificacao']['nCodProduto']
-
-    produto_pa = consultar_produto(codigo_omie_pa)
-
-    codigo_interno = produto_pa.get('codigo', '') # Código interno do produto acabado
-
-    for item in op.get('itensDetalhes', []):
-
-        codigo = item['nIdProdutoMalha']
-
-        if codigo not in produtos_cache:
-
-            produto_mp = consultar_produto(codigo)
-            
-
-            produtos_cache[codigo] = {
-            'codigo': produto_mp.get('codigo', str(codigo)),
-            'descricao': produto_mp.get('descricao', ''),
-            'unidade': produto_mp.get('unidade', '')
-}
-        item['codigo_produto'] = produtos_cache[codigo]['codigo']
-        item['descricao_produto'] = produtos_cache[codigo]['descricao']
-        item['unidade_produto'] = produtos_cache[codigo]['unidade']
-
-            
-    locais = cache.get('locais_estoque')
-
-    if not locais:
-
-        locais = listar_locais_estoque()
-
-        cache.set(
-            'locais_estoque',
-            locais,
-            300
-        )
-
-
-    lotes = cache.get('lotes_omie')
-
-    if not lotes:
-
-        lotes = listar_lotes()
-
-        cache.set(
-            'lotes_omie',
-            lotes,
-            300
-        )
-
-    # Mapa de locais
-    mapa_locais = {}
-
-    for local in locais.get('locaisEncontrados', []):
-
-        mapa_locais[
-            local['codigo_local_estoque']
-        ] = local['descricao']
-
-
-    # Mapa de lotes
-    mapa_lotes = {}
-    
-    
-
-    for produto_lote in lotes.get('listaLotes', []):
-
-        codigo_produto = produto_lote['ident']['nCodProd']
-
-        if produto_lote.get('lotes'):
-
-            lote = produto_lote['lotes'][0]
-
-            mapa_lotes[codigo_produto] = {
-                'lote': lote.get('cNumLote', ''),
-                'validade': lote.get('dDataValidade', '')
-            }
-
-        else:
-
-            mapa_lotes[codigo_produto] = {
-                'lote': '',
-                'validade': ''
-            }
-            
-            
-    #print(mapa_lotes)
-    # Adiciona descrição do local + lote + validade
-    for item in op.get('itensDetalhes', []):
-
-        item['descricao_local'] = mapa_locais.get(
-            item['codigo_local_estoque'],
-            str(item['codigo_local_estoque'])
-        )
-
-        codigo = item['nIdProdutoMalha']
-
-        item['lote'] = mapa_lotes.get(
-            codigo,
-            {}
-        ).get(
-            'lote',
-            ''
-        )
-
-        item['validade'] = mapa_lotes.get(
-            codigo,
-            {}
-        ).get(
-            'validade',
-            ''
-        )
-        
-
-    mapa_locais = {}
-
-    for local in locais.get('locaisEncontrados', []):
-
-        mapa_locais[
-            local['codigo_local_estoque']
-        ] = local['descricao']
-
-
-    for item in op.get('itensDetalhes', []):
-
-        item['descricao_local'] = mapa_locais.get(
-            item['codigo_local_estoque'],
-            str(item['codigo_local_estoque'])
-        )
-        
-    
-    
-    produto = consultar_produto(
-        op['identificacao']['nCodProduto']
-    )
-
-    codigo_pa = op['identificacao']['nCodProduto']
-    print("Código PA:", codigo_pa)
-    print("Código PA:", codigo_pa)
-    estrutura = consultar_estrutura(codigo_pa)
-    
-    print("RETORNO ESTRUTURA:", repr(estrutura)[:3000])
-
-    materias_primas = []
-    embalagens = []
-
-    mapa_tipo_produto = {
-        int(item['idProdMalha']): item['tipoProdMalha']
-        for item in estrutura.get('itens', [])
-    }
-
-    for item in op.get('itensDetalhes', []):
-
-        codigo_produto = int(item['nIdProdutoMalha'])
-
-        tipo_produto = mapa_tipo_produto.get(
-            codigo_produto
-        )
-
-        if tipo_produto == '01':
-            materias_primas.append(item)
-
-        elif tipo_produto == '02':
-            embalagens.append(item)
-        
-
-
-    # Calcula o peso total da batida
-    peso_batida_kg = 0
-    quantidade_capsulas = 0
-
-    for item in materias_primas:
-        
-        print("MATÉRIAS-PRIMAS:", materias_primas)
-
-        unidade = item.get('unidade_produto', '').upper()
-        quantidade = float(item.get('nQtde', 0) or 0)
-        descricao = item.get('descricao_produto', '').upper()
-
-        if unidade == 'KG':
-            peso_batida_kg += quantidade
-
-        elif unidade == 'UN' and 'CAPSULA' in descricao:
-            quantidade_capsulas += quantidade
-
-
-    # Calcula o peso teórico do conteúdo por cápsula em mg
-    peso_por_capsula_mg = 0
-
-    if quantidade_capsulas > 0:
-        peso_por_capsula_mg = (
-            peso_batida_kg * 1_000_000
-        ) / quantidade_capsulas
-
-
-    print("⚖️ PESO DA BATIDA:", peso_batida_kg, "KG")
-    print("💊 QUANTIDADE DE CÁPSULAS:", quantidade_capsulas, "UN")
-    print("📏 PESO TEÓRICO POR CÁPSULA:", peso_por_capsula_mg, "MG")
-            
-                
-
-    observacao_estrutura = (
-        estrutura.get("observacoes", {})
-                .get("obsRelevantes", "")
-    )
-    
-    codigo_op = op['identificacao']['cNumOP']
-
-    conferencias = consultar_conferencias(
-        codigo_op
-    )
-    
-    print("DEBUG 1: antes de consultar conferências")
-    
-    conferencias = consultar_conferencias(codigo_op)
-    
-    print("DEBUG 2: conferências retornaram")
-    
-    apontamentos = consultar_apontamentos(
-    codigo_op)
-    
-    print("DEBUG 3: apontamentos retornaram")
-    
-    #print(apontamentos)
-    import traceback
-    
-    mapa_apontamentos = {}
-
     try:
-        print("TESTE A: tipo apontamentos:", type(apontamentos))
-        print("TESTE B: retorno apontamentos:", repr(apontamentos)[:3000])
+        print("DEBUG 0: iniciando ficha_op")
+
+        op = consultar_op(codigo_op)
+
+        if 'identificacao' not in op:
+            return render(
+                request,
+                'ficha_op.html',
+                {
+                    'erro': op.get(
+                        'faultstring',
+                        'Erro ao consultar OP'
+                    )
+                }
+            )
+
+        # Observação da OP
+        observacao_op = op.get(
+            'observacoes', {}
+        ).get('cObs', '')
+
+        # Busca descrição das matérias-primas
+        produtos_cache = {}
+
+        codigo_omie_pa = op['identificacao']['nCodProduto']
+
+        produto_pa = consultar_produto(codigo_omie_pa)
+
+        codigo_interno = produto_pa.get('codigo', '')
+
+        for item in op.get('itensDetalhes', []):
+            codigo = item['nIdProdutoMalha']
+
+            if codigo not in produtos_cache:
+                produto_mp = consultar_produto(codigo)
+
+                produtos_cache[codigo] = {
+                    'codigo': produto_mp.get('codigo', str(codigo)),
+                    'descricao': produto_mp.get('descricao', ''),
+                    'unidade': produto_mp.get('unidade', '')
+                }
+
+            item['codigo_produto'] = produtos_cache[codigo]['codigo']
+            item['descricao_produto'] = produtos_cache[codigo]['descricao']
+            item['unidade_produto'] = produtos_cache[codigo]['unidade']
+
+        print("DEBUG 1: produtos carregados")
+
+        # Locais de estoque
+        locais = cache.get('locais_estoque')
+
+        if not locais:
+            locais = listar_locais_estoque()
+            cache.set('locais_estoque', locais, 300)
+
+        # Lotes
+        lotes = cache.get('lotes_omie')
+
+        if not lotes:
+            lotes = listar_lotes()
+            cache.set('lotes_omie', lotes, 300)
+
+        print("DEBUG 2: locais e lotes carregados")
+        print("TIPO locais:", type(locais))
+        print("TIPO lotes:", type(lotes))
+
+        # Mapa de locais
+        mapa_locais = {}
+
+        for local in locais.get('locaisEncontrados', []):
+            mapa_locais[local['codigo_local_estoque']] = local['descricao']
+
+        # Mapa de lotes
+        mapa_lotes = {}
+
+        for produto_lote in lotes.get('listaLotes', []):
+            codigo_produto = produto_lote['ident']['nCodProd']
+
+            if produto_lote.get('lotes'):
+                lote = produto_lote['lotes'][0]
+
+                mapa_lotes[codigo_produto] = {
+                    'lote': lote.get('cNumLote', ''),
+                    'validade': lote.get('dDataValidade', '')
+                }
+            else:
+                mapa_lotes[codigo_produto] = {
+                    'lote': '',
+                    'validade': ''
+                }
+
+        print("DEBUG 3: mapas de locais e lotes montados")
+
+        # Adiciona descrição do local, lote e validade aos itens
+        for item in op.get('itensDetalhes', []):
+            codigo_local = item.get('codigo_local_estoque')
+
+            item['descricao_local'] = mapa_locais.get(
+                codigo_local,
+                str(codigo_local or '')
+            )
+
+            codigo = item['nIdProdutoMalha']
+
+            dados_lote = mapa_lotes.get(codigo, {})
+
+            item['lote'] = dados_lote.get('lote', '')
+            item['validade'] = dados_lote.get('validade', '')
+
+        print("DEBUG 4: itens enriquecidos")
+
+        # Produto acabado e estrutura
+        produto = consultar_produto(codigo_omie_pa)
+
+        codigo_pa = codigo_omie_pa
+
+        print("Código PA:", codigo_pa)
+
+        estrutura = consultar_estrutura(codigo_pa)
+
+        print("RETORNO ESTRUTURA:", repr(estrutura)[:3000])
+
+        materias_primas = []
+        embalagens = []
+
+        mapa_tipo_produto = {
+            int(item['idProdMalha']): item['tipoProdMalha']
+            for item in estrutura.get('itens', [])
+        }
+
+        for item in op.get('itensDetalhes', []):
+            codigo_produto = int(item['nIdProdutoMalha'])
+
+            tipo_produto = mapa_tipo_produto.get(codigo_produto)
+
+            if tipo_produto == '01':
+                materias_primas.append(item)
+            elif tipo_produto == '02':
+                embalagens.append(item)
+
+        print("MATÉRIAS-PRIMAS:", repr(materias_primas)[:3000])
+        print("EMBALAGENS:", repr(embalagens)[:3000])
+
+        # Calcula o peso total da batida e quantidade de cápsulas
+        peso_batida_kg = 0
+        quantidade_capsulas = 0
+
+        for item in materias_primas:
+            unidade = item.get('unidade_produto', '').upper()
+            quantidade = float(item.get('nQtde', 0) or 0)
+            descricao = item.get('descricao_produto', '').upper()
+
+            if unidade == 'KG':
+                peso_batida_kg += quantidade
+            elif unidade == 'UN' and 'CAPSULA' in descricao:
+                quantidade_capsulas += quantidade
+
+        peso_por_capsula_mg = 0
+
+        if quantidade_capsulas > 0:
+            peso_por_capsula_mg = (
+                peso_batida_kg * 1_000_000
+            ) / quantidade_capsulas
+
+        print("PESO DA BATIDA:", peso_batida_kg, "KG")
+        print("QUANTIDADE DE CÁPSULAS:", quantidade_capsulas, "UN")
+        print("PESO TEÓRICO POR CÁPSULA:", peso_por_capsula_mg, "MG")
+
+        observacao_estrutura = (
+            estrutura.get('observacoes', {})
+            .get('obsRelevantes', '')
+        )
+
+        codigo_op_omie = op['identificacao']['cNumOP']
+
+        # Consulta conferências uma única vez
+        print("DEBUG 5: consultando conferências")
+
+        conferencias = consultar_conferencias(codigo_op_omie)
+
+        print("DEBUG 6: conferências retornaram")
+        print("TIPO conferencias:", type(conferencias))
+
+        apontamentos = consultar_apontamentos(codigo_op_omie)
+
+        print("DEBUG 7: apontamentos retornaram")
+        print("TIPO apontamentos:", type(apontamentos))
+        print("RETORNO apontamentos:", repr(apontamentos)[:3000])
+
+        # Mapa de apontamentos
+        mapa_apontamentos = {}
 
         for apontamento in apontamentos:
-            print("TESTE C: apontamento:", repr(apontamento))
-            mapa_apontamentos[apontamento['etapa']] = apontamento
+            print("APONTAMENTO:", repr(apontamento))
 
-        print("TESTE D: mapa montado:", mapa_apontamentos)
+            mapa_apontamentos[
+                apontamento['etapa']
+            ] = apontamento
 
-    except Exception:
-        print("ERRO AO MONTAR MAPA DE APONTAMENTOS:")
-        traceback.print_exc()
-        raise
+        print("DEBUG 8: mapa_apontamentos montado")
 
-    
-    mapa_conferencias = {}
+        # Mapa de conferências
+        mapa_conferencias = {}
 
-    for conferencia in conferencias:
+        for conferencia in conferencias:
+            mapa_conferencias[
+                str(conferencia['codigo_produto'])
+            ] = conferencia
 
-        mapa_conferencias[
-            str(conferencia['codigo_produto'])
-        ] = conferencia
-    print("DEBUG 5: mapa_conferencias montado")
-    print("TESTE E: antes de montar mapa_locais")
-    print("TESTE F: quantidade de locais:", len(locais))
-    print("TESTE G: quantidade de lotes:", len(lotes))
-    print("TESTE H: antes de montar contexto")
+        print("DEBUG 9: mapa_conferencias montado")
 
-    for item in op.get('itensDetalhes', []):
-        
+        # Marca itens conferidos
+        for item in op.get('itensDetalhes', []):
+            try:
+                codigo_produto = str(int(item['codigo_produto']))
 
-        item['conferido'] = (
-            str(int(item['codigo_produto']))
-            in mapa_conferencias
+                item['conferido'] = (
+                    codigo_produto in mapa_conferencias
+                )
+
+            except (KeyError, TypeError, ValueError):
+                print(
+                    "ERRO AO MARCAR ITEM CONFERIDO:",
+                    repr(item)
+                )
+                raise
+
+        print("DEBUG 10: itens conferidos")
+
+        # Lote do produto acabado
+        dados_lote_pa = mapa_lotes.get(codigo_pa, {})
+
+        lote_pa = dados_lote_pa.get('lote', '')
+        validade_pa = dados_lote_pa.get('validade', '')
+
+        print("DEBUG 11: lote e validade definidos")
+
+        obs = op.get('observacoes', {}).get('cObs', '')
+
+        nome_produto = produto.get(
+            'descricao',
+            codigo_omie_pa
         )
-    print("DEBUG 6: itens conferidos")
 
-    # Lote do Produto Acabado
-    lote_pa = mapa_lotes.get(
-        codigo_pa,
-        {}
-    ).get(
-        'lote',
-        ''
-    )
-
-    validade_pa = mapa_lotes.get(
-        codigo_pa,
-        {}
-    ).get(
-        'validade',
-        ''
-    )
-    
-    print("DEBUG 7: lote e validade definidos")
-
-    obs = op.get('observacoes', {}).get('cObs', '')
-
-    #numero_pedido = extrair_numero_pedido(obs)
-
-    #pedido = None
-
-    #if numero_pedido:
-        #pedido = consultar_pedido(numero_pedido)
-
-    nome_produto = produto.get(
-        'descricao',
-        op['identificacao']['nCodProduto']
-    )
-
-    ETAPAS = {
+        ETAPAS = {
             "10": "Planejamento",
             "20": "Produzindo",
             "50": "Concluído",
             "60": "Armazenar/Expedir"
         }
 
-    nome_etapa = ETAPAS.get(
-        op['infAdicionais']['cEtapa'],
-        op['infAdicionais']['cEtapa']
-    )
-    
-    ETAPAS_PRODUCAO = [
-        "FRACIONAMENTO",
-        "MISTURA",
-        "ENVASE",
-        "EXPEDICAO"
-    ]
-    
-    MISTURADORES = [
+        codigo_etapa = str(
+            op.get('infAdicionais', {}).get('cEtapa', '')
+        )
+
+        nome_etapa = ETAPAS.get(codigo_etapa, codigo_etapa)
+
+        ETAPAS_PRODUCAO = [
+            "FRACIONAMENTO",
+            "MISTURA",
+            "ENVASE",
+            "EXPEDICAO"
+        ]
+
+        MISTURADORES = [
             "Misturador de Pós 01",
-            "Misturador de Cápsulas 01",]
-    
-    MAQUINAS = [
-        "Linha de Pós 01",
-        "Linha de Cápsulas 01",]
-    
-    print("TESTE I: contexto montado")
-    print("TESTE J: antes do render_template")
+            "Misturador de Cápsulas 01"
+        ]
 
+        MAQUINAS = [
+            "Linha de Pós 01",
+            "Linha de Cápsulas 01"
+        ]
 
-    return render(
-        request,
-        'ficha_op.html',
-        {
+        print("DEBUG 12: variáveis prontas para renderizar")
+        print("nome_produto:", repr(nome_produto))
+        print("nome_etapa:", repr(nome_etapa))
+        print("lote_pa:", repr(lote_pa))
+        print("validade_pa:", repr(validade_pa))
+        print("apontamentos:", repr(mapa_apontamentos))
+
+        # Contexto do template
+        contexto = {
             'op': op,
             'observacao_op': observacao_op,
             'nome_produto': nome_produto,
@@ -646,15 +580,23 @@ def ficha_op(request, codigo_op):
             'apontamentos': mapa_apontamentos,
             'maquinas': MAQUINAS,
             'misturadores': MISTURADORES,
-             # Observações da estrutura
             'observacao_estrutura': observacao_estrutura,
-        
-            # Dados calculados da produção
             'peso_batida_kg': peso_batida_kg,
             'quantidade_capsulas': quantidade_capsulas,
             'peso_por_capsula_mg': peso_por_capsula_mg,
         }
-    )
+
+        print("DEBUG 13: contexto montado")
+        print("CHAVES DO CONTEXTO:", list(contexto.keys()))
+        print("DEBUG 14: iniciando render do template")
+
+        return render(request, 'ficha_op.html', contexto)
+
+    except Exception:
+        print("ERRO COMPLETO NA VIEW ficha_op:")
+        traceback.print_exc()
+        raise
+
         
 @csrf_exempt
 def salvar_conferencia(request):
