@@ -437,6 +437,8 @@ def ficha_op(request, codigo_op):
     print("Código PA:", codigo_pa)
     print("Código PA:", codigo_pa)
     estrutura = consultar_estrutura(codigo_pa)
+    
+    print("RETORNO ESTRUTURA:", repr(estrutura)[:3000])
 
     materias_primas = []
     embalagens = []
