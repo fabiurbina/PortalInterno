@@ -509,8 +509,16 @@ def ficha_op(request, codigo_op):
         codigo_op
     )
     
+    print("DEBUG 1: antes de consultar conferências")
+    
+    conferencias = consultar_conferencias(codigo_op)
+    
+    print("DEBUG 2: conferências retornaram")
+    
     apontamentos = consultar_apontamentos(
     codigo_op)
+    
+    print("DEBUG 3: apontamentos retornaram")
     
     #print(apontamentos)
     
