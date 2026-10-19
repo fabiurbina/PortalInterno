@@ -521,15 +521,26 @@ def ficha_op(request, codigo_op):
     print("DEBUG 3: apontamentos retornaram")
     
     #print(apontamentos)
+    import traceback
     
     mapa_apontamentos = {}
 
-    for apontamento in apontamentos:
+    try:
+        print("TESTE A: tipo apontamentos:", type(apontamentos))
+        print("TESTE B: retorno apontamentos:", repr(apontamentos)[:3000])
 
-        mapa_apontamentos[
-            apontamento['etapa']
-        ] = apontamento
-    print("DEBUG 4: mapa_apontamentos montado")
+        for apontamento in apontamentos:
+            print("TESTE C: apontamento:", repr(apontamento))
+            mapa_apontamentos[apontamento['etapa']] = apontamento
+
+        print("TESTE D: mapa montado:", mapa_apontamentos)
+
+    except Exception:
+        print("ERRO AO MONTAR MAPA DE APONTAMENTOS:")
+        traceback.print_exc()
+        raise
+
+    
     mapa_conferencias = {}
 
     for conferencia in conferencias:
