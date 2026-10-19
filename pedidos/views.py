@@ -496,7 +496,7 @@ def ficha_op(request, codigo_op):
         # Marca itens conferidos
         for item in op.get('itensDetalhes', []):
             try:
-                codigo_produto = str(int(item['codigo_produto']))
+                codigo_produto = str(item.get('codigo_produto', '')).strip()
 
                 item['conferido'] = (
                     codigo_produto in mapa_conferencias
