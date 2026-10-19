@@ -694,6 +694,8 @@ def consultar_estrutura(id_produto):
     )
 
     response.raise_for_status()
+    print("DEBUG OMIE - STATUS:", response.status_code)
+    print("DEBUG OMIE - RESPOSTA:", response.text[:5000])
 
     return response.json()
 
