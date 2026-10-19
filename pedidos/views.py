@@ -529,7 +529,7 @@ def ficha_op(request, codigo_op):
         mapa_apontamentos[
             apontamento['etapa']
         ] = apontamento
-
+    print("DEBUG 4: mapa_apontamentos montado")
     mapa_conferencias = {}
 
     for conferencia in conferencias:
@@ -537,7 +537,7 @@ def ficha_op(request, codigo_op):
         mapa_conferencias[
             str(conferencia['codigo_produto'])
         ] = conferencia
-
+    print("DEBUG 5: mapa_conferencias montado")
     for item in op.get('itensDetalhes', []):
         
 
@@ -545,6 +545,7 @@ def ficha_op(request, codigo_op):
             str(int(item['codigo_produto']))
             in mapa_conferencias
         )
+    print("DEBUG 6: itens conferidos")
 
     # Lote do Produto Acabado
     lote_pa = mapa_lotes.get(
@@ -562,6 +563,8 @@ def ficha_op(request, codigo_op):
         'validade',
         ''
     )
+    
+    print("DEBUG 7: lote e validade definidos")
 
     obs = op.get('observacoes', {}).get('cObs', '')
 
