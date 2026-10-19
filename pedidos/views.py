@@ -595,6 +595,12 @@ def ficha_op(request, codigo_op):
     MAQUINAS = [
         "Linha de Pós 01",
         "Linha de Cápsulas 01",]
+    
+    print("DEBUG: chegou antes do render")
+    print("ETAPA:", op.get('infAdicionais'))
+    print("APONTAMENTOS:", mapa_apontamentos)
+    print("LOTE PA:", lote_pa)
+    print("VALIDADE PA:", validade_pa)
 
     return render(
         request,
