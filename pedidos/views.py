@@ -322,14 +322,24 @@ def ficha_op(request, codigo_op):
                 produto_mp = consultar_produto(codigo)
 
                 produtos_cache[codigo] = {
-                    'codigo': produto_mp.get('codigo', str(codigo)),
-                    'descricao': produto_mp.get('descricao', ''),
-                    'unidade': produto_mp.get('unidade', '')
-                }
+                'codigo': produto_mp.get('codigo', str(codigo)),
+                'descricao': produto_mp.get('descricao', ''),
+                'unidade': produto_mp.get('unidade', ''),
+                'peso_liq': produto_mp.get('peso_liq', 0),
+                'peso_bruto': produto_mp.get('peso_bruto', 0),
+                'altura': produto_mp.get('altura', 0),
+                'largura': produto_mp.get('largura', 0),
+                'profundidade': produto_mp.get('profundidade', 0),
+            }
 
             item['codigo_produto'] = produtos_cache[codigo]['codigo']
             item['descricao_produto'] = produtos_cache[codigo]['descricao']
             item['unidade_produto'] = produtos_cache[codigo]['unidade']
+            item['peso_liq'] = produtos_cache[codigo]['peso_liq']
+            item['peso_bruto'] = produtos_cache[codigo]['peso_bruto']
+            item['altura'] = produtos_cache[codigo]['altura']
+            item['largura'] = produtos_cache[codigo]['largura']
+            item['profundidade'] = produtos_cache[codigo]['profundidade']
 
         print("DEBUG 1: produtos carregados")
 
@@ -1119,32 +1129,24 @@ def ficha_logistica(request, codigo_op):
             produto_mp = consultar_produto(codigo)
 
             produtos_cache[codigo] = {
-                'codigo': produto_mp.get(
-                    'codigo',
-                    str(codigo)
-                ),
-                'descricao': produto_mp.get(
-                    'descricao',
-                    ''
-                ),
-                'familia': produto_mp.get(
-                    'descricao_familia',
-                    ''
-                )
-            }
-
-        item['codigo_produto'] = (
-            produtos_cache[codigo]['codigo']
-        )
-
-        item['descricao_produto'] = (
-            produtos_cache[codigo]['descricao']
-        )
-
-        item['familia_produto'] = (
-            produtos_cache[codigo]['familia']
-        )
-
+            'codigo': produto_mp.get('codigo', str(codigo)),
+            'descricao': produto_mp.get('descricao', ''),
+            'unidade': produto_mp.get('unidade', ''),
+            'peso_liq': produto_mp.get('peso_liq', 0),
+            'peso_bruto': produto_mp.get('peso_bruto', 0),
+            'altura': produto_mp.get('altura', 0),
+            'largura': produto_mp.get('largura', 0),
+            'profundidade': produto_mp.get('profundidade', 0),
+        }
+        
+            item['codigo_produto'] = produtos_cache[codigo]['codigo']
+            item['descricao_produto'] = produtos_cache[codigo]['descricao']
+            item['unidade_produto'] = produtos_cache[codigo]['unidade']
+            item['peso_liq'] = produtos_cache[codigo]['peso_liq']
+            item['peso_bruto'] = produtos_cache[codigo]['peso_bruto']
+            item['altura'] = produtos_cache[codigo]['altura']
+            item['largura'] = produtos_cache[codigo]['largura']
+            item['profundidade'] = produtos_cache[codigo]['profundidade']
 
     # ============================================================
     # PRODUTO ACABADO / ESTRUTURA
