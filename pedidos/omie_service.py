@@ -672,9 +672,25 @@ def buscar_cliente_cnpj(cnpj):
 
 
 
+
+import requests
+from django.conf import settings
+
+# Cache em memória por processo
+_CACHE_ESTRUTURAS = {}
+
+
 def consultar_estrutura(id_produto):
+    id_produto = int(id_produto)
+
     print("======== CONSULTAR ESTRUTURA ========")
     print("ID PRODUTO:", id_produto)
+
+    # Reutiliza estrutura já consultada
+    if id_produto in _CACHE_ESTRUTURAS:
+        print(f"CACHE ESTRUTURA -> {id_produto}")
+        return _CACHE_ESTRUTURAS[id_produto]
+
     payload = {
         "call": "ConsultarEstrutura",
         "app_key": settings.OMIE_APP_KEY,
@@ -688,14 +704,49 @@ def consultar_estrutura(id_produto):
         ]
     }
 
-    response = requests.post(
-        "https://app.omie.com.br/api/v1/geral/malha/",
-        json=payload
-    )
+    try:
+        response = requests.post(
+            "https://app.omie.com.br/api/v1/geral/malha/",
+            json=payload,
+            timeout=(5, 30)
+        )
 
-    response.raise_for_status()
-    print("DEBUG OMIE - STATUS:", response.status_code)
-    print("DEBUG OMIE - RESPOSTA:", response.text[:5000])
+        print(
+            f"OMIE ESTRUTURA -> Produto: {id_produto} "
+            f"| HTTP: {response.status_code}",
+            flush=True
+        )
 
-    return response.json()
+        if response.status_code != 200:
+            print(
+                f"ERRO OMIE ESTRUTURA -> "
+                f"Produto: {id_produto} | "
+                f"Resposta: {response.text[:2000]}",
+                flush=True
+            )
+            response.raise_for_status()
+
+        dados = response.json()
+
+        # Só armazena no cache após resposta válida
+        _CACHE_ESTRUTURAS[id_produto] = dados
+
+        return dados
+
+    except requests.RequestException as erro:
+        print(
+            f"FALHA NA API OMIE -> Produto: {id_produto} "
+            f"| Erro: {erro}",
+            flush=True
+        )
+        raise
+
+    except ValueError as erro:
+        print(
+            f"RESPOSTA JSON INVÁLIDA -> Produto: {id_produto} "
+            f"| Erro: {erro}",
+            flush=True
+        )
+        raise
+
 
