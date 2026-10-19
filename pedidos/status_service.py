@@ -1,5 +1,5 @@
 
-def interpretar_status(etapa_venda, status_producao, cenario_fiscal):
+def interpretar_status(etapa_venda, status_producao, cenario_fiscal=None):
 
     print(
         f"Venda='{etapa_venda}' | Produção='{status_producao}' | "
