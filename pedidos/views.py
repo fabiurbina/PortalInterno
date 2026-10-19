@@ -553,7 +553,7 @@ def ficha_op(request, codigo_op):
         ''
     )
 
-    obs = op['observacoes']['cObs']
+    obs = op.get('observacoes', {}).get('cObs', '')
 
     #numero_pedido = extrair_numero_pedido(obs)
 
