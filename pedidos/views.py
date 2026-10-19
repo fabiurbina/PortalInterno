@@ -549,6 +549,11 @@ def ficha_op(request, codigo_op):
             str(conferencia['codigo_produto'])
         ] = conferencia
     print("DEBUG 5: mapa_conferencias montado")
+    print("TESTE E: antes de montar mapa_locais")
+    print("TESTE F: quantidade de locais:", len(locais))
+    print("TESTE G: quantidade de lotes:", len(lotes))
+    print("TESTE H: antes de montar contexto")
+
     for item in op.get('itensDetalhes', []):
         
 
@@ -618,11 +623,9 @@ def ficha_op(request, codigo_op):
         "Linha de Pós 01",
         "Linha de Cápsulas 01",]
     
-    print("DEBUG: chegou antes do render")
-    print("ETAPA:", op.get('infAdicionais'))
-    print("APONTAMENTOS:", mapa_apontamentos)
-    print("LOTE PA:", lote_pa)
-    print("VALIDADE PA:", validade_pa)
+    print("TESTE I: contexto montado")
+    print("TESTE J: antes do render_template")
+
 
     return render(
         request,
