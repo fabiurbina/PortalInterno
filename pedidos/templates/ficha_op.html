@@ -282,46 +282,41 @@
             {% else %}
 
             <table class="table table-bordered table-sm mb-3">
+    <tr>
+        <th>OP</th>
+        <th>Código Produto</th>
+        <th>Produto</th>
+        <th>Qtde</th>
+        <th>Previsão</th>
+        <th>Peso líquido</th>
+    </tr>
 
-            <tr>
-                <th>OP</th>
-                <th>Codigo Produto</th>
-                <th>Produto</th>
-                <th>Qtde</th>
-                <th>Previsão</th>
-                <th>Peso líquido</th>
-                
-            </tr>
+    <tr>
+        <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+            {{ op.identificacao.cNumOP }}
+        </td>
 
-            <tr>
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ op.identificacao.cNumOP }}
-                </td>
+        <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+            {{ codigo_interno }}
+        </td>
 
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ codigo_interno }}
-                </td>
+        <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+            {{ nome_produto }}
+        </td>
 
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ nome_produto }}
-                </td>
+        <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+            {{ op.identificacao.nQtde }}
+        </td>
 
+        <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+            {{ op.identificacao.dDtPrevisao }}
+        </td>
 
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ op.identificacao.nQtde }}
-                </td>
-
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                    {{ op.identificacao.dDtPrevisao }}
-                </td>
-
-                <td style="font-size: 18px; font-weight: 600; padding: 10px;">
-                <td>
-                    {{ op.peso_liq|default_if_none:0 }}
-                </td>
-            </tr>
-
-        </table>
+        <td style="font-size: 18px; font-weight: 600; padding: 10px;">
+            {{ produto.peso_liq|default_if_none:0 }}
+        </td>
+    </tr>
+</table>
 
 <div class="andar-1">
 
