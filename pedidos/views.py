@@ -79,7 +79,10 @@ from .models import ContaHostinger,ReuniaoAgenda, ParticipanteReuniao, Participa
 
 from django.http import FileResponse
 from .agente_comercial import agente_comercial
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def dashboard(request):
@@ -1565,7 +1568,11 @@ def pedidos(request):
     numero_pedido = request.GET.get("pedido")
     status_filtro = request.GET.get("status")
 
-    lista_pedidos = consultar_todos_pedidos()
+    try:
+        lista_pedidos = consultar_todos_pedidos()
+    except Exception:
+        logger.exception("Erro ao consultar pedidos")
+        raise
 
     pedidos_processados = []
 
