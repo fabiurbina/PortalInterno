@@ -7,102 +7,95 @@
 <head>
 
 <style>
+/* Ajustes normais da tela */
+.container { max-width: 1500px; }
+.table { width: 100%; }
 
 @media print {
+    @page { size: A4 landscape; margin: 7mm; }
 
-    @page {
-    size: A4 portrait;
-    margin: 10mm;
-}
-
-    body {
-        font-size: 12px;
-        background: white !important;
+    html, body {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        font-size: 9px !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
-    .form-control {
-    height: 24px !important;
-    padding: 2px 4px !important;
-    font-size: 11px !important;
-}
-
     .container {
-        max-width: 100% !important;
         width: 100% !important;
+        max-width: none !important;
         margin: 0 !important;
         padding: 0 !important;
     }
 
-    .btn {
-        display: none !important;
+    .card {
+        border: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100% !important;
     }
 
-    .card {
-        border: 1px solid #000 !important;
-        box-shadow: none !important;
+    .card-header { padding: 3px 5px !important; }
+    .card-header h3 { margin: 0 !important; font-size: 15px !important; }
+    .card-body { padding: 5px !important; }
+    .btn, a.btn { display: none !important; }
+
+    h5 {
+        font-size: 10px !important;
+        margin: 5px 0 3px !important;
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+    }
+
+    table {
         width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        font-size: 7px !important;
+        margin: 0 0 5px !important;
+        page-break-before: auto !important;
+        break-inside: auto !important;
+    }
+
+    thead { display: table-header-group; }
+    tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+    th, td {
+        padding: 2px !important;
+        line-height: 1.05 !important;
+        vertical-align: middle !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+    }
+
+    .form-control {
+        width: 100% !important;
+        height: 16px !important;
+        min-height: 16px !important;
+        padding: 0 2px !important;
+        margin: 0 !important;
+        font-size: 7px !important;
+        border-radius: 0 !important;
+    }
+
+    .conferencia {
+        width: 10px !important;
+        height: 10px !important;
         margin: 0 !important;
     }
 
-    .card-header {
-        background: #e9ecef !important;
-        color: black !important;
-        border-bottom: 1px solid #000 !important;
-    }
+    .row { margin: 5px 0 0 !important; }
+    .row > * { padding: 0 5px !important; }
 
-    table {
-        width: 100% !important;
-        border-collapse: collapse;
-        page-break-before: avoid;
-    }
+    /* Evita que os blocos finais sejam empurrados por margens grandes. */
+    .mt-4 { margin-top: 5px !important; }
+    .mb-3 { margin-bottom: 4px !important; }
 
-    table th,
-    table td {
-        padding: 2px !important;
-        line-height: 1.1 !important;
-    }
-
-    thead {
-        display: table-header-group;
-    }
-
-    tr {
-        page-break-inside: avoid;
-    }
-
-    td {
-        vertical-align: middle !important;
-    }
-
-    h3, h4, h5 {
-        color: black !important;
-        page-break-after: avoid;
-    }
-    table {
-    font-size: 8px !important;
+    /* Não force uma nova página entre a ficha e os botões. */
+    .observacoes-gerais { height: 35px !important; margin-bottom: 8px !important; }
 }
-
-table th,
-table td {
-    padding: 1px 3px !important;
-    line-height: 1 !important;
-    vertical-align: middle !important;
-}
-
-.form-control {
-    height: 18px !important;
-    min-height: 18px !important;
-    padding: 1px 3px !important;
-    font-size: 8px !important;
-}
-
-.conferencia {
-    width: 12px !important;
-    height: 12px !important;
-}
-
-}
-
 </style>
 
     <meta charset="UTF-8">
@@ -479,9 +472,6 @@ table td {
 
             </table>
 
-
-            </table>
-
             <h5 class="mt-4">Embalagens (Devoluções)</h5>
 
             <table class="table table-bordered table-sm">
@@ -578,13 +568,7 @@ table td {
 
         <h5 class="mt-4">Observações Gerais</h5>
 
-<div
-    style="
-        height:60px;
-        border:1px solid #000;
-        margin-bottom:20px;
-    "
-></div>
+<div class="observacoes-gerais" style="height:60px; border:1px solid #000; margin-bottom:20px;"></div>
 
 
 <div class="row mt-4">
@@ -614,7 +598,7 @@ table td {
 
 </table>
 
-<div style="page-break-before: always;"></div>
+
 
 <div class="mt-4">
 
