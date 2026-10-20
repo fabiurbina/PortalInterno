@@ -6,97 +6,183 @@
 
 <head>
 
+
 <style>
-/* Ajustes normais da tela */
+:root {
+    --viesano-green: #176b45;
+    --viesano-dark: #123c2b;
+    --viesano-light: #eaf3ee;
+    --viesano-border: #cbd8d0;
+    --viesano-text: #24352c;
+}
+* { box-sizing: border-box; }
+body {
+    color: var(--viesano-text);
+    background: #f2f5f3;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+}
 .container { max-width: 1500px; }
-.table { width: 100%; }
+.card {
+    border: 1px solid #dbe4de;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.card-header {
+    background: linear-gradient(115deg, var(--viesano-dark), var(--viesano-green));
+    color: #fff;
+    padding: 18px 22px;
+    border-bottom: 4px solid #a8cfb7;
+}
+.document-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+.brand-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.brand-logo {
+    width: 155px;
+    max-height: 64px;
+    object-fit: contain;
+    object-position: left center;
+    padding: 5px 8px;
+    background: #fff;
+    border-radius: 6px;
+}
+.brand-copy { min-width: 0; }
+.brand-kicker {
+    margin: 0 0 4px;
+    color: #d8e9df;
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.card-header h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: .3px;
+}
+.document-meta {
+    text-align: right;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #eef6f0;
+    white-space: nowrap;
+}
+.card-body { padding: 22px; background: #fff; }
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 9px;
+    padding: 8px 10px;
+    color: var(--viesano-dark);
+    background: var(--viesano-light);
+    border-left: 4px solid var(--viesano-green);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+.table {
+    width: 100%;
+    margin-bottom: 16px;
+    border-color: var(--viesano-border);
+    vertical-align: middle;
+}
+.table th {
+    color: #fff;
+    background: var(--viesano-dark) !important;
+    font-size: 11px;
+    font-weight: 700;
+    vertical-align: middle;
+}
+.table td { color: #26372e; }
+.table-bordered > :not(caption) > * > * { border-color: var(--viesano-border); }
+.op-summary td {
+    background: #f7faf8;
+    font-size: 14px;
+    font-weight: 700;
+}
+.op-summary tr:last-child td { border-bottom: 2px solid var(--viesano-green); }
+.form-control {
+    border: 1px solid #b9c9bf;
+    border-radius: 4px;
+    min-height: 29px;
+    font-size: 12px;
+}
+.conferencia { width: 16px; height: 16px; accent-color: var(--viesano-green); }
+.observacoes-gerais {
+    height: 75px;
+    border: 1px solid #aebfb4;
+    border-radius: 4px;
+    background: repeating-linear-gradient(to bottom, #fff 0, #fff 23px, #edf2ee 24px);
+}
+.signature-area { margin-top: 28px; }
+.signature-line {
+    width: 82%;
+    margin: 0 auto 8px;
+    border-top: 1px solid #52645a;
+}
+.signature-label {
+    color: #45584d;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+.document-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 9px;
+    border-top: 1px solid #d8e2db;
+    color: #65776b;
+    font-size: 9px;
+}
+.btn-primary { background: var(--viesano-green); border-color: var(--viesano-green); }
+.btn-primary:hover { background: var(--viesano-dark); border-color: var(--viesano-dark); }
 
 @media print {
     @page { size: A4 landscape; margin: 7mm; }
-
     html, body {
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #fff !important;
-        font-size: 9px !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        width: 100% !important; margin: 0 !important; padding: 0 !important;
+        background: #fff !important; font-size: 9px !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
-
-    .container {
-        width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .card {
-        border: 0 !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-        width: 100% !important;
-    }
-
-    .card-header { padding: 3px 5px !important; }
-    .card-header h3 { margin: 0 !important; font-size: 15px !important; }
-    .card-body { padding: 5px !important; }
+    .container { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+    .card { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+    .card-header { padding: 8px 12px !important; border-bottom-width: 3px !important; }
+    .brand-logo { width: 125px !important; max-height: 48px !important; }
+    .card-header h3 { font-size: 18px !important; }
+    .brand-kicker { font-size: 8px !important; margin-bottom: 2px !important; }
+    .document-meta { font-size: 9px !important; }
+    .card-body { padding: 8px 2px !important; }
     .btn, a.btn { display: none !important; }
-
-    h5 {
-        font-size: 10px !important;
-        margin: 5px 0 3px !important;
-        page-break-after: avoid !important;
-        break-after: avoid-page !important;
-    }
-
-    table {
-        width: 100% !important;
-        table-layout: fixed !important;
-        border-collapse: collapse !important;
-        font-size: 7px !important;
-        margin: 0 0 5px !important;
-        page-break-before: auto !important;
-        break-inside: auto !important;
-    }
-
+    .section-title { margin: 10px 0 5px !important; padding: 5px 7px !important; font-size: 9px !important; break-after: avoid-page !important; }
+    h5 { font-size: 10px !important; margin: 5px 0 3px !important; page-break-after: avoid !important; break-after: avoid-page !important; }
+    table { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; font-size: 7px !important; margin: 0 0 5px !important; page-break-before: auto !important; break-inside: auto !important; }
     thead { display: table-header-group; }
     tr { page-break-inside: avoid !important; break-inside: avoid !important; }
-    th, td {
-        padding: 2px !important;
-        line-height: 1.05 !important;
-        vertical-align: middle !important;
-        overflow-wrap: anywhere !important;
-        word-break: normal !important;
-    }
-
-    .form-control {
-        width: 100% !important;
-        height: 16px !important;
-        min-height: 16px !important;
-        padding: 0 2px !important;
-        margin: 0 !important;
-        font-size: 7px !important;
-        border-radius: 0 !important;
-    }
-
-    .conferencia {
-        width: 10px !important;
-        height: 10px !important;
-        margin: 0 !important;
-    }
-
+    th, td { padding: 2px !important; line-height: 1.1 !important; vertical-align: middle !important; overflow-wrap: anywhere !important; word-break: normal !important; }
+    .table th { font-size: 7px !important; }
+    .op-summary td { font-size: 13px !important; }
+    .form-control { width: 100% !important; height: 15px !important; min-height: 15px !important; padding: 0 2px !important; margin: 0 !important; font-size: 7px !important; border-radius: 0 !important; }
+    .conferencia { width: 10px !important; height: 10px !important; margin: 0 !important; }
     .row { margin: 5px 0 0 !important; }
     .row > * { padding: 0 5px !important; }
-
-    /* Evita que os blocos finais sejam empurrados por margens grandes. */
     .mt-4 { margin-top: 5px !important; }
     .mb-3 { margin-bottom: 4px !important; }
-
-    /* Não force uma nova página entre a ficha e os botões. */
-    .observacoes-gerais { height: 35px !important; margin-bottom: 8px !important; }
+    .observacoes-gerais { height: 35px !important; margin-bottom: 5px !important; }
+    .signature-area { margin-top: 12px !important; }
+    .document-footer { margin-top: 10px !important; padding-top: 5px !important; font-size: 7px !important; }
 }
 </style>
+
 
     <meta charset="UTF-8">
     <title>Ordem de Separação</title>
@@ -115,7 +201,20 @@
     <div class="card shadow">
 
         <div class="card-header">
-            <h3>Ordem de Separação</h3>
+            <div class="document-brand">
+                <div class="brand-left">
+                    <img class="brand-logo" src="{% static 'img/logo_viesano.png' %}" alt="Viesano Suplementos">
+                    <div class="brand-copy">
+                        <p class="brand-kicker">Viesano Suplementos • Documento operacional</p>
+                        <h3>Ordem de Separação</h3>
+                    </div>
+                </div>
+                <div class="document-meta">
+                    <strong>CONTROLE DE MATERIAIS</strong><br>
+                    Documento interno<br>
+                    <span>OP: {{ op.identificacao.cNumOP }}</span>
+                </div>
+            </div>
         </div>
 
         <div class="card-body">
@@ -131,7 +230,7 @@
 
             {% else %}
 
-            <table class="table table-bordered table-sm mb-3">
+            <table class="table table-bordered table-sm mb-3 op-summary">
 
             <tr>
 
@@ -159,7 +258,7 @@
 
                     </table>
 
-            <h5>Matérias-Primas (Retiradas)</h5>
+            <div class="section-title">Matérias-primas · Retiradas</div>
 
 
 
@@ -267,7 +366,7 @@
 
             </table>
 
-            <h5 class="mt-4">Embalagens (Retiradas)</h5>
+            <div class="section-title">Embalagens · Retiradas</div>
 
             <table class="table table-bordered table-sm">
 
@@ -364,7 +463,7 @@
 
         </table>
 
-            <h5>Matérias-Primas (Devoluções)</h5>
+            <div class="section-title">Matérias-primas · Devoluções</div>
 
 
 
@@ -472,7 +571,7 @@
 
             </table>
 
-            <h5 class="mt-4">Embalagens (Devoluções)</h5>
+            <div class="section-title">Embalagens · Devoluções</div>
 
             <table class="table table-bordered table-sm">
 
@@ -566,7 +665,7 @@
 
         </table>
 
-        <h5 class="mt-4">Observações Gerais</h5>
+        <div class="section-title">Observações gerais</div>
 
 <div class="observacoes-gerais" style="height:60px; border:1px solid #000; margin-bottom:20px;"></div>
 
