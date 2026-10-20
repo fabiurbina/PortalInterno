@@ -9,10 +9,10 @@
 
 <style>
 :root {
-    --viesano-green: #176b45;
-    --viesano-dark: #123c2b;
-    --viesano-light: #eaf3ee;
-    --viesano-border: #cbd8d0;
+    --viesano-green: #28784f;
+    --viesano-dark: #234b37;
+    --viesano-light: #f2f7f3;
+    --viesano-border: #d5ddd7;
     --viesano-text: #24352c;
 }
 * { box-sizing: border-box; }
@@ -29,10 +29,11 @@ body {
     overflow: hidden;
 }
 .card-header {
-    background: linear-gradient(115deg, var(--viesano-dark), var(--viesano-green));
-    color: #fff;
-    padding: 18px 22px;
-    border-bottom: 4px solid #a8cfb7;
+    background: #fff;
+    color: var(--viesano-dark);
+    padding: 16px 22px;
+    border-top: 5px solid var(--viesano-green);
+    border-bottom: 1px solid #dce5de;
 }
 .document-brand {
     display: flex;
@@ -53,7 +54,7 @@ body {
 .brand-copy { min-width: 0; }
 .brand-kicker {
     margin: 0 0 4px;
-    color: #d8e9df;
+    color: #47735a;
     font-size: 10px;
     letter-spacing: 1.8px;
     font-weight: 700;
@@ -69,7 +70,7 @@ body {
     text-align: right;
     font-size: 11px;
     line-height: 1.6;
-    color: #eef6f0;
+    color: #4e6255;
     white-space: nowrap;
 }
 .card-body { padding: 22px; background: #fff; }
@@ -80,8 +81,8 @@ body {
     margin: 22px 0 9px;
     padding: 8px 10px;
     color: var(--viesano-dark);
-    background: var(--viesano-light);
-    border-left: 4px solid var(--viesano-green);
+    background: #f5f8f6;
+    border-left: 3px solid #75a487;
     font-size: 12px;
     font-weight: 800;
     letter-spacing: .5px;
@@ -94,8 +95,8 @@ body {
     vertical-align: middle;
 }
 .table th {
-    color: #fff;
-    background: var(--viesano-dark) !important;
+    color: #244b36;
+    background: #eaf1ec !important;
     font-size: 11px;
     font-weight: 700;
     vertical-align: middle;
@@ -103,7 +104,7 @@ body {
 .table td { color: #26372e; }
 .table-bordered > :not(caption) > * > * { border-color: var(--viesano-border); }
 .op-summary td {
-    background: #f7faf8;
+    background: #fff;
     font-size: 14px;
     font-weight: 700;
 }
@@ -148,6 +149,26 @@ body {
 .btn-primary:hover { background: var(--viesano-dark); border-color: var(--viesano-dark); }
 
 @media print {
+    .card-header {
+        background: #fff !important;
+        color: #234b37 !important;
+        border-top: 3px solid #28784f !important;
+        border-bottom: 1px solid #d5ddd7 !important;
+    }
+    .brand-kicker, .document-meta { color: #4e6255 !important; }
+    .section-title {
+        background: #f3f7f4 !important;
+        color: #234b37 !important;
+        border-left-color: #75a487 !important;
+    }
+    .table th, .table thead th {
+        background: #eaf1ec !important;
+        color: #244b36 !important;
+        font-weight: 700 !important;
+    }
+    .table td, .op-summary td { background: #fff !important; color: #202820 !important; }
+    .table, .table th, .table td { border-color: #d5ddd7 !important; }
+
     @page { size: A4 landscape; margin: 7mm; }
     html, body {
         width: 100% !important; margin: 0 !important; padding: 0 !important;
