@@ -221,6 +221,166 @@
 
 }
 
+
+/* ===== IDENTIDADE VISUAL VIESANO — FICHA DE PRODUÇÃO ===== */
+:root {
+    --viesano-green: #28784f;
+    --viesano-dark: #234b37;
+    --viesano-light: #f3f7f4;
+    --viesano-border: #d5ddd7;
+    --viesano-text: #26352c;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--viesano-text);
+    background: #f4f7f5;
+}
+.container { max-width: 1500px; }
+.card {
+    border: 1px solid #dce5de;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(30, 65, 45, .06);
+}
+.card-header {
+    background: #fff;
+    color: var(--viesano-dark);
+    padding: 15px 20px;
+    border-top: 5px solid var(--viesano-green);
+    border-bottom: 1px solid #dce5de;
+}
+.cabecalho-viesano {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+.cabecalho-viesano-marca {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+}
+.cabecalho-viesano img {
+    width: 125px;
+    max-height: 54px;
+    object-fit: contain;
+    object-position: left center;
+    padding: 4px 7px;
+    background: #fff;
+    border: 1px solid #e5ebe6;
+    border-radius: 5px;
+}
+.cabecalho-viesano .sobretitulo {
+    margin: 0 0 4px;
+    color: #47735a;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+.cabecalho-viesano h3 {
+    margin: 0;
+    color: var(--viesano-dark);
+    font-size: 23px;
+    font-weight: 800;
+}
+.cabecalho-viesano-meta {
+    text-align: right;
+    color: #53665a;
+    font-size: 10px;
+    line-height: 1.5;
+}
+.card-body { background: #fff; }
+h4, h5 {
+    color: var(--viesano-dark);
+    font-weight: 700;
+}
+h4 {
+    padding: 7px 10px;
+    background: var(--viesano-light);
+    border-left: 3px solid #75a487;
+}
+h5 {
+    padding: 6px 9px;
+    background: #f7f9f7;
+    border-left: 3px solid #a6c3af;
+}
+table { border-color: var(--viesano-border) !important; }
+table th, thead th {
+    background: #eaf1ec !important;
+    color: #244b36 !important;
+    border-color: var(--viesano-border) !important;
+}
+table td {
+    color: #26352c;
+    border-color: var(--viesano-border) !important;
+}
+.form-control {
+    border-color: #cbd8cf;
+    border-radius: 4px;
+}
+.btn-primary, .btn-success {
+    background-color: var(--viesano-green);
+    border-color: var(--viesano-green);
+}
+.btn-primary:hover, .btn-success:hover {
+    background-color: var(--viesano-dark);
+    border-color: var(--viesano-dark);
+}
+
+@media print {
+    body {
+        color: #222 !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .card {
+        border: 1px solid #d5ddd7 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+    .card-header {
+        background: #fff !important;
+        color: var(--viesano-dark) !important;
+        border-top: 3px solid var(--viesano-green) !important;
+        border-bottom: 1px solid #d5ddd7 !important;
+        padding: 8px 12px !important;
+    }
+    .cabecalho-viesano img {
+        width: 105px !important;
+        max-height: 42px !important;
+    }
+    .cabecalho-viesano h3 { font-size: 18px !important; }
+    .cabecalho-viesano .sobretitulo { font-size: 7px !important; }
+    .cabecalho-viesano-meta { font-size: 8px !important; color: #53665a !important; }
+    h4 {
+        background: #f3f7f4 !important;
+        color: #234b37 !important;
+        border-left-color: #75a487 !important;
+    }
+    h5 {
+        background: #f8faf8 !important;
+        color: #234b37 !important;
+        border-left-color: #a6c3af !important;
+    }
+    table th, thead th {
+        background: #eaf1ec !important;
+        color: #244b36 !important;
+        border-color: #d5ddd7 !important;
+    }
+    table td {
+        background: #fff !important;
+        color: #222 !important;
+        border-color: #d5ddd7 !important;
+    }
+    .form-control {
+        border-color: #d5ddd7 !important;
+        background: #fff !important;
+    }
+}
+
 </style>
 
     <meta charset="UTF-8">
@@ -241,7 +401,19 @@
     <div class="card shadow">
 
         <div class="card-header">
-            <h3>Ficha de Produção</h3>
+            <div class="cabecalho-viesano">
+                <div class="cabecalho-viesano-marca">
+                    <img src="{% static 'img/logo_viesano.png' %}" alt="Viesano Suplementos">
+                    <div>
+                        <p class="sobretitulo">Viesano Suplementos · Documento operacional</p>
+                        <h3>Ficha de Produção</h3>
+                    </div>
+                </div>
+                <div class="cabecalho-viesano-meta">
+                    <strong>CONTROLE DE PRODUÇÃO</strong><br>
+                    Documento interno
+                </div>
+            </div>
         </div>
         
 
