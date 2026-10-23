@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" content="notranslate">
+    <title>Inspeção de Embalagens | Viesano</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logo_viesano.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --azul: #16465f;
+            --azul-escuro: #123f63;
+            --azul-claro: #d9edf5;
+            --turquesa: #27b9ad;
+            --texto: #243447;
+            --borda: #aebbc4;
+        }
+        body { background:#f3f6fa; color:var(--texto); font-size:14px; }
+        .pagina { max-width:1120px; }
+        .cabecalho {
+            background:#fff; border:1px solid #d5e0e7; border-top:7px solid var(--azul);
+            padding:18px 22px; margin-bottom:18px;
+        }
+        .logo { max-width:155px; max-height:62px; object-fit:contain; }
+        .titulo { color:var(--azul-escuro); font-size:1.45rem; font-weight:800; margin:0; }
+        .subtitulo { color:#526777; margin:.3rem 0 0; }
+        .codigo-doc { text-align:right; font-size:.88rem; }
+        .codigo-doc strong { display:inline-block; min-width:110px; }
+        .secao-titulo {
+            background:var(--azul); color:white; font-weight:750; padding:7px 10px;
+            margin:18px 0 0; letter-spacing:.02em;
+        }
+        .tabela-form { background:#fff; margin-bottom:0; }
+        .tabela-form th, .tabela-form td { border:1px solid var(--borda); vertical-align:middle; padding:6px 8px; }
+        .tabela-form thead th { background:#dce5ea; color:#1e3442; text-align:center; font-size:.82rem; }
+        .campo-label { width:23%; font-weight:650; background:#f0f3f5; }
+        .tabela-form input[type="text"], .tabela-form input[type="number"] { min-width:70px; }
+        .opcao { display:flex; align-items:center; justify-content:center; gap:6px; }
+        .observacoes { min-height:88px; resize:vertical; }
+        .rodape-documento { font-size:10px; color:#5d6d77; text-align:right; margin-top:12px; }
+        .acoes { margin:20px 0 35px; }
+        @media(max-width:700px) {
+            .cabecalho .row { row-gap:12px; }
+            .codigo-doc { text-align:left; }
+            .tabela-form { font-size:12px; }
+            .tabela-form th, .tabela-form td { padding:5px 4px; }
+            .logo { max-width:125px; }
+        }
+        @media print {
+            @page { size:A4; margin:10mm; }
+            body { background:white; font-size:10px; }
+            .pagina { max-width:none; padding:0 !important; }
+            .cabecalho { padding:10px 12px; margin-bottom:8px; }
+            .secao-titulo { margin-top:10px; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+            .tabela-form th, .tabela-form td { padding:4px 5px; }
+            .no-print { display:none !important; }
+            input, textarea { color:#111 !important; }
+            .form-control { border:0; border-bottom:1px solid #bbb; border-radius:0; box-shadow:none !important; padding:2px 4px; }
+            .observacoes { min-height:55px; }
+            .rodape-documento { margin-top:8px; }
+        }
+    </style>
+</head>
+<body>
+<main class="container pagina py-3">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show no-print" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if erro %}
+        <div class="alert alert-danger">{{ erro }}</div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'salvar_inspecao' %}">
+        {% csrf_token %}
+        <input type="hidden" name="codigo_produto" value="{{ item.cod_prod }}">
+        <input type="hidden" name="codigo_fornecedor" value="{{ item.cod_fornecedor }}">
+        <input type="hidden" name="qtdd" value="{{ item.quantidade }}">
+        <input type="hidden" name="data_recebimento" value="{{ item.data }}">
+        <input type="hidden" name="lote" value="{{ item.lote }}">
+        <input type="hidden" name="data_fabricacao" value="{{ item.fabricacao }}">
+        <input type="hidden" name="data_validade" value="{{ item.validade }}">
+        <input type="hidden" name="data_inicial" value="{{ data_inicial }}">
+        <input type="hidden" name="data_final" value="{{ data_final }}">
+        <input type="hidden" name="tipo_inspecao" value="EMBALAGEM">
+
+        <header class="cabecalho">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <img src="{% static 'img/logo_viesano.png' %}" alt="Viesano Suplementos" class="logo">
+                </div>
+                <div class="col-md-6">
+                    <h1 class="titulo">FORMULÁRIO DE INSPEÇÃO DE EMBALAGENS</h1>
+                    <p class="subtitulo mb-0">Sistema de Gestão da Qualidade</p>
+                </div>
+                <div class="col-md-3 codigo-doc">
+                    <div><strong>Código:</strong> FOR-020-002</div>
+                    <div><strong>Revisão:</strong> 00</div>
+                    <div><strong>Data vigente:</strong> 27/05/2026</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="secao-titulo">1. IDENTIFICAÇÃO DO MATERIAL</div>
+        <table class="table table-sm tabela-form">
+            <tbody>
+                <tr><td class="campo-label">Descrição</td><td>{{ item.descricao|default:"" }}</td></tr>
+                <tr><td class="campo-label">Fornecedor</td><td>{{ item.fornecedor|default:"" }}</td></tr>
+                <tr><td class="campo-label">Lote</td><td>{{ item.lote|default:"" }}</td></tr>
+                <tr><td class="campo-label">Fabricação</td><td>{{ item.fabricacao|default:"" }}</td></tr>
+                <tr><td class="campo-label">Validade</td><td>{{ item.validade|default:"" }}</td></tr>
+            </tbody>
+        </table>
+
+        <div class="secao-titulo">2. INSPEÇÃO DA EMBALAGEM</div>
+        <div class="table-responsive">
+            <table class="table table-sm tabela-form">
+                <thead>
+                    <tr>
+                        <th style="width:23%">Teste realizado</th>
+                        <th style="width:25%">Especificação</th>
+                        <th style="width:25%">Resultado</th>
+                        <th style="width:13%">Conforme</th>
+                        <th style="width:14%">Não conforme</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="campo-label">Altura</td>
+                        <td><input class="form-control form-control-sm" type="text" name="altura_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="altura_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="altura_conformidade" value="1" aria-label="Altura conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="altura_conformidade" value="0" aria-label="Altura não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Diâmetro do Corpo (mm)</td>
+                        <td><input class="form-control form-control-sm" type="text" name="diametro_corpo_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="diametro_corpo_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="diametro_corpo_conformidade" value="1" aria-label="Diâmetro conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="diametro_corpo_conformidade" value="0" aria-label="Diâmetro não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Diâmetro do Corpo (mm)</td>
+                        <td><input class="form-control form-control-sm" type="text" name="diametro_corpo_2_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="diametro_corpo_2_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="diametro_corpo_2_conformidade" value="1" aria-label="Segundo diâmetro conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="diametro_corpo_2_conformidade" value="0" aria-label="Segundo diâmetro não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Peso (gr)</td>
+                        <td><input class="form-control form-control-sm" type="text" name="peso_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="peso_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="peso_conformidade" value="1" aria-label="Peso conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="peso_conformidade" value="0" aria-label="Peso não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Capacidade</td>
+                        <td><input class="form-control form-control-sm" type="text" name="capacidade_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="capacidade_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="capacidade_conformidade" value="1" aria-label="Capacidade conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="capacidade_conformidade" value="0" aria-label="Capacidade não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Variação de Cor</td>
+                        <td><input class="form-control form-control-sm" type="text" name="variacao_cor_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="variacao_cor_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="variacao_cor_conformidade" value="1" aria-label="Variação de cor conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="variacao_cor_conformidade" value="0" aria-label="Variação de cor não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Sujidade</td>
+                        <td><input class="form-control form-control-sm" type="text" name="sujidade_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="sujidade_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="sujidade_conformidade" value="1" aria-label="Sujidade conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="sujidade_conformidade" value="0" aria-label="Sujidade não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Fechamento</td>
+                        <td><input class="form-control form-control-sm" type="text" name="fechamento_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="fechamento_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="fechamento_conformidade" value="1" aria-label="Fechamento conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="fechamento_conformidade" value="0" aria-label="Fechamento não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Selo</td>
+                        <td><input class="form-control form-control-sm" type="text" name="selo_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="selo_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="selo_conformidade" value="1" aria-label="Selo conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="selo_conformidade" value="0" aria-label="Selo não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Peso (gr)</td>
+                        <td><input class="form-control form-control-sm" type="text" name="peso_2_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="peso_2_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="peso_2_conformidade" value="1" aria-label="Segundo peso conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="peso_2_conformidade" value="0" aria-label="Segundo peso não conforme"></label></td>
+                    </tr>
+                    <tr>
+                        <td class="campo-label">Capacidade</td>
+                        <td><input class="form-control form-control-sm" type="text" name="capacidade_2_especificacao"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="capacidade_2_resultado"></td>
+                        <td><label class="opcao"><input type="radio" name="capacidade_2_conformidade" value="1" aria-label="Segunda capacidade conforme"></label></td>
+                        <td><label class="opcao"><input type="radio" name="capacidade_2_conformidade" value="0" aria-label="Segunda capacidade não conforme"></label></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="secao-titulo">4. OBSERVAÇÕES</div>
+        <textarea class="form-control observacoes" name="observacoes" rows="3" placeholder="Registre observações da inspeção"></textarea>
+
+        <div class="secao-titulo">5. PARECER FINAL</div>
+        <table class="table table-sm tabela-form">
+            <tbody>
+                <tr>
+                    <td><label class="form-check"><input class="form-check-input" type="radio" name="parecer" value="1" required> APROVADO</label></td>
+                    <td><label class="form-check"><input class="form-check-input" type="radio" name="parecer" value="2"> REPROVADO</label></td>
+                    <td><label class="form-check"><input class="form-check-input" type="radio" name="parecer" value="3"> APROVADO COM RESTRIÇÃO</label></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><label for="motivo" class="form-label fw-semibold mb-1">Motivo/Justificativa:</label><textarea id="motivo" class="form-control" name="motivo" rows="2"></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><label for="responsavel" class="form-label fw-semibold mb-1">Responsável pela Análise:</label>
+                        <select id="responsavel" class="form-select" name="responsavel">
+                            <option value="">Selecione</option>
+                            <option value="1">Nathalia</option>
+                            <option value="2">Leticia</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label for="assinatura" class="form-label fw-semibold mb-1">Assinatura:</label><input id="assinatura" type="text" class="form-control" name="assinatura"></td>
+                    <td><label for="data" class="form-label fw-semibold mb-1">Data:</label><input id="data" type="date" class="form-control" name="data" max="{% now 'Y-m-d' %}" required></td>
+                </tr>
+                <tr>
+                    <td><label for="hora_inicio" class="form-label fw-semibold mb-1">Hora início:</label><input id="hora_inicio" type="time" class="form-control" name="hora_inicio" required></td>
+                    <td><label for="hora_fim" class="form-label fw-semibold mb-1">Hora fim:</label><input id="hora_fim" type="time" class="form-control" name="hora_fim"></td>
+                    <td><label class="form-label fw-semibold mb-1">Quantidade recebida:</label><div>{{ item.quantidade }}</div></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="acoes no-print d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-success">Salvar inspeção</button>
+            <button type="button" class="btn btn-outline-primary" onclick="window.print()">Imprimir formulário</button>
+            <a href="/qualidade/" class="btn btn-secondary">Voltar</a>
+        </div>
+        <div class="rodape-documento">POP-020-000 — INSPEÇÃO DE MATÉRIAS-PRIMAS, INSUMOS E EMBALAGENS</div>
+    </form>
+</main>
+</body>
+</html>

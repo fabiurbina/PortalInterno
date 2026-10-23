@@ -21,45 +21,183 @@
 >
 
 <style>
-
-body{
-    background:#f4f6f9;
+:root {
+    --viesano-azul: #123f63;
+    --viesano-turquesa: #27b9ad;
+    --texto: #243447;
+    --fundo: #f3f6fa;
+    --borda: #e2e8f0;
 }
 
-.qualidade-header{
-    background: linear-gradient(
-        90deg,
-        #0D3B66,
-        #2EC4B6
-    );
-
-    color:white;
-
-    padding:25px;
-
-    border-radius:12px 12px 0 0;
+body {
+    background: var(--fundo);
+    color: var(--texto);
+    font-size: 14px;
 }
 
-.qualidade-card{
-    border:none;
-    border-radius:12px;
-    overflow:hidden;
+.qualidade-container {
+    max-width: 1180px;
 }
 
-.card{
-    border:none;
-    border-radius:12px;
+.qualidade-header {
+    background: linear-gradient(115deg, var(--viesano-azul) 0%, #176c83 58%, var(--viesano-turquesa) 100%);
+    color: #fff;
+    padding: 22px 28px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    box-shadow: 0 5px 16px rgba(18, 63, 99, .16);
 }
 
-.card-header{
-    font-weight:600;
+.qualidade-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
 }
 
+.qualidade-logo {
+    display: block;
+    width: 145px;
+    max-height: 68px;
+    object-fit: contain;
+    padding: 7px 10px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.qualidade-titulo h1 {
+    margin: 0 0 5px;
+    font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    font-weight: 700;
+    letter-spacing: -.025em;
+}
+
+.qualidade-titulo p {
+    margin: 0;
+    color: rgba(255, 255, 255, .9);
+    font-size: .9rem;
+}
+
+.qualidade-identidade {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.qualidade-identidade strong {
+    display: block;
+    font-size: .85rem;
+    letter-spacing: .04em;
+}
+
+.qualidade-identidade span {
+    display: block;
+    margin-top: 4px;
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .88);
+}
+
+.qualidade-card, .card {
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card {
+    box-shadow: 0 3px 12px rgba(15, 23, 42, .06) !important;
+}
+
+.card-header {
+    font-weight: 650;
+    padding: 11px 16px;
+}
+
+.lote-resumo {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.lote-item {
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+    padding: 13px 15px;
+    min-width: 0;
+}
+
+.lote-item .lote-label {
+    display: block;
+    color: #64748b;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .035em;
+    margin-bottom: 5px;
+}
+
+.lote-item .lote-valor {
+    display: block;
+    color: #173b57;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    body.container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .qualidade-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .qualidade-brand {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .qualidade-identidade {
+        text-align: left;
+    }
+
+    .lote-resumo {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media print {
+    body {
+        background: #fff;
+        font-size: 11px;
+    }
+
+    .qualidade-header {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        box-shadow: none;
+    }
+
+    .card {
+        box-shadow: none !important;
+    }
+}
 </style>
 
 </head>
 
-<body class="container py-4">
+<body class="container qualidade-container py-4">
 
 {% if messages %}
 
@@ -142,73 +280,48 @@ body{
     value="{{ request.GET.data_final }}"
 >
 
-<!-- INFORMAÇÕES DO LOTE -->
-<div class="row mb-4">
-
-    <div class="col-md-3">
-        <strong>Quantidade:</strong><br>
-        {{ item.quantidade }}
-    </div>
-
-    <div class="col-md-3">
-        <strong>Data de recebimento:</strong><br>
-        {{ item.data }}
-    </div>
-
-    <div class="col-md-3">
-        <strong>Lote:</strong><br>
-        {{ item.lote }}
-    </div>
-
-    <div class="col-md-3">
-        <strong>Fabricação:</strong><br>
-        {{ item.fabricacao }}
-    </div>
-
-    <div class="col-md-3 mt-3">
-        <strong>Validade:</strong><br>
-        {{ item.validade }}
-    </div>
-
-</div>
-
-<div class="card shadow qualidade-card mb-4">
-
-    <div class="qualidade-header">
-
-        <div class="d-flex justify-content-between">
-
-            <div>
-
-                <h2 class="mb-0">
-                    Controle de Qualidade
-                </h2>
-
-                <small>
-                    Recebimento e Liberação de Matérias-Primas
-                </small>
-
-            </div>
-
-            <div class="text-end">
-
-                <strong>
-                    VIESANO SUPLEMENTOS
-                </strong>
-
-                <br>
-
-                <small>
-                    Sistema de Gestão da Qualidade
-                </small>
-
-            </div>
-
+<!-- CABEÇALHO INSTITUCIONAL -->
+<header class="qualidade-header mb-4">
+    <div class="qualidade-brand">
+        <img
+            src="{% static 'img/logo_viesano.png' %}"
+            alt="Viesano Suplementos"
+            class="qualidade-logo"
+        >
+        <div class="qualidade-titulo">
+            <h1>Controle de Qualidade</h1>
+            <p>Recebimento e liberação de matérias-primas</p>
         </div>
-
     </div>
+    <div class="qualidade-identidade">
+        <strong>VIESANO SUPLEMENTOS</strong>
+        <span>Sistema de Gestão da Qualidade</span>
+    </div>
+</header>
 
-</div>
+<!-- RESUMO DO LOTE -->
+<section class="lote-resumo" aria-label="Informações do lote">
+    <div class="lote-item">
+        <span class="lote-label">Quantidade</span>
+        <span class="lote-valor">{{ item.quantidade }}</span>
+    </div>
+    <div class="lote-item">
+        <span class="lote-label">Data de recebimento</span>
+        <span class="lote-valor">{{ item.data }}</span>
+    </div>
+    <div class="lote-item">
+        <span class="lote-label">Lote</span>
+        <span class="lote-valor">{{ item.lote }}</span>
+    </div>
+    <div class="lote-item">
+        <span class="lote-label">Fabricação</span>
+        <span class="lote-valor">{{ item.fabricacao }}</span>
+    </div>
+    <div class="lote-item">
+        <span class="lote-label">Validade</span>
+        <span class="lote-valor">{{ item.validade }}</span>
+    </div>
+</section>
 
 <div class="card shadow mt-4">
 

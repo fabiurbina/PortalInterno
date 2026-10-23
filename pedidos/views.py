@@ -1383,188 +1383,300 @@ def qualidade_inspecao(request, cod_prod):
             }
         )
 
+     # Consulta o cadastro do produto na Omie
+    produto = consultar_produto(cod_prod)
+
+    try:
+        tipo_item = int(produto.get("tipoItem") or 0)
+    except (ValueError, TypeError, AttributeError):
+        tipo_item = 0
+
+    # Define o formulário conforme o tipo do produto
+    if tipo_item == 1:
+        template = "qualidade_ficha.html"
+    elif tipo_item > 1:
+        template = "qualidade_ficha_embalagem.html"
+    else:
+        return render(
+            request,
+            "qualidade_ficha.html",
+            {
+                "item": item,
+                "erro": (
+                    "Não foi possível identificar o tipo do produto "
+                    "na Omie. Verifique o cadastro antes de continuar."
+                ),
+                "data_inicial": data_inicial,
+                "data_final": data_final,
+            }
+        )
+
     return render(
         request,
-        "qualidade_ficha.html",
+        template,
         {
             "item": item,
             "data_inicial": data_inicial,
-            "data_final": data_final
+            "data_final": data_final,
         }
     )
     
     
 @login_required
 def salvar_inspecao(request):
-
     if request.method != "POST":
-
         return redirect("qualidade_home")
+
+    # ==========================================================
+    # 1. IDENTIFICAR O TIPO DE INSPEÇÃO
+    # ==========================================================
+    tipo_inspecao = (
+        request.POST.get("tipo_inspecao") or "MATERIA_PRIMA"
+    ).strip().upper()
+
+    if tipo_inspecao == "EMBALAGEM":
+        codigo_for = "FOR-020-002"
+        ids_parametros = range(14, 25)
+    else:
+        tipo_inspecao = "MATERIA_PRIMA"
+        codigo_for = "FOR-020-000"
+        ids_parametros = range(1, 14)
 
     codigo_produto = request.POST.get("codigo_produto")
     codigo_fornecedor = request.POST.get("codigo_fornecedor")
     qtdd = request.POST.get("qtdd")
-    data_recebimento = request.POST.get("data_recebimento")
-    if data_recebimento:
-        data_recebimento = datetime.strptime(
-            data_recebimento, "%d/%m/%Y"
-    ).date()
     lote = request.POST.get("lote")
-    data_fabricacao = request.POST.get("data_fabricacao")
-    if data_fabricacao:
-        data_fabricacao = datetime.strptime(
-            data_fabricacao, "%d/%m/%Y"
-        ).date()
-    data_validade = request.POST.get("data_validade")
-    if data_validade:
-        data_validade = datetime.strptime(
-            data_validade, "%d/%m/%Y"
-        ).date()
-    data = request.POST.get("data")
-    hora_inicio = request.POST.get("hora_inicio")
-    hora_atual = datetime.now().strftime("%H:%M")
-    if hora_inicio > hora_atual:
-        messages.error(request, "A hora de início não pode ser maior que a hora atual.")
+
+    # ==========================================================
+    # 2. FUNÇÕES AUXILIARES
+    # ==========================================================
+    def converter_data(valor):
+        if not valor:
+            return None
+
+        valor = valor.strip()
+
+        for formato in ("%d/%m/%Y", "%Y-%m-%d"):
+            try:
+                return datetime.strptime(valor, formato).date()
+            except ValueError:
+                continue
+
+        raise ValueError(f"Data inválida: {valor}")
+
+    def converter_conformidade(valor):
+        if valor is None or valor.strip() == "":
+            return None
+
+        valor = valor.strip().lower()
+
+        if valor in ("1", "true", "sim", "conforme"):
+            return 1
+
+        if valor in ("0", "false", "não", "nao", "não conforme",
+                     "nao conforme", "nao_conforme"):
+            return 0
+
+        return None
+    from urllib.parse import urlencode
+    def voltar_inspecao():
+        parametros_url = {
+            "data_inicial": request.POST.get("data_inicial", ""),
+            "data_final": request.POST.get("data_final", ""),
+        }
+
+        if lote:
+            parametros_url["lote"] = lote
+
         return redirect(
             f"/qualidade/inspecao/{codigo_produto}/"
-            f"?data_inicial={request.POST.get('data_inicial')}"
-            f"&data_final={request.POST.get('data_final')}"
+            f"?{urlencode(parametros_url)}"
         )
-    hora_fim = request.POST.get("hora_fim")
-    if hora_fim < hora_inicio:
+
+    # ==========================================================
+    # 3. VALIDAR E CONVERTER DATAS
+    # ==========================================================
+    try:
+        data_recebimento = converter_data(
+            request.POST.get("data_recebimento")
+        )
+        data_fabricacao = converter_data(
+            request.POST.get("data_fabricacao")
+        )
+        data_validade = converter_data(
+            request.POST.get("data_validade")
+        )
+        data = converter_data(request.POST.get("data"))
+
+    except ValueError as erro:
+        messages.error(request, str(erro))
+        return voltar_inspecao()
+
+    # ==========================================================
+    # 4. VALIDAR HORÁRIOS
+    # ==========================================================
+    hora_inicio = request.POST.get("hora_inicio") or ""
+    hora_fim = request.POST.get("hora_fim") or ""
+    hora_atual = datetime.now().strftime("%H:%M")
+
+    if hora_inicio and hora_inicio > hora_atual:
         messages.error(
             request,
-            "A hora de término não pode ser menor que a hora de início.")
-        return redirect(
-        f"/qualidade/inspecao/{codigo_produto}/"
-        f"?data_inicial={request.POST.get('data_inicial')}"
-        f"&data_final={request.POST.get('data_final')}"
-    )
+            "A hora de início não pode ser maior que a hora atual."
+        )
+        return voltar_inspecao()
+
+    if hora_inicio and hora_fim and hora_fim < hora_inicio:
+        messages.error(
+            request,
+            "A hora de término não pode ser menor que a hora de início."
+        )
+        return voltar_inspecao()
+
+    # ==========================================================
+    # 5. DADOS GERAIS DA INSPEÇÃO
+    # ==========================================================
     parecer = request.POST.get("parecer")
     motivo = request.POST.get("motivo")
     observacoes = request.POST.get("observacoes")
     responsavel = request.POST.get("responsavel")
 
+    # ==========================================================
+    # 6. GRAVAR CABEÇALHO EM tabInpecaoQualidade
+    # ==========================================================
     id_inspecao = inserir_inspecao(
-
-        codigo_for="FOR-020-000",
-
+        codigo_for=codigo_for,
         revisao="00",
-
         data_vigente="2026-05-27",
-
         codigo_produto=codigo_produto,
-
         codigo_fornecedor=codigo_fornecedor,
-
         qtdd=qtdd,
-
         data_recebimento=data_recebimento,
-
         status="Concluído",
-
         lote=lote,
-
         data_fabricacao=data_fabricacao,
-
         data_validade=data_validade,
-
         data=data,
-
-        hora_inicio=hora_inicio,
-
-        hora_fim=hora_fim,
-
+        hora_inicio=hora_inicio or None,
+        hora_fim=hora_fim or None,
         parecer=parecer,
-
         motivo=motivo,
-
         observacoes=observacoes,
-
-        responsavel=responsavel
-
+        responsavel=responsavel,
     )
-    
-    parametros = [
 
-        (1, "", request.POST.get("embalagem"), None),
+    # ==========================================================
+    # 7. PREPARAR PARÂMETROS DE MATÉRIA-PRIMA
+    # ==========================================================
+    if tipo_inspecao == "MATERIA_PRIMA":
+        parametros = [
+            (1, "", request.POST.get("embalagem"), None),
+            (2, "", request.POST.get("umidade_visual"), None),
+            (3, "", request.POST.get("avarias"), None),
+            (4, "", request.POST.get("identificacao"), None),
+            (5, "", request.POST.get("lacre"), None),
 
-        (2, "", request.POST.get("umidade_visual"), None),
+            (6, request.POST.get("aspecto"),
+             request.POST.get("aspecto_conf"), None),
 
-        (3, "", request.POST.get("avarias"), None),
+            (7, request.POST.get("cor"),
+             request.POST.get("cor_conf"), None),
 
-        (4, "", request.POST.get("identificacao"), None),
+            (8, request.POST.get("odor"),
+             request.POST.get("odor_conf"), None),
 
-        (5, "", request.POST.get("lacre"), None),
+            (9, request.POST.get("materiais"),
+             request.POST.get("materiais_conf"), None),
 
-        (6,
-        request.POST.get("aspecto"),
-        request.POST.get("aspecto_conf"),
-        None),
+            (10, request.POST.get("densidade"),
+             request.POST.get("densidade_conf"), None),
 
-        (7,
-        request.POST.get("cor"),
-        request.POST.get("cor_conf"),
-        None),
+            (11, request.POST.get("umidade"),
+             request.POST.get("umidade_conf"), None),
 
-        (8,
-        request.POST.get("odor"),
-        request.POST.get("odor_conf"),
-        None),
+            (12, request.POST.get("solubilidade"),
+             request.POST.get("solubilidade_conf"), None),
 
-        (9,
-        request.POST.get("materiais"),
-        request.POST.get("materiais_conf"),
-        None),
+            (13, request.POST.get("ph"),
+             request.POST.get("ph_conf"), None),
+        ]
 
-        (10,
-        request.POST.get("densidade"),
-        request.POST.get("densidade_conf"),
-        None),
+    # ==========================================================
+    # 8. PREPARAR PARÂMETROS DE EMBALAGEM
+    # ==========================================================
+    else:
+        campos_embalagem = [
+            (14, "altura"),
+            (15, "diametro_corpo"),
+            (16, "diametro_corpo_2"),
+            (17, "peso"),
+            (18, "capacidade"),
+            (19, "variacao_cor"),
+            (20, "sujidade"),
+            (21, "fechamento"),
+            (22, "selo"),
+            (23, "peso_2"),
+            (24, "capacidade_2"),
+        ]
 
-        (11,
-        request.POST.get("umidade"),
-        request.POST.get("umidade_conf"),
-        None),
+        parametros = []
 
-        (12,
-        request.POST.get("solubilidade"),
-        request.POST.get("solubilidade_conf"),
-        None),
+        for id_parametro, prefixo in campos_embalagem:
+            resultado = request.POST.get(
+                f"{prefixo}_resultado"
+            )
 
-        (13,
-        request.POST.get("ph"),
-        request.POST.get("ph_conf"),
-        None),
+            conformidade = request.POST.get(
+                f"{prefixo}_conformidade"
+            )
 
-    ]
-    
-    for parametro in parametros:
+            especificacao = request.POST.get(
+                f"{prefixo}_especificacao"
+            )
 
+            observacao_parametro = (
+                f"Especificação: {especificacao.strip()}"
+                if especificacao and especificacao.strip()
+                else None
+            )
+
+            parametros.append((
+                id_parametro,
+                resultado,
+                conformidade,
+                observacao_parametro,
+            ))
+
+    # ==========================================================
+    # 9. GRAVAR RESULTADOS EM tabResultadoInspecao
+    # ==========================================================
+    for id_parametro, resultado, conforme, observacao in parametros:
         inserir_resultado_inspecao(
-
             id_inspecao=id_inspecao,
-
-            id_parametro=parametro[0],
-
-            resultado=parametro[1],
-
-            conforme=parametro[2],
-
-            observacao=parametro[3]
-
+            id_parametro=id_parametro,
+            resultado=resultado,
+            conforme=converter_conformidade(conforme),
+            observacao=observacao,
         )
 
-        
-    print(f"Inspeção de qualidade salva com ID: {id_inspecao}")
+    print(
+        f"Inspeção {tipo_inspecao} salva. "
+        f"ID: {id_inspecao} | Formulário: {codigo_for}"
+    )
 
-    # Enviar e-mail somente quando o parecer for aprovado
-    if (parecer or "").strip().lower() == "aprovado":
+    # ==========================================================
+    # 10. ENVIAR E-MAIL SOMENTE PARA PARECER APROVADO
+    # ==========================================================
+    if str(parecer or "").strip() == "1":
         try:
             send_mail(
-                subject=f"Produto aprovado na inspeção - {codigo_produto}",
+                subject=(
+                    f"Produto aprovado na inspeção - {codigo_produto}"
+                ),
                 message=(
                     "Um produto foi aprovado na inspeção de qualidade.\n\n"
+                    f"Tipo de inspeção: {tipo_inspecao}\n"
+                    f"Formulário: {codigo_for}\n"
                     f"Código do produto: {codigo_produto}\n"
                     f"Fornecedor: {codigo_fornecedor}\n"
                     f"Quantidade: {qtdd}\n"
@@ -1580,18 +1692,21 @@ def salvar_inspecao(request):
                 recipient_list=[settings.EMAIL_LOGISTICA],
                 fail_silently=False,
             )
+
             print("E-mail enviado para a logística.")
 
-        except Exception as e:
-            # Não deixar falha de e-mail gerar erro 500
-            print(f"Falha no envio do e-mail de inspeção: {e}")
+        except Exception as erro:
+            print(f"Falha no envio do e-mail: {erro}")
 
-
-    return redirect(
-        f"/qualidade/inspecao/{codigo_produto}/"
-        f"?data_inicial={request.POST.get('data_inicial')}"
-        f"&data_final={request.POST.get('data_final')}"
+    # ==========================================================
+    # 11. RETORNAR À TELA DA INSPEÇÃO
+    # ==========================================================
+    messages.success(
+        request,
+        f"Inspeção {codigo_for} salva com sucesso."
     )
+
+    return voltar_inspecao()
     
     
 @login_required
