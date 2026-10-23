@@ -380,3 +380,4 @@ DEFAULT_FROM_EMAIL = (
 )
 
 
+EMAIL_LOGISTICA = "gabriel.oliveira@viesano.com.br"

@@ -1555,13 +1555,43 @@ def salvar_inspecao(request):
 
         )
 
+        
     print(f"Inspeção de qualidade salva com ID: {id_inspecao}")
 
+    # Enviar e-mail somente quando o parecer for aprovado
+    if (parecer or "").strip().lower() == "aprovado":
+        try:
+            send_mail(
+                subject=f"Produto aprovado na inspeção - {codigo_produto}",
+                message=(
+                    "Um produto foi aprovado na inspeção de qualidade.\n\n"
+                    f"Código do produto: {codigo_produto}\n"
+                    f"Fornecedor: {codigo_fornecedor}\n"
+                    f"Quantidade: {qtdd}\n"
+                    f"Lote: {lote}\n"
+                    f"Data de recebimento: {data_recebimento}\n"
+                    f"Data de fabricação: {data_fabricacao}\n"
+                    f"Data de validade: {data_validade}\n"
+                    f"Responsável: {responsavel}\n"
+                    f"Observações: {observacoes or 'Nenhuma'}\n"
+                    f"ID da inspeção: {id_inspecao}"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.EMAIL_LOGISTICA],
+                fail_silently=False,
+            )
+            print("E-mail enviado para a logística.")
+
+        except Exception as e:
+            # Não deixar falha de e-mail gerar erro 500
+            print(f"Falha no envio do e-mail de inspeção: {e}")
+
+
     return redirect(
-    f"/qualidade/inspecao/{codigo_produto}/"
-    f"?data_inicial={request.POST.get('data_inicial')}"
-    f"&data_final={request.POST.get('data_final')}"
-)
+        f"/qualidade/inspecao/{codigo_produto}/"
+        f"?data_inicial={request.POST.get('data_inicial')}"
+        f"&data_final={request.POST.get('data_final')}"
+    )
     
     
 @login_required
